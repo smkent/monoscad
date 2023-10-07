@@ -1,5 +1,8 @@
 # 3D Printer Enclosure Filament Grommet
 
+[![Available on Printables][printables-badge]][printables-model]
+[![CC-BY-SA-4.0 license][license-badge]][license]
+
 An OpenSCAD-configurable filament grommet for a 3D printer enclosure.
 
 ![Top render](images/readme/top.png)
@@ -7,8 +10,6 @@ An OpenSCAD-configurable filament grommet for a 3D printer enclosure.
 
 ![Photo 1](images/readme/photo1.jpg)
 ![Photo 2](images/readme/photo2.jpg)
-
-[This model is also available on Printables][printables-model].
 
 ## Description
 
@@ -26,5 +27,7 @@ This prints upside down without support.
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
 
+[printables-badge]: /utils/printables-badge.png
 [printables-model]: https://www.printables.com/model/584616
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
+[license-badge]: /utils/license-badge-cc-by-sa-4.0.svg

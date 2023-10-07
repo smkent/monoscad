@@ -1,9 +1,10 @@
 # Gridfinity Material Swatches Holder V2
 
+[![Available on Printables][printables-badge]][printables-model]
+[![MIT license][license-badge]][license]
+
 OpenSCAD-customizable [Gridfinity][gridfinity] bins for storing
 [Material Swatches][material-swatches].
-
-[This model is also available on Printables][printables-model].
 
 ![Photo](images/readme/photo.jpg)
 ![Animated example](images/readme/demo.gif)
@@ -27,10 +28,13 @@ This is a remix of
 [**Gridfinity Rebuilt in OpenSCAD** by **kennetek**][gridfinity-rebuilt-openscad].
 
 Gridfinity, [Gridfinity Rebuilt in OpenSCAD][gridfinity-rebuilt-openscad],
-and this remix use the [MIT License](LICENSE).
+and this remix use the [MIT License][license].
 
 [gridfinity-rebuilt-openscad]: https://github.com/kennetek/gridfinity-rebuilt-openscad
 [gridfinity]: https://www.youtube.com/watch?v=ra_9zU-mnl8
+[license]: LICENSE
+[license-badge]: /utils/license-badge-mit.svg
 [material-swatches]: https://www.printables.com/model/2256-material-swatches
+[printables-badge]: /utils/printables-badge.png
 [printables-model]: https://www.printables.com/model/587675
 [v1]: https://www.printables.com/model/557060
