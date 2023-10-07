@@ -1,3 +1,4 @@
 [submodule "libraries/openscad-libraries"]
+	branch = main
 	path = libraries
 	url = https://github.com/smkent/openscad-libraries
