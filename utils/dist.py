@@ -53,7 +53,6 @@ class DistGenerator:
         for i, value_set in enumerate(self.config["values"]):
             render_args = []
             output_file = value_set.pop(0)
-            print(output_file)
             for var_name, var_value in zip(self.config["vars"], value_set):
                 render_args += ["-D", f"{var_name}={var_value}"]
             cmd = [

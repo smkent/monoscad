@@ -1,0 +1,12 @@
+{
+    "dist": {
+        "model": "ip6518-case.scad",
+        "vars": ["Mount_Holes", "Render_Top", "Render_Bottom"],
+        "values": [
+            ["ip6518-case-top.stl", 0, 1, 0],
+            ["ip6518-case-bottom-no-mount-holes.stl", 0, 0, 1],
+            ["ip6518-case-bottom-side-mount-holes.stl", 1, 0, 1],
+            ["ip6518-case-bottom-sv06-psu-mount-holes.stl", 2, 0, 1]
+        ]
+    }
+}
