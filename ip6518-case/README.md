@@ -5,6 +5,8 @@ Case for an IP6518 DC to 5V USB-A/C buck converter
 ![Photo](images/readme/photo1.jpg)
 ![Render](images/readme/render.jpg)
 
+[This model is also available on Printables][printables-model].
+
 # Description
 
 An IP6518 board has a DC barrel input connector, and converts from 12/24V to 5V
@@ -38,3 +40,4 @@ Third party components have their own licenses.
 [honeycomb-library-openscad-upstream]: https://printables.com/model/263718
 [honeycomb-library-openscad]: https://github.com/smkent/honeycomb-openscad
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
+[printables-model]: https://www.printables.com/model/605854

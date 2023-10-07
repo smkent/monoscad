@@ -8,7 +8,7 @@ An OpenSCAD-configurable filament grommet for a 3D printer enclosure.
 ![Photo 1](images/readme/photo1.jpg)
 ![Photo 2](images/readme/photo2.jpg)
 
-[This model is also available on Printables][printables].
+[This model is also available on Printables][printables-model].
 
 ## Description
 
@@ -26,5 +26,5 @@ This prints upside down without support.
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
 
-[printables]: https://www.printables.com/model/584616
+[printables-model]: https://www.printables.com/model/584616
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
