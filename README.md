@@ -7,7 +7,7 @@ A monorepository for my [OpenSCAD][openscad] models and remixes.
 Models in this repository depend on various
 [third-party libraries][openscad-libraries].
 
-Libraries can be initialized by one of:
+Libraries can be installed by one of:
 
 1. Initializing the included `libraries` submodule, by running:
    `git submodule update --init --recursive`
