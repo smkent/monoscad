@@ -2,11 +2,11 @@
 
 An OpenSCAD-configurable filament grommet for a 3D printer enclosure.
 
-![Top render](images/top.png)
-![Bottom render](images/bottom.png)
+![Top render](images/readme/top.png)
+![Bottom render](images/readme/bottom.png)
 
-![Photo 1](images/photo1.jpg)
-![Photo 2](images/photo2.jpg)
+![Photo 1](images/readme/photo1.jpg)
+![Photo 2](images/readme/photo2.jpg)
 
 [This model is also available on Printables][printables].
 
