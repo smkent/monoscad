@@ -1,6 +1,6 @@
 # My OpenSCAD Models
 
-A monorepository for my [OpenSCAD][openscad] models.
+A monorepository for my [OpenSCAD][openscad] models and remixes.
 
 ## Setup
 
