@@ -30,9 +30,12 @@ class DistGenerator:
             help="Model subdirectory",
         )
         self.args = ap.parse_args()
-        self.config = json.loads(
-            (self.args.model_dir / MODEL_CONFIG_FILE_NAME).read_text()
-        ).get(MODEL_CONFIG_DIST_OBJECT, {})
+        try:
+            self.config = json.loads(
+                (self.args.model_dir / MODEL_CONFIG_FILE_NAME).read_text()
+            ).get(MODEL_CONFIG_DIST_OBJECT, {})
+        except FileNotFoundError:
+            self.config = {}
 
     def main(self) -> None:
         with tempfile.TemporaryDirectory() as td:
@@ -90,7 +93,6 @@ class DistGenerator:
                         str(library_file), self.args.model_dir.name + "/"
                     ),
                 )
-        self._run(["zipinfo", tdp / DIST_LIBRARIES_FILE_NAME])
         # Zip model files and images
         with ZipFile(tdp / DIST_FILE_NAME, mode="w") as z:
             if (tdp / DIST_LIBRARIES_FILE_NAME).is_file():
@@ -99,11 +101,11 @@ class DistGenerator:
                 )
             for model_file, dest_file_name in model_files:
                 z.write(model_file, dest_file_name)
-        self._run(["zipinfo", tdp / DIST_FILE_NAME])
         dest_file_name = DIST_FILE_NAME_FORMAT.format(
             model_dir=self.args.model_dir.name
         )
         shutil.move(tdp / DIST_FILE_NAME, dest_file_name)
+        print(f"Created {dest_file_name}")
 
     @staticmethod
     def _run(cmd: list, *args: Any, **kwargs: Any) -> Any:
