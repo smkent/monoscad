@@ -1,0 +1,61 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "${0}")/.."
+
+imgsize=400,300
+delay=75
+
+img_count=0
+
+tmp_dir="$(mktemp -d)"
+rm_tmp_dir() {
+    if [ -d "${tmp_dir}" ]; then
+        rm -rvf "${tmp_dir}"
+    fi
+}
+trap rm_tmp_dir EXIT
+
+render() {
+    gridx="${1?}"; shift;
+    gridy="${1?}"; shift;
+    gridz="${1?}"; shift;
+    separator="${1?}"; shift;
+    img_count=$((img_count+1));
+    out_file="${tmp_dir}/frame_$(printf "%05d" "${img_count}").png"
+    (
+        set -x
+        openscad \
+            swatch-bin.scad \
+            -D "gridx=${gridx}" \
+            -D "gridy=${gridy}" \
+            -D "gridz=${gridz}" \
+            -D "Separator_Style=${separator}" \
+            --colorscheme=DeepOcean \
+            --camera=-10,5,0,50,0,20,375 \
+            --imgsize="${imgsize}" \
+            -o "${out_file}"
+    )
+}
+
+render 2 3 3 1
+render 2 2 3 1
+render 2 1 3 1
+render 1 1 3 1
+render 1 1 3 2
+render 1 2 3 2
+render 1 2 3 2
+render 1 3 3 2
+render 1 3 3 0
+render 1 4 3 0
+render 1 4 4 0
+render 1 4 5 0
+render 1 4 6 0
+render 2 4 6 0
+render 2 3 6 0
+render 2 3 6 1
+render 2 3 5 1
+render 2 3 4 1
+
+convert -delay "${delay}" -loop 0 "${tmp_dir}/"*.png "images/demo.gif"
