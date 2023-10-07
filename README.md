@@ -1,5 +1,7 @@
 # My OpenSCAD Models
 
+[![bulbasaur0 on Printables][printables-profile-badge]][printables-profile]
+
 A monorepository for my [OpenSCAD][openscad] models and remixes.
 
 ## Setup
@@ -46,3 +48,5 @@ Attribution][license-cc-by-4.0].
 [openscad]: https://openscad.org
 [openscad-libraries]: https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries
 [smkent-openscad-libraries]: https://github.com/smkent/openscad-libraries
+[printables-profile]: https://www.printables.com/@bulbasaur0_1139994/models
+[printables-profile-badge]: /utils/printables-profile-badge.svg
