@@ -1,0 +1,40 @@
+{
+    "dist": {
+        "model": "swatch-bin.scad",
+        "vars": ["gridx", "gridy", "gridz", "Separator_Style"],
+        "values": [
+            ["swatch-bin-1x1x3.stl", 1, 1, 3, 1],
+            ["swatch-bin-1x2x3.stl", 1, 2, 3, 1],
+            ["swatch-bin-1x3x3.stl", 1, 3, 3, 1],
+            ["swatch-bin-1x4x3.stl", 1, 4, 3, 1],
+            ["swatch-bin-2x2x3.stl", 2, 2, 3, 1],
+            ["swatch-bin-2x3x3.stl", 2, 3, 3, 1],
+            ["swatch-bin-2x4x3.stl", 2, 4, 3, 1]
+        ]
+    },
+    "gif": {
+        "model": "swatch-bin.scad",
+        "camera": "-10,5,0,50,0,20,375",
+        "vars": ["gridx", "gridy", "gridz", "Separator_Style"],
+        "values": [
+            [2, 3, 3, 1],
+            [2, 2, 3, 1],
+            [2, 1, 3, 1],
+            [1, 1, 3, 1],
+            [1, 1, 3, 2],
+            [1, 2, 3, 2],
+            [1, 2, 3, 2],
+            [1, 3, 3, 2],
+            [1, 3, 3, 0],
+            [1, 4, 3, 0],
+            [1, 4, 4, 0],
+            [1, 4, 5, 0],
+            [1, 4, 6, 0],
+            [2, 4, 6, 0],
+            [2, 3, 6, 0],
+            [2, 3, 6, 1],
+            [2, 3, 5, 1],
+            [2, 3, 4, 1]
+        ]
+    }
+}

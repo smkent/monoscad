@@ -5,8 +5,8 @@ OpenSCAD-customizable [Gridfinity][gridfinity] bins for storing
 
 [This model is also available on Printables][printables-model].
 
-![Photo](images/photo.jpg)
-![Animated example](images/demo.gif)
+![Photo](images/readme/photo.jpg)
+![Animated example](images/readme/demo.gif)
 
 This is a parametric version of [my similar V1 model][v1], which was created
 using TinkerCAD.
