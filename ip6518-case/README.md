@@ -25,6 +25,10 @@ Required hardware:
 * M4 mounting screws or bolts if desired. I mounted mine to the back of my Sovol
   SV06 Plus power supply boot using the existing two M4 bolts.
 
+## Setup
+
+See [the top-level README.md](/README.md) for libraries installation.
+
 ## Attribution and License
 
 This model is licensed under
