@@ -1,0 +1,23 @@
+/* [Rendering Options] */
+Print_Orientation = true;
+
+/* [Size] */
+// All units in millimeters
+
+/* [Advanced Options] */
+
+/* [Development Toggles] */
+
+module __end_customizer_options__() { }
+
+// Constants //
+
+$fa = $preview ? $fa : 2;
+$fs = $preview ? $fs : 0.4;
+
+// Modules //
+
+module main() {
+}
+
+main();

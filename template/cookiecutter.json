@@ -1,0 +1,16 @@
+{
+    "title": "",
+    "directory_name": "{{ cookiecutter.title|lower|replace(' ', '-') }}",
+    "project_slug": "{{ cookiecutter.directory_name|lower }}",
+    "description": "",
+    "remix": "yes",
+    "original_model_title": "{{ cookiecutter.title }}",
+    "original_model_author": "",
+    "original_model_url": "",
+    "original_model_license": [
+        "CC-BY-4.0",
+        "CC-BY-SA-4.0",
+        "CC-BY-NC-4.0",
+        "CC-BY-NC-SA-4.0"
+    ]
+}
