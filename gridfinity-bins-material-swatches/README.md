@@ -11,6 +11,12 @@ OpenSCAD-customizable [Gridfinity][gridfinity] bins for storing
 This is a parametric version of [my similar V1 model][v1], which was created
 using TinkerCAD.
 
+## Description
+
+[Material Swatches][material-swatches] are the perfect size to fit in Gridfinity
+bins! Use this model to make bins to store your swatches, customized to whatever
+grid size you like.
+
 ## Setup
 
 See [the top-level README.md](/README.md) for libraries installation.
