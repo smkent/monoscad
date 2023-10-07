@@ -1,0 +1,5 @@
+*.3mf
+*.json
+*.stl
+*.zip
+!template/*.json
