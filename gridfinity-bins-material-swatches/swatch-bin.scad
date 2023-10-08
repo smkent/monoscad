@@ -1,5 +1,5 @@
 /*
- * OpenSCAD-customizable Gridfinity bins for storing Material Swatches
+ * Gridfinity Material Swatches Holder V2
  * By smkent (GitHub) / bulbasaur0 (Printables)
  *
  * MIT License (see LICENSE file)
