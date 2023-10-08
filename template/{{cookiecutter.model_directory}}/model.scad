@@ -1,3 +1,12 @@
+{%- extends "vars.jinja" -%}
+{%- block content -%}
+/*
+ * {{ cookiecutter.title }}
+ * By smkent (GitHub) / bulbasaur0 (Printables)
+ *
+ * Licensed under {{ license_title }}
+ */
+
 /* [Rendering Options] */
 Print_Orientation = true;
 
@@ -21,3 +30,4 @@ module main() {
 }
 
 main();
+{% endblock -%}

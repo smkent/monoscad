@@ -1,3 +1,10 @@
+/*
+ * IP6518 DC to 5V USB-A/C Buck Converter Case
+ * By smkent (GitHub) / bulbasaur0 (Printables)
+ *
+ * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
+ */
+
 include <honeycomb-openscad/honeycomb.scad>;
 
 /* [Rendering Options] */

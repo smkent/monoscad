@@ -1,7 +1,6 @@
 {
     "title": "",
-    "directory_name": "{{ cookiecutter.title|lower|replace(' ', '-') }}",
-    "project_slug": "{{ cookiecutter.directory_name|lower }}",
+    "model_directory": "{{ cookiecutter.title|lower|replace(' ', '-') }}",
     "description": "",
     "remix": "yes",
     "original_model_title": "{{ cookiecutter.title }}",
