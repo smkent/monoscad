@@ -1,0 +1,38 @@
+{
+    "dist": {
+        "segment.scad": {
+            "vars": ["Inner_Diameter"],
+            "stl": {
+                "segment-100mm.stl": [100]
+            }
+        },
+        "120mm-fan.scad": {
+            "vars": ["Inner_Diameter", "Connector_Type", "Grommet_Diameter"],
+            "stl": {
+                "120mm-fan-grommet-100mm.stl": [100, 1, 0],
+                "120mm-fan-connector-100mm-male.stl": [100, 1, 120]
+            }
+        },
+        "flange.scad": {
+            "vars": ["Inner_Diameter", "Model_Type", "Connector_Type", "Magnet_Holes", "Screw_Holes"],
+            "stl": {
+                "flange-100mm-magnets-male.stl": [100, 0, 1, 1, 0],
+                "flange-100mm-magnets-female.stl": [100, 0, 0, 1, 0],
+                "grommet-100mm-screws.stl": [100, 1, 1, 0, 1],
+                "grommet-100mm-screws-magnets.stl": [100, 1, 0, 1, 1]
+            }
+        }
+    },
+    "images": {
+        "segment.png": {
+            "model": "segment.scad",
+            "vars": ["Inner_Diameter"],
+            "values": [[100]]
+        },
+        "120mm-fan-connector.png": {
+            "model": "120mm-fan.scad",
+            "vars": ["Inner_Diameter"],
+            "values": [[100]]
+        }
+    }
+}
