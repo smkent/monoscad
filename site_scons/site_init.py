@@ -61,8 +61,8 @@ class ModelBuilder:
         self.model_dir = self.src_dir_path.name
         self.publish_images = set()
 
-    def ref_filter(fn: Callable[..., Any]):
-        def _wrapper(self, *args: Any):
+    def ref_filter(fn: Callable[..., Any]) -> Callable[..., Any]:
+        def _wrapper(self, *args: Any) -> Any:
             if not self._allowed_by_filter:
                 return
             fn(self, *args)
@@ -86,6 +86,59 @@ class ModelBuilder:
             source=model_file,
             OPENSCAD_ARGS=" ".join(openscad_var_args(stl_vals)),
         )
+
+    def make_doc(
+        self,
+        target: Sequence[SConsFile],
+        source: Sequence[SConsFile],
+        env: SConsEnvironment,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td)
+            md_file = tdp / "input.md"
+            md_text = Path(source[0].path).read_text()
+            for rpath, rep_path in [
+                ("/_static/", Path(Dir("#").path) / "_static"),
+                (
+                    ("../images/readme", "images/readme"),
+                    Path(self.src_dir.path) / "images" / "publish",
+                ),
+            ]:
+                rpath_abs = str(rep_path.absolute()) + "/"
+                for rp in [rpath] if isinstance(rpath, str) else rpath:
+                    md_text = md_text.replace(rp, rpath_abs)
+            with open(md_file, "w") as f:
+                f.write(md_text)
+            cmd = [
+                "pandoc",
+                "-f",
+                "commonmark",
+                md_file,
+                "-o",
+                target[0].path,
+                "--table-of-contents",
+                "--toc-depth=4",
+                "--number-sections",
+                "--pdf-engine=xelatex",
+            ]
+            for pandoc_var in [
+                'mainfont="Roboto"',
+                # 'monofont="DejaVu Sans Mono"',
+                "fontsize=12pt",
+                "colorlinks=true",
+                # 'urlcolor="MidnightBlue"',
+                "linestretch=1.0",
+                (
+                    " geometry:"
+                    '"top=1.5cm, bottom=2.5cm, left=1.5cm, right=1.5cm"'
+                ),
+                "papersize=letter",
+            ]:
+                cmd += ["--variable", pandoc_var]
+            run(cmd)
+
+    def Document(self, source: str, target: str) -> None:
+        self.env.Command(target, source, self.make_doc)
 
     def Image(
         self,
@@ -134,10 +187,10 @@ class ModelBuilder:
 
     def render_image(
         self,
-        target,
-        source,
-        env,
-        image_targets=None,
+        target: Sequence[SConsFile],
+        source: Sequence[SConsFile],
+        env: SConsEnvironment,
+        image_targets: Optional[Dict[str, str]] = None,
         stl_vals_list: Optional[Sequence[Dict[str, Any]]] = None,
         delay: int = 75,
         camera: Optional[str] = None,
@@ -182,6 +235,7 @@ class ModelBuilder:
     def add_printables_zip_targets(self) -> None:
         sources = (
             set(self.src_dir.glob("*.scad"))
+            | set(self.build_dir.glob("*.pdf"))
             | set(self.build_dir.glob("*.stl"))
             | set(self.library_files)
             | set(self.publish_images)
@@ -203,6 +257,8 @@ class ModelBuilder:
             return "images/" + Path(dest_stripped).name
         elif dest_stripped.endswith(".stl"):
             return "stl/" + Path(dest_stripped).name
+        elif dest_stripped.endswith(".pdf"):
+            return "doc/" + Path(dest_stripped).name
         return str(dest_stripped)
 
     def make_zip(
