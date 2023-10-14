@@ -14,11 +14,22 @@ A replacement handle for a toy shopping basket
 A friend's kid has a toy shopping basket, and a tab broke on one of the handles.
 I created this handle to replace the broken one.
 
-## License
+## Setup
+
+See [the top-level README.md](/README.md) for libraries installation.
+
+## Attribution and License
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
 
+This model depends on:
 
+* [The Belfry OpenSCAD Library][bosl]
+
+Third party components have their own licenses.
+
+
+[bosl]: https://github.com/revarbat/BOSL
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [license-badge]: /utils/license-badge-cc-by-sa-4.0.svg
 [printables-badge]: /utils/printables-badge.png
