@@ -10,6 +10,7 @@
 include <modular-hose-library.scad>;
 use <segment.scad>;
 use <magnetic-parts.scad>;
+use <vacuum-attachment.scad>;
 
 Inner_Diameter = 100; // [20:1:100]
 
@@ -43,9 +44,13 @@ module modular_hose_demo(id) {
     place_part(0, 0)
     modular_hose_segment(id);
 
-    place_part(0, 1)
+    place_part(-1, 0)
+    translate([0, 0, -id * 0.6])
     modular_hose_part(id)
-    modular_hose_connector();
+    modular_hose_connector(female=true);
+
+    place_part(-0.5, 1)
+    modular_hose_vacuum_attachment(id, connector_type=2);
 
     place_part(1, 0)
     stack_parts() {
