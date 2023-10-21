@@ -22,5 +22,5 @@ This model is licensed under [{{ license_title}}][license].
 [original-model-url]: {{ cookiecutter.original_model_url }}
 {%- endif %}
 [license]: {{ license_url }}
-[license-badge]: /utils/license-badge-{{ cookiecutter.original_model_license.lower() }}.svg
+[license-badge]: /_static/license-badge-{{ cookiecutter.original_model_license.lower() }}.svg
 {% endblock -%}
