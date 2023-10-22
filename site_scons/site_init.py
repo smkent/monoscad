@@ -131,6 +131,11 @@ class ModelBuilder:
 
     def add_gif_targets(self):
         if self.gif_targets:
+            if self.env["CI"]:
+                for target in self.gif_targets:
+                    if not Path(target).exists():
+                        raise Exception(f"Missing: {target}")
+                return
             self.env.NoClean(
                 self.env.Command(
                     self.gif_targets, self.model_files, self.make_gif

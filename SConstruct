@@ -8,6 +8,7 @@ def add_deps_target(target, source, env):
 
 
 env = Environment(
+    CI=os.environ.get("CI", False),
     OPENSCAD=ARGUMENTS.get("openscad", os.environ.get("OPENSCAD", "openscad")),
     BUILDERS={
         "openscad": Builder(
