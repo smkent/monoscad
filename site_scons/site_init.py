@@ -11,7 +11,7 @@ from zipfile import ZipFile
 PRINTABLES_TARGET = "printables"
 DIST_PRINTABLES_ZIP = "dist-printables.zip"
 LIBRARIES_ZIP = "libraries.zip"
-GIF_TARGETS = {
+IMAGE_TARGETS = {
     "images/readme": "400x300",
     "images/publish": "1200x900",
 }
@@ -133,20 +133,23 @@ class ModelBuilder:
                 )
 
     def add_image_targets(self):
-        image_targets = {
-            f"{self.src_dir}/{image_path}/{image_name}": size
-            for image_name in self.images_data.keys()
-            for image_path, size in GIF_TARGETS.items()
-        }
-        if not image_targets:
+        if not self.images_data:
             return
-        self.env.NoClean(
-            self.env.Command(
-                image_targets.keys(),
-                self.model_files,
-                self.make_image,
+        image_targets = [
+            {
+                f"{self.src_dir}/{image_path}/{image_name}": size
+                for image_path, size in IMAGE_TARGETS.items()
+            }
+            for image_name in self.images_data.keys()
+        ]
+        for image_targets_set in image_targets:
+            self.env.NoClean(
+                self.env.Command(
+                    image_targets_set.keys(),
+                    self.model_files,
+                    self.make_image,
+                )
             )
-        )
 
     def add_printables_zip_targets(self):
         sources = (
@@ -211,7 +214,7 @@ class ModelBuilder:
                     t,
                     next(
                         sz
-                        for dir_chunk, sz in GIF_TARGETS.items()
+                        for dir_chunk, sz in IMAGE_TARGETS.items()
                         if dir_chunk in str(t)
                     ),
                 )
