@@ -15,7 +15,12 @@ jobs:
       - name: 💾 Check out repository
         uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           submodules: 'recursive'
+
+      - name: 🌿 Fetch base branch
+        run: |
+          git fetch origin "${GITHUB_BASE_REF}"
 
       - name: 🛠️ Install tools
         run: |
@@ -23,7 +28,7 @@ jobs:
           pip install scons
 
       - name: 🏗️ Build
-        run: xvfb-run scons
+        run: xvfb-run scons ref="origin/${GITHUB_BASE_REF}"
 
       - name: 📦 Save artifacts
         uses: actions/upload-artifact@v3
