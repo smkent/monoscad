@@ -48,12 +48,12 @@ screw_diameter = Screw_Diameter * 1.1;
 screw_hole_thickness = screw_diameter / 2;
 plate_full_thickness = Plate_Base_Thickness + max(
         Magnet_Holes ? Magnet_Thickness : 0,
-        Screw_Holes ? screw_hole_thickness : 0,
+        Screw_Holes ? screw_hole_thickness : 0
     );
 plate_screw_hole_inset = 7.5;
 max_hole_diameter = max(
     Magnet_Holes ? Magnet_Diameter : 0,
-    Screw_Holes ? Screw_Diameter * 2 : 0,
+    Screw_Holes ? Screw_Diameter * 2 : 0
     );
 plate_hole_size_buffer = 1.5 * max(max_hole_diameter, 5);
 
