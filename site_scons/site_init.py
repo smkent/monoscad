@@ -1,5 +1,6 @@
 import functools
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -17,9 +18,16 @@ IMAGE_TARGETS = {
 }
 
 
-def run(cmd: list, *args: Any, check: bool = True, **kwargs: Any) -> Any:
-    print("+", " ".join([str(c) for c in cmd]), file=sys.stderr)
-    subprocess.run(cmd, *args, check=check, **kwargs)
+def run(
+    cmd: list,
+    *args: Any,
+    quiet: bool = False,
+    check: bool = True,
+    **kwargs: Any,
+) -> Any:
+    if not quiet:
+        print("+", " ".join([str(c) for c in cmd]), file=sys.stderr)
+    return subprocess.run(cmd, *args, check=check, **kwargs)
 
 
 def remove_prefix(value: str, prefixes: Union[str, Sequence[str]]) -> str:
@@ -49,10 +57,34 @@ class ModelBuilder:
         self.model_dir = self.src_dir_path.name
 
     def make_all(self):
+        if not self.filter_by_ref:
+            return
         self.add_image_targets()
         self.add_stl_targets()
         if PRINTABLES_TARGET in BUILD_TARGETS:
             self.add_printables_zip_targets()
+
+    @functools.cached_property
+    def filter_by_ref(self):
+        prev_ref = self.env.get("PREV_REF")
+        if not prev_ref:
+            return True
+        dirs = {
+            fn.split(os.sep)[0]
+            for fn in run(
+                ["git", "diff", f"{prev_ref}...@", "--name-only", "--"],
+                quiet=True,
+                capture_output=True,
+                text=True,
+            ).stdout.splitlines()
+        }
+        if not self.src_dir_path.name in dirs:
+            return False
+        print(
+            f"Including model directory {self.model_dir}"
+            f" changed since {prev_ref}"
+        )
+        return True
 
     @functools.cached_property
     def config(self):

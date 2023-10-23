@@ -20,6 +20,7 @@ env = Environment(
             emitter=add_deps_target,
         )
     },
+    PREV_REF=ARGUMENTS.get("ref", None),
 )
 
 for sc in Glob("*/SConscript", strings=True):
