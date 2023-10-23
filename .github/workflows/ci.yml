@@ -23,7 +23,7 @@ jobs:
           pip install scons
 
       - name: 🏗️ Build
-        run: xvfb-run scons ref="${GITHUB_BASE_REF}"
+        run: xvfb-run scons ref="origin/${GITHUB_BASE_REF}"
 
       - name: 📦 Save artifacts
         uses: actions/upload-artifact@v3
