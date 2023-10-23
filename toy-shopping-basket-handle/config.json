@@ -1,9 +1,10 @@
 {
     "dist": {
-        "model": "toy-shopping-basket-handle.scad",
-        "vars": [],
-        "values": [
-            ["toy-shopping-basket-handle.stl"]
-        ]
+        "toy-shopping-basket-handle.scad": {
+            "vars": [],
+            "stl": {
+                "toy-shopping-basket-handle.stl": []
+            }
+        }
     }
 }
