@@ -7,7 +7,7 @@
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
  */
 
-include <modules.scad>;
+include <modular-hose-library.scad>;
 
 /* [Model Options] */
 Model_Type = 0; // [-1: Flange plate only, 0: Connector, 1: Grommet]
