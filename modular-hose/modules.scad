@@ -151,7 +151,7 @@ module _connector_origin_segment(circle_segment_radius_at_center, circle_segment
         );
     polygon(points=concat(
             bezier_polyline(inner_bezier, N=3),
-            reverse(bezier_polyline(outer_bezier, N=3)),
+            reverse(bezier_polyline(outer_bezier, N=3))
         ));
 }
 
