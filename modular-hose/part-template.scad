@@ -7,7 +7,7 @@
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
  */
 
-include <modules.scad>;
+include <modular-hose-library.scad>;
 
 /* [Model Options] */
 
@@ -26,10 +26,6 @@ Size_Tolerance = 0.0; // [0:0.1:2]
 module __end_customizer_options__() { }
 
 // Modules
-
-module modular_hose_template_part() {
-    children();
-}
 
 module modular_hose_template(
     inner_diameter=default_inner_diameter,

@@ -141,6 +141,7 @@ class ModelBuilder:
                 "delay": images_config.get("delay", 75),
                 "imgsize": images_config.get("imgsize", "1200,900"),
                 "model": images_config["model"],
+                "view_options": images_config.get("view_options", ""),
                 "args": image_args,
             }
         return data
@@ -268,6 +269,10 @@ class ModelBuilder:
             if image_data.get("camera"):
                 render_args = [
                     f"--camera={image_data['camera']}"
+                ] + render_args
+            if image_data.get("view_options"):
+                render_args = [
+                    f"--view={image_data['view_options']}"
                 ] + render_args
             run(
                 [

@@ -26,6 +26,7 @@
     "images": {
         "demo.png": {
             "model": "demo.scad",
+            "view_options": "axes,scales",
             "vars": ["Inner_Diameter"],
             "values": [[100]]
         }
