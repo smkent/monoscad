@@ -1,3 +1,12 @@
+/*
+ * Segmented Modular Hose
+ * By smkent (GitHub) / bulbasaur0 (Printables)
+ *
+ * Models demo
+ *
+ * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
+ */
+
 include <modules.scad>;
 use <segment.scad>;
 use <120mm-fan.scad>;
