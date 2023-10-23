@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Sequence, Union
 from zipfile import ZipFile
 
+PRINTABLES_TARGET = "printables"
 DIST_PRINTABLES_ZIP = "dist-printables.zip"
 LIBRARIES_ZIP = "libraries.zip"
 GIF_TARGETS = {
@@ -32,13 +33,16 @@ class ModelBuilder:
     def __init__(self, env):
         self.env = env
         self.build_dir = Dir(".")
-        self.src_dir = Dir("..")
+        self.common_build_dir = Dir("..")
+        self.src_dir = Dir(".").srcdir
         self.src_dir_path = Path(str(self.src_dir))
+        self.model_dir = self.src_dir_path.name
 
     def make_all(self):
         self.add_gif_targets()
         self.add_stl_targets()
-        self.add_dist_zip()
+        if PRINTABLES_TARGET in BUILD_TARGETS:
+            self.add_dist_zip()
 
     @functools.cached_property
     def config(self):
@@ -149,7 +153,11 @@ class ModelBuilder:
             + self.image_files
             + self.library_files
         )
-        self.env.Command(DIST_PRINTABLES_ZIP, sources, self.make_zip)
+        self.env.Command(
+            f"{self.common_build_dir}/printables-{self.model_dir}.zip",
+            sources,
+            self.make_zip,
+        )
 
     def zip_file_dest(self, source):
         dest_stripped = remove_prefix(

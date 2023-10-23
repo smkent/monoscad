@@ -31,9 +31,10 @@ jobs:
       - name: 📦 Save artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: Results
+          name: "Rendered Models"
           path: |
-            */build/*.zip
+            build/*
+            !build/**/*.deps
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
