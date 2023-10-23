@@ -36,30 +36,42 @@ module __end_customizer_options__() { }
 
 // Modules
 
-module main() {
-    modular_hose_init(Inner_Diameter, Thickness, Size_Tolerance, Render_Mode) {
-        rotate([0, -90, 0]) {
-            if (Connector_Type == 0 || Connector_Type == 1) {
-                translate([Connector_Type == 0 ? Extra_Segment_Length / 2 : 0, 0, 0])
-                connector(female=false);
-            }
-            if (Connector_Type == 0 || Connector_Type == 2) {
-                mirror([1, 0, 0])
-                translate([Connector_Type == 0 ? Extra_Segment_Length / 2 : 0, 0, 0])
-                connector(female=true);
-            }
+module modular_hose_segment(
+    inner_diameter=default_inner_diameter,
+    thickness=default_thickness,
+    size_tolerance=default_size_tolerance,
+    connector_type=0,
+    extra_segment_length=0,
+    render_mode=0
+) {
+    modular_hose_part(inner_diameter, thickness, size_tolerance, render_mode) {
+        if (connector_type == 0 || connector_type == 1) {
+            translate([connector_type == 0 ? extra_segment_length / 2 : 0, 0, 0])
+            modular_hose_connector(female=false);
+        }
+        if (connector_type == 0 || connector_type == 2) {
+            mirror([0, 0, 1])
+            translate([connector_type == 0 ? extra_segment_length / 2 : 0, 0, 0])
+            modular_hose_connector(female=true);
         }
         color("slategray", 0.8)
-        if (Extra_Segment_Length) {
-            mirror([(Connector_Type == 2 ? 1 : 0), 0, 0])
-            translate([0, 0, -Extra_Segment_Length / (Connector_Type == 0 ? 2 : 1)])
-            linear_extrude(height=Extra_Segment_Length)
+        if (extra_segment_length) {
+            mirror([(connector_type == 2 ? 1 : 0), 0, 0])
+            translate([0, 0, -extra_segment_length / (connector_type == 0 ? 2 : 1)])
+            linear_extrude(height=extra_segment_length)
             difference() {
-                circle(Inner_Diameter / 2 + Thickness);
-                circle(Inner_Diameter / 2);
+                circle(inner_diameter / 2 + thickness);
+                circle(inner_diameter / 2);
             }
         }
     }
 }
 
-main();
+modular_hose_segment(
+    Inner_Diameter,
+    Thickness,
+    Size_Tolerance,
+    Connector_Type,
+    Extra_Segment_Length,
+    Render_Mode
+);

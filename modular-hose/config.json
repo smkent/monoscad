@@ -24,13 +24,8 @@
         }
     },
     "images": {
-        "segment.png": {
-            "model": "segment.scad",
-            "vars": ["Inner_Diameter"],
-            "values": [[100]]
-        },
-        "120mm-fan-connector.png": {
-            "model": "120mm-fan.scad",
+        "demo.png": {
+            "model": "demo.scad",
             "vars": ["Inner_Diameter"],
             "values": [[100]]
         }

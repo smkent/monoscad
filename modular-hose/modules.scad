@@ -12,6 +12,12 @@ use <BOSL/math.scad>;
 
 module __end_customizer_options__() { }
 
+// Defaults
+
+default_inner_diameter = 100;
+default_thickness = 0.8;
+default_size_tolerance = 0;
+
 // Constants
 
 $fa = $preview ? 6 : 2;
@@ -82,7 +88,12 @@ function circle_segment_x_max_fn(female) = (
 
 // Modules
 
-module modular_hose_init(inner_diameter, thickness, size_tolerance, render_mode=0) {
+module modular_hose_part(
+    inner_diameter=default_inner_diameter,
+    thickness=default_thickness,
+    size_tolerance=default_size_tolerance,
+    render_mode=0
+) {
     $fh_origin_inner_diameter = inner_diameter;
     $fh_origin_inner_radius = inner_diameter / 2;
     $fh_thickness = thickness;
@@ -91,7 +102,7 @@ module modular_hose_init(inner_diameter, thickness, size_tolerance, render_mode=
     children();
 }
 
-module connector(female=false) {
+module modular_hose_connector(female=false) {
     color(female ? "darkseagreen" : "lightsteelblue", 0.8)
     _connector_extrude()
     _connector_shape(female=female);
@@ -172,7 +183,7 @@ module _connector_shape(female=false) {
 
 module _connector_extrude() {
     if ($fh_render_mode == 0 || $fh_render_mode == 1) {
-        rotate($fh_render_mode == 1 ? [-90, 0, 90] : [0, -90, 0])
+        rotate([180, 0, 0])
         rotate_extrude(angle=($fh_render_mode == 0 ? 360 : 180))
         rotate([0, 0, -90])
         children();

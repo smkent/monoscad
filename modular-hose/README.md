@@ -4,8 +4,7 @@
 
 A flexible and segmented modular hose that can be used as ducts or with a vacuum
 
-![Segment model render](images/readme/segment.png)
-![120mm fan connector model render](images/readme/120mm-fan-connector.png)
+![Model renders](images/readme/demo.png)
 
 ## Setup
 
