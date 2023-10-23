@@ -9,7 +9,7 @@ module __end_customizer_options__() { }
 
 // Constants
 
-spacing = 100 * 1.3;
+spacing = 100 * 1.5;
 
 // Modules
 
