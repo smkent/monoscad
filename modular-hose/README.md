@@ -24,4 +24,4 @@ Third party components have their own licenses.
 
 [bosl]: https://github.com/revarbat/BOSL
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
-[license-badge]: /utils/license-badge-cc-by-sa-4.0.svg
+[license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
