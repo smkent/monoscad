@@ -56,6 +56,34 @@ module modular_hose_connector(female=false) {
     _connector_shape(female=female);
 }
 
+module modular_hose_fan_plate(
+    fan_size,
+    plate_size,
+    plate_thickness,
+    plate_screw_hole_inset,
+    screw_diameter
+) {
+    color("mintcream", 0.8)
+    linear_extrude(height=plate_thickness)
+    difference() {
+        offset(plate_screw_hole_inset)
+        offset(-plate_screw_hole_inset)
+        square([plate_size, plate_size], center=true);
+        circle($fh_origin_inner_diameter / 2);
+        translate([
+            -(fan_size - 2 * plate_screw_hole_inset) / 2,
+            -(fan_size - 2 * plate_screw_hole_inset) / 2,
+            ])
+        for (mx = [0:1:1]) for (my = [0:1:1]) {
+            translate([
+                mx * (fan_size - 2 * plate_screw_hole_inset),
+                my * (fan_size - 2 * plate_screw_hole_inset),
+            ])
+            circle((screw_diameter * 1.2) / 2);
+        }
+    }
+}
+
 // Private Modules
 
 function _circle_radius_at_offset_from_center(circle_radius, offset_from_center) = (

@@ -43,31 +43,18 @@ module __end_customizer_options__() { }
 // Constants
 fan_size = 120;
 plate_screw_hole_inset = 7.5;
-plate_size = fan_size + 0;
 
 // Modules
 
 module plate_120mm_fan() {
-    color("mintcream", 0.8)
     mirror([0, 0, 1])
-    linear_extrude(height=$fhp_plate_thickness)
-    difference() {
-        offset(plate_screw_hole_inset)
-        offset(-plate_screw_hole_inset)
-        square([plate_size, plate_size], center=true);
-        circle($fh_origin_inner_diameter / 2);
-        translate([
-            -(fan_size - 2 * plate_screw_hole_inset) / 2,
-            -(fan_size - 2 * plate_screw_hole_inset) / 2,
-            ])
-        for (mx = [0:1:1]) for (my = [0:1:1]) {
-            translate([
-                mx * (fan_size - 2 * plate_screw_hole_inset),
-                my * (fan_size - 2 * plate_screw_hole_inset),
-            ])
-            circle(($fhp_screw_diameter * 1.2) / 2);
-        }
-    }
+    modular_hose_fan_plate(
+        fan_size,
+        fan_size + 0,
+        $fhp_plate_thickness,
+        plate_screw_hole_inset,
+        $fhp_screw_diameter
+    );
 }
 
 module grommet_120mm_fan() {
