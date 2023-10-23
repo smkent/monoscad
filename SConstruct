@@ -8,7 +8,6 @@ def add_deps_target(target, source, env):
 
 
 env = Environment(
-    CI=os.environ.get("CI", False),
     OPENSCAD=ARGUMENTS.get("openscad", os.environ.get("OPENSCAD", "openscad")),
     BUILDERS={
         "openscad": Builder(
@@ -23,8 +22,6 @@ env = Environment(
     },
 )
 
-env.Alias("printables", ".")
-
 for sc in Glob("*/SConscript", strings=True):
     SConscript(
         sc,
@@ -33,3 +30,7 @@ for sc in Glob("*/SConscript", strings=True):
         duplicate=False,
         exports="env",
     )
+
+env.Default("build/")
+env.Alias("images", Glob("*/images"))
+env.Alias("printables", ["build/", "images"])

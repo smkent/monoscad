@@ -1,9 +1,6 @@
 ---
 name: Build
 
-env:
-  CI: true
-
 on:
   pull_request:
   push:

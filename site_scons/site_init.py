@@ -12,8 +12,8 @@ PRINTABLES_TARGET = "printables"
 DIST_PRINTABLES_ZIP = "dist-printables.zip"
 LIBRARIES_ZIP = "libraries.zip"
 GIF_TARGETS = {
-    "images/readme/demo.gif": "400x300",
-    "images/publish/demo.gif": "1200x900",
+    "images/readme": "400x300",
+    "images/publish": "1200x900",
 }
 
 
@@ -39,10 +39,10 @@ class ModelBuilder:
         self.model_dir = self.src_dir_path.name
 
     def make_all(self):
-        self.add_gif_targets()
+        self.add_image_targets()
         self.add_stl_targets()
         if PRINTABLES_TARGET in BUILD_TARGETS:
-            self.add_dist_zip()
+            self.add_printables_zip_targets()
 
     @functools.cached_property
     def config(self):
@@ -63,7 +63,8 @@ class ModelBuilder:
             stl_data[model_file] = {}
             for stl_file, stl_vals_raw in model_opts.get("stl", {}).items():
                 stl_vals = {
-                    k: v for k, v in zip(model_opts["vars"], stl_vals_raw)
+                    k: v
+                    for k, v in zip(model_opts.get("vars", []), stl_vals_raw)
                 }
                 stl_args = " ".join(
                     [f"-D {k}={v}" for k, v in stl_vals.items()]
@@ -72,26 +73,33 @@ class ModelBuilder:
         return stl_data
 
     @functools.cached_property
-    def gif_data(self):
-        gif_config = self.config.get("gif", {})
-        if not gif_config:
-            return {}
-        gif_data = {
-            "args": [],
-            "camera": gif_config["camera"],
-            "colorscheme": gif_config.get("colorscheme", "DeepOcean"),
-            "delay": gif_config.get("delay", 75),
-            "imgsize": gif_config.get("imgsize", "1200,900"),
-            "model": gif_config["model"],
-        }
-        for stl_raw in gif_config["values"]:
-            stl_vals = {k: v for k, v in zip(gif_config["vars"], stl_raw)}
-            thisdata = []
-            for k, v in stl_vals.items():
-                thisdata.append("-D")
-                thisdata.append(f"{k}={v}")
-            gif_data["args"].append(thisdata)
-        return gif_data
+    def images_data(self):
+        images_config = self.config.get("images", {})
+        data = {}
+        for image_name, images_config in images_config.items():
+            image_args = []
+            for stl_raw in images_config.get("values", [[]]):
+                stl_vals = {
+                    k: v
+                    for k, v in zip(images_config.get("vars", []), stl_raw)
+                }
+                image_args.append(
+                    [
+                        arg
+                        for k, v in stl_vals.items()
+                        for args_list in [["-D", f"{k}={v}"]]
+                        for arg in args_list
+                    ]
+                )
+            data[image_name] = {
+                "camera": images_config.get("camera"),
+                "colorscheme": images_config.get("colorscheme", "DeepOcean"),
+                "delay": images_config.get("delay", 75),
+                "imgsize": images_config.get("imgsize", "1200,900"),
+                "model": images_config["model"],
+                "args": image_args,
+            }
+        return data
 
     @functools.cached_property
     def stl_targets(self):
@@ -114,15 +122,6 @@ class ModelBuilder:
         ]
 
     @functools.cached_property
-    def gif_targets(self):
-        if "gif" in self.config:
-            return [
-                str(self.src_dir_path / gif_path)
-                for gif_path in GIF_TARGETS.keys()
-            ]
-        return None
-
-    @functools.cached_property
     def image_files(self):
         return list(self.src_dir.glob("images/publish/*"))
 
@@ -133,20 +132,23 @@ class ModelBuilder:
                     target=stl_file, source=model_file, OPENSCAD_ARGS=stl_args
                 )
 
-    def add_gif_targets(self):
-        if self.gif_targets:
-            if self.env["CI"]:
-                for target in self.gif_targets:
-                    if not Path(target).exists():
-                        raise Exception(f"Missing: {target}")
-                return
-            self.env.NoClean(
-                self.env.Command(
-                    self.gif_targets, self.model_files, self.make_gif
-                )
+    def add_image_targets(self):
+        image_targets = {
+            f"{self.src_dir}/{image_path}/{image_name}": size
+            for image_name in self.images_data.keys()
+            for image_path, size in GIF_TARGETS.items()
+        }
+        if not image_targets:
+            return
+        self.env.NoClean(
+            self.env.Command(
+                image_targets.keys(),
+                self.model_files,
+                self.make_image,
             )
+        )
 
-    def add_dist_zip(self):
+    def add_printables_zip_targets(self):
         sources = (
             self.model_files
             + self.stl_targets
@@ -202,41 +204,63 @@ class ModelBuilder:
                         continue
                     z.write(str(ss), zdest)
 
-    def make_gif(self, target, source, env):
-        with tempfile.TemporaryDirectory() as td:
-            tdp = Path(td)
-            # Render frames
-            for i, render_args in enumerate(self.gif_data["args"]):
-                run(
-                    [
-                        self.env["OPENSCAD"],
-                        self.src_dir_path / self.gif_data["model"],
-                        f"--colorscheme={self.gif_data['colorscheme']}",
-                        f"--camera={self.gif_data['camera']}",
-                        f"--imgsize={self.gif_data['imgsize']}",
-                        "-o",
-                        tdp / f"image_{i:05d}.png",
-                    ]
-                    + render_args,
-                )
-            for this_target in target:
-                # Render gif
-                run(
-                    (
-                        [
-                            "convert",
-                            "-delay",
-                            str(self.gif_data["delay"]),
-                            "-loop",
-                            "0",
-                            "-resize",
-                            next(
-                                sz
-                                for suffix, sz in GIF_TARGETS.items()
-                                if str(this_target).endswith(suffix)
-                            ),
-                        ]
-                        + sorted(list(tdp.glob("*.png")))
-                        + [str(this_target)]
+    def make_image(self, target, source, env):
+        def _enum_targets():
+            for t in target:
+                yield (
+                    t,
+                    next(
+                        sz
+                        for dir_chunk, sz in GIF_TARGETS.items()
+                        if dir_chunk in str(t)
                     ),
                 )
+
+        def _render_png(image_target, image_data, idx, size=None):
+            render_args = image_data["args"][idx]
+            if image_data.get("camera"):
+                render_args = [
+                    f"--camera={image_data['camera']}"
+                ] + render_args
+            run(
+                [
+                    self.env["OPENSCAD"],
+                    self.src_dir_path / image_data["model"],
+                    f"--colorscheme={image_data['colorscheme']}",
+                    f"--imgsize={size or image_data['imgsize']}",
+                    "-o",
+                    str(image_target),
+                ]
+                + render_args,
+            )
+
+        image_data = self.images_data[target[0].name]
+        image_type = target[0].suffix
+        if image_type == ".png":
+            for image_target, size in _enum_targets():
+                _render_png(
+                    image_target, image_data, 0, size.replace("x", ",")
+                )
+        elif image_type == ".gif":
+            with tempfile.TemporaryDirectory() as td:
+                tdp = Path(td)
+                # Render frames
+                for i, render_args in enumerate(image_data["args"]):
+                    _render_png(tdp / f"image_{i:05d}.png", image_data, i)
+                for image_target, size in _enum_targets():
+                    # Render gif
+                    run(
+                        (
+                            [
+                                "convert",
+                                "-delay",
+                                str(image_data["delay"]),
+                                "-loop",
+                                "0",
+                                "-resize",
+                                size,
+                            ]
+                            + sorted(list(tdp.glob("*.png")))
+                            + [str(image_target)]
+                        ),
+                    )
