@@ -17,6 +17,10 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - name: 🌿 Fetch base branch
+        run: |
+          git fetch origin "${GITHUB_BASE_REF}"
+
       - name: 🛠️ Install tools
         run: |
           sudo apt install -y openscad xvfb
