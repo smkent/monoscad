@@ -29,6 +29,16 @@ def remove_prefix(value: str, prefixes: Union[str, Sequence[str]]) -> str:
     return value
 
 
+def openscad_var_args(stl_vars, vals_raw):
+    def _val_args(k, v):
+        if isinstance(v, str):
+            v = f"'\"{v}\"'"
+        return ["-D", f"{k}={v}"]
+
+    vals = {k: v for k, v in zip(stl_vars, vals_raw)}
+    return [arg for k, v in vals.items() for arg in _val_args(k, v)]
+
+
 class ModelBuilder:
     def __init__(self, env):
         self.env = env
@@ -62,12 +72,8 @@ class ModelBuilder:
         for model_file, model_opts in self.config.get("dist", {}).items():
             stl_data[model_file] = {}
             for stl_file, stl_vals_raw in model_opts.get("stl", {}).items():
-                stl_vals = {
-                    k: v
-                    for k, v in zip(model_opts.get("vars", []), stl_vals_raw)
-                }
                 stl_args = " ".join(
-                    [f"-D {k}={v}" for k, v in stl_vals.items()]
+                    openscad_var_args(model_opts.get("vars", []), stl_vals_raw)
                 )
                 stl_data[model_file][stl_file] = stl_args
         return stl_data
@@ -79,17 +85,8 @@ class ModelBuilder:
         for image_name, images_config in images_config.items():
             image_args = []
             for stl_raw in images_config.get("values", [[]]):
-                stl_vals = {
-                    k: v
-                    for k, v in zip(images_config.get("vars", []), stl_raw)
-                }
                 image_args.append(
-                    [
-                        arg
-                        for k, v in stl_vals.items()
-                        for args_list in [["-D", f"{k}={v}"]]
-                        for arg in args_list
-                    ]
+                    openscad_var_args(images_config.get("vars", []), stl_raw)
                 )
             data[image_name] = {
                 "camera": images_config.get("camera"),
