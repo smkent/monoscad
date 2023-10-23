@@ -86,7 +86,7 @@ class ModelBuilder:
                 ).stdout.splitlines()
                 if fn.endswith(".scad")
             }
-            if not self.src_dir_path.name in dirs:
+            if self.src_dir_path.name not in dirs:
                 return False
             print(
                 f"Including model directory {self.model_dir}"
