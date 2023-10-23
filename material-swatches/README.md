@@ -4,6 +4,8 @@
 
 [Material Swatches][original-model-url], rebuilt in OpenSCAD
 
+![Animated example](images/readme/demo.gif)
+
 # Description
 
 Material Swatches are a handy reference for filament colors and materials! The
