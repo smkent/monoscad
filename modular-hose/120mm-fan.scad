@@ -43,20 +43,19 @@ module __end_customizer_options__() { }
 // Constants
 fan_size = 120;
 plate_screw_hole_inset = 7.5;
-plate_screw_hole_diameter = Screw_Diameter * 1.2;
 plate_size = fan_size + 0;
 
 // Modules
 
-module plate_120mm_fan(connector_diameter) {
+module plate_120mm_fan() {
     color("mintcream", 0.8)
     mirror([0, 0, 1])
-    linear_extrude(height=Plate_Thickness)
+    linear_extrude(height=$fhp_plate_thickness)
     difference() {
         offset(plate_screw_hole_inset)
         offset(-plate_screw_hole_inset)
         square([plate_size, plate_size], center=true);
-        circle(connector_diameter / 2);
+        circle($fh_origin_inner_diameter / 2);
         translate([
             -(fan_size - 2 * plate_screw_hole_inset) / 2,
             -(fan_size - 2 * plate_screw_hole_inset) / 2,
@@ -66,37 +65,71 @@ module plate_120mm_fan(connector_diameter) {
                 mx * (fan_size - 2 * plate_screw_hole_inset),
                 my * (fan_size - 2 * plate_screw_hole_inset),
             ])
-            circle(plate_screw_hole_diameter / 2);
+            circle(($fhp_screw_diameter * 1.2) / 2);
         }
     }
 }
 
-module grommet_120mm_fan(connector_diameter) {
+module grommet_120mm_fan() {
     difference() {
         union() {
-            plate_120mm_fan(Inner_Diameter);
+            plate_120mm_fan();
             color("lightskyblue", 0.8)
-            linear_extrude(height=Grommet_Depth)
-            circle(Grommet_Diameter / 2);
+            linear_extrude(height=$fhp_grommet_depth)
+            circle($fhp_grommet_diameter / 2);
         }
         color("lightskyblue", 0.8)
-        translate([0, 0, -Plate_Thickness])
-        cylinder(Grommet_Depth + Plate_Thickness * 1.001, Inner_Diameter / 2, Grommet_Diameter / 2 - Thickness);
+        translate([0, 0, -$fhp_plate_thickness])
+        cylinder($fhp_grommet_depth + $fhp_plate_thickness * 1.001, $fh_origin_inner_diameter / 2, $fhp_grommet_diameter / 2 - Thickness);
     }
 }
 
-module main() {
-    modular_hose_init(Inner_Diameter, Thickness, Size_Tolerance) {
-        if (Model_Type == -1) {
-            plate_120mm_fan(Inner_Diameter);
-        } else if (Model_Type == 0) {
-            plate_120mm_fan(Inner_Diameter);
+module modular_hose_120mm_fan_part(
+    plate_thickness,
+    screw_diameter,
+    grommet_depth,
+    grommet_diameter
+) {
+    $fhp_plate_thickness = plate_thickness;
+    $fhp_screw_diameter = screw_diameter;
+    $fhp_grommet_depth = grommet_depth;
+    $fhp_grommet_diameter = grommet_diameter;
+    children();
+}
+
+module modular_hose_120mm_fan(
+    inner_diameter=default_inner_diameter,
+    thickness=default_thickness,
+    size_tolerance=default_size_tolerance,
+    model_type=0,
+    connector_type=1,
+    plate_thickness=1.6,
+    screw_diameter=4,
+    grommet_depth=19,
+    grommet_diameter=115
+) {
+    modular_hose_part(inner_diameter, thickness, size_tolerance)
+    modular_hose_120mm_fan_part(plate_thickness, screw_diameter, grommet_depth, grommet_diameter) {
+        if (model_type == -1) {
+            plate_120mm_fan();
+        } else if (model_type == 0) {
+            plate_120mm_fan();
             rotate([0, -90, 0])
-            connector(female=(Connector_Type == 2));
-        } else if (Model_Type == 1) {
-            grommet_120mm_fan(Inner_Diameter);
+            modular_hose_connector(female=(connector_type == 2));
+        } else if (model_type == 1) {
+            grommet_120mm_fan();
         }
     }
 }
 
-main();
+modular_hose_120mm_fan(
+    Inner_Diameter,
+    Thickness,
+    Size_Tolerance,
+    Model_Type,
+    Connector_Type,
+    Plate_Thickness,
+    Screw_Diameter,
+    Grommet_Depth,
+    Grommet_Diameter
+);
