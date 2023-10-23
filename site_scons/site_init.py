@@ -57,8 +57,14 @@ class ModelBuilder:
         self.model_dir = self.src_dir_path.name
 
     def make_all(self):
-        if not self.filter_by_ref:
-            return
+        try:
+            if not self.filter_by_ref:
+                return
+        except subprocess.CalledProcessError as e:
+            print("EXCEPTION", str(e))
+            print("OUT", e.stdout)
+            print("ERR", e.stderr)
+            raise
         self.add_image_targets()
         self.add_stl_targets()
         if PRINTABLES_TARGET in BUILD_TARGETS:
