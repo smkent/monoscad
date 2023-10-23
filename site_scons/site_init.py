@@ -75,21 +75,26 @@ class ModelBuilder:
         prev_ref = self.env.get("PREV_REF")
         if not prev_ref:
             return True
-        dirs = {
-            fn.split(os.sep)[0]
-            for fn in run(
-                ["git", "diff", f"{prev_ref}...@", "--name-only", "--"],
-                quiet=True,
-                capture_output=True,
-                text=True,
-            ).stdout.splitlines()
-        }
-        if not self.src_dir_path.name in dirs:
-            return False
-        print(
-            f"Including model directory {self.model_dir}"
-            f" changed since {prev_ref}"
-        )
+        try:
+            dirs = {
+                fn.split(os.sep)[0]
+                for fn in run(
+                    ["git", "diff", f"{prev_ref}...@", "--name-only", "--"],
+                    quiet=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout.splitlines()
+                if fn.endswith(".scad")
+            }
+            if not self.src_dir_path.name in dirs:
+                return False
+            print(
+                f"Including model directory {self.model_dir}"
+                f" changed since {prev_ref}"
+            )
+        except subprocess.CalledProcessError as e:
+            print(f"Ignoring git diff error: {e}")
+            pass
         return True
 
     @functools.cached_property
