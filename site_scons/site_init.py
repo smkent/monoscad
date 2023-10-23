@@ -29,10 +29,10 @@ def remove_prefix(value: str, prefixes: Union[str, Sequence[str]]) -> str:
     return value
 
 
-def openscad_var_args(stl_vars, vals_raw):
+def openscad_var_args(stl_vars, vals_raw, for_subprocess: bool = False):
     def _val_args(k, v):
         if isinstance(v, str):
-            v = f"'\"{v}\"'"
+            v = f'"{v}"' if for_subprocess else f"'\"{v}\"'"
         return ["-D", f"{k}={v}"]
 
     vals = {k: v for k, v in zip(stl_vars, vals_raw)}
@@ -86,7 +86,11 @@ class ModelBuilder:
             image_args = []
             for stl_raw in images_config.get("values", [[]]):
                 image_args.append(
-                    openscad_var_args(images_config.get("vars", []), stl_raw)
+                    openscad_var_args(
+                        images_config.get("vars", []),
+                        stl_raw,
+                        for_subprocess=True,
+                    )
                 )
             data[image_name] = {
                 "camera": images_config.get("camera"),
