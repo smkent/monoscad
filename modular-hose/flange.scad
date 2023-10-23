@@ -183,7 +183,6 @@ module modular_hose_flange(
     ) {
         flange();
         if (model_type == 0) {
-            rotate([0, -90, 0])
             modular_hose_connector(female=(connector_type == 2));
         } else if (model_type == 1) {
             grommet();

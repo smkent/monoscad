@@ -114,7 +114,6 @@ module modular_hose_120mm_fan(
             plate_120mm_fan();
         } else if (model_type == 0) {
             plate_120mm_fan();
-            rotate([0, -90, 0])
             modular_hose_connector(female=(connector_type == 2));
         } else if (model_type == 1) {
             grommet_120mm_fan();

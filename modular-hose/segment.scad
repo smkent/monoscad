@@ -45,16 +45,14 @@ module modular_hose_segment(
     render_mode=0
 ) {
     modular_hose_part(inner_diameter, thickness, size_tolerance, render_mode) {
-        rotate([0, -90, 0]) {
-            if (connector_type == 0 || connector_type == 1) {
-                translate([connector_type == 0 ? extra_segment_length / 2 : 0, 0, 0])
-                modular_hose_connector(female=false);
-            }
-            if (connector_type == 0 || connector_type == 2) {
-                mirror([1, 0, 0])
-                translate([connector_type == 0 ? extra_segment_length / 2 : 0, 0, 0])
-                modular_hose_connector(female=true);
-            }
+        if (connector_type == 0 || connector_type == 1) {
+            translate([connector_type == 0 ? extra_segment_length / 2 : 0, 0, 0])
+            modular_hose_connector(female=false);
+        }
+        if (connector_type == 0 || connector_type == 2) {
+            mirror([0, 0, 1])
+            translate([connector_type == 0 ? extra_segment_length / 2 : 0, 0, 0])
+            modular_hose_connector(female=true);
         }
         color("slategray", 0.8)
         if (extra_segment_length) {
