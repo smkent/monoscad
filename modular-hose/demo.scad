@@ -9,8 +9,7 @@
 
 include <modular-hose-library.scad>;
 use <segment.scad>;
-use <120mm-fan.scad>;
-use <flange.scad>;
+use <magnetic-parts.scad>;
 
 Inner_Diameter = 100; // [20:1:100]
 
@@ -32,20 +31,35 @@ module center_demo(max_x, max_y) {
     children();
 }
 
+module stack_parts() {
+    for (i = [0:1:1]) {
+        mirror([0, 0, i])
+        translate([0, 0, Inner_Diameter / 4])
+        children(i);
+    }
+}
+
 module modular_hose_demo(id) {
-    place_part(1, 0)
+    place_part(0, 0)
     modular_hose_segment(id);
 
-    place_part(1, 1)
+    place_part(0, 1)
     modular_hose_part(id)
     modular_hose_connector();
 
-    place_part(0, 0)
-    modular_hose_120mm_fan(id, model_type=0, connector_type=1);
+    place_part(1, 0)
+    stack_parts() {
+        modular_hose_magnetic_part(id, model_type=1, plate_type=1, grommet_diameter=101.6, magnet_holes=true, screw_holes=true);
+        modular_hose_magnetic_part(id, model_type=0, connector_type=1, plate_type=1, grommet_diameter=101.6, magnet_holes=true, screw_holes=false);
+    }
 
-    place_part(0, 1)
-    modular_hose_flange(id, model_type=0, connector_type=2, magnet_holes=1, screw_holes=1);
+    place_part(1, 1)
+    stack_parts() {
+        modular_hose_magnetic_part(id, model_type=1, plate_type=0, grommet_diameter=101.6, magnet_holes=true, screw_holes=true);
+        modular_hose_magnetic_part(id, model_type=0, connector_type=2, plate_type=0, grommet_diameter=101.6, magnet_holes=true, screw_holes=false);
+    }
 }
 
+mirror([1, 0, 0])
 center_demo(1, 1)
 modular_hose_demo(Inner_Diameter);
