@@ -3,6 +3,6 @@
 *.stl
 *.zip
 .sconsign.dblite
-*/build
+build/
 !*/config.json
 !_template/*.json
