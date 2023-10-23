@@ -27,7 +27,7 @@ This prints upside down without support.
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
 
-[printables-badge]: /utils/printables-badge.png
+[printables-badge]: /_static/printables-badge.png
 [printables-model]: https://www.printables.com/model/584616
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
-[license-badge]: /utils/license-badge-cc-by-sa-4.0.svg
+[license-badge]: /_static/license-badge-cc-by-sa-4.0.svg

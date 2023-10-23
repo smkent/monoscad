@@ -33,8 +33,8 @@ and this remix use the [MIT License][license].
 [gridfinity-rebuilt-openscad]: https://github.com/kennetek/gridfinity-rebuilt-openscad
 [gridfinity]: https://www.youtube.com/watch?v=ra_9zU-mnl8
 [license]: LICENSE
-[license-badge]: /utils/license-badge-mit.svg
+[license-badge]: /_static/license-badge-mit.svg
 [material-swatches]: https://www.printables.com/model/2256-material-swatches
-[printables-badge]: /utils/printables-badge.png
+[printables-badge]: /_static/printables-badge.png
 [printables-model]: https://www.printables.com/model/587675
 [v1]: https://www.printables.com/model/557060

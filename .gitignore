@@ -2,5 +2,7 @@
 *.json
 *.stl
 *.zip
+.sconsign.dblite
+*/build
 !*/config.json
-!template/*.json
+!_template/*.json

@@ -45,6 +45,6 @@ Third party components have their own licenses.
 [honeycomb-library-openscad-upstream]: https://printables.com/model/263718
 [honeycomb-library-openscad]: https://github.com/smkent/honeycomb-openscad
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
-[license-badge]: /utils/license-badge-cc-by-sa-4.0.svg
-[printables-badge]: /utils/printables-badge.png
+[license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
+[printables-badge]: /_static/printables-badge.png
 [printables-model]: https://www.printables.com/model/605854

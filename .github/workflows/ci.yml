@@ -1,6 +1,9 @@
 ---
 name: Build
 
+env:
+  CI: true
+
 on:
   pull_request:
   push:
@@ -14,6 +17,23 @@ jobs:
     steps:
       - name: 💾 Check out repository
         uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: 🛠️ Install tools
+        run: |
+          sudo apt install -y openscad xvfb
+          pip install scons
+
+      - name: 🏗️ Build
+        run: xvfb-run scons
+
+      - name: 📦 Save artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Results
+          path: |
+            */build/*.zip
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
