@@ -7,6 +7,7 @@ A replacement handle for a toy shopping basket
 
 ![Photo of original handle](images/readme/original-handle.jpg)
 ![Photo of shopping basket](images/readme/basket.jpg)
+![Model render](images/readme/render.png)
 ![Photo of printed handle](images/readme/printed-handle.jpg)
 
 # Description
