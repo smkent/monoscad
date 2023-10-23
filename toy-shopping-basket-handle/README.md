@@ -31,6 +31,6 @@ Third party components have their own licenses.
 
 [bosl]: https://github.com/revarbat/BOSL
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
-[license-badge]: /utils/license-badge-cc-by-sa-4.0.svg
-[printables-badge]: /utils/printables-badge.png
+[license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
+[printables-badge]: /_static/printables-badge.png
 [printables-model]: https://www.printables.com/model/614937
