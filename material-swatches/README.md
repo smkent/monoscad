@@ -1,5 +1,6 @@
 # Material Swatches rebuilt in OpenSCAD (remix)
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC0-1.0 license][license-badge]][license]
 
 [Material Swatches][original-model-url], rebuilt in OpenSCAD
@@ -28,3 +29,5 @@ Both the original model and this remix are licensed under
 [license-badge]: /_static/license-badge-cc0-1.0.svg
 [license]: http://creativecommons.org/publicdomain/zero/1.0/
 [original-model-url]: https://printables.com/model/2256
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/623563
