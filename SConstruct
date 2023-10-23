@@ -23,11 +23,13 @@ env = Environment(
     },
 )
 
+env.Alias("printables", ".")
+
 for sc in Glob("*/SConscript", strings=True):
     SConscript(
         sc,
         src_dir=Path(sc).parent,
-        variant_dir=Path(sc).parent / "build",
+        variant_dir="build" / Path(sc).parent,
         duplicate=False,
         exports="env",
     )
