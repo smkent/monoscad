@@ -10,7 +10,7 @@
 include <modular-hose-library.scad>;
 
 /* [Model Options] */
-Model_Type = 0; // [-1: Flange plate only, 0: Connector, 1: Grommet]
+Model_Type = 0; // [0: Connector, 1: Grommet]
 Connector_Type = 1; // [1: Male, 2: Female]
 
 Magnet_Holes = true;
@@ -133,28 +133,6 @@ module grommet() {
     }
 }
 
-module modular_hose_flange_part(
-    plate_base_thickness,
-    hole_count,
-    magnet_holes,
-    magnet_diameter,
-    magnet_thickness,
-    screw_holes,
-    screw_diameter,
-    grommet_depth,
-) {
-    $fhp_plate_base_thickness = plate_base_thickness;
-    $fhp_hole_count = hole_count;
-    $fhp_magnet_holes = magnet_holes;
-    $fhp_magnet_diameter = magnet_diameter;
-    $fhp_magnet_thickness = magnet_thickness;
-    $fhp_screw_holes = screw_holes;
-    $fhp_screw_diameter = screw_diameter * 1.1;
-    $fhp_screw_hole_thickness = screw_diameter * 1.1;
-    $fhp_grommet_depth = grommet_depth;
-    children();
-}
-
 module modular_hose_flange(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
@@ -170,17 +148,17 @@ module modular_hose_flange(
     screw_diameter=4,
     grommet_depth=19,
 ) {
-    modular_hose_part(inner_diameter, thickness, size_tolerance)
-    modular_hose_flange_part(
-        plate_base_thickness,
-        hole_count,
-        magnet_holes,
-        magnet_diameter,
-        magnet_thickness,
-        screw_holes,
-        screw_diameter,
-        grommet_depth
-    ) {
+    $fhp_plate_base_thickness = plate_base_thickness;
+    $fhp_hole_count = hole_count;
+    $fhp_magnet_holes = magnet_holes;
+    $fhp_magnet_diameter = magnet_diameter;
+    $fhp_magnet_thickness = magnet_thickness;
+    $fhp_screw_holes = screw_holes;
+    $fhp_screw_diameter = screw_diameter * 1.1;
+    $fhp_screw_hole_thickness = screw_diameter * 1.1;
+    $fhp_grommet_depth = grommet_depth;
+
+    modular_hose_part(inner_diameter, thickness, size_tolerance) {
         flange();
         if (model_type == 0) {
             modular_hose_connector(female=(connector_type == 2));

@@ -27,10 +27,6 @@ module __end_customizer_options__() { }
 
 // Modules
 
-module modular_hose_template_part() {
-    children();
-}
-
 module modular_hose_template(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,

@@ -33,17 +33,17 @@ module center_demo(max_x, max_y) {
 }
 
 module modular_hose_demo(id) {
-    place_part(0, 0)
+    place_part(1, 0)
     modular_hose_segment(id);
 
-    place_part(0, 1)
+    place_part(1, 1)
     modular_hose_part(id)
     modular_hose_connector();
 
-    place_part(1, 0)
+    place_part(0, 0)
     modular_hose_120mm_fan(id, model_type=0, connector_type=1);
 
-    place_part(1, 1)
+    place_part(0, 1)
     modular_hose_flange(id, model_type=0, connector_type=2, magnet_holes=1, screw_holes=1);
 }
 
