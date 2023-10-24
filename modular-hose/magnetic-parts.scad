@@ -150,8 +150,8 @@ module fan_plate(
                 translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter])
                 cylinder($fhp_screw_diameter + 0.001, $fhp_screw_diameter / 2, $fhp_screw_diameter);
             } else if ($fhp_screw_hole_top == 2) {
-                translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter * 2/3])
-                linear_extrude(height=$fhp_screw_diameter * 2/3 + 0.001)
+                translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter])
+                linear_extrude(height=$fhp_screw_diameter + 0.001)
                 circle($fhp_screw_diameter);
             }
         }
