@@ -104,11 +104,8 @@ module fan_screw_placement_selection() {
     }
 }
 
-module fan_plate(
-    solid=false
-) {
+module plate_body(solid=false) {
     plate_size = $fhp_fan_size + 0;
-    color("mintcream", 0.8)
     difference() {
         difference() {
             if ($fhp_plate_type == 1) {
@@ -172,6 +169,30 @@ module fan_plate(
     }
 }
 
+module plate_connector_support(height) {
+    rotate_extrude(angle=360)
+    translate([$fh_origin_inner_radius, 0])
+    difference() {
+        square([height / 2, height]);
+        translate([$fh_thickness, 0])
+        translate([height * 2, 0, 0])
+        circle(height * 2);
+    }
+}
+
+module plate_full(solid=false) {
+    color("mintcream", 0.8) {
+        if ($fhp_model_type == 0) {
+            connector_support_height = $fh_origin_inner_radius / 10;
+            plate_connector_support(connector_support_height);
+            translate([0, 0, connector_support_height])
+            plate_body();
+        } else {
+            plate_body();
+        }
+    }
+}
+
 module grommet_body() {
     color("lightskyblue", 0.8)
     linear_extrude(height=$fhp_grommet_depth)
@@ -228,7 +249,7 @@ module modular_hose_magnetic_part(
         difference() {
             union() {
                 mirror([0, 0, 1])
-                fan_plate(solid=(model_type == 1));
+                plate_full(solid=(model_type == 1));
                 if (model_type == 0) {
                     modular_hose_connector(female=(connector_type == 2));
                 } else if (model_type == 1) {
