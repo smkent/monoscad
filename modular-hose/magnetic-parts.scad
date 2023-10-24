@@ -44,13 +44,13 @@ Grommet_Diameter_Adjustment = 0; // [0: No Adjustment, 1: Add Connector Thicknes
 
 /* [Magnets] */
 Magnet_Holes = true;
-Magnet_Diameter = 8; // [2:1:15]
+Magnet_Diameter = 8; // [2:0.1:15]
 Magnet_Thickness = 3; // [1:0.1:5]
 
 /* [Screws] */
 Screw_Holes = true;
 Screw_Diameter = 4; // [3:1:8]
-Screw_Hole_Chamfer = true;
+Screw_Hole_Top = 2; // [0: None, 1: Chamfer, 2: Inset]
 
 /* [Advanced Size Adjustment] */
 
@@ -144,10 +144,24 @@ module fan_plate(
                 }
             }
         }
-        if ($fhp_screw_holes && $fhp_screw_hole_chamfer) {
-            translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter])
+        if ($fhp_screw_holes) {
             fan_screw_placement_selection()
-            cylinder($fhp_screw_diameter + 0.001, $fhp_screw_diameter / 2, $fhp_screw_diameter);
+            if ($fhp_screw_hole_top == 1) {
+                translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter])
+                cylinder($fhp_screw_diameter + 0.001, $fhp_screw_diameter / 2, $fhp_screw_diameter);
+            } else if ($fhp_screw_hole_top == 2) {
+                translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter])
+                difference() {
+                    linear_extrude(height=$fhp_screw_diameter + 0.001)
+                    circle($fhp_screw_diameter);
+                    linear_extrude(height=0.2)
+                    for (mx = [0:1:1]) {
+                        mirror([mx, 0])
+                        translate([$fhp_screw_diameter*1.1, 0])
+                        square([$fhp_screw_diameter, $fhp_screw_diameter*2], center=true);
+                    }
+                }
+            }
         }
         if ($fhp_magnet_holes) {
             circle_even_placement(8, stagger=true)
@@ -190,7 +204,7 @@ module modular_hose_magnetic_part(
     magnet_thickness=3,
     screw_holes=true,
     screw_diameter=4,
-    screw_hole_chamfer=true,
+    screw_hole_top=0,
     grommet_depth=19,
     grommet_diameter=115,
     grommet_diameter_adjustment=0
@@ -206,7 +220,7 @@ module modular_hose_magnetic_part(
     $fhp_magnet_thickness = magnet_thickness;
     $fhp_screw_holes = screw_holes;
     $fhp_screw_diameter = screw_diameter;
-    $fhp_screw_hole_chamfer = screw_hole_chamfer;
+    $fhp_screw_hole_top = screw_hole_top;
     $fhp_grommet_depth = grommet_depth;
     $fhp_grommet_diameter = grommet_diameter;
     $fhp_grommet_diameter_adjustment = grommet_diameter_adjustment ? thickness : 0;
@@ -244,7 +258,7 @@ modular_hose_magnetic_part(
     Magnet_Thickness,
     Screw_Holes,
     Screw_Diameter,
-    Screw_Hole_Chamfer,
+    Screw_Hole_Top,
     Grommet_Depth,
     Grommet_Diameter,
     Grommet_Diameter_Adjustment
