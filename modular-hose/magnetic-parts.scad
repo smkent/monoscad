@@ -82,7 +82,7 @@ module circle_even_placement(count, stagger=false) {
     mdiff = $fhp_fan_size - $fhp_grommet_diameter;
     for (rot = [0:360/count:360]) {
         rotate([0, 0, rot + (stagger ? 360 / count / 2 : 0)])
-        translate([($fh_origin_inner_diameter + $fhp_magnet_diameter + 3) / 2, 0, 0])
+        translate([1 + ($fh_origin_inner_diameter + $fhp_magnet_diameter + 3) / 2, 0, 0])
         children();
     }
 }
