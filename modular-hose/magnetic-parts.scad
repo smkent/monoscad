@@ -151,8 +151,16 @@ module fan_plate(
                 cylinder($fhp_screw_diameter + 0.001, $fhp_screw_diameter / 2, $fhp_screw_diameter);
             } else if ($fhp_screw_hole_top == 2) {
                 translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter])
-                linear_extrude(height=$fhp_screw_diameter + 0.001)
-                circle($fhp_screw_diameter);
+                difference() {
+                    linear_extrude(height=$fhp_screw_diameter + 0.001)
+                    circle($fhp_screw_diameter);
+                    linear_extrude(height=0.2)
+                    for (mx = [0:1:1]) {
+                        mirror([mx, 0])
+                        translate([$fhp_screw_diameter*1.1, 0])
+                        square([$fhp_screw_diameter, $fhp_screw_diameter*2], center=true);
+                    }
+                }
             }
         }
         if ($fhp_magnet_holes) {
