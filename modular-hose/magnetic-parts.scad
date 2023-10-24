@@ -119,7 +119,7 @@ module fan_plate(
                         knurl_width=7,
                         knurl_height=5,
                         knurl_depth=knurl_depth,
-                        bevel=3,
+                        bevel=$fhp_plate_thickness / 3,
                         smooth=50
                     );
                 } else {
