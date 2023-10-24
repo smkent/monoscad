@@ -93,7 +93,13 @@ module fan_screw_placement_selection() {
         children();
     } else {
         circle_even_placement(4, stagger=true)
-        translate([max(0, ($fhp_grommet_diameter - $fh_origin_inner_diameter) / 2), 0, 0])
+        translate([
+            max(0,
+                ($fhp_grommet_diameter - $fh_origin_inner_diameter) / 2
+            ) - $fhp_screw_diameter / 2,
+            0,
+            0
+        ])
         children();
     }
 }
