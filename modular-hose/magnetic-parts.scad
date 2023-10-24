@@ -8,6 +8,7 @@
  */
 
 include <modular-hose-library.scad>;
+use <knurled-openscad/knurled.scad>;
 
 /* [Model Options] */
 Model_Type = 0; // [-1: Plate only, 0: Connector, 1: Grommet]
@@ -27,6 +28,9 @@ Plate_Screw_Hole_Inset = 7.5; // [1:0.1:20]
 
 // Total plate thickness. Must be greater than Magnet Thickness if magnets are enabled.
 Plate_Thickness = 4.0; // [0.8:0.2:10]
+
+// Enable plate edge knurling
+Plate_Knurled = true;
 
 /* [Grommet] */
 // Depth of grommet ring
@@ -100,15 +104,31 @@ module fan_plate(
     plate_size = $fhp_fan_size + 0;
     color("mintcream", 0.8)
     difference() {
-        linear_extrude(height=$fhp_plate_thickness)
         difference() {
             if ($fhp_plate_type == 1) {
+                linear_extrude(height=$fhp_plate_thickness)
                 offset($fhp_plate_screw_hole_inset)
                 offset(-$fhp_plate_screw_hole_inset)
                 square([plate_size, plate_size], center=true);
             } else {
-                circle(plate_size / 2 + $fhp_magnet_diameter);
+                if ($fhp_plate_knurled) {
+                    knurl_depth = 1.5;
+                    knurled_cylinder(
+                        $fhp_plate_thickness,
+                        plate_size + $fhp_magnet_diameter * 2 + knurl_depth,
+                        knurl_width=7,
+                        knurl_height=5,
+                        knurl_depth=knurl_depth,
+                        bevel=3,
+                        smooth=50
+                    );
+                } else {
+                    linear_extrude(height=$fhp_plate_thickness)
+                    circle(plate_size / 2 + $fhp_magnet_diameter);
+                }
             }
+            translate([0, 0, -0.01])
+            linear_extrude(height=$fhp_plate_thickness + 0.02)
             if (!solid) {
                 circle($fh_origin_inner_diameter / 2);
             }
@@ -157,6 +177,7 @@ module modular_hose_magnetic_part(
     plate_type=0,
     plate_screw_hole_inset=7.5,
     plate_thickness=4.0,
+    plate_knurled=true,
     magnet_holes=true,
     magnet_diameter=8,
     magnet_thickness=3,
@@ -172,6 +193,7 @@ module modular_hose_magnetic_part(
     $fhp_plate_type = plate_type;
     $fhp_plate_screw_hole_inset = plate_screw_hole_inset;
     $fhp_plate_thickness = plate_thickness;
+    $fhp_plate_knurled = plate_knurled;
     $fhp_magnet_holes = magnet_holes;
     $fhp_magnet_diameter = magnet_diameter;
     $fhp_magnet_thickness = magnet_thickness;
@@ -209,6 +231,7 @@ modular_hose_magnetic_part(
     Plate_Type,
     Plate_Screw_Hole_Inset,
     Plate_Thickness,
+    Plate_Knurled,
     Magnet_Holes,
     Magnet_Diameter,
     Magnet_Thickness,

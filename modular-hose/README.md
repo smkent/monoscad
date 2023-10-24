@@ -17,6 +17,8 @@ This model is licensed under [Creative Commons (4.0 International License) Attri
 This model depends on:
 
 * [The Belfry OpenSCAD Library][bosl]
+* [Knurled Surface Library for OpenSCAD][knurled-openscad], based on [aubenc's
+  library][knurled-openscad-upstream]
 
 Third party components have their own licenses.
 
@@ -24,3 +26,5 @@ Third party components have their own licenses.
 [bosl]: https://github.com/revarbat/BOSL
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
+[knurled-openscad]: https://github.com/smkent/knurled-openscad
+[knurled-openscad-upstream]: https://www.thingiverse.com/thing:32122
