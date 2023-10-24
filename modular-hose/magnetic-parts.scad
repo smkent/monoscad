@@ -128,13 +128,14 @@ module fan_plate(
                 }
             }
             translate([0, 0, -0.01])
-            linear_extrude(height=$fhp_plate_thickness + 0.02)
-            if (!solid) {
-                circle($fh_origin_inner_diameter / 2);
-            }
-            if ($fhp_screw_holes) {
-                fan_screw_placement_selection()
-                circle(($fhp_screw_diameter * 1.2) / 2);
+            linear_extrude(height=$fhp_plate_thickness + 0.02) {
+                if (!solid) {
+                    circle($fh_origin_inner_diameter / 2);
+                }
+                if ($fhp_screw_holes) {
+                    fan_screw_placement_selection()
+                    circle(($fhp_screw_diameter * 1.2) / 2);
+                }
             }
         }
         if ($fhp_screw_holes && $fhp_screw_hole_chamfer) {
