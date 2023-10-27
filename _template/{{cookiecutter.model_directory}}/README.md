@@ -5,6 +5,8 @@
 [![{{ cookiecutter.original_model_license }} license][license-badge]][license]
 
 {{ cookiecutter.description }}
+
+![Model render](images/readme/demo.png)
 {% if remix %}
 ## Attribution and License
 
