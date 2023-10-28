@@ -47,7 +47,7 @@ Top_Diameter_Proportion = 1.37; // [1.2:0.01:1.5]
 Thickness = 4;
 
 // Body hole diameter (mm)
-Hole_Diameter = 5; // [1:0.1:10]
+Hole_Diameter = 4.5; // [1:0.1:10]
 
 // Body hole spacing (mm)
 Hole_Spacing = 1.6; // [0.8:0.1:5]
@@ -211,12 +211,16 @@ module body_holes() {
 }
 
 module body() {
-    render()
+    render(convexity=5)
     difference() {
-        linear_extrude(height=outer_height)
-        difference() {
-            circle(body_radius);
-            circle(body_radius - Thickness);
+        union() {
+            linear_extrude(height=outer_height)
+            difference() {
+                circle(body_radius);
+                circle(body_radius - Thickness);
+            }
+            translate([0, 0, outer_height - (body_radius - Thickness)])
+            cylinder(body_radius - Thickness, body_radius - Thickness, body_radius - Thickness);
         }
         body_holes();
     }
@@ -246,6 +250,9 @@ module top_holes() {
             hole_cut(top_hole_radius, Thickness * 4);
         }
     }
+
+    translate([0, 0, -Thickness - 0.01])
+    cylinder(body_radius - Thickness + 0.01, body_radius - Thickness, 0);
 }
 
 module top_mushroom_shape() {
@@ -255,6 +262,7 @@ module top_mushroom_shape() {
     union() {
         square([body_diameter / 2, Thickness]);
         translate([body_diameter / 2, 0])
+        hull()
         intersection() {
             difference() {
                 translate([0, -top_height + Thickness])
@@ -299,8 +307,8 @@ module top_winged() {
 
 
 module top() {
-    translate([0, 0, outer_height - Thickness])
     difference() {
+        translate([0, 0, outer_height - Thickness])
         if (Top_Style == 0) {
             rounded_circular_grip(top_diameter / 2);
         } else if (Top_Style == 1) {
@@ -308,7 +316,6 @@ module top() {
         } else if (Top_Style == 2) {
             top_winged();
         }
-        top_holes();
     }
     if (Top_Style != 2) {
         foot_height = (body_height + Thickness) - Drain_Depth;
@@ -389,11 +396,15 @@ module bottom() {
 }
 
 module tub_drain_hair_catcher() {
-    union() {
-        body();
-        top();
-        bottom();
+    difference() {
+        union() {
+            body();
+            top();
+        }
+        translate([0, 0, outer_height - Thickness])
+        top_holes();
     }
+    bottom();
 }
 
 module orient_model() {
