@@ -12,4 +12,4 @@ This model is licensed under [Creative Commons (4.0 International License) Attri
 
 
 [license]: http://creativecommons.org/licenses/by/4.0/
-[license-badge]: /utils/license-badge-cc-by-4.0.svg
+[license-badge]: /_static/license-badge-cc-by-4.0.svg
