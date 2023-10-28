@@ -4,6 +4,7 @@
 
 End cap for keyboard tray slide
 
+![Photo](images/readme/photo.jpg)
 ![Model render](images/readme/demo.png)
 
 ## License
