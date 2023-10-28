@@ -5,6 +5,8 @@
 A flexible and segmented modular hose that can be used as ducts or with a vacuum
 
 ![Model renders](images/readme/demo.png)
+![Photo of multiple segment sizes](images/readme/1.jpg)
+![Photo of magnetic base and connector, attached](images/readme/2.jpg)
 
 ## Setup
 
