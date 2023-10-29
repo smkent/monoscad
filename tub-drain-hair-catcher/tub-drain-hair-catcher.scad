@@ -16,7 +16,7 @@ Print_Supports = false;
 Top_Style = "winged"; // [winged: Winged, flat: Flat]
 
 // Flat is the default. Angled makes printing easier when the model is upside down.
-Bottom_Style = 0; // [0: Flat, 1: Angled]
+Bottom_Style = "flat"; // [flat: Flat, angled: Angled]
 
 /* [Size] */
 // All units in millimeters
@@ -98,7 +98,7 @@ function how_many_fit_around(d, unit_size) = (
 function body_max_holes_vertical() = (
     floor(how_many_fit(
         body_height - (
-            Bottom_Style == 1
+            Bottom_Style == "angled"
                 ? (bottom_radius - body_radius)
                 : 0
         ),
@@ -118,7 +118,7 @@ function body_hole_vertical_adjust() = (
             )
         )
         + (
-            Bottom_Style == 1
+            Bottom_Style == "angled"
                 ? 1 * (bottom_radius - body_radius) - Thickness / 2
                 : 0
         )
@@ -317,7 +317,7 @@ module bottom_holes() {
     for (ang = [0:360 / (bottom_hole_count - 1):360 - 0.1]) {
         rotate([0, 0, ang])
         translate([bottom_hole_placement(), 0, 0]) {
-            if (Bottom_Style == 1) {
+            if (Bottom_Style == "angled") {
                 translate([0, 0, Thickness])
                 rotate([90, 0, 0])
                 translate([0, 0, -bottom_hole_radius])
@@ -343,7 +343,7 @@ module feet() {
 
 module bottom_shape() {
     rotate_extrude(angle=360)
-    if (Bottom_Style == 0) {
+    if (Bottom_Style == "flat") {
             rounded_circular_grip_shape(bottom_radius, body_radius);
     } else {
         difference() {

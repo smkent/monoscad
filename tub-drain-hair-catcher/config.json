@@ -3,9 +3,9 @@
         "tub-drain-hair-catcher.scad": {
             "vars": ["Print_Orientation", "Top_Style", "Bottom_Style"],
             "stl": {
-                "tub-drain-hair-catcher.stl": [0, 2, 0 ],
-                "tub-drain-hair-catcher-flat-top-botttom.stl": [1, 0, 0],
-                "tub-drain-hair-catcher-flat-top-angled-bottom.stl": [1, 0, 1]
+                "tub-drain-hair-catcher.stl": [0, "winged", 0],
+                "tub-drain-hair-catcher-flat-top-botttom.stl": [1, "flat", 0],
+                "tub-drain-hair-catcher-flat-top-angled-bottom.stl": [1, "flat", 1]
             }
         }
     },
