@@ -8,6 +8,9 @@
 /* [Rendering Options] */
 Print_Orientation = true;
 
+// Whether or not to add supports (for Winged top style only)
+Include_Supports = false;
+
 /* [Model Options] */
 Top_Style = 2; // [0: Flat, 1: Rounded, 2: Winged]
 
@@ -72,6 +75,8 @@ body_height = outer_height - Thickness * 2;
 bottom_radius = Drain_Diameter / 2;
 top_diameter = Drain_Diameter * Top_Diameter_Proportion;
 top_height = outer_height - Drain_Depth;
+print_supports_offset = 0.2;
+top_winged_wing_count = 8;
 
 // Functions
 
@@ -293,12 +298,11 @@ module top_wing_cut(radius, cut_depth) {
 }
 
 module top_winged() {
-    wing_count = 8;
     difference() {
         rotate_extrude(angle=360)
         top_mushroom_shape();
 
-        for (rot = [0:360 / wing_count:360 - 0.1]) {
+        for (rot = [0:360 / top_winged_wing_count:360 - 0.1]) {
             rotate([0, 0, rot])
             top_wing_cut(top_diameter / 2, Thickness * 8);
         }
@@ -417,10 +421,77 @@ module orient_model() {
     }
 }
 
-module main() {
-    orient_model()
-    tub_drain_hair_catcher();
+module print_support_winged_top_shape() {
+    translate([-top_diameter / 2, 0])
+    intersection() {
+        translate([0, -Thickness * 2])
+        square([top_diameter, Thickness * 4]);
+        rotate([0, 0, 360 / top_winged_wing_count / 2])
+        projection(cut=false)
+        difference() {
+            translate([0, 0, Above_Drain_Height - Thickness])
+            top_winged();
+            translate([0, 0, Thickness / 8])
+            linear_extrude(height=outer_height)
+            square(top_diameter * 2, center=true);
+        }
+    }
 }
 
-color("greenyellow", 0.8)
+module print_supports() {
+    if (Top_Style == 2) {
+        for (rot = [0:360 / top_winged_wing_count:360 - 0.1]) {
+            rotate([0, 0, rot + 360 / top_winged_wing_count / 2])
+            difference() {
+                // Support structure
+                translate([top_diameter / 2, 0, 0])
+                hull() {
+                    slop = 0.01;
+                    linear_extrude(height=slop)
+                    translate([Thickness, 0])
+                    scale([2, 2])
+                    print_support_winged_top_shape();
+                    translate([0, 0, Drain_Depth + 1])
+                    linear_extrude(height=slop)
+                    print_support_winged_top_shape();
+                }
+                // Support top cutout for model
+                translate([0, 0, Drain_Depth - print_supports_offset])
+                hull()
+                for (tx = [0:1:1]) {
+                    translate([tx * 2, 0, 0])
+                    translate([top_diameter / 2, 0, 0])
+                    scale([1, 1, 1])
+                    translate([-top_diameter / 2, 0, 0])
+                    intersection() {
+                        linear_extrude(height=Thickness)
+                        translate([0, -Thickness * 2])
+                        square([top_diameter, Thickness * 4]);
+                        rotate([0, 0, 360 / top_winged_wing_count / 2])
+                        translate([0, 0, Above_Drain_Height - Thickness])
+                        top_winged();
+                    }
+                }
+            }
+        }
+        // Bed plate brim for supports
+        linear_extrude(height=0.4)
+        difference() {
+            circle(top_diameter / 2 + Thickness);
+            circle(bottom_radius + Thickness / 2);
+        }
+    }
+}
+
+module main() {
+    orient_model() {
+        color("greenyellow", 0.8)
+        tub_drain_hair_catcher();
+        color("gray", 0.6)
+        if (Include_Supports) {
+            print_supports();
+        }
+    }
+}
+
 main();
