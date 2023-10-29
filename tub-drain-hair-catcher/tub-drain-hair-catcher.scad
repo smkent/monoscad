@@ -6,12 +6,17 @@
  */
 
 /* [Rendering Options] */
+// Orient for printing (orientation varies by top style)
 Print_Orientation = true;
 
-/* [Model Options] */
-Top_Style = 2; // [0: Flat, 1: Rounded, 2: Winged]
+// Add print supports (for Winged top style only)
+Print_Supports = false;
 
-Bottom_Style = 0; // [0: Flat, 1: Angled]
+/* [Model Options] */
+Top_Style = "winged"; // [winged: Winged, flat: Flat]
+
+// Flat is the default. Angled makes printing easier when the model is upside down.
+Bottom_Style = "flat"; // [flat: Flat, angled: Angled]
 
 /* [Size] */
 // All units in millimeters
@@ -33,7 +38,7 @@ Stagger_Body_Holes = true;
 
 Top_Screw_Hole_Chamfer = true;
 
-// Add riser feet on the bottom
+// Add riser feet on the bottom (does not account for drain depth)
 Feet = false;
 
 /* [Advanced Size Options] */
@@ -72,6 +77,8 @@ body_height = outer_height - Thickness * 2;
 bottom_radius = Drain_Diameter / 2;
 top_diameter = Drain_Diameter * Top_Diameter_Proportion;
 top_height = outer_height - Drain_Depth;
+print_supports_offset = 0.2;
+top_winged_wing_count = 8;
 
 // Functions
 
@@ -91,7 +98,7 @@ function how_many_fit_around(d, unit_size) = (
 function body_max_holes_vertical() = (
     floor(how_many_fit(
         body_height - (
-            Bottom_Style == 1
+            Bottom_Style == "angled"
                 ? (bottom_radius - body_radius)
                 : 0
         ),
@@ -111,7 +118,7 @@ function body_hole_vertical_adjust() = (
             )
         )
         + (
-            Bottom_Style == 1
+            Bottom_Style == "angled"
                 ? 1 * (bottom_radius - body_radius) - Thickness / 2
                 : 0
         )
@@ -136,35 +143,6 @@ module rounded_circular_grip_shape(radius, hole_radius=0) {
 module rounded_circular_grip(radius, hole_radius=0) {
     rotate_extrude(angle=360)
     rounded_circular_grip_shape(radius, hole_radius=0);
-}
-
-module raised_circular_grip(radius, hole_radius=0) {
-    rotate_extrude(angle=360)
-    difference() {
-        hull() {
-            square([Thickness / 2, Thickness / 2]);
-            translate([0, Thickness / 2]) {
-                scale([radius - Thickness/2, Thickness / 2 * 4])
-                difference() {
-                    circle(1);
-                    translate([0, -0.5])
-                    square([2, 1], center=true);
-                    translate([-1, 0])
-                    square([1, 1]);
-                }
-
-                translate([radius - Thickness / 2, 0])
-                difference() {
-                    circle(Thickness / 2);
-                    translate([-Thickness / 2, 0])
-                    square([Thickness, Thickness]);
-                }
-            }
-        }
-        if (hole_radius > 0) {
-            square([hole_radius, Thickness]);
-        }
-    }
 }
 
 module rounded_foot(x=10, y=5, z=4) {
@@ -293,12 +271,11 @@ module top_wing_cut(radius, cut_depth) {
 }
 
 module top_winged() {
-    wing_count = 8;
     difference() {
         rotate_extrude(angle=360)
         top_mushroom_shape();
 
-        for (rot = [0:360 / wing_count:360 - 0.1]) {
+        for (rot = [0:360 / top_winged_wing_count:360 - 0.1]) {
             rotate([0, 0, rot])
             top_wing_cut(top_diameter / 2, Thickness * 8);
         }
@@ -309,15 +286,13 @@ module top_winged() {
 module top() {
     difference() {
         translate([0, 0, outer_height - Thickness])
-        if (Top_Style == 0) {
+        if (Top_Style == "flat") {
             rounded_circular_grip(top_diameter / 2);
-        } else if (Top_Style == 1) {
-            raised_circular_grip(top_diameter / 2);
-        } else if (Top_Style == 2) {
+        } else if (Top_Style == "winged") {
             top_winged();
         }
     }
-    if (Top_Style != 2) {
+    if (Top_Style != "winged") {
         foot_height = (body_height + Thickness) - Drain_Depth;
         if (foot_height > 0.1) {
             foot_size = 5;
@@ -342,7 +317,7 @@ module bottom_holes() {
     for (ang = [0:360 / (bottom_hole_count - 1):360 - 0.1]) {
         rotate([0, 0, ang])
         translate([bottom_hole_placement(), 0, 0]) {
-            if (Bottom_Style == 1) {
+            if (Bottom_Style == "angled") {
                 translate([0, 0, Thickness])
                 rotate([90, 0, 0])
                 translate([0, 0, -bottom_hole_radius])
@@ -368,7 +343,7 @@ module feet() {
 
 module bottom_shape() {
     rotate_extrude(angle=360)
-    if (Bottom_Style == 0) {
+    if (Bottom_Style == "flat") {
             rounded_circular_grip_shape(bottom_radius, body_radius);
     } else {
         difference() {
@@ -409,18 +384,89 @@ module tub_drain_hair_catcher() {
 
 module orient_model() {
     if (Print_Orientation) {
-        mirror([0, 0, 1])
-        translate([0, 0, -outer_height])
-        children();
+        if (Top_Style == "winged") {
+            children();
+        } else {
+            mirror([0, 0, 1])
+            translate([0, 0, -outer_height])
+            children();
+        }
     } else {
         children();
     }
 }
 
-module main() {
-    orient_model()
-    tub_drain_hair_catcher();
+module print_support_winged_top_shape() {
+    translate([-top_diameter / 2, 0])
+    intersection() {
+        translate([0, -Thickness * 2])
+        square([top_diameter, Thickness * 4]);
+        rotate([0, 0, 360 / top_winged_wing_count / 2])
+        projection(cut=false)
+        difference() {
+            translate([0, 0, Above_Drain_Height - Thickness])
+            top_winged();
+            translate([0, 0, Thickness / 8])
+            linear_extrude(height=outer_height)
+            square(top_diameter * 2, center=true);
+        }
+    }
 }
 
-color("greenyellow", 0.8)
+module print_supports() {
+    if (Top_Style == "winged") {
+        for (rot = [0:360 / top_winged_wing_count:360 - 0.1]) {
+            rotate([0, 0, rot + 360 / top_winged_wing_count / 2])
+            difference() {
+                // Support structure
+                translate([top_diameter / 2, 0, 0])
+                hull() {
+                    slop = 0.01;
+                    linear_extrude(height=slop)
+                    translate([Thickness, 0])
+                    scale([2, 2])
+                    print_support_winged_top_shape();
+                    translate([0, 0, Drain_Depth + 1])
+                    linear_extrude(height=slop)
+                    print_support_winged_top_shape();
+                }
+                // Support top cutout for model
+                translate([0, 0, Drain_Depth - print_supports_offset])
+                hull()
+                for (tx = [0:1:1]) {
+                    translate([tx * 2, 0, 0])
+                    translate([top_diameter / 2, 0, 0])
+                    scale([1, 1, 1])
+                    translate([-top_diameter / 2, 0, 0])
+                    intersection() {
+                        linear_extrude(height=Thickness)
+                        translate([0, -Thickness * 2])
+                        square([top_diameter, Thickness * 4]);
+                        rotate([0, 0, 360 / top_winged_wing_count / 2])
+                        translate([0, 0, Above_Drain_Height - Thickness])
+                        top_winged();
+                    }
+                }
+            }
+        }
+        // Bed plate brim for supports
+        linear_extrude(height=0.4)
+        difference() {
+            circle(top_diameter / 2 + Thickness);
+            circle(bottom_radius + Thickness / 2);
+        }
+    }
+}
+
+module main() {
+    orient_model() {
+        color("greenyellow", 0.8)
+        tub_drain_hair_catcher();
+        color("gray", 0.6)
+        if (Print_Supports) {
+            print_supports();
+        }
+    }
+}
+
 main();
