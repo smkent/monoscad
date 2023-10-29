@@ -6,14 +6,16 @@
  */
 
 /* [Rendering Options] */
+// Orient for printing (orientation varies by top style)
 Print_Orientation = true;
 
-// Whether or not to add supports (for Winged top style only)
-Include_Supports = false;
+// Add print supports (for Winged top style only)
+Print_Supports = false;
 
 /* [Model Options] */
-Top_Style = "winged"; // [flat: Flat, rounded: Rounded, winged: Winged]
+Top_Style = "winged"; // [winged: Winged, flat: Flat]
 
+// Flat is the default. Angled makes printing easier when the model is upside down.
 Bottom_Style = 0; // [0: Flat, 1: Angled]
 
 /* [Size] */
@@ -36,7 +38,7 @@ Stagger_Body_Holes = true;
 
 Top_Screw_Hole_Chamfer = true;
 
-// Add riser feet on the bottom
+// Add riser feet on the bottom (does not account for drain depth)
 Feet = false;
 
 /* [Advanced Size Options] */
@@ -141,35 +143,6 @@ module rounded_circular_grip_shape(radius, hole_radius=0) {
 module rounded_circular_grip(radius, hole_radius=0) {
     rotate_extrude(angle=360)
     rounded_circular_grip_shape(radius, hole_radius=0);
-}
-
-module raised_circular_grip(radius, hole_radius=0) {
-    rotate_extrude(angle=360)
-    difference() {
-        hull() {
-            square([Thickness / 2, Thickness / 2]);
-            translate([0, Thickness / 2]) {
-                scale([radius - Thickness/2, Thickness / 2 * 4])
-                difference() {
-                    circle(1);
-                    translate([0, -0.5])
-                    square([2, 1], center=true);
-                    translate([-1, 0])
-                    square([1, 1]);
-                }
-
-                translate([radius - Thickness / 2, 0])
-                difference() {
-                    circle(Thickness / 2);
-                    translate([-Thickness / 2, 0])
-                    square([Thickness, Thickness]);
-                }
-            }
-        }
-        if (hole_radius > 0) {
-            square([hole_radius, Thickness]);
-        }
-    }
 }
 
 module rounded_foot(x=10, y=5, z=4) {
@@ -315,8 +288,6 @@ module top() {
         translate([0, 0, outer_height - Thickness])
         if (Top_Style == "flat") {
             rounded_circular_grip(top_diameter / 2);
-        } else if (Top_Style == "rounded") {
-            raised_circular_grip(top_diameter / 2);
         } else if (Top_Style == "winged") {
             top_winged();
         }
@@ -413,9 +384,13 @@ module tub_drain_hair_catcher() {
 
 module orient_model() {
     if (Print_Orientation) {
-        mirror([0, 0, 1])
-        translate([0, 0, -outer_height])
-        children();
+        if (Top_Style == "winged") {
+            children();
+        } else {
+            mirror([0, 0, 1])
+            translate([0, 0, -outer_height])
+            children();
+        }
     } else {
         children();
     }
@@ -488,7 +463,7 @@ module main() {
         color("greenyellow", 0.8)
         tub_drain_hair_catcher();
         color("gray", 0.6)
-        if (Include_Supports) {
+        if (Print_Supports) {
             print_supports();
         }
     }
