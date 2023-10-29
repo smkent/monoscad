@@ -450,7 +450,7 @@ module print_supports() {
             }
         }
         // Bed plate brim for supports
-        linear_extrude(height=0.4)
+        linear_extrude(height=1.2)
         difference() {
             circle(top_diameter / 2 + Thickness);
             circle(bottom_radius + Thickness / 2);
