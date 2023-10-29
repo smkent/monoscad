@@ -12,7 +12,7 @@ Print_Orientation = true;
 Include_Supports = false;
 
 /* [Model Options] */
-Top_Style = 2; // [0: Flat, 1: Rounded, 2: Winged]
+Top_Style = "winged"; // [flat: Flat, rounded: Rounded, winged: Winged]
 
 Bottom_Style = 0; // [0: Flat, 1: Angled]
 
@@ -313,15 +313,15 @@ module top_winged() {
 module top() {
     difference() {
         translate([0, 0, outer_height - Thickness])
-        if (Top_Style == 0) {
+        if (Top_Style == "flat") {
             rounded_circular_grip(top_diameter / 2);
-        } else if (Top_Style == 1) {
+        } else if (Top_Style == "rounded") {
             raised_circular_grip(top_diameter / 2);
-        } else if (Top_Style == 2) {
+        } else if (Top_Style == "winged") {
             top_winged();
         }
     }
-    if (Top_Style != 2) {
+    if (Top_Style != "winged") {
         foot_height = (body_height + Thickness) - Drain_Depth;
         if (foot_height > 0.1) {
             foot_size = 5;
@@ -439,7 +439,7 @@ module print_support_winged_top_shape() {
 }
 
 module print_supports() {
-    if (Top_Style == 2) {
+    if (Top_Style == "winged") {
         for (rot = [0:360 / top_winged_wing_count:360 - 0.1]) {
             rotate([0, 0, rot + 360 / top_winged_wing_count / 2])
             difference() {
