@@ -212,7 +212,7 @@ module _connector_shape(female=false) {
 module _connector_extrude() {
     if ($fh_render_mode == 0 || $fh_render_mode == 1) {
         rotate([180, 0, 0])
-        rotate_extrude(angle=($fh_render_mode == 0 ? 360 : 180))
+        rotate_extrude(angle=($fh_render_mode == 0 ? 360 : -180))
         rotate([0, 0, -90])
         children();
     } else if ($fh_render_mode == 2) {
