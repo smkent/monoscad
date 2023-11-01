@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: |
           sudo apt install -y openscad xvfb
-          python3 -m pip pip install pre-commit scons
+          python3 -m pip install pre-commit scons
 
       - name: 🔥 Run static checks
         run: pre-commit run --all-files
