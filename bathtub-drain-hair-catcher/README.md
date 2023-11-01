@@ -4,8 +4,8 @@
 
 Bathtub drain hair catcher (inspired by Tubshroom)
 
-![Model render](images/readme/demo.png)
-![Model render with print supports](images/readme/demo-supports.png)
+![Model render with winged-round top style](images/readme/demo-winged-round.png)
+![Model render with winged-angled top style](images/readme/demo-winged-angled.png)
 
 ## License
 

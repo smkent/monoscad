@@ -9,11 +9,11 @@
 // Orient for printing (orientation varies by top style)
 Print_Orientation = true;
 
-// Add print supports (for Winged top style only)
+// Add print supports (for Winged top styles only)
 Print_Supports = false;
 
 /* [Model Options] */
-Top_Style = "winged"; // [winged: Winged, flat: Flat]
+Top_Style = "winged-round"; // [winged-round: Winged / rounded for appearance, winged-angled: Winged / angled for easier printing, flat: Flat]
 
 // Flat is the default. Angled makes printing easier when the model is upside down.
 Bottom_Style = "flat"; // [flat: Flat, angled: Angled]
@@ -258,13 +258,23 @@ module top_mushroom_shape() {
 }
 
 module top_wing_cut(radius, cut_depth) {
+    r = (Top_Style == "winged-round") ? radius / 8 : 0;
     translate([radius - cut_depth * 0.75, 0, -top_height + Thickness])
     rotate([0, 90, 0])
     linear_extrude(height=cut_depth)
-    offset(-radius / 8)
-    offset(radius / 8)
+    offset(-r)
+    offset(r)
     union() {
-        circle(radius / 4);
+        if (Top_Style == "winged-round") {
+            circle(radius / 4);
+        } else {
+            polygon(points=[
+                [0, -radius * 0.30],
+                [-radius * 0.25, -radius / 6],
+                [-radius * 0.25, radius / 6],
+                [0, radius * 0.30],
+            ]);
+        }
         translate([radius / 4, 0])
         square([radius / 2, radius], center=true);
     }
@@ -288,11 +298,11 @@ module top() {
         translate([0, 0, outer_height - Thickness])
         if (Top_Style == "flat") {
             rounded_circular_grip(top_diameter / 2);
-        } else if (Top_Style == "winged") {
+        } else if (Top_Style == "winged-round" || Top_Style == "winged-angled") {
             top_winged();
         }
     }
-    if (Top_Style != "winged") {
+    if (Top_Style == "flat") {
         foot_height = (body_height + Thickness) - Drain_Depth;
         if (foot_height > 0.1) {
             foot_size = 5;
@@ -384,7 +394,7 @@ module tub_drain_hair_catcher() {
 
 module orient_model() {
     if (Print_Orientation) {
-        if (Top_Style == "winged") {
+        if (Top_Style == "winged-round" || Top_Style == "winged-angled") {
             children();
         } else {
             mirror([0, 0, 1])
@@ -414,7 +424,7 @@ module print_support_winged_top_shape() {
 }
 
 module print_supports() {
-    if (Top_Style == "winged") {
+    if (Top_Style == "winged-round" || Top_Style == "winged-angled") {
         for (rot = [0:360 / top_winged_wing_count:360 - 0.1]) {
             rotate([0, 0, rot + 360 / top_winged_wing_count / 2])
             difference() {
