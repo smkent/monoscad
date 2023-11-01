@@ -13,15 +13,25 @@
         }
     },
     "images": {
-        "demo.png": {
+        "demo-winged-round.png": {
             "model": "bathtub-drain-hair-catcher.scad",
-            "vars": ["$fn", "Print_Orientation", "Print_Supports"],
-            "values": [[50, 0, 0]]
+            "vars": ["$fn", "Print_Orientation", "Print_Supports", "Top_Style"],
+            "values": [[50, 0, 0, "winged-round"]]
         },
-        "demo-supports.png": {
+        "demo-winged-round-supports.png": {
             "model": "bathtub-drain-hair-catcher.scad",
-            "vars": ["$fn", "Print_Orientation", "Print_Supports"],
-            "values": [[50, 0, 1]]
+            "vars": ["$fn", "Print_Orientation", "Print_Supports", "Top_Style"],
+            "values": [[50, 0, 1, "winged-round"]]
+        },
+        "demo-winged-angled.png": {
+            "model": "bathtub-drain-hair-catcher.scad",
+            "vars": ["$fn", "Print_Orientation", "Print_Supports", "Top_Style"],
+            "values": [[50, 0, 0, "winged-angled"]]
+        },
+        "demo-winged-angled-supports.png": {
+            "model": "bathtub-drain-hair-catcher.scad",
+            "vars": ["$fn", "Print_Orientation", "Print_Supports", "Top_Style"],
+            "values": [[50, 0, 1, "winged-angled"]]
         }
     }
 }
