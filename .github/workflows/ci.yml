@@ -19,12 +19,26 @@ jobs:
         run: |
           git fetch origin "${GITHUB_BASE_REF}"
 
+      - name: 🪝 Cache pre-commit hooks
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: "pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml')
+            }}"
+
+      - name: ✨ Install pre-commit
+        shell: bash
+        run: python3 -m pip install pre-commit
+
       - name: 🛠️ Install tools
         run: |
           sudo apt install -y openscad xvfb
           pip install scons
 
-      - name: 🏗️ Build
+      - name: 🔥 Run static checks
+        run: pre-commit run --all-files
+
+      - name: 🏗️ Render models
         run: xvfb-run scons ref="origin/${GITHUB_BASE_REF}"
 
       - name: 📦 Save artifacts
