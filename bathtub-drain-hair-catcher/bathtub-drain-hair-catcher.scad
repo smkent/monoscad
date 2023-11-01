@@ -1,5 +1,5 @@
 /*
- * Bathtub drain hair filter (inspired by Tubshroom)
+ * Bathtub drain hair filter
  * By smkent (GitHub) / bulbasaur0 (Printables)
  *
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
