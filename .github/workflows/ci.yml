@@ -41,7 +41,7 @@ jobs:
       - name: 🏗️ Render models
         run: xvfb-run scons ref="origin/${GITHUB_BASE_REF}"
         # Only render models for pull requests
-        if: ${{ env.GITHUB_BASE_REF == 'main' }}
+        if: ${{ env.GITHUB_EVENT_NAME == 'pull_request' }}
 
       - name: 📦 Save artifacts
         uses: actions/upload-artifact@v3
