@@ -270,8 +270,7 @@ module top_wing_cut(radius, cut_depth) {
         } else {
             polygon(points=[
                 [0, -radius * 0.30],
-                [-radius * 0.25, -radius / 6],
-                [-radius * 0.25, radius / 6],
+                [-radius * 0.3, 0],
                 [0, radius * 0.30],
             ]);
         }
