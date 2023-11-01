@@ -1,8 +1,8 @@
-# Tub Drain Hair Catcher (inspired by Tubshroom)
+# Bathtub Drain Hair Catcher (inspired by Tubshroom)
 
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
-Tub drain hair catcher (inspired by Tubshroom)
+Bathtub drain hair catcher (inspired by Tubshroom)
 
 ![Model render](images/readme/demo.png)
 ![Model render with print supports](images/readme/demo-supports.png)
