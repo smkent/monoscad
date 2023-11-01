@@ -3,6 +3,9 @@ name: Build
 
 on:
   pull_request:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -19,13 +22,26 @@ jobs:
         run: |
           git fetch origin "${GITHUB_BASE_REF}"
 
+      - name: 🪝 Cache pre-commit hooks
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: "pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml')
+            }}"
+
       - name: 🛠️ Install tools
+        shell: bash
         run: |
           sudo apt install -y openscad xvfb
-          pip install scons
+          python3 -m pip install pre-commit scons
 
-      - name: 🏗️ Build
+      - name: 🔥 Run static checks
+        run: pre-commit run --all-files
+
+      - name: 🏗️ Render models
         run: xvfb-run scons ref="origin/${GITHUB_BASE_REF}"
+        # Only render models for pull requests
+        if: needs.pr-check.outputs.number != 'null'
 
       - name: 📦 Save artifacts
         uses: actions/upload-artifact@v3
