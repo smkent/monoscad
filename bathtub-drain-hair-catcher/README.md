@@ -1,5 +1,6 @@
 # Bathtub Drain Hair Catcher
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 Bathtub drain hair catcher
@@ -60,3 +61,5 @@ This model is licensed under [Creative Commons (4.0 International License) Attri
 
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/633869
