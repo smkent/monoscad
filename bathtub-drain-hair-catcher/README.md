@@ -5,7 +5,9 @@
 Bathtub drain hair catcher
 
 ![Model render with winged-round top style](images/readme/demo-winged-round.png)
-![Model render with winged-angled top style](images/readme/demo-winged-angled.png)
+![Photo of print on build plate with supports](images/readme/photo-build-plate.jpg)
+![Photo installed in drain](images/readme/photo-drain-1.jpg)
+![Photo of fit in drain](images/readme/photo-drain-2.jpg)
 
 # Description
 
