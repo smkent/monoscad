@@ -3,6 +3,9 @@ name: Build
 
 on:
   pull_request:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -37,6 +40,8 @@ jobs:
 
       - name: 🏗️ Render models
         run: xvfb-run scons ref="origin/${GITHUB_BASE_REF}"
+        # Only render models for pull requests
+        if: needs.pr-check.outputs.number != 'null'
 
       - name: 📦 Save artifacts
         uses: actions/upload-artifact@v3
