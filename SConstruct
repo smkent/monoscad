@@ -7,6 +7,10 @@ def add_deps_target(target, source, env):
     return target, source
 
 
+# Build in parallel by default
+SetOption("num_jobs", os.cpu_count())
+
+
 env = Environment(
     OPENSCAD=ARGUMENTS.get("openscad", os.environ.get("OPENSCAD", "openscad")),
     BUILDERS={
@@ -35,3 +39,5 @@ for sc in Glob("*/SConscript", strings=True):
 env.Default("build/")
 env.Alias("images", Glob("*/images"))
 env.Alias("printables", ["build/", "images"])
+
+# vim: ft=python
