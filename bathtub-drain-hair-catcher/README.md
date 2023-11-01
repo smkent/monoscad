@@ -50,6 +50,9 @@ Every so often, simply pull the hair catcher out of the drain, remove the
 collected hair off with a paper towel or so, and place the hair catcher back
 into the drain.
 
+The center hole on the top is optionally chamfered for a screw, if you prefer to
+screw it on similar to your original drain grate.
+
 ## License
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
