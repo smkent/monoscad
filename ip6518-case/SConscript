@@ -1,2 +1,16 @@
 Import("env")
-ModelBuilder(env).make_all()
+b = ModelBuilder(env)
+
+model = "ip6518-case.scad"
+
+b.STL(model, "ip6518-case-top.stl", {"Render_Top": 1, "Render_Bottom": 0})
+for i, mount_holes_type in enumerate(["no", "side", "sv06-psu"]):
+    b.STL(
+        model,
+        f"ip6518-case-bottom-{mount_holes_type}-mount-holes.stl",
+        {"Render_Top": 0, "Render_Bottom": 1, "Mount_Holes": i},
+    )
+
+b.make_all()
+
+# vim: ft=python

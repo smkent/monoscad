@@ -27,7 +27,7 @@ Fan_Size = 120; // [40:1:200]
 Plate_Screw_Hole_Inset = 7.5; // [1:0.1:20]
 
 // Total plate thickness. Must be greater than Magnet Thickness if magnets are enabled.
-Plate_Thickness = 4.0; // [0.8:0.2:10]
+Plate_Thickness = 6.0; // [0.8:0.2:10]
 
 // Enable plate edge knurling
 Plate_Knurled = true;

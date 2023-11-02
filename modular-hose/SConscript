@@ -1,2 +1,81 @@
 Import("env")
-ModelBuilder(env).make_all()
+b = ModelBuilder(env)
+
+parts_model = "magnetic-parts.scad"
+interior_diameter = 100
+
+b.STL(
+    "segment.scad",
+    f"segment-{interior_diameter}mm.stl",
+    {"Inner_Diameter": interior_diameter},
+)
+b.STL(
+    "vacuum-attachment.scad",
+    f"vacuum-attachment-{interior_diameter}mm.stl",
+    {"Inner_Diameter": interior_diameter, "Connector_Type": 2},
+)
+
+for model_type_name, model_type in [("grommet", 1), ("connector", 0)]:
+    for magnet_holes in [0, 1]:
+        fn_magnets = "-magnets" if magnet_holes else ""
+        b.STL(
+            parts_model,
+            (
+                f"120mm-fan-{model_type_name}"
+                f"-{interior_diameter}mm{fn_magnets}.stl"
+            ),
+            {
+                "Inner_Diameter": interior_diameter,
+                "Model_Type": model_type,
+                "Connector_Type": 1,
+                "Plate_Type": 1,
+                "Grommet_Diameter": 120,
+                "Magnet_Holes": magnet_holes,
+                "Screw_Holes": 1,
+                "Screw_Hole_Top": (
+                    2 if model_type_name == "grommet" and magnet_holes else 0
+                ),
+            },
+        )
+
+for model_type_name, model_type in [
+    ("connector", 0),
+    ("grommet", 1),
+    ("plate", -1),
+]:
+    connector_types = [("male", 1)]
+    if model_type_name == "connector":
+        connector_types.append(("female", 2))
+    for connector_type_name, connector_type in connector_types:
+        fn_connector_type = (
+            f"-{connector_type_name}" if model_type_name == "connector" else ""
+        )
+        b.STL(
+            parts_model,
+            (
+                f"magnetic-{model_type_name}"
+                f"-{interior_diameter}mm{fn_connector_type}.stl"
+            ),
+            {
+                "Inner_Diameter": interior_diameter,
+                "Model_Type": model_type,
+                "Connector_Type": connector_type,
+                "Plate_Type": 0,
+                "Grommet_Diameter": 101.6,
+                "Magnet_Holes": 1,
+                "Screw_Holes": 0 if model_type_name == "connector" else 1,
+                "Screw_Hole_Top": 0 if model_type_name == "connector" else 1,
+            },
+        )
+
+
+b.Image(
+    "demo.scad",
+    "demo.png",
+    {"Inner_Diameter": interior_diameter},
+    view_options="axes,scales",
+)
+
+b.make_all()
+
+# vim: ft=python

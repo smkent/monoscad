@@ -1,2 +1,36 @@
 Import("env")
-ModelBuilder(env).make_all()
+b = ModelBuilder(env)
+
+model = "material-swatch.scad"
+
+for material in {"", "PETG", "PLA", "ABS", "HIPS", "TPU", "PC"}:
+    for steps in {0, 1}:
+        fn_material = material.lower() or "blank"
+        fn_steps = "steps" if steps == 1 else "simple"
+        b.STL(
+            model,
+            f"material-swatch-{fn_material}-{fn_steps}.stl",
+            {"Text": material, "Steps": steps},
+        )
+
+b.Image(
+    model,
+    "demo.gif",
+    [
+        {"$fn": 50, "Text": material, "Steps": steps, "Color": color}
+        for material, steps, color in [
+            ("PLA", 1, "lightblue"),
+            ("PETG", 1, "orange"),
+            ("TPU", 1, "darkseagreen"),
+            ("PC", 1, "yellow"),
+            ("Text", 1, "skyblue"),
+            ("Simple", 0, "lightsalmon"),
+            ("", 0, "slategray"),
+        ]
+    ],
+    camera="15,15,0,35,0,15,100",
+)
+
+b.make_all()
+
+# vim: ft=python
