@@ -6,6 +6,6 @@ model = "keyboard-tray-slide-cap.scad"
 b.STL(model, "keyboard-tray-slide-cap.stl")
 b.Image(model, "demo.png", {"$fn": 50})
 
-b.make_all()
+b.add_default_targets()
 
 # vim: ft=python

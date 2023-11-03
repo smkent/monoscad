@@ -46,6 +46,6 @@ for top_style in {"winged-round", "winged-angled"}:
             },
         )
 
-b.make_all()
+b.add_default_targets()
 
 # vim: ft=python

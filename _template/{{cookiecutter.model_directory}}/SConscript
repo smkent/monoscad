@@ -1,5 +1,5 @@
 Import("env")
 b = ModelBuilder(env)
-b.make_all()
+b.add_default_targets()
 
 # vim: ft=python

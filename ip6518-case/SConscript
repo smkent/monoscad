@@ -11,6 +11,6 @@ for i, mount_holes_type in enumerate(["no", "side", "sv06-psu"]):
         {"Render_Top": 0, "Render_Bottom": 1, "Mount_Holes": i},
     )
 
-b.make_all()
+b.add_default_targets()
 
 # vim: ft=python
