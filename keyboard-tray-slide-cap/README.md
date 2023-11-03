@@ -5,7 +5,8 @@
 
 End cap for keyboard tray slide
 
-![Photo](images/readme/photo.jpg)
+![Photo of end cap installed on slide](images/readme/photo-installed.jpg)
+![Photo of printed end caps](images/readme/photo.jpg)
 ![Model render](images/readme/demo.png)
 
 ## Description
