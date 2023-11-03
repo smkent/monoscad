@@ -1,2 +1,5 @@
 Import("env")
-ModelBuilder(env).make_all()
+b = ModelBuilder(env)
+b.make_all()
+
+# vim: ft=python

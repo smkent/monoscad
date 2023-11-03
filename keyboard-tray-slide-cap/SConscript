@@ -1,2 +1,11 @@
 Import("env")
-ModelBuilder(env).make_all()
+b = ModelBuilder(env)
+
+model = "keyboard-tray-slide-cap.scad"
+
+b.STL(model, "keyboard-tray-slide-cap.stl")
+b.Image(model, "demo.png", {"$fn": 50})
+
+b.make_all()
+
+# vim: ft=python
