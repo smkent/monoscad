@@ -5,7 +5,7 @@ import sys
 import tempfile
 from contextlib import ExitStack
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 from zipfile import ZipFile
 
 from SCons.Node.FS import File as SConsFile
@@ -61,18 +61,20 @@ class ModelBuilder:
         self.model_dir = self.src_dir_path.name
         self.publish_images = set()
 
-    def make_all(self) -> None:
-        try:
-            if not self.filter_by_ref:
+    def ref_filter(fn: Callable[..., Any]):
+        def _wrapper(self, *args: Any):
+            if not self._allowed_by_filter:
                 return
-        except subprocess.CalledProcessError as e:
-            print("EXCEPTION", str(e))
-            print("OUT", e.stdout)
-            print("ERR", e.stderr)
-            raise
+            fn(self, *args)
+
+        return _wrapper
+
+    @ref_filter
+    def make_all(self) -> None:
         if PRINTABLES_TARGET in BUILD_TARGETS:
             self.add_printables_zip_targets()
 
+    @ref_filter
     def STL(
         self,
         model_file: str,
@@ -117,33 +119,6 @@ class ModelBuilder:
         self.publish_images.add(
             File(f"{self.src_dir}/images/publish/{target}")
         )
-
-    @functools.cached_property
-    def filter_by_ref(self) -> bool:
-        prev_ref = self.env.get("PREV_REF")
-        if not prev_ref:
-            return True
-        try:
-            dirs = {
-                fn.split(os.sep)[0]
-                for fn in run(
-                    ["git", "diff", f"{prev_ref}...@", "--name-only", "--"],
-                    quiet=True,
-                    capture_output=True,
-                    text=True,
-                ).stdout.splitlines()
-                if fn.endswith(".scad")
-            }
-            if self.src_dir_path.name not in dirs:
-                return False
-            print(
-                f"Including model directory {self.model_dir}"
-                f" changed since {prev_ref}"
-            )
-        except subprocess.CalledProcessError as e:
-            print(f"Ignoring git diff error: {e}")
-            pass
-        return True
 
     @functools.cached_property
     def library_files(self) -> Sequence[Path]:
@@ -264,3 +239,30 @@ class ModelBuilder:
                     if not zdest:
                         continue
                     z.write(str(ss), zdest)
+
+    @functools.cached_property
+    def _allowed_by_filter(self) -> bool:
+        prev_ref = self.env.get("PREV_REF")
+        if not prev_ref:
+            return True
+        try:
+            dirs = {
+                fn.split(os.sep)[0]
+                for fn in run(
+                    ["git", "diff", f"{prev_ref}...@", "--name-only", "--"],
+                    quiet=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout.splitlines()
+                if fn.endswith(".scad")
+            }
+            if self.src_dir_path.name not in dirs:
+                return False
+            print(
+                f"Including model directory {self.model_dir}"
+                f" changed since {prev_ref}"
+            )
+        except subprocess.CalledProcessError as e:
+            print(f"Ignoring git diff error: {e}")
+            pass
+        return True
