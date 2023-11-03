@@ -70,7 +70,7 @@ class ModelBuilder:
         return _wrapper
 
     @ref_filter
-    def make_all(self) -> None:
+    def add_default_targets(self) -> None:
         if PRINTABLES_TARGET in BUILD_TARGETS:
             self.add_printables_zip_targets()
 

@@ -76,6 +76,6 @@ b.Image(
     view_options="axes,scales",
 )
 
-b.make_all()
+b.add_default_targets()
 
 # vim: ft=python

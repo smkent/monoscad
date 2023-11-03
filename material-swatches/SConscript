@@ -31,6 +31,6 @@ b.Image(
     camera="15,15,0,35,0,15,100",
 )
 
-b.make_all()
+b.add_default_targets()
 
 # vim: ft=python

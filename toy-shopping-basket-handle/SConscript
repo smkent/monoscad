@@ -6,6 +6,6 @@ model = "toy-shopping-basket-handle.scad"
 b.STL(model, "toy-shopping-basket-handle.stl")
 b.Image(model, "render.png", camera="90,20,0,55,0,25,350")
 
-b.make_all()
+b.add_default_targets()
 
 # vim: ft=python
