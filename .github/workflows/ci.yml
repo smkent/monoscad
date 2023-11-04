@@ -32,7 +32,7 @@ jobs:
       - name: 🛠️ Install tools
         shell: bash
         run: |
-          sudo apt install -y openscad xvfb pandoc texlive
+          sudo apt install -y openscad xvfb pandoc texlive-xetex
           python3 -m pip install pre-commit scons
 
       - name: 🔥 Run static checks
