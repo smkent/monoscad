@@ -21,6 +21,22 @@ IMAGE_TARGETS = {
 }
 
 
+def openscad_builder():
+    def add_deps_target(target, source, env):
+        target.append("${TARGET.name}.deps")
+        return target, source
+
+    return Builder(
+        action=(
+            "$OPENSCAD -m make"
+            " -o $TARGET -d ${TARGET}.deps"
+            " $SOURCE"
+            " $OPENSCAD_ARGS"
+        ),
+        emitter=add_deps_target,
+    )
+
+
 def run(
     cmd: list,
     *args: Any,
