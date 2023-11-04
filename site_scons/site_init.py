@@ -124,8 +124,8 @@ class ModelBuilder:
     @ref_filter
     def Document(
         self,
-        source: str,
         target: str,
+        source: str,
         image_dependencies: Optional[Sequence[str]] = None,
     ) -> None:
         self.env.Command(

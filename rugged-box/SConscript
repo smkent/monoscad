@@ -133,8 +133,8 @@ for tutorial_name, steps in {
         )
         tutorial_images.append(fn)
     b.Document(
-        f"tutorials/{tutorial_name}.md",
         f"tutorial-{tutorial_name}.pdf",
+        f"tutorials/{tutorial_name}.md",
         [f"images/publish/{image}" for image in tutorial_images],
     )
 
