@@ -2,7 +2,8 @@
 
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
-A parametric and customizable rugged storage box for OpenSCAD
+A parametric and customizable rugged storage box or toolbox for OpenSCAD. Make
+and customize your own boxes!
 
 ![Renders animation showing various box sizes](images/readme/demo-dimensions.gif)
 ![Renders animation showing various box radii and chamfers](images/readme/demo-edges.gif)
@@ -29,7 +30,7 @@ customized boxes!
 * Optional lip seal, integrated or for 1.75mm filament
 * Optional reinforced (thicker) corners
 * All parts print without supports
-* Model code organized as an include library -- make your own custom boxes!
+* Model code organized as a library -- make your own custom boxes!
 * No [`minkowski`][openscad-minkowski] usages!
 
 ## Hardware
@@ -63,7 +64,8 @@ side. No supports are needed.
 
 ## Make your own custom boxes
 
-Make your own custom boxes using `rugged-box-library.scad`!
+Make your own custom boxes using `rugged-box-library.scad`! Try one of these
+tutorials for inspiration.
 
 | [Tutorial: **Rugged box with dividers**](tutorials/box-with-dividers.md) | [Tutorial: **Rugged box with cutouts**](tutorials/box-with-cutouts.md) |
 | --- | --- |
@@ -81,6 +83,8 @@ This model is licensed under [Creative Commons (4.0 International License) Attri
 [openscad-minkowski]: https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Transformations#minkowski
 [openscad]: https://openscad.org
 [parametrizable-rugged-box-openscad-by-dochni]: https://www.printables.com/model/168664-parametrizable-rugged-box-openscad
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/637028
 [rugged-box-parametric-by-whity]: https://www.printables.com/model/258431-rugged-box-parametric
 [sbox-by-michael-fanta]: https://www.printables.com/model/262716-sbox-for-mk234-stackable-toolbox-system
 [waterproof-box-v2-by-zx82net]: https://www.thingiverse.com/thing:4838803
