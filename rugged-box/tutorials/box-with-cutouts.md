@@ -2,7 +2,7 @@
 
 Tutorial for
 [**Rugged Storage Box** model][printables-model] by
-[**bulbasaur0 on Printables**](https://www.printables.com/@bulbasaur0_1139994).
+[**bulbasaur0** on Printables](https://www.printables.com/@bulbasaur0_1139994).
 
 Follow this tutorial to create a rugged box with cutouts for AA batteries.
 
@@ -20,7 +20,7 @@ There are two ways to obtain the model files:
 
 This tutorial will use build on the model's `rugged-box-library.scad` file.
 
-The finished code for this tutorial is in the included
+The code for each step of this tutorial is in the included
 `tutorial-box-with-cutouts.scad` model file.
 
 ## Create New File
