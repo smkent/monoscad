@@ -18,10 +18,9 @@ Inspired by
 [rugged][waterproof-box-v2-by-zx82net]
 [box][parametrizable-rugged-box-openscad-by-dochni]
 [models][customizable-penguin-case-by-ctag],
-I decided to build one to share! I
-chose [OpenSCAD][openscad] to ensure the model would use an open source format.
-This model can both create parametric boxes and be used as a library to make
-customized boxes!
+I decided to build a rugged box model of my own! This model can create
+parametric boxes, and can also be used as a library to make customized boxes! I
+chose [OpenSCAD][openscad] so the software and model could be fully open source.
 
 ## Features
 
