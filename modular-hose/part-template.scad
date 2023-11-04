@@ -32,7 +32,7 @@ module modular_hose_template(
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
 ) {
-    modular_hose_part(inner_diameter, thickness, size_tolerance)
+    modular_hose(inner_diameter, thickness, size_tolerance)
     modular_hose_template_part() {
         modular_hose_connector();
     }
