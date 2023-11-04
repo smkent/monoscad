@@ -12,9 +12,9 @@ boxes = {
         6,
         {
             "Latch_Amount_On_Top": 4,
-            "Latch_Width": 10,
+            "Latch_Width": 12,
             "Latch_Screw_Separation": 8,
-            "Rib_Width": 2.5,
+            "Rib_Width": 3,
         },
     ],
     "mini": [30, 30, 7, 22],
