@@ -63,8 +63,8 @@ class ModelBuilder:
     @ref_filter
     def STL(
         self,
-        model_file: str,
         stl_file: str,
+        model_file: str,
         stl_vals: Optional[Dict[str, Any]] = None,
         model_dependencies: Optional[Sequence[str]] = None,
     ) -> None:

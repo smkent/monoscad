@@ -5,13 +5,13 @@ parts_model = "magnetic-parts.scad"
 interior_diameter = 100
 
 b.STL(
-    "segment.scad",
     f"segment-{interior_diameter}mm.stl",
+    "segment.scad",
     {"Inner_Diameter": interior_diameter},
 )
 b.STL(
-    "vacuum-attachment.scad",
     f"vacuum-attachment-{interior_diameter}mm.stl",
+    "vacuum-attachment.scad",
     {"Inner_Diameter": interior_diameter, "Connector_Type": 2},
 )
 
@@ -19,11 +19,11 @@ for model_type_name, model_type in [("grommet", 1), ("connector", 0)]:
     for magnet_holes in [0, 1]:
         fn_magnets = "-magnets" if magnet_holes else ""
         b.STL(
-            parts_model,
             (
                 f"120mm-fan-{model_type_name}"
                 f"-{interior_diameter}mm{fn_magnets}.stl"
             ),
+            parts_model,
             {
                 "Inner_Diameter": interior_diameter,
                 "Model_Type": model_type,
@@ -51,11 +51,11 @@ for model_type_name, model_type in [
             f"-{connector_type_name}" if model_type_name == "connector" else ""
         )
         b.STL(
-            parts_model,
             (
                 f"magnetic-{model_type_name}"
                 f"-{interior_diameter}mm{fn_connector_type}.stl"
             ),
+            parts_model,
             {
                 "Inner_Diameter": interior_diameter,
                 "Model_Type": model_type,

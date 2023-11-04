@@ -8,8 +8,8 @@ for material in {"", "PETG", "PLA", "ABS", "HIPS", "TPU", "PC"}:
         fn_material = material.lower() or "blank"
         fn_steps = "steps" if steps == 1 else "simple"
         b.STL(
-            model,
             f"material-swatch-{fn_material}-{fn_steps}.stl",
+            model,
             {"Text": material, "Steps": steps},
         )
 

@@ -41,8 +41,8 @@ for box_name, (
             **(params[0] if params else {}),
         }
         b.STL(
-            model,
             f"box-{box_name}-{part}.stl",
+            model,
             part_params,
             model_dependencies,
         )
