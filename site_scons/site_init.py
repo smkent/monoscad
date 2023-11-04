@@ -80,10 +80,11 @@ class ModelBuilder:
         model_file: str,
         stl_file: str,
         stl_vals: Optional[Dict[str, Any]] = None,
+        model_dependencies: Optional[Sequence[str]] = None,
     ) -> None:
         self.env.openscad(
             target=stl_file,
-            source=model_file,
+            source=[model_file] + (model_dependencies or []),
             OPENSCAD_ARGS=" ".join(openscad_var_args(stl_vals)),
         )
 

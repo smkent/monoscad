@@ -2,6 +2,7 @@ Import("env")
 b = ModelBuilder(env)
 
 model = "rugged-box.scad"
+model_dependencies = ["rugged-box-library.scad"]
 
 boxes = {
     "micro": [
@@ -39,7 +40,12 @@ for box_name, (
             },
             **(params[0] if params else {}),
         }
-        b.STL(model, f"box-{box_name}-{part}.stl", part_params)
+        b.STL(
+            model,
+            f"box-{box_name}-{part}.stl",
+            part_params,
+            model_dependencies,
+        )
 
 b.Image(
     model,
