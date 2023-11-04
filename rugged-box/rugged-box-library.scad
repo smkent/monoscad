@@ -12,20 +12,20 @@ module __end_customizer_options__() { }
 $fa = $preview ? $fa : 2;
 $fs = $preview ? $fs / 2 : 0.2;
 
-screw_diameter = 3;
+// Attachment screw diameter
+screw_diameter = 3; // M3
+
 // Decrease screw hole diameter just slightly for better thread-forming fit
 screw_hole_diameter_size_tolerance = -0.1;
 
-rib_angle = 8;
+// Widen angle of box side ribs
+side_ribs_angle = 8;
 
-// Extra space between box body and hinge
+// Extra space between box body and hinge for clearance
 hinge_extra_setback = 0.2; // [0:0.1:2]
 
 // Screw eyelet diameter as a proportion of screw diameter
 screw_eyelet_size_proportion = 2.5; // [1.5:0.1:5]
-
-screw_hole_diameter = screw_diameter;
-screw_eyelet_radius = screw_hole_diameter * screw_eyelet_size_proportion / 2;
 
 // Public modules
 
@@ -79,18 +79,16 @@ module rbox(
     $b_inner_length = length;
     $b_top_inner_height = top_height;
     $b_bottom_inner_height = bottom_height;
+    $b_corner_radius = corner_radius;
+    $b_edge_chamfer_proportion = edge_chamfer_proportion;
+    $b_lip_seal_type = lip_seal_type;
+    $b_reinforced_corners = reinforced_corners;
+    $b_latch_count = latch_count;
     // Set defaults
     rbox_size_adjustments()
     _box_rib_angle(0)
-    union() {
-        // Set remaining option values
-        $b_corner_radius = corner_radius;
-        $b_edge_chamfer_proportion = edge_chamfer_proportion;
-        $b_lip_seal_type = lip_seal_type;
-        $b_reinforced_corners = reinforced_corners;
-        $b_latch_count = latch_count;
-        children();
-    }
+    // Render modules
+    children();
 }
 
 /*
@@ -140,15 +138,22 @@ module rbox_size_adjustments(
     $b_size_tolerance = size_tolerance;
     $b_latch_width = latch_width;
     $b_latch_screw_separation = latch_screw_separation;
-    $b_latch_amount_on_top = init_latch_amount_on_top(latch_amount_on_top);
+    $b_latch_amount_on_top = _init_latch_amount_on_top(latch_amount_on_top);
+    // Set computed values
+    $b_total_lip_thickness = wall_thickness + lip_thickness;
+    $b_lip_height = lip_thickness * 2;
+    $b_edge_radius = wall_thickness / 5;
     // Set dependent values
     $b_top_outer_height = $b_top_inner_height + wall_thickness;
     $b_bottom_outer_height = $b_bottom_inner_height + wall_thickness;
-    $b_outer_width = $b_inner_width + total_lip_thickness() * 2;
-    $b_outer_length = $b_inner_length + total_lip_thickness() * 2;
-    $b_edge_radius = wall_thickness / 5;
+    $b_outer_width = $b_inner_width + $b_total_lip_thickness * 2;
+    $b_outer_length = $b_inner_length + $b_total_lip_thickness * 2;
     $b_curved_inner_width = $b_inner_width + $b_edge_radius * 2;
     $b_curved_inner_length = $b_inner_length + $b_edge_radius * 2;
+    $b_outer_chamfer_horizontal = $b_edge_chamfer_proportion * $b_corner_radius;
+    $b_outer_chamfer_vertical = $b_outer_chamfer_horizontal * 1.5;
+    $b_hinge_screw_offset = _attachment_screw_offset();
+    $b_latch_screw_offset = _attachment_screw_offset();
     children();
 }
 
@@ -194,17 +199,16 @@ module rbox_part(part) {
             rbox_top();
         }
     } else if (part == "assembled_open") {
-        hinge_screw_position = hinge_screw_offset();
         rbox_bottom();
         translate([
             0,
-            $b_inner_length / 2 + hinge_screw_position,
+            $b_inner_length / 2 + $b_hinge_screw_offset,
             $b_bottom_outer_height
         ])
         rotate([270, 0, 0])
         translate([
             0,
-            -($b_inner_length / 2 + hinge_screw_position),
+            -($b_inner_length / 2 + $b_hinge_screw_offset),
             $b_top_outer_height
         ])
         mirror([0, 0, 1])
@@ -212,7 +216,7 @@ module rbox_part(part) {
             rbox_body();
             translate([
                 0,
-                -latch_screw_offset(),
+                -$b_latch_screw_offset,
                 $b_outer_height - $b_latch_amount_on_top
             ])
             mirror([0, 1, 0])
@@ -229,7 +233,7 @@ module rbox_part(part) {
             rbox_body();
             translate([
                 0,
-                -latch_screw_offset(),
+                -$b_latch_screw_offset,
                 $b_outer_height - $b_latch_amount_on_top
             ])
             mirror([0, 1, 0])
@@ -250,6 +254,9 @@ module rbox_part(part) {
 
 // Internal constants
 
+screw_hole_diameter = screw_diameter;
+screw_eyelet_radius = screw_hole_diameter * screw_eyelet_size_proportion / 2;
+
 // For _box_extrude and _box_corners_extrude
 corners_data = [
     // Rotate angle, X direction, Y direction
@@ -261,7 +268,7 @@ corners_data = [
 
 // Functions
 
-function cumulative_sum(v) = [
+function _cumulative_sum(v) = [
     for (
         now_sum = v[0], i = 1;
         i <= len(v) - 1;
@@ -270,15 +277,11 @@ function cumulative_sum(v) = [
     now_sum
 ];
 
-function total_lip_thickness() = ($b_wall_thickness + $b_lip_thickness);
-function lip_height() = ($b_lip_thickness * 2);
-
-function outer_chamfer_horizontal() = (
-    $b_edge_chamfer_proportion * $b_corner_radius
+function _attachment_screw_offset() = (
+    $b_total_lip_thickness + screw_eyelet_radius + hinge_extra_setback
 );
-function outer_chamfer_vertical() = (outer_chamfer_horizontal() * 1.5);
 
-function compute_latch_count(latch_count) = (
+function _compute_latch_count(latch_count) = (
     let (outer_radius = $b_corner_radius + $b_wall_thickness)
     ($b_latch_count == 1 || $b_latch_count == 2)
         ? $b_latch_count
@@ -288,7 +291,7 @@ function compute_latch_count(latch_count) = (
         )
 );
 
-function init_latch_amount_on_top(latch_amount_on_top) = (
+function _init_latch_amount_on_top(latch_amount_on_top) = (
     latch_amount_on_top > 0
         ? latch_amount_on_top
         : min(
@@ -300,30 +303,11 @@ function init_latch_amount_on_top(latch_amount_on_top) = (
         )
 );
 
-function compute_screw_hole_diameter(inner=false) = (
-    inner
-        ? screw_hole_diameter * 1.1
-        : screw_hole_diameter - screw_hole_diameter_size_tolerance
-);
-function screw_offset() = (
-    total_lip_thickness() + screw_eyelet_radius + hinge_extra_setback
-);
-function hinge_screw_offset() = (screw_offset());
-function latch_screw_offset() = (screw_offset());
-function latch_offset_from_base(part) = (
+function _latch_offset_from_base(part) = (
     $b_outer_height - (
         $b_part == "top"
             ? $b_latch_amount_on_top
             : $b_latch_screw_separation - $b_latch_amount_on_top
-    )
-);
-
-function seal_top_inset() = (
-    $b_lip_seal_type == "filament-1.75mm" ? true : false
-);
-function seal_thickness() = (
-    $b_lip_seal_type == "filament-1.75mm" ? 1.75 : (
-        (total_lip_thickness()) / 3
     )
 );
 
@@ -374,7 +358,7 @@ module _hull_pair(height) {
 }
 
 module _hull_stack(heights=[]) {
-    cheights = cumulative_sum(heights);
+    cheights = _cumulative_sum(heights);
     for (ch = [1:1:len(heights)]) {
         hi = ch - 1;
         if (ch < $children) {
@@ -492,13 +476,13 @@ module _box_wall_inner_chamfer_shape() {
 }
 
 module _box_wall_outer_chamfer_shape() {
-    vertical_chamfer = outer_chamfer_vertical();
-    horizontal_chamfer = outer_chamfer_horizontal();
+    vertical_chamfer = $b_outer_chamfer_vertical;
+    horizontal_chamfer = $b_outer_chamfer_horizontal;
     translate([
         $b_corner_radius + $b_wall_thickness - horizontal_chamfer,
         -(vertical_chamfer - min(
             vertical_chamfer,
-            $b_outer_height - lip_height() - $b_lip_thickness * 1.5
+            $b_outer_height - $b_lip_height - $b_lip_thickness * 1.5
         ))
     ])
     polygon(points=[
@@ -509,17 +493,16 @@ module _box_wall_outer_chamfer_shape() {
 }
 
 module _box_wall_shape(reinforced=false) {
-    tt = total_lip_thickness();
     _round_shape($b_edge_radius)
     difference() {
-        square([$b_corner_radius + tt, $b_outer_height]);
+        square([$b_corner_radius + $b_total_lip_thickness, $b_outer_height]);
         translate([reinforced ? $b_lip_thickness : 0, 0, 0]) {
             translate([$b_corner_radius, 0])
             polygon(points=[
                 [$b_wall_thickness, $b_outer_height - $b_lip_thickness * 3.5],
                 [$b_wall_thickness, 0],
-                [tt, 0],
-                [tt, $b_outer_height - lip_height()],
+                [$b_total_lip_thickness, 0],
+                [$b_total_lip_thickness, $b_outer_height - $b_lip_height],
             ]);
             _box_wall_outer_chamfer_shape();
         }
@@ -563,21 +546,24 @@ module _box_center_base(height) {
 }
 
 module _box_seal_shape() {
-    tt = total_lip_thickness();
-    st = seal_thickness();
-    translate([$b_corner_radius + tt/2, 0]) {
+    seal_thickness = (
+        $b_lip_seal_type == "filament-1.75mm"
+            ? 1.75
+            : $b_total_lip_thickness / 3
+    );
+    translate([$b_corner_radius + $b_total_lip_thickness / 2, 0]) {
         if ($b_lip_seal_type == "filament-1.75mm") {
-            circle(st / 2);
+            circle(seal_thickness / 2);
         } else if ($b_lip_seal_type == "square") {
-            translate([0, -st / 2])
-            square(st, center=true);
+            translate([0, -seal_thickness / 2])
+            square(seal_thickness, center=true);
         } else if ($b_lip_seal_type == "wedge") {
-            translate([0, -st])
+            translate([0, -seal_thickness])
             polygon(points=[
-                [-st / 4, 0],
-                [st / 4, 0],
-                [st / 2, st],
-                [-st / 2, st],
+                [-seal_thickness / 4, 0],
+                [seal_thickness / 4, 0],
+                [seal_thickness / 2, seal_thickness],
+                [-seal_thickness / 2, seal_thickness],
             ]);
         }
     }
@@ -589,12 +575,14 @@ module _box_seal() {
     // Improve seal / lip overlap preview rendering
     translate([0, 0, $preview ? 0.01 : 0])
     scale([1, 1, $preview ? 1.01 : 1])
-    _box_extrude(size_offset=total_lip_thickness())
+    _box_extrude(size_offset=$b_total_lip_thickness)
     _box_seal_shape();
 }
 
 module _box_add_seal() {
-    is_seal_top_inset = seal_top_inset();
+    is_seal_top_inset = (
+        $b_lip_seal_type == "filament-1.75mm" ? true : false
+    );
     difference() {
         union() {
             children();
@@ -630,7 +618,7 @@ module _box_rib_angle(ang=0) {
     children();
 }
 
-module _box_rib_shape(x=total_lip_thickness(), y=$b_rib_width) {
+module _box_rib_shape(x=$b_total_lip_thickness, y=$b_rib_width) {
     x0 = $b_edge_radius;
     angle_add = tan($br_angle) * y;
     _round_shape(x0)
@@ -646,9 +634,9 @@ module _box_rib_shape(x=total_lip_thickness(), y=$b_rib_width) {
 }
 
 module _box_rib(width=$b_rib_width) {
-    lip_position = $b_outer_height - lip_height();
+    lip_position = $b_outer_height - $b_lip_height;
     vertical_chamfer = min(
-        outer_chamfer_vertical(),
+        $b_outer_chamfer_vertical,
         max(0, lip_position - $b_lip_thickness - $b_wall_thickness)
     );
     horizontal_chamfer = vertical_chamfer * 2/3;
@@ -675,7 +663,7 @@ module _box_side_ribs() {
         mirror([mx, 0, 0])
         mirror([0, my, 0])
         translate([$b_inner_width / 2, $b_inner_length / 4, 0])
-        _box_rib_angle(rib_angle)
+        _box_rib_angle(side_ribs_angle)
         _box_rib($b_rib_width * 2);
     }
 }
@@ -711,7 +699,7 @@ module _box_attachment_rib_pair(inner=false) {
 }
 
 module _box_attachment_placement(pair=true) {
-    latch_count = compute_latch_count();
+    latch_count = _compute_latch_count();
     latch_offset = (
         ($b_inner_width - $b_corner_radius + $b_wall_thickness) / 2
         - $b_latch_width
@@ -735,22 +723,26 @@ module _box_screw_eyelet_body(width=0, angle=360) {
 }
 
 module _box_screw_hole(width, increase_screw_diameter=false) {
-    sr = compute_screw_hole_diameter(inner=increase_screw_diameter) / 2;
+    screw_radius = 1/2 * (
+        increase_screw_diameter
+            ? screw_hole_diameter * 1.1
+            : screw_hole_diameter - screw_hole_diameter_size_tolerance
+    );
     rotate([90, 0, 0])
     translate([0, 0, -width])
-    cylinder(width * 2, sr, sr);
+    cylinder(width * 2, screw_radius, screw_radius);
 }
 
 // Box latch attachments
 
 module _box_latch_rib_base(width=$b_rib_width) {
-    latch_position = latch_offset_from_base();
+    latch_position = _latch_offset_from_base();
     _box_rib();
     difference() {
         intersection() {
             translate([-$b_corner_radius, -width / 2, 0])
             cube([
-                $b_corner_radius + latch_screw_offset() * 4,
+                $b_corner_radius + $b_latch_screw_offset * 4,
                 width,
                 $b_outer_height
             ]);
@@ -770,7 +762,7 @@ module _box_latch_rib_base(width=$b_rib_width) {
                     }
                 }
                 translate([0, 0, latch_position])
-                translate([latch_screw_offset(), 0, 0])
+                translate([$b_latch_screw_offset, 0, 0])
                 for (mz = [0:1:1]) {
                     mirror([0, 0, mz])
                     translate([0, 0, screw_eyelet_radius / 2])
@@ -787,8 +779,8 @@ module _box_latch_rib() {
     difference() {
         _box_latch_rib_base();
         // Screw hole
-        translate([latch_screw_offset(), 0, 0])
-        translate([0, 0, latch_offset_from_base()])
+        translate([$b_latch_screw_offset, 0, 0])
+        translate([0, 0, _latch_offset_from_base()])
         _box_screw_hole(width=$b_rib_width);
     }
 }
@@ -828,7 +820,7 @@ module _box_hinge_rib_body(width=0, inner=false) {
 }
 
 module _box_hinge_screw_eyelet_body(width=0, angle=360) {
-    translate([hinge_screw_offset(), 0, 0])
+    translate([$b_hinge_screw_offset, 0, 0])
     _box_screw_eyelet_body(width, angle);
 }
 
@@ -879,7 +871,7 @@ module _box_hinge_ribs() {
         }
         // Screw hole
         rotate([0, 0, 90])
-        translate([hinge_screw_offset(), 0, $b_outer_height])
+        translate([$b_hinge_screw_offset, 0, $b_outer_height])
         _box_screw_hole(
             $b_latch_width,
             increase_screw_diameter = ($b_part == "top" ? true : false)
