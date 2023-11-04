@@ -86,7 +86,7 @@ Let's get started with the rugged box model. For now, comment out the
 `battery_holes` module call:
 
 ```openscad
-color("lightblue")
+// color("lightblue")
 // battery_holes();
 ```
 

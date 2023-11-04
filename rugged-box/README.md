@@ -29,7 +29,7 @@ customized boxes!
 * Optional lip seal, integrated or for 1.75mm filament
 * Optional reinforced (thicker) corners
 * All parts print without supports
-* Model code organized as an include library -- make your own custom boxes!
+* Model code organized as a library -- make your own custom boxes!
 * No [`minkowski`][openscad-minkowski] usages!
 
 ## Hardware
@@ -63,7 +63,8 @@ side. No supports are needed.
 
 ## Make your own custom boxes
 
-Make your own custom boxes using `rugged-box-library.scad`!
+Make your own custom boxes using `rugged-box-library.scad`! Try one of these
+tutorials for inspiration.
 
 | [Tutorial: **Rugged box with dividers**](tutorials/box-with-dividers.md) | [Tutorial: **Rugged box with cutouts**](tutorials/box-with-cutouts.md) |
 | --- | --- |
