@@ -6,6 +6,7 @@ A parametric rugged storage box for OpenSCAD
 
 ![Renders animation showing various box sizes](images/readme/demo-dimensions.gif)
 ![Renders animation showing various box radii and chamfers](images/readme/demo-edges.gif)
+![Photo of two small printed rugged boxes](images/readme/photo.jpg)
 
 # Description
 
