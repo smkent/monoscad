@@ -18,7 +18,7 @@ Inspired by
 [models][customizable-penguin-case-by-ctag],
 I decided to build one to share! I
 chose [OpenSCAD][openscad] to ensure the model would use an open source format.
-This model can both create parametetric boxes and be used as a library to make
+This model can both create parametric boxes and be used as a library to make
 customized boxes!
 
 ## Features
