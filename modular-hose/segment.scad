@@ -44,7 +44,7 @@ module modular_hose_segment(
     extra_segment_length=0,
     render_mode=0
 ) {
-    modular_hose_part(inner_diameter, thickness, size_tolerance, render_mode) {
+    modular_hose(inner_diameter, thickness, size_tolerance, render_mode) {
         if (connector_type == 0 || connector_type == 1) {
             translate([connector_type == 0 ? extra_segment_length / 2 : 0, 0, 0])
             modular_hose_connector(female=false);

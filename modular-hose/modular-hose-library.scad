@@ -34,7 +34,7 @@ separation_adjustment_proportion = 1.0; // [0.5:0.01:1.5]
 
 // Setup Module
 
-module modular_hose_part(
+module modular_hose(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,

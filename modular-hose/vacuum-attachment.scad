@@ -71,7 +71,7 @@ module modular_hose_vacuum_attachment(
     connector_type=0,
     extra_segment_length=0,
 ) {
-    modular_hose_part(inner_diameter, thickness, size_tolerance) {
+    modular_hose(inner_diameter, thickness, size_tolerance) {
         translate([0, 0, -extra_segment_length / 2])
         mirror([0, 0, 1])
         modular_hose_connector(female=(connector_type == 2));

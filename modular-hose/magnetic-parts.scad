@@ -245,7 +245,7 @@ module modular_hose_magnetic_part(
     $fhp_grommet_depth = grommet_depth;
     $fhp_grommet_diameter = grommet_diameter;
     $fhp_grommet_diameter_adjustment = grommet_diameter_adjustment ? thickness : 0;
-    modular_hose_part(inner_diameter, thickness, size_tolerance) {
+    modular_hose(inner_diameter, thickness, size_tolerance) {
         difference() {
             union() {
                 mirror([0, 0, 1])

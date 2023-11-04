@@ -27,15 +27,26 @@ module __end_customizer_options__() { }
 
 // Modules
 
+module modular_hose_template_part() {
+    // Example module, replace this with your new part
+    color("pink", 0.8)
+    linear_extrude(height=10)
+    square(Inner_Diameter, center=true);
+}
+
 module modular_hose_template(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
 ) {
-    modular_hose_part(inner_diameter, thickness, size_tolerance)
-    modular_hose_template_part() {
+    modular_hose(inner_diameter, thickness, size_tolerance) {
+        // Example part assembly, replace this with your part
+
         modular_hose_connector();
+        mirror([0, 0, 1])
+        modular_hose_template_part();
     }
+
 }
 
 modular_hose_template(
