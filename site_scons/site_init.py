@@ -122,11 +122,8 @@ class ModelBuilder:
                 "--pdf-engine=xelatex",
             ]
             for pandoc_var in [
-                'mainfont="Roboto"',
-                # 'monofont="DejaVu Sans Mono"',
                 "fontsize=12pt",
                 "colorlinks=true",
-                # 'urlcolor="MidnightBlue"',
                 "linestretch=1.0",
                 (
                     " geometry:"
