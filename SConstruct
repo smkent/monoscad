@@ -17,7 +17,7 @@ env = Environment(
             action=(
                 "$OPENSCAD -m make"
                 " -o $TARGET -d ${TARGET}.deps"
-                " $SOURCES"
+                " $SOURCE"
                 " $OPENSCAD_ARGS"
             ),
             emitter=add_deps_target,
