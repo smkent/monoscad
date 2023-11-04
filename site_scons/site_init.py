@@ -134,8 +134,15 @@ class ModelBuilder:
                 cmd += ["--variable", pandoc_var]
             run(cmd)
 
-    def Document(self, source: str, target: str) -> None:
-        self.env.Command(target, source, self.make_doc)
+    def Document(
+        self,
+        source: str,
+        target: str,
+        image_dependencies: Optional[Sequence[str]] = None,
+    ) -> None:
+        self.env.Command(
+            target, [source] + [image_dependencies or []], self.make_doc
+        )
 
     def Image(
         self,
