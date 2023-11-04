@@ -41,15 +41,15 @@ for box_name, (
             **(params[0] if params else {}),
         }
         b.STL(
-            model,
             f"box-{box_name}-{part}.stl",
+            model,
             part_params,
             model_dependencies,
         )
 
 b.Image(
-    model,
     "demo-dimensions.gif",
+    model,
     [
         {
             "Part": part,
@@ -84,8 +84,8 @@ b.Image(
 )
 
 b.Image(
-    model,
     "demo-edges.gif",
+    model,
     [
         {
             "Part": part,
@@ -127,14 +127,14 @@ for tutorial_name, steps in {
     for tutorial_step in range(1, steps + 1):
         fn = f"tutorial-{tutorial_name}-step-{tutorial_step}.png"
         b.Image(
-            f"tutorial-{tutorial_name}.scad",
             fn,
+            f"tutorial-{tutorial_name}.scad",
             {"Tutorial_Step": tutorial_step},
         )
         tutorial_images.append(fn)
     b.Document(
-        f"tutorials/{tutorial_name}.md",
         f"tutorial-{tutorial_name}.pdf",
+        f"tutorials/{tutorial_name}.md",
         [f"images/publish/{image}" for image in tutorial_images],
     )
 

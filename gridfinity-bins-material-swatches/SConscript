@@ -8,8 +8,8 @@ for grid_x in range(1, 2 + 1):
         if grid_x == 2 and grid_y == 1:
             continue
         b.STL(
-            model,
             f"swatch-bin-{grid_x}x{grid_y}x3.stl",
+            model,
             {
                 "gridx": grid_x,
                 "gridy": grid_y,
@@ -19,8 +19,8 @@ for grid_x in range(1, 2 + 1):
         )
 
 b.Image(
-    model,
     "demo.gif",
+    model,
     [
         {
             "gridx": grid_x,

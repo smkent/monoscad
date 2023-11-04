@@ -8,14 +8,14 @@ for material in {"", "PETG", "PLA", "ABS", "HIPS", "TPU", "PC"}:
         fn_material = material.lower() or "blank"
         fn_steps = "steps" if steps == 1 else "simple"
         b.STL(
-            model,
             f"material-swatch-{fn_material}-{fn_steps}.stl",
+            model,
             {"Text": material, "Steps": steps},
         )
 
 b.Image(
-    model,
     "demo.gif",
+    model,
     [
         {"$fn": 50, "Text": material, "Steps": steps, "Color": color}
         for material, steps, color in [

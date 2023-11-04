@@ -8,8 +8,8 @@ for top_style in {"winged-round", "winged-angled"}:
         fn_supports = "-with-supports" if supports == 1 else ""
         fn = f"bathtub-drain-hair-catcher-{top_style}{fn_supports}.stl"
         b.STL(
-            model,
             fn,
+            model,
             {
                 "Print_Orientation": 0,
                 "Print_Supports": supports,
@@ -21,8 +21,8 @@ for top_style in {"winged-round", "winged-angled"}:
 for bottom_style in {"flat", "angled"}:
     fn = f"bathtub-drain-hair-catcher-flat-top-{bottom_style}-bottom.stl"
     b.STL(
-        model,
         fn,
+        model,
         {
             "Print_Orientation": 1,
             "Print_Supports": 0,
@@ -36,8 +36,8 @@ for top_style in {"winged-round", "winged-angled"}:
         fn_supports = "-supports" if supports == 1 else ""
         fn = f"demo-{top_style}{fn_supports}.png"
         b.Image(
-            model,
             fn,
+            model,
             {
                 "$fn": 50,
                 "Print_Orientation": 0,

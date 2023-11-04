@@ -21,34 +21,20 @@ IMAGE_TARGETS = {
 }
 
 
-def run(
-    cmd: list,
-    *args: Any,
-    quiet: bool = False,
-    check: bool = True,
-    **kwargs: Any,
-) -> subprocess.CompletedProcess:
-    if not quiet:
-        print("+", " ".join([str(c) for c in cmd]), file=sys.stderr)
-    return subprocess.run(cmd, *args, check=check, **kwargs)
+def openscad_builder():
+    def add_deps_target(target, source, env):
+        target.append("${TARGET.name}.deps")
+        return target, source
 
-
-def remove_prefix(value: str, prefixes: Union[str, Sequence[str]]) -> str:
-    for prefix in [prefixes] if isinstance(prefixes, str) else prefixes:
-        if value.startswith(prefix):
-            return value[len(prefix) :]
-    return value
-
-
-def openscad_var_args(
-    vals: Dict[str, any] = None, for_subprocess: bool = False
-) -> Sequence[str]:
-    def _val_args(k, v):
-        if isinstance(v, str):
-            v = f'"{v}"' if for_subprocess else f"'\"{v}\"'"
-        return ["-D", f"{k}={v}"]
-
-    return [arg for k, v in (vals or {}).items() for arg in _val_args(k, v)]
+    return Builder(
+        action=(
+            "$OPENSCAD -m make"
+            " -o $TARGET -d ${TARGET}.deps"
+            " $SOURCE"
+            " $OPENSCAD_ARGS"
+        ),
+        emitter=add_deps_target,
+    )
 
 
 class ModelBuilder:
@@ -77,15 +63,15 @@ class ModelBuilder:
     @ref_filter
     def STL(
         self,
-        model_file: str,
         stl_file: str,
+        model_file: str,
         stl_vals: Optional[Dict[str, Any]] = None,
         model_dependencies: Optional[Sequence[str]] = None,
     ) -> None:
         self.env.openscad(
             target=stl_file,
             source=[model_file] + (model_dependencies or []),
-            OPENSCAD_ARGS=" ".join(openscad_var_args(stl_vals)),
+            OPENSCAD_ARGS=" ".join(self._openscad_var_args(stl_vals)),
         )
 
     def make_doc(
@@ -133,12 +119,13 @@ class ModelBuilder:
                 "papersize=letter",
             ]:
                 cmd += ["--variable", pandoc_var]
-            run(cmd)
+            self._run(cmd)
 
+    @ref_filter
     def Document(
         self,
-        source: str,
         target: str,
+        source: str,
         image_dependencies: Optional[Sequence[str]] = None,
     ) -> None:
         self.env.Command(
@@ -147,8 +134,8 @@ class ModelBuilder:
 
     def Image(
         self,
-        model_file: str,
         target: str,
+        model_file: str,
         stl_vals: Optional[Union[List[Dict[str, Any]], Dict[str, Any]]] = None,
         camera: Optional[str] = None,
         view_options: Optional[str] = None,
@@ -204,12 +191,14 @@ class ModelBuilder:
         def _render_single_image(
             image_target: str, stl_vals: Dict[str, Any], size=None
         ) -> None:
-            render_args = openscad_var_args(stl_vals, for_subprocess=True)
+            render_args = self._openscad_var_args(
+                stl_vals, for_subprocess=True
+            )
             if camera:
                 render_args += [f"--camera={camera}"]
             if view_options:
                 render_args += [f"--view={view_options}"]
-            run(
+            self._run(
                 [
                     self.env["OPENSCAD"],
                     source[0].path,
@@ -235,7 +224,7 @@ class ModelBuilder:
                 cmd = ["convert", "-resize", image_targets[tt.abspath]]
                 if target[0].suffix == ".gif":
                     cmd += ["-loop", "0", "-delay", str(delay)]
-                run(cmd + frames + [tt.path])
+                self._run(cmd + frames + [tt.path])
 
     def add_printables_zip_targets(self) -> None:
         sources = (
@@ -252,7 +241,7 @@ class ModelBuilder:
         )
 
     def zip_file_dest(self, source: Union[str, Path]) -> str:
-        dest_stripped = remove_prefix(
+        dest_stripped = self._remove_prefix(
             str(source),
             [str(self.build_dir) + "/", str(self.src_dir) + "/"],
         )
@@ -282,7 +271,7 @@ class ModelBuilder:
                     for lf in self.library_files:
                         z.write(
                             str(lf),
-                            remove_prefix(
+                            self._remove_prefix(
                                 str(lf),
                                 [
                                     str(self.build_dir) + "/",
@@ -309,7 +298,7 @@ class ModelBuilder:
         try:
             dirs = {
                 fn.split(os.sep)[0]
-                for fn in run(
+                for fn in self._run(
                     ["git", "diff", f"{prev_ref}...@", "--name-only", "--"],
                     quiet=True,
                     capture_output=True,
@@ -327,3 +316,35 @@ class ModelBuilder:
             print(f"Ignoring git diff error: {e}")
             pass
         return True
+
+    @staticmethod
+    def _run(
+        cmd: list,
+        *args: Any,
+        quiet: bool = False,
+        check: bool = True,
+        **kwargs: Any,
+    ) -> subprocess.CompletedProcess:
+        if not quiet:
+            print("+", " ".join([str(c) for c in cmd]), file=sys.stderr)
+        return subprocess.run(cmd, *args, check=check, **kwargs)
+
+    @staticmethod
+    def _remove_prefix(value: str, prefixes: Union[str, Sequence[str]]) -> str:
+        for prefix in [prefixes] if isinstance(prefixes, str) else prefixes:
+            if value.startswith(prefix):
+                return value[len(prefix) :]
+        return value
+
+    @staticmethod
+    def _openscad_var_args(
+        vals: Dict[str, any] = None, for_subprocess: bool = False
+    ) -> Sequence[str]:
+        def _val_args(k, v):
+            if isinstance(v, str):
+                v = f'"{v}"' if for_subprocess else f"'\"{v}\"'"
+            return ["-D", f"{k}={v}"]
+
+        return [
+            arg for k, v in (vals or {}).items() for arg in _val_args(k, v)
+        ]
