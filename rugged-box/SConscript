@@ -117,7 +117,6 @@ b.Image(
         ]
     ],
 )
-b.add_default_targets()
 
 for tutorial_name, steps in {
     "box-with-cutouts": 5,
@@ -137,5 +136,7 @@ for tutorial_name, steps in {
         f"tutorials/{tutorial_name}.md",
         [f"images/publish/{image}" for image in tutorial_images],
     )
+
+b.add_default_targets()
 
 # vim: ft=python
