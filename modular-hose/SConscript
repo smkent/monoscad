@@ -70,8 +70,8 @@ for model_type_name, model_type in [
 
 
 b.Image(
-    "demo.scad",
     "demo.png",
+    "demo.scad",
     {"Inner_Diameter": interior_diameter},
     view_options="axes,scales",
 )

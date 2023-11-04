@@ -14,8 +14,8 @@ for material in {"", "PETG", "PLA", "ABS", "HIPS", "TPU", "PC"}:
         )
 
 b.Image(
-    model,
     "demo.gif",
+    model,
     [
         {"$fn": 50, "Text": material, "Steps": steps, "Color": color}
         for material, steps, color in [

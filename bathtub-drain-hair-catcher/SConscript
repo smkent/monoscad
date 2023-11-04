@@ -36,8 +36,8 @@ for top_style in {"winged-round", "winged-angled"}:
         fn_supports = "-supports" if supports == 1 else ""
         fn = f"demo-{top_style}{fn_supports}.png"
         b.Image(
-            model,
             fn,
+            model,
             {
                 "$fn": 50,
                 "Print_Orientation": 0,

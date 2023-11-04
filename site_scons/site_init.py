@@ -134,8 +134,8 @@ class ModelBuilder:
 
     def Image(
         self,
-        model_file: str,
         target: str,
+        model_file: str,
         stl_vals: Optional[Union[List[Dict[str, Any]], Dict[str, Any]]] = None,
         camera: Optional[str] = None,
         view_options: Optional[str] = None,

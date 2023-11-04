@@ -48,8 +48,8 @@ for box_name, (
         )
 
 b.Image(
-    model,
     "demo-dimensions.gif",
+    model,
     [
         {
             "Part": part,

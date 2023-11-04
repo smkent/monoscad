@@ -4,7 +4,7 @@ b = ModelBuilder(env)
 model = "keyboard-tray-slide-cap.scad"
 
 b.STL("keyboard-tray-slide-cap.stl", model)
-b.Image(model, "demo.png", {"$fn": 50})
+b.Image("demo.png", model, {"$fn": 50})
 
 b.add_default_targets()
 
