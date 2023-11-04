@@ -20,7 +20,7 @@ Inspired by
 [models][customizable-penguin-case-by-ctag],
 I decided to build a rugged box model of my own! This model can create
 parametric boxes, and can also be used as a library to make customized boxes! I
-chose [OpenSCAD][openscad] so the software and model could be fully open source.
+chose [OpenSCAD][openscad] so the software and model would be fully open source.
 
 ## Features
 
