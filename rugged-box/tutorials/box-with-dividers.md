@@ -264,5 +264,5 @@ The divider box is now complete!
 ![Tutorial Step 7 render](../images/readme/tutorial-box-with-dividers-step-7.png)
 
 
-[github-source]: https://github.com/smkent/monoscad
+[github-source]: https://github.com/smkent/monoscad/tree/main/rugged-box
 [printables-model]: https://www.printables.com/model/637028

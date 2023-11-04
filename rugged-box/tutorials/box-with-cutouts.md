@@ -153,5 +153,5 @@ The box with storage cutouts is now complete!
 ![Tutorial Step 5 render](../images/readme/tutorial-box-with-cutouts-step-5.png)
 
 
-[github-source]: https://github.com/smkent/monoscad
+[github-source]: https://github.com/smkent/monoscad/tree/main/rugged-box
 [printables-model]: https://www.printables.com/model/637028
