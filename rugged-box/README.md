@@ -83,6 +83,8 @@ This model is licensed under [Creative Commons (4.0 International License) Attri
 [openscad-minkowski]: https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Transformations#minkowski
 [openscad]: https://openscad.org
 [parametrizable-rugged-box-openscad-by-dochni]: https://www.printables.com/model/168664-parametrizable-rugged-box-openscad
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/637028
 [rugged-box-parametric-by-whity]: https://www.printables.com/model/258431-rugged-box-parametric
 [sbox-by-michael-fanta]: https://www.printables.com/model/262716-sbox-for-mk234-stackable-toolbox-system
 [waterproof-box-v2-by-zx82net]: https://www.thingiverse.com/thing:4838803

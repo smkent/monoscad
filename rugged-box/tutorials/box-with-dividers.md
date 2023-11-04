@@ -1,8 +1,8 @@
 # Rugged box customization tutorial: Box With Dividers
 
-Tutorial for [**Rugged Storage Box** model](https://github.com/smkent/monoscad)
-by [**bulbasaur0 on
-Printables**](https://www.printables.com/@bulbasaur0_1139994).
+Tutorial for
+[**Rugged Storage Box** model][printables-model] by
+[**bulbasaur0 on Printables**](https://www.printables.com/@bulbasaur0_1139994).
 
 Follow this tutorial to create a rugged box with four compartments.
 
@@ -15,8 +15,8 @@ There are two ways to obtain the model files:
 * Clone the [source git repository][github-source] (`git clone
   https://github.com/smkent/monoscad`). The model code will be placed into the
   `monoscad/rugged-box/` directory where the clone was performed.
-* Download all of the model files from Printables and extract them all to the
-  same directory.
+* Download all of the [model files from Printables][printables-model] and
+  extract them all to the same directory.
 
 This tutorial will use build on the model's `rugged-box-library.scad` file.
 
@@ -265,3 +265,4 @@ The divider box is now complete!
 
 
 [github-source]: https://github.com/smkent/monoscad
+[printables-model]: https://www.printables.com/model/637028
