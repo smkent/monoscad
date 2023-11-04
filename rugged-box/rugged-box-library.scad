@@ -12,20 +12,20 @@ module __end_customizer_options__() { }
 $fa = $preview ? $fa : 2;
 $fs = $preview ? $fs / 2 : 0.2;
 
-screw_diameter = 3;
+// Attachment screw diameter
+screw_diameter = 3; // M3
+
 // Decrease screw hole diameter just slightly for better thread-forming fit
 screw_hole_diameter_size_tolerance = -0.1;
 
-rib_angle = 8;
+// Widen angle of box side ribs
+side_ribs_angle = 8;
 
-// Extra space between box body and hinge
+// Extra space between box body and hinge for clearance
 hinge_extra_setback = 0.2; // [0:0.1:2]
 
 // Screw eyelet diameter as a proportion of screw diameter
 screw_eyelet_size_proportion = 2.5; // [1.5:0.1:5]
-
-screw_hole_diameter = screw_diameter;
-screw_eyelet_radius = screw_hole_diameter * screw_eyelet_size_proportion / 2;
 
 // Public modules
 
@@ -253,6 +253,9 @@ module rbox_part(part) {
 }
 
 // Internal constants
+
+screw_hole_diameter = screw_diameter;
+screw_eyelet_radius = screw_hole_diameter * screw_eyelet_size_proportion / 2;
 
 // For _box_extrude and _box_corners_extrude
 corners_data = [
@@ -660,7 +663,7 @@ module _box_side_ribs() {
         mirror([mx, 0, 0])
         mirror([0, my, 0])
         translate([$b_inner_width / 2, $b_inner_length / 4, 0])
-        _box_rib_angle(rib_angle)
+        _box_rib_angle(side_ribs_angle)
         _box_rib($b_rib_width * 2);
     }
 }
