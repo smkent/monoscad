@@ -1,0 +1,14 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "grommet.scad"
+
+for orientation in ["top", "bottom"]:
+    b.Image(
+        model,
+        f"{orientation}.png",
+        {"$fn": 50, "Print_Orientation": 1 if orientation == "bottom" else 0},
+        camera="5,-10,41,25,0,24,200",
+    )
+
+# vim: ft=python
