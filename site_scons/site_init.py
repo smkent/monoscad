@@ -151,6 +151,7 @@ class ModelBuilder:
                 cmd += ["--variable", pandoc_var]
             run(cmd)
 
+    @ref_filter
     def Document(
         self,
         source: str,
