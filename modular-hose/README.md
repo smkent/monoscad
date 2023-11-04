@@ -48,4 +48,5 @@ Third party components have their own licenses.
 [knurled-openscad]: https://github.com/smkent/knurled-openscad
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
+[openscad]: https://openscad.org
 [parametric-momdular-hose-library-by-axford]: https://www.thingiverse.com/thing:9457
