@@ -10,7 +10,6 @@ def add_deps_target(target, source, env):
 # Build in parallel by default
 SetOption("num_jobs", os.cpu_count())
 
-
 env = Environment(
     OPENSCAD=ARGUMENTS.get("openscad", os.environ.get("OPENSCAD", "openscad")),
     BUILDERS={
@@ -22,7 +21,7 @@ env = Environment(
                 " $OPENSCAD_ARGS"
             ),
             emitter=add_deps_target,
-        )
+        ),
     },
     PREV_REF=ARGUMENTS.get("ref", None),
 )

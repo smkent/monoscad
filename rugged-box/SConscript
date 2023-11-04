@@ -1,0 +1,130 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "rugged-box.scad"
+
+boxes = {
+    "micro": [
+        20,
+        20,
+        5,
+        6,
+        {
+            "Latch_Amount_On_Top": 4,
+            "Latch_Width": 10,
+            "Latch_Screw_Separation": 8,
+            "Rib_Width": 2.5,
+        },
+    ],
+    "mini": [30, 30, 7, 22],
+    "60x30": [60, 30, 7, 25],
+    "120x60": [120, 60, 7, 25],
+}
+
+for box_name, (
+    width,
+    length,
+    top_height,
+    bottom_height,
+    *params,
+) in boxes.items():
+    for part in {"top", "bottom", "latch"}:
+        part_params = {
+            **{
+                "Part": part,
+                "Width": width,
+                "Length": length,
+                "Top_Height": top_height,
+                "Bottom_Height": bottom_height,
+            },
+            **(params[0] if params else {}),
+        }
+        b.STL(model, f"box-{box_name}-{part}.stl", part_params)
+
+b.Image(
+    model,
+    "demo-dimensions.gif",
+    [
+        {
+            "Part": part,
+            "Width": width,
+            "Length": length,
+            "Top_Height": top_height,
+            "Bottom_Height": bottom_height,
+        }
+        for part, width, length, top_height, bottom_height in [
+            ("assembled_open", 160, 90, 20, 45),
+            ("assembled_open", 160, 90, 20, 35),
+            ("assembled_open", 160, 90, 20, 25),
+            ("assembled_open", 160, 90, 15, 25),
+            ("assembled_open", 160, 90, 7, 25),
+            ("assembled_open", 130, 90, 7, 25),
+            ("assembled_open", 100, 90, 7, 25),
+            ("assembled_open", 70, 90, 7, 25),
+            ("assembled_open", 70, 60, 7, 25),
+            ("assembled_open", 70, 60, 7, 15),
+            ("assembled_closed", 70, 60, 7, 15),
+            ("assembled_closed", 100, 60, 7, 15),
+            ("assembled_closed", 130, 60, 7, 15),
+            ("assembled_closed", 160, 60, 7, 15),
+            ("assembled_closed", 160, 90, 7, 15),
+            ("assembled_closed", 160, 90, 7, 25),
+            ("assembled_closed", 160, 90, 7, 35),
+            ("assembled_closed", 160, 90, 7, 45),
+            ("assembled_closed", 160, 90, 15, 45),
+            ("assembled_closed", 160, 90, 20, 45),
+        ]
+    ],
+)
+
+b.Image(
+    model,
+    "demo-edges.gif",
+    [
+        {
+            "Part": part,
+            "Width": 160,
+            "Length": 90,
+            "Top_Height": 20,
+            "Bottom_Height": 45,
+            "Corner_Radius": corner_radius,
+            "Edge_Chamfer_Proportion": edge_chamfer_proportion,
+        }
+        for part, corner_radius, edge_chamfer_proportion in [
+            ("assembled_open", 15, 0.4),
+            ("assembled_open", 15, 0.6),
+            ("assembled_open", 15, 0.8),
+            ("assembled_closed", 15, 0.8),
+            ("assembled_closed", 10, 0.8),
+            ("assembled_closed", 5, 0.8),
+            ("assembled_closed", 5, 0.6),
+            ("assembled_closed", 5, 0.4),
+            ("assembled_closed", 5, 0.2),
+            ("assembled_closed", 5, 0.0),
+            ("assembled_closed", 0, 0.0),
+            ("assembled_open", 0, 0.0),
+            ("assembled_open", 5, 0.0),
+            ("assembled_open", 10, 0.0),
+            ("assembled_open", 15, 0.0),
+            ("assembled_open", 15, 0.0),
+            ("assembled_open", 15, 0.2),
+        ]
+    ],
+)
+b.add_default_targets()
+
+for tutorial_name, steps in {
+    "box-with-cutouts": 5,
+    "box-with-dividers": 7,
+}.items():
+    for tutorial_step in range(1, steps + 1):
+        b.Document(
+            f"tutorials/{tutorial_name}.md", f"tutorial-{tutorial_name}.pdf"
+        )
+        b.Image(
+            f"tutorial-{tutorial_name}.scad",
+            f"tutorial-{tutorial_name}-step-{tutorial_step}.png",
+            {"Tutorial_Step": tutorial_step},
+        )
+
+# vim: ft=python
