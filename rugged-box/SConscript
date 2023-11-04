@@ -117,14 +117,19 @@ for tutorial_name, steps in {
     "box-with-cutouts": 5,
     "box-with-dividers": 7,
 }.items():
+    tutorial_images = []
     for tutorial_step in range(1, steps + 1):
-        b.Document(
-            f"tutorials/{tutorial_name}.md", f"tutorial-{tutorial_name}.pdf"
-        )
+        fn = f"tutorial-{tutorial_name}-step-{tutorial_step}.png"
         b.Image(
             f"tutorial-{tutorial_name}.scad",
-            f"tutorial-{tutorial_name}-step-{tutorial_step}.png",
+            fn,
             {"Tutorial_Step": tutorial_step},
         )
+        tutorial_images.append(fn)
+    b.Document(
+        f"tutorials/{tutorial_name}.md",
+        f"tutorial-{tutorial_name}.pdf",
+        [f"images/publish/{image}" for image in tutorial_images],
+    )
 
 # vim: ft=python
