@@ -179,12 +179,13 @@ Now two crossing dividers should be visible.
 
 ## Step 5: Rugged box interior shape
 
-The dividers we've created are too long for the box length. Even if we sized
-them both to fit, the dividers wouldn't necessarily fit if the box's outer chamfer
-amount was changed. Fortunately, parts can be cut to fit the exact box size.
+The dividers we've created are too long for the box length. Even if we set the
+dividers to the box' interior dimensions, they wouldn't necessarily fit if the
+box's outer chamfer amount was changed. Fortunately, parts can be made to fit
+the exact interior shape.
 
 The `rbox_interior` module renders the interior shape of the box. Temporarily
-comment out the `divider`s calls and add `rbox_interior` to see the interior
+comment out the `divider` calls and add `rbox_interior` to see the interior
 shape:
 
 ```openscad
@@ -204,7 +205,7 @@ rbox_for_bottom() {
 ## Step 6: Fit dividers to interior shape
 
 We can now use the `rbox_interior` shape to cut the divider parts for an exact
-fit! Uncomment the `divider`s calls. Then, place the `divider`s and
+fit! Uncomment the `divider` calls. Then, place the `divider` and
 `rbox_interior` modules within an `intersection` block:
 
 ```openscad
