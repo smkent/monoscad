@@ -13,6 +13,9 @@ $fa = $preview ? $fa : 2;
 $fs = $preview ? $fs / 2 : 0.2;
 
 screw_diameter = 3;
+// Decrease screw hole diameter just slightly for better thread-forming fit
+screw_hole_diameter_size_tolerance = -0.1;
+
 rib_angle = 8;
 
 // Extra space between box body and hinge
@@ -297,6 +300,11 @@ function init_latch_amount_on_top(latch_amount_on_top) = (
         )
 );
 
+function compute_screw_hole_diameter(inner=false) = (
+    inner
+        ? screw_hole_diameter * 1.1
+        : screw_hole_diameter - screw_hole_diameter_size_tolerance
+);
 function screw_offset() = (
     total_lip_thickness() + screw_eyelet_radius + hinge_extra_setback
 );
@@ -726,8 +734,8 @@ module _box_screw_eyelet_body(width=0, angle=360) {
     _rounded_cylinder(width, screw_eyelet_radius, angle=angle);
 }
 
-module _box_screw_hole(width, screw_diameter_adjust=1.0) {
-    sr = screw_hole_diameter / 2 * screw_diameter_adjust;
+module _box_screw_hole(width, increase_screw_diameter=false) {
+    sr = compute_screw_hole_diameter(inner=increase_screw_diameter) / 2;
     rotate([90, 0, 0])
     translate([0, 0, -width])
     cylinder(width * 2, sr, sr);
@@ -874,7 +882,7 @@ module _box_hinge_ribs() {
         translate([hinge_screw_offset(), 0, $b_outer_height])
         _box_screw_hole(
             $b_latch_width,
-            screw_diameter_adjust = ($b_part == "top" ? 1.1 : 1.0)
+            increase_screw_diameter = ($b_part == "top" ? true : false)
         );
     }
 }
@@ -952,9 +960,9 @@ module _latch() {
             }
         }
         // Hinge screw hole
-        _box_screw_hole($b_latch_width, screw_diameter_adjust=1.1);
+        _box_screw_hole($b_latch_width, increase_screw_diameter=true);
         // Catch screw hole
         translate([0, 0, $b_latch_screw_separation])
-        _box_screw_hole($b_latch_width, screw_diameter_adjust=1.0);
+        _box_screw_hole($b_latch_width, increase_screw_diameter=false);
     }
 }
