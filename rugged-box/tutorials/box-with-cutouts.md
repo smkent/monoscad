@@ -2,7 +2,7 @@
 
 Tutorial for
 [**Rugged Storage Box** model][printables-model] by
-[**bulbasaur0 on Printables**](https://www.printables.com/@bulbasaur0_1139994).
+[**bulbasaur0** on Printables](https://www.printables.com/@bulbasaur0_1139994).
 
 Follow this tutorial to create a rugged box with cutouts for AA batteries.
 
