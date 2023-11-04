@@ -1,8 +1,8 @@
-# Rugged Storage Box
+# Parametric and Customizable Rugged Storage Box
 
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
-A parametric rugged storage box for OpenSCAD
+A parametric and customizable rugged storage box for OpenSCAD
 
 ![Renders animation showing various box sizes](images/readme/demo-dimensions.gif)
 ![Renders animation showing various box radii and chamfers](images/readme/demo-edges.gif)

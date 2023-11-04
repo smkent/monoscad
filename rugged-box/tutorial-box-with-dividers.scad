@@ -1,3 +1,12 @@
+/*
+ * Customizable and Parametric Rugged Storage Box
+ * By smkent (GitHub) / bulbasaur0 (Printables)
+ *
+ * Rugged storage box tutorial example
+ *
+ * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
+ */
+
 include <rugged-box-library.scad>;
 
 /* [Tutorial] */
