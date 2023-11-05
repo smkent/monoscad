@@ -12,7 +12,7 @@ include <modular-hose-library.scad>;
 /* [Model Options] */
 
 // Render a full segment or just one of the connector ends
-Connector_Type = 0; // [0: Both, 1: Male, 2: Female]
+Connector_Type = "both"; // ["both": Both, "male": Male, "female": Female]
 
 // Inner diameter at the center (connector attachment point)
 Inner_Diameter = 100;
@@ -30,7 +30,7 @@ Thickness = 0.8; // [0.2:0.1:5]
 Size_Tolerance = 0.0; // [0:0.1:2]
 
 /* [Development Options] */
-Render_Mode = 0; // [0: Normal, 1: Half, 2: 2D shape]
+Render_Mode = "normal"; // [normal: Normal, half: Half, 2d-profile: 2D profile shape]
 
 module __end_customizer_options__() { }
 
@@ -40,29 +40,27 @@ module modular_hose_segment(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
-    connector_type=0,
+    connector_type=CONNECTOR_MALE,
     extra_segment_length=0,
-    render_mode=0
+    render_mode=RENDER_MODE_NORMAL
 ) {
     modular_hose(inner_diameter, thickness, size_tolerance, render_mode) {
-        if (connector_type == 0 || connector_type == 1) {
-            translate([0, 0, connector_type == 0 ? extra_segment_length / 2 : 0])
-            modular_hose_connector(female=false);
+        segment_offset = extra_segment_length / 2;
+        if (connector_type == CONNECTOR_BOTH || connector_type == CONNECTOR_MALE) {
+            translate([0, 0, segment_offset])
+            modular_hose_connector_male();
         }
-        if (connector_type == 0 || connector_type == 2) {
-            mirror(render_mode == 2 ? [1, 0, 0] : [0, 0, 1])
-            translate([0, 0, connector_type == 0 ? extra_segment_length / 2 : 0])
-            modular_hose_connector(female=true);
+        if (connector_type == CONNECTOR_BOTH || connector_type == CONNECTOR_FEMALE) {
+            mirror(render_mode == RENDER_MODE_2D_PROFILE ? [1, 0, 0] : [0, 0, 1])
+            translate([0, 0, segment_offset])
+            modular_hose_connector_female();
         }
         color("slategray", 0.8)
-        if (extra_segment_length) {
-            mirror([(connector_type == 2 ? 1 : 0), 0, 0])
-            translate([0, 0, -extra_segment_length / (connector_type == 0 ? 2 : 1)])
-            linear_extrude(height=extra_segment_length)
-            difference() {
-                circle(inner_diameter / 2 + thickness);
-                circle(inner_diameter / 2);
-            }
+        if (extra_segment_length && render_mode != RENDER_MODE_2D_PROFILE) {
+            translate([0, 0, -extra_segment_length / 2])
+            rotate_extrude(angle=(render_mode == RENDER_MODE_NORMAL ? 360 : 180))
+            translate([inner_diameter / 2, 0])
+            square([thickness, extra_segment_length]);
         }
     }
 }

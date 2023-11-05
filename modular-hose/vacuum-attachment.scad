@@ -11,7 +11,7 @@ include <modular-hose-library.scad>;
 
 /* [Model Options] */
 
-Connector_Type = 2; // [1: Male, 2: Female]
+Connector_Type = "female"; // [male: Male, female: Female]
 
 // Inner diameter at the center (connector attachment point)
 Inner_Diameter = 100;
@@ -68,13 +68,13 @@ module modular_hose_vacuum_attachment(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
-    connector_type=0,
+    connector_type=CONNECTOR_FEMALE,
     extra_segment_length=0,
 ) {
     modular_hose(inner_diameter, thickness, size_tolerance) {
         translate([0, 0, -extra_segment_length / 2])
         mirror([0, 0, 1])
-        modular_hose_connector(female=(connector_type == 2));
+        modular_hose_connector(connector_type);
 
         color("thistle", 0.8)
         translate([0, 0, extra_segment_length / 2])

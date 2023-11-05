@@ -42,7 +42,7 @@ module modular_hose_template(
     modular_hose(inner_diameter, thickness, size_tolerance) {
         // Example part assembly, replace this with your part
 
-        modular_hose_connector();
+        modular_hose_connector_male();
         mirror([0, 0, 1])
         modular_hose_template_part();
     }
