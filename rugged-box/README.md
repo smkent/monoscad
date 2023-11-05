@@ -59,11 +59,19 @@ each part, perform a render (F6) and export to STL (F7).
 Print the box top and bottom parts on their outer faces. Latches print on their
 side. No supports are needed.
 
+I have printed boxes from both PLA and PETG.
+
+Recommended print settings:
+
+* 3 perimeters (instead of the usual default of 2)
+* 30% infill
+* For the latches, a brim may be helpful for bed adhesion
+
 ![Slicer screenshot](images/readme/slicer-screenshot.png)
 
-## Make your own custom boxes
+## Design your own custom boxes
 
-Make your own custom boxes using `rugged-box-library.scad`! Try one of these
+Design your own custom boxes using `rugged-box-library.scad`! Try one of these
 tutorials for inspiration.
 
 | [Tutorial: **Rugged box with dividers**](tutorials/box-with-dividers.md) | [Tutorial: **Rugged box with cutouts**](tutorials/box-with-cutouts.md) |

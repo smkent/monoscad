@@ -95,17 +95,17 @@ dimensions and various other properties which can be used in your model. Start
 with this:
 
 ```openscad
-rbox(40, 40, 40)
+rbox(40, 40, 40, 15)
 ```
 
-This configures a box with a width of 40, length of 40, and bottom height of 40.
-(We are not rendering the top and so have omitted a top height.)
+This configures a box with a width of 40, length of 40, bottom height of 40, and
+top height of 15.
 
 Now, a part may be added as a child module to `rbox`. As the goal is to create a
 box bottom with cutouts, use `box_bottom`:
 
 ```openscad
-rbox(40, 40, 40)
+rbox(40, 40, 40, 15)
 box_bottom();
 ```
 
@@ -121,7 +121,7 @@ part. Simply adding `rbox_interior` as a child module to `rbox_bottom` creates a
 solid box bottom:
 
 ```openscad
-rbox(40, 40, 40)
+rbox(40, 40, 40, 15)
 rbox_bottom() {
     rbox_interior();
 }
@@ -131,14 +131,14 @@ The box bottom interior should now be solid.
 
 ![Tutorial Step 4 render](../images/readme/tutorial-box-with-cutouts-step-4.png)
 
-## Step 5: Finished!
+## Step 5: Complete box bottom
 
 With a solid box and cutouts, all that's left is to subtract the cutouts from
 the box. Uncomment the `battery_holes` module call and place it as a subtraction
 from `rbox_interior` using `difference`:
 
 ```openscad
-rbox(40, 40, 40)
+rbox(40, 40, 40, 15)
 rbox_bottom() {
     difference() {
         rbox_interior();
@@ -148,9 +148,40 @@ rbox_bottom() {
 }
 ```
 
-The box with storage cutouts is now complete!
+The box bottom with storage cutouts is now complete!
 
 ![Tutorial Step 5 render](../images/readme/tutorial-box-with-cutouts-step-5.png)
+
+## Step 6: Finished!
+
+To make a complete box, we can add a box top and latch to render a complete set
+of parts! Change the top `rbox` module to a block, and add `rbox_top` and
+`rbox_latch` modules within the `rbox` module, like this:
+
+```openscad
+rbox(40, 40, 40, 15) {
+    rbox_bottom() {
+        difference() {
+            rbox_interior();
+            color("lightblue")
+            battery_holes();
+        }
+    }
+
+    translate([60, 0, 0])
+    rbox_top();
+
+    translate([-60, 0, 0])
+    rbox_latch();
+}
+```
+
+All of the box parts are ready to render and print!
+
+To save individual parts to separate STL files, comment out all parts except
+each part to render one at a time.
+
+![Tutorial Step 6 render](../images/readme/tutorial-box-with-cutouts-step-6.png)
 
 
 [github-source]: https://github.com/smkent/monoscad/tree/main/rugged-box

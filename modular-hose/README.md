@@ -73,9 +73,9 @@ female connector end raised lip, depending on the connector diameter).
 | ![Magnetic 120mm fan grommet](images/readme/part-magnetic-grommet-fan.png) | **120mm fan grommet** (`magnetic-parts.scad`): A 120mm fan base grommet with base holes for magnets/screws (configurable size). Use with a connector. |
 | ![Vacuum attachment render](images/readme/part-vacuum-attachment.png) | **Vacuum attachment** (`vacuum-attachment.scad`): A sample vacuum attachment that can connect to the end of a hose |
 
-## Make your own custom parts and attachments!
+## Design your own custom parts and attachments!
 
-Make your own custom parts using `modular-hose-library.scad`!
+Design your own custom parts using `modular-hose-library.scad`!
 
 Here's an example of how to create a hose part with a connector on top of
 another shape:
@@ -97,9 +97,9 @@ modular_hose(inner_diameter=50) {
     // the parts to face down.
     mirror([0, 0, 1]) {
 
-        // Let's create a square attachment base with a hole matching the hose
-        // diameter (50mm). We can do this by creating a square with a hole
-        // removed from the center, followed by extruding that to a 3D shape.
+        // Let's create a 100x100mm square attachment base with a hole matching
+        // the hose diameter (50mm). We can do this by creating a square with a
+        // circle removed from the center, then extruding that to a 3D shape.
         color("lemonchiffon", 0.8)
         linear_extrude(height=10) // Make the attachment part 10mm thick
         difference() {
