@@ -58,6 +58,10 @@ female connector end raised lip, depending on the connector diameter).
 
 ![Slicer screenshot](images/readme/slicer-screenshot-segment.png)
 
+## Make your own custom parts and attachments!
+
+Make your own custom parts using `modular-hose-library.scad`!
+
 ## Attribution and License
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
