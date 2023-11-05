@@ -82,7 +82,7 @@ another shape:
 
 ```openscad
 
-// Create your new model file in the same directory as modular-hose-library.scad
+// Create this new model file in the same directory as modular-hose-library.scad
 include <modular-hose-library.scad>;
 
 // Initialize a modular hose part with an inner diameter of 50mm
