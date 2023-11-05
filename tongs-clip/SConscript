@@ -1,0 +1,11 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "tongs-clip.scad"
+
+b.STL("tongs-clip.stl", model)
+b.Image("demo.png", model, {"$fa": 2, "$fs": 0.4})
+
+b.add_default_targets()
+
+# vim: ft=python
