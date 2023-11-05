@@ -72,9 +72,41 @@ for model_type_name, model_type in [
 b.Image(
     "demo.png",
     "demo.scad",
-    {"Inner_Diameter": interior_diameter},
+    {"Inner_Diameter": interior_diameter, "Demo": "parts"},
     view_options="axes,scales",
 )
+
+b.Image(
+    "demo-measurement.png",
+    "demo.scad",
+    {
+        "Inner_Diameter": interior_diameter,
+        "Demo": "measurement",
+        "Measurement_Text": 0,
+    },
+    camera="0,0,20,55,0,15,350",
+)
+
+b.Image(
+    "part-segment.png", "segment.scad", {"Inner_Diameter": interior_diameter}
+)
+b.Image(
+    "part-vacuum-attachment.png",
+    "vacuum-attachment.scad",
+    {"Inner_Diameter": interior_diameter},
+)
+for model_type, model_type_id in [("connector", 0), ("grommet", 1)]:
+    for plate_type, plate_type_id in [("round", 0), ("fan", 1)]:
+        b.Image(
+            f"part-magnetic-{model_type}-{plate_type}.png",
+            "magnetic-parts.scad",
+            {
+                "Inner_Diameter": interior_diameter,
+                "Model_Type": model_type_id,
+                "Plate_Type": plate_type_id,
+            },
+            camera="0,0,0,150,0,28,450" if model_type == "connector" else None,
+        )
 
 b.add_default_targets()
 

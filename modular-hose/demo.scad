@@ -12,7 +12,17 @@ use <segment.scad>;
 use <magnetic-parts.scad>;
 use <vacuum-attachment.scad>;
 
+/* [Demo Selection] */
+
+Demo = "parts"; // [parts: Part assortment, measurement: Measurement example]
+
+/* [Model Options] */
+
 Inner_Diameter = 100; // [20:1:100]
+
+/* [Hidden] */
+
+Measurement_Text = true;
 
 module __end_customizer_options__() { }
 
@@ -40,7 +50,8 @@ module stack_parts() {
     }
 }
 
-module modular_hose_demo(id) {
+module modular_hose_demo_parts() {
+    id = Inner_Diameter;
     place_part(0, 0)
     modular_hose_segment(id);
 
@@ -65,6 +76,45 @@ module modular_hose_demo(id) {
     }
 }
 
-mirror([1, 0, 0])
-center_demo(1, 1)
-modular_hose_demo(Inner_Diameter);
+module modular_hose_demo_measurement() {
+    id = Inner_Diameter;
+    line_height = id / 10;
+    text_size = line_height * 0.9;
+    modular_hose_segment(inner_diameter=Inner_Diameter, render_mode=1);
+
+    color("yellow", 0.2)
+    linear_extrude(height=0.1)
+    polygon(points=[
+        [-id / 2, 0],
+        [-id / 2 + line_height, line_height],
+        [id / 2 - line_height, line_height],
+        [id / 2, 0],
+        [id / 2 - line_height, -line_height],
+        [-id / 2 + line_height, -line_height],
+    ]);
+
+    color("mintcream", 1.0)
+    linear_extrude(height=0.5) {
+        text("Inner Diameter",
+            halign="center",
+            valign=(Measurement_Text ? "bottom" : "center"),
+            size=text_size
+        );
+        if (Measurement_Text) {
+            translate([0, -line_height])
+            text(str("\u2190 ", id, "mm", " \u2192"),
+                halign="center",
+                size=text_size
+            );
+        }
+    }
+}
+
+if (Demo == "parts") {
+    mirror([1, 0, 0])
+    center_demo(1, 1)
+    modular_hose_demo_parts();
+} else if (Demo == "measurement") {
+    modular_hose_demo_measurement();
+
+}
