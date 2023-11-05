@@ -5,6 +5,9 @@
 Simple clip for a pair of tongs
 
 ![Model render](images/readme/demo.png)
+![Photo of original clip next to printed clip](images/readme/photo1.jpg)
+![Photo of printed clip on tongs](images/readme/photo2.jpg)
+![Photo of printed clip on tongs](images/readme/photo3.jpg)
 
 ## Description
 
