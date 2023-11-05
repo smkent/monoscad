@@ -22,9 +22,9 @@ modular_hose(inner_diameter=50) {
     // the parts to face down.
     mirror([0, 0, 1]) {
 
-        // Let's create a square attachment base with a hole matching the hose
-        // diameter (50mm). We can do this by creating a square with a hole
-        // removed from the center, followed by extruding that to a 3D shape.
+        // Let's create a 100x100mm square attachment base with a hole matching
+        // the hose diameter (50mm). We can do this by creating a square with a
+        // circle removed from the center, then extruding that to a 3D shape.
         color("lemonchiffon", 0.8)
         linear_extrude(height=10) // Make the attachment part 10mm thick
         difference() {

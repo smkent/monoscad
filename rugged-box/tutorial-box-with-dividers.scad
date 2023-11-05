@@ -10,7 +10,7 @@
 include <rugged-box-library.scad>;
 
 /* [Tutorial] */
-Tutorial_Step = 7; // [1: 1 - Rugged box initialization, 2: 2 - Divider module, 3: 3 - Rounded divider module, 4: 4 - Two dividers, 5: 5 - Rugged box interior shape, 6: 6 - Fit dividers to interior shape, 7: 7 - Finished example]
+Tutorial_Step = 7; // [1: 1 - Rugged box initialization, 2: 2 - Divider module, 3: 3 - Rounded divider module, 4: 4 - Two dividers, 5: 5 - Rugged box interior shape, 6: 6 - Fit dividers to interior shape, 7: 7 - Complete box bottom, 8: 8 - Complete parts set]
 
 module tutorial_step_2() {
 
@@ -21,7 +21,7 @@ module tutorial_step_2() {
         cube([divider_length, $b_wall_thickness, $b_inner_height], center=true);
     }
 
-    rbox(60, 40, 30)
+    rbox(60, 40, 30, 10)
     rbox_for_bottom() {
         color("yellow")
         divider();
@@ -42,7 +42,7 @@ module tutorial_step_3() {
         square([$b_wall_thickness, $b_outer_height], center=true);
     }
 
-    rbox(60, 40, 30)
+    rbox(60, 40, 30, 10)
     rbox_for_bottom() {
         color("yellow")
         divider();
@@ -63,7 +63,7 @@ module tutorial_step_4() {
         square([$b_wall_thickness, $b_outer_height], center=true);
     }
 
-    rbox(60, 40, 30)
+    rbox(60, 40, 30, 10)
     rbox_for_bottom() {
         color("yellow")
         for (rot = [0:1:1]) {
@@ -87,7 +87,7 @@ module tutorial_step_6() {
         square([$b_wall_thickness, $b_outer_height], center=true);
     }
 
-    rbox(60, 40, 30)
+    rbox(60, 40, 30, 10)
     rbox_for_bottom() {
         color("yellow")
         intersection() {
@@ -114,7 +114,7 @@ module tutorial_step_7() {
         square([$b_wall_thickness, $b_outer_height], center=true);
     }
 
-    rbox(60, 40, 30)
+    rbox(60, 40, 30, 10)
     rbox_bottom() {
         color("yellow")
         render()
@@ -128,6 +128,42 @@ module tutorial_step_7() {
     }
 
 }
+
+module tutorial_step_8() {
+
+    module divider() {
+        divider_length = max($b_curved_inner_length, $b_curved_inner_width);
+        rotate([90, 0, 90])
+        translate([0, 0, -divider_length / 2])
+        linear_extrude(height=divider_length)
+        offset($b_edge_radius)
+        offset(-$b_edge_radius)
+        translate([0, $b_outer_height / 2])
+        square([$b_wall_thickness, $b_outer_height], center=true);
+    }
+
+    rbox(60, 40, 30, 10) {
+        rbox_bottom() {
+            color("yellow")
+            render()
+            intersection() {
+                rbox_interior();
+                for (rot = [0:1:1]) {
+                    rotate([0, 0, rot ? 90 : 0])
+                    divider();
+                }
+            }
+        }
+
+        translate([80, 0, 0])
+        rbox_top();
+
+        translate([-80, 0, 0])
+        rbox_latch();
+    }
+
+}
+
 
 if (Tutorial_Step == 1) {
 
@@ -160,5 +196,9 @@ if (Tutorial_Step == 1) {
 } else if (Tutorial_Step == 7) {
 
     tutorial_step_7();
+
+} else if (Tutorial_Step == 8) {
+
+    tutorial_step_8();
 
 }

@@ -119,8 +119,8 @@ b.Image(
 )
 
 for tutorial_name, steps in {
-    "box-with-cutouts": 5,
-    "box-with-dividers": 7,
+    "box-with-cutouts": 6,
+    "box-with-dividers": 8,
 }.items():
     tutorial_images = []
     for tutorial_step in range(1, steps + 1):

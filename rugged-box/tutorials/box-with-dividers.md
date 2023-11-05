@@ -42,17 +42,17 @@ dimensions and various other properties which can be used in your model.
 Let's start with this:
 
 ```openscad
-rbox(60, 40, 30)
+rbox(60, 40, 30, 10)
 ```
 
-This configures a box with a width of 60, length of 40, and bottom height of 30.
-(We are not rendering the top and so have omitted a top height.)
+This configures a box with a width of 60, length of 40, bottom height of 30, and
+top height of 10.
 
 Now, a part may be added as a child module to `rbox`. As the goal is to create a
 box bottom with dividers, use `box_bottom`:
 
 ```openscad
-rbox(60, 40, 30)
+rbox(60, 40, 30, 10)
 box_bottom();
 ```
 
@@ -92,7 +92,7 @@ For `$b_inner_height` to be set, the `divider` module must be placed within a
 top or bottom part module. Add `divider` within `rbox_bottom`:
 
 ```openscad
-rbox(60, 40, 30)
+rbox(60, 40, 30, 10)
 rbox_bottom() {
     color("yellow")
     divider();
@@ -105,7 +105,7 @@ bottom without actually rendering the bottom using `rbox_for_bottom`. Update
 your model code to use `rbox_for_bottom`:
 
 ```openscad
-rbox(60, 40, 30)
+rbox(60, 40, 30, 10)
 rbox_bottom() {
     color("yellow")
     divider();
@@ -163,7 +163,7 @@ Then, the `divider` module just needs to be repeated. Update your model code to
 place two dividers, one of which is rotated:
 
 ```openscad
-rbox(60, 40, 30)
+rbox(60, 40, 30, 10)
 rbox_for_bottom() {
     color("yellow")
     for (rot = [0:1:1]) {
@@ -189,7 +189,7 @@ comment out the `divider` calls and add `rbox_interior` to see the interior
 shape:
 
 ```openscad
-rbox(60, 40, 30)
+rbox(60, 40, 30, 10)
 rbox_for_bottom() {
     rbox_interior();
     // color("yellow")
@@ -209,7 +209,7 @@ fit! Uncomment the `divider` calls. Then, place the `divider` and
 `rbox_interior` modules within an `intersection` block:
 
 ```openscad
-rbox(60, 40, 30)
+rbox(60, 40, 30, 10)
 rbox_for_bottom() {
     intersection() {
         rbox_interior();
@@ -226,7 +226,7 @@ The dividers are now sized for the box interior.
 
 ![Tutorial Step 6 render](../images/readme/tutorial-box-with-dividers-step-6.png)
 
-## Step 7: Finished!
+## Step 7: Complete box bottom
 
 All that's left is to re-add the box bottom itself. Change `rbox_for_bottom` to
 `rbox_bottom` in your model file to see your completed box model!
@@ -245,7 +245,7 @@ module divider() {
     square([$b_wall_thickness, $b_outer_height], center=true);
 }
 
-rbox(60, 40, 30)
+rbox(60, 40, 30, 10)
 rbox_bottom() {
     color("yellow")
     render()
@@ -259,9 +259,44 @@ rbox_bottom() {
 }
 ```
 
-The divider box is now complete!
+The divider box bottom is now complete!
 
 ![Tutorial Step 7 render](../images/readme/tutorial-box-with-dividers-step-7.png)
+
+## Step 8: Finished!
+
+To make a complete box, we can add a box top and latch to render a complete set
+of parts! Change the top `rbox` module to a block, and add `rbox_top` and
+`rbox_latch` modules within the `rbox` module, like this:
+
+```openscad
+rbox(60, 40, 30, 10) {
+    rbox_bottom() {
+        color("yellow")
+        render()
+        intersection() {
+            rbox_interior();
+            for (rot = [0:1:1]) {
+                rotate([0, 0, rot ? 90 : 0])
+                divider();
+            }
+        }
+    }
+
+    translate([80, 0, 0])
+    rbox_top();
+
+    translate([-80, 0, 0])
+    rbox_latch();
+}
+```
+
+All of the box parts are ready to render and print!
+
+To save individual parts to separate STL files, comment out all parts except
+each part to render one at a time.
+
+![Tutorial Step 8 render](../images/readme/tutorial-box-with-dividers-step-8.png)
 
 
 [github-source]: https://github.com/smkent/monoscad/tree/main/rugged-box

@@ -169,7 +169,7 @@ module rbox_for_bottom() { _box_part_setup("bottom") children(); }
 
 module rbox_for_interior() { translate([0, 0, $b_wall_thickness]) children(); }
 
-module rbox_latch() { _latch(); }
+module rbox_latch(placement="print") { _latch(placement); }
 
 module rbox_body() {
     _box_color()
@@ -224,8 +224,7 @@ module rbox_part(part) {
             mirror([0, 1, 0])
             _box_attachment_placement()
             rotate([-135, 0, 0])
-            rotate([180, 0, 90])
-            rbox_latch();
+            rbox_latch(placement="box-preview");
         }
     } else if (part == "assembled_closed") {
         rbox_bottom();
@@ -240,17 +239,14 @@ module rbox_part(part) {
             ])
             mirror([0, 1, 0])
             _box_attachment_placement()
-            rotate([180, 0, 90])
-            rbox_latch();
+            rbox_latch(placement="box-preview");
         }
     } else if (part == "bottom") {
         rbox_bottom();
     } else if (part == "top") {
         rbox_top();
     } else if (part == "latch") {
-        translate([0, 0, $b_latch_width / 2])
-        rotate([-90, 0, 0])
-        rbox_latch();
+        rbox_latch(placement="print");
     }
 }
 
@@ -938,7 +934,7 @@ module _latch_catch_handle(width) {
     }
 }
 
-module _latch() {
+module _latch_part() {
     bw = screw_eyelet_radius - screw_hole_diameter / 2;
     mirror([0, 0, 1])
     color("mintcream", 0.8)
@@ -958,5 +954,18 @@ module _latch() {
         // Catch screw hole
         translate([0, 0, $b_latch_screw_separation])
         _box_screw_hole($b_latch_width, increase_screw_diameter=false);
+    }
+}
+
+module _latch(placement="default") {
+    if (placement == "print") {
+        translate([0, $b_latch_screw_separation / 2, $b_latch_width / 2])
+        rotate([-90, 0, 0])
+        _latch_part();
+    } else if (placement == "box-preview") {
+        rotate([180, 0, 90])
+        _latch_part();
+    } else {
+        _latch_part();
     }
 }
