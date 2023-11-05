@@ -58,7 +58,7 @@ module modular_hose_demo_parts() {
     place_part(-1, 0)
     translate([0, 0, -id * 0.6])
     modular_hose(id)
-    modular_hose_connector(female=true);
+    modular_hose_connector_female();
 
     place_part(-0.5, 1)
     modular_hose_vacuum_attachment(id, connector_type=2);

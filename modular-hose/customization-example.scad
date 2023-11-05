@@ -13,8 +13,9 @@ include <modular-hose-library.scad>;
 // Initialize a modular hose part with an inner diameter of 50mm
 modular_hose(inner_diameter=50) {
 
-    // Create a male connector. For a female connector, set female=true.
-    modular_hose_connector(female=false);
+    // Create a male connector.
+    // For a female connector, use modular_hose_connector_female().
+    modular_hose_connector_male();
 
     // Since connectors render centered at the origin, attach our new part by
     // facing it downwards instead of upwards. Mirroring along the Z-axis flips

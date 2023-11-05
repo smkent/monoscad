@@ -12,47 +12,45 @@ b.STL(
 b.STL(
     f"vacuum-attachment-{interior_diameter}mm.stl",
     "vacuum-attachment.scad",
-    {"Inner_Diameter": interior_diameter, "Connector_Type": 2},
+    {"Inner_Diameter": interior_diameter, "Connector_Type": "female"},
 )
 
-for model_type_name, model_type in [("grommet", 1), ("connector", 0)]:
+for model_type in {"grommet", "connector"}:
     for magnet_holes in [0, 1]:
         fn_magnets = "-magnets" if magnet_holes else ""
         b.STL(
             (
-                f"120mm-fan-{model_type_name}"
+                f"120mm-fan-{model_type}"
                 f"-{interior_diameter}mm{fn_magnets}.stl"
             ),
             parts_model,
             {
                 "Inner_Diameter": interior_diameter,
                 "Model_Type": model_type,
-                "Connector_Type": 1,
-                "Plate_Type": 1,
+                "Connector_Type": "male",
+                "Plate_Type": "fan",
                 "Grommet_Diameter": 120,
                 "Magnet_Holes": magnet_holes,
                 "Screw_Holes": 1,
                 "Screw_Hole_Top": (
-                    2 if model_type_name == "grommet" and magnet_holes else 0
+                    "inset"
+                    if model_type == "grommet" and magnet_holes
+                    else "none"
                 ),
             },
         )
 
-for model_type_name, model_type in [
-    ("connector", 0),
-    ("grommet", 1),
-    ("plate", -1),
-]:
-    connector_types = [("male", 1)]
-    if model_type_name == "connector":
-        connector_types.append(("female", 2))
-    for connector_type_name, connector_type in connector_types:
+for model_type in {"connector", "grommet", "plate"}:
+    connector_types = {"male"}
+    if model_type == "connector":
+        connector_types.add("female")
+    for connector_type in connector_types:
         fn_connector_type = (
-            f"-{connector_type_name}" if model_type_name == "connector" else ""
+            f"-{connector_type}" if model_type == "connector" else ""
         )
         b.STL(
             (
-                f"magnetic-{model_type_name}"
+                f"magnetic-{model_type}"
                 f"-{interior_diameter}mm{fn_connector_type}.stl"
             ),
             parts_model,
@@ -60,11 +58,11 @@ for model_type_name, model_type in [
                 "Inner_Diameter": interior_diameter,
                 "Model_Type": model_type,
                 "Connector_Type": connector_type,
-                "Plate_Type": 0,
+                "Plate_Type": "round",
                 "Grommet_Diameter": 101.6,
                 "Magnet_Holes": 1,
-                "Screw_Holes": 0 if model_type_name == "connector" else 1,
-                "Screw_Hole_Top": 0 if model_type_name == "connector" else 1,
+                "Screw_Holes": 0 if model_type == "connector" else 1,
+                "Screw_Hole_Top": 0 if model_type == "connector" else 1,
             },
         )
 
@@ -95,15 +93,15 @@ b.Image(
     "vacuum-attachment.scad",
     {"Inner_Diameter": interior_diameter},
 )
-for model_type, model_type_id in [("connector", 0), ("grommet", 1)]:
-    for plate_type, plate_type_id in [("round", 0), ("fan", 1)]:
+for model_type in {"connector", "grommet"}:
+    for plate_type in {"round", "fan"}:
         b.Image(
             f"part-magnetic-{model_type}-{plate_type}.png",
             "magnetic-parts.scad",
             {
                 "Inner_Diameter": interior_diameter,
-                "Model_Type": model_type_id,
-                "Plate_Type": plate_type_id,
+                "Model_Type": model_type,
+                "Plate_Type": plate_type,
             },
             camera="0,0,0,150,0,28,450" if model_type == "connector" else None,
         )

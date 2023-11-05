@@ -11,9 +11,9 @@ include <modular-hose-library.scad>;
 use <knurled-openscad/knurled.scad>;
 
 /* [Model Options] */
-Model_Type = 0; // [-1: Plate only, 0: Connector, 1: Grommet]
-Connector_Type = 1; // [1: Male, 2: Female]
-Plate_Type = 0; // [0: Round, 1: Fan]
+Model_Type = "connector"; // [plate_only: Plate only, connector: Connector, grommet: Grommet]
+Connector_Type = "male"; // [male: Male, female: Female]
+Plate_Type = "round"; // [round: Round, fan: Fan]
 
 /* [Size Adjustment] */
 // Inner diameter at the center (connector attachment point)
@@ -50,7 +50,7 @@ Magnet_Thickness = 3; // [1:0.1:5]
 /* [Screws] */
 Screw_Holes = true;
 Screw_Diameter = 4; // [3:1:8]
-Screw_Hole_Top = 2; // [0: None, 1: Chamfer, 2: Inset]
+Screw_Hole_Top = "inset"; // [none: None, chamfer: Chamfer, inset: Inset]
 
 /* [Advanced Size Adjustment] */
 
@@ -88,7 +88,7 @@ module circle_even_placement(count, stagger=false) {
 }
 
 module fan_screw_placement_selection() {
-    if ($fhp_plate_type == 1) {
+    if ($fhp_plate_type == "fan") {
         fan_screw_placement()
         children();
     } else {
@@ -108,7 +108,7 @@ module plate_body(solid=false) {
     plate_size = $fhp_fan_size + 0;
     difference() {
         difference() {
-            if ($fhp_plate_type == 1) {
+            if ($fhp_plate_type == "fan") {
                 linear_extrude(height=$fhp_plate_thickness)
                 offset($fhp_plate_screw_hole_inset)
                 offset(-$fhp_plate_screw_hole_inset)
@@ -143,10 +143,10 @@ module plate_body(solid=false) {
         }
         if ($fhp_screw_holes) {
             fan_screw_placement_selection()
-            if ($fhp_screw_hole_top == 1) {
+            if ($fhp_screw_hole_top == "chamfer") {
                 translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter])
                 cylinder($fhp_screw_diameter + 0.001, $fhp_screw_diameter / 2, $fhp_screw_diameter);
-            } else if ($fhp_screw_hole_top == 2) {
+            } else if ($fhp_screw_hole_top == "inset") {
                 translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter])
                 difference() {
                     linear_extrude(height=$fhp_screw_diameter + 0.001)
@@ -182,7 +182,7 @@ module plate_connector_support(height) {
 
 module plate_full(solid=false) {
     color("mintcream", 0.8) {
-        if ($fhp_model_type == 0) {
+        if ($fhp_model_type == "connector") {
             connector_support_height = $fh_origin_inner_radius / 10;
             plate_connector_support(connector_support_height);
             translate([0, 0, connector_support_height])
@@ -213,10 +213,10 @@ module modular_hose_magnetic_part(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
-    model_type=0,
-    connector_type=1,
+    model_type="connector",
+    connector_type=CONNECTOR_MALE,
     fan_size=120,
-    plate_type=0,
+    plate_type="round",
     plate_screw_hole_inset=7.5,
     plate_thickness=4.0,
     plate_knurled=true,
@@ -225,7 +225,7 @@ module modular_hose_magnetic_part(
     magnet_thickness=3,
     screw_holes=true,
     screw_diameter=4,
-    screw_hole_top=0,
+    screw_hole_top="none",
     grommet_depth=19,
     grommet_diameter=115,
     grommet_diameter_adjustment=0
@@ -249,14 +249,14 @@ module modular_hose_magnetic_part(
         difference() {
             union() {
                 mirror([0, 0, 1])
-                plate_full(solid=(model_type == 1));
-                if (model_type == 0) {
-                    modular_hose_connector(female=(connector_type == 2));
-                } else if (model_type == 1) {
+                plate_full(solid=(model_type == "grommet"));
+                if (model_type == "connector") {
+                    modular_hose_connector(connector_type);
+                } else if (model_type == "grommet") {
                     grommet_body();
                 }
             }
-            if (model_type == 1) {
+            if (model_type == "grommet") {
                 grommet_interior();
             }
         }
