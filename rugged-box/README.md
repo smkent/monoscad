@@ -7,7 +7,10 @@ and customize your own boxes!
 
 ![Renders animation showing various box sizes](images/readme/demo-dimensions.gif)
 ![Renders animation showing various box radii and chamfers](images/readme/demo-edges.gif)
-![Photo of two small printed rugged boxes](images/readme/photo.jpg)
+![Photo of closed box](images/readme/photo1.jpg)
+![Photo of open box with multimeter inside](images/readme/photo2.jpg)
+![Photo of open empty box](images/readme/photo3.jpg)
+![Photo of closed box with mini boxes](images/readme/photo4.jpg)
 
 # Description
 
