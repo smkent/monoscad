@@ -67,10 +67,10 @@ female connector end raised lip, depending on the connector diameter).
 | Render | Part Info |
 | ------ | --------- |
 | ![Segment part render](images/readme/part-segment.png) | **Flexible segment** (`segment.scad`): Print as many of these as you need for your desired hose length |
-| ![Magnetic round connector](images/readme/part-magnetic-connector-round.png) | **Magnetic round connector** (`magnetic-parts.scad`): A round base connector with base holes for magnets (configurable size). Use with another magnetic connector or a grommet. |
-| ![Magnetic round grommet](images/readme/part-magnetic-grommet-round.png) | **Magnetic round grommet** (`magnetic-parts.scad`): A round base grommet with base holes for magnets (configurable size). Use with a magnetic connector. |
-| ![Magnetic 120mm fan connector](images/readme/part-magnetic-connector-fan.png) | **Magnetic 120mm fan connector** (`magnetic-parts.scad`): A 120mm fan base connector with base holes for magnets (configurable size). Use with another magnetic connector or a grommet. |
-| ![Magnetic 120mm fan grommet](images/readme/part-magnetic-grommet-fan.png) | **Magnetic 120mm fan grommet** (`magnetic-parts.scad`): A 120mm fan base grommet with base holes for magnets (configurable size). Use with a magnetic connector. |
+| ![Magnetic round connector](images/readme/part-magnetic-connector-round.png) | **Round connector** (`magnetic-parts.scad`): A round base connector with base holes for magnets/screws (configurable size). Use with another connector or a grommet. |
+| ![Magnetic round grommet](images/readme/part-magnetic-grommet-round.png) | **Round grommet** (`magnetic-parts.scad`): A round base grommet with base holes for magnets/screws (configurable size). Use with a connector. |
+| ![Magnetic 120mm fan connector](images/readme/part-magnetic-connector-fan.png) | **120mm fan connector** (`magnetic-parts.scad`): A 120mm fan base connector with base holes for magnets/screws (configurable size). Use with another connector or a grommet. |
+| ![Magnetic 120mm fan grommet](images/readme/part-magnetic-grommet-fan.png) | **120mm fan grommet** (`magnetic-parts.scad`): A 120mm fan base grommet with base holes for magnets/screws (configurable size). Use with a connector. |
 
 ## Make your own custom parts and attachments!
 
