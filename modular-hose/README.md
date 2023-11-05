@@ -23,14 +23,31 @@ Inspired by several other
 modular hose model and library! I chose [OpenSCAD][openscad] so the software and
 model would be fully open source.
 
-Sizing is based on the smallest interior diameter, such as where the two halves
-of a segment join at the center:
+## Features
+
+This model was built with sizing based on the smallest interior diameter, such
+as where the two halves of a segment join at the center:
 
 ![Measurement demo](images/readme/demo-measurement.png)
 
-## Setup
+This diameter, wall thickness, and connector size tolerance are configurable for
+all parts. Selecting the same values for each part will create compatible parts.
 
-See [the top-level README.md](/README.md) for libraries installation.
+The model code is also organized as a library, so you can make your own custom
+parts!
+
+## Setup and rendering
+
+### Setup
+
+This model uses third-party libraries, such as [BOSL][bosl] for connector curve
+math. See [the top-level README.md](/README.md) for libraries installation.
+
+### Model files and rendering
+
+Ensure all of the model's `*.scad` files are placed in the same directory. Open
+a part model file (such as `segment.scad`) in OpenSCAD. Select your desired
+sizing and options in the OpenSCAD Customizer before rendering each part.
 
 ## Attribution and License
 
