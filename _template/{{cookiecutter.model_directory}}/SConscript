@@ -1,5 +1,11 @@
 Import("env")
 b = ModelBuilder(env)
+
+model == "{{ cookiecutter.model_directory }}"
+
+b.STL("{{ cookiecutter.model_directory }}.stl", model)
+b.Image("demo.png", model)
+
 b.add_default_targets()
 
 # vim: ft=python
