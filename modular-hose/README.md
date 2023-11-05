@@ -71,6 +71,7 @@ female connector end raised lip, depending on the connector diameter).
 | ![Magnetic round grommet](images/readme/part-magnetic-grommet-round.png) | **Round grommet** (`magnetic-parts.scad`): A round base grommet with base holes for magnets/screws (configurable size). Use with a connector. |
 | ![Magnetic 120mm fan connector](images/readme/part-magnetic-connector-fan.png) | **120mm fan connector** (`magnetic-parts.scad`): A 120mm fan base connector with base holes for magnets/screws (configurable size). Use with another connector or a grommet. |
 | ![Magnetic 120mm fan grommet](images/readme/part-magnetic-grommet-fan.png) | **120mm fan grommet** (`magnetic-parts.scad`): A 120mm fan base grommet with base holes for magnets/screws (configurable size). Use with a connector. |
+| ![Vacuum attachment render](images/readme/part-vacuum-attachment.png) | **Vacuum attachment** (`vacuum-attachment.scad`): A sample vacuum attachment that can connect to the end of a hose |
 
 ## Make your own custom parts and attachments!
 

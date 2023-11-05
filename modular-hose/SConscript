@@ -90,6 +90,11 @@ b.Image(
 b.Image(
     "part-segment.png", "segment.scad", {"Inner_Diameter": interior_diameter}
 )
+b.Image(
+    "part-vacuum-attachment.png",
+    "vacuum-attachment.scad",
+    {"Inner_Diameter": interior_diameter},
+)
 for model_type, model_type_id in [("connector", 0), ("grommet", 1)]:
     for plate_type, plate_type_id in [("round", 0), ("fan", 1)]:
         b.Image(
