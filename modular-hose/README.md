@@ -49,6 +49,15 @@ Ensure all of the model's `*.scad` files are placed in the same directory. Open
 a part model file (such as `segment.scad`) in OpenSCAD. Select your desired
 sizing and options in the OpenSCAD Customizer before rendering each part.
 
+## Printing
+
+Hose segments and connectors are sized to be two walls thick with the default
+wall thickness of 0.8mm printed using a 0.4mm nozzle. Hose segments and
+connectors should not generate any printed infill material (except for the
+female connector end raised lip, depending on the connector diameter).
+
+![Slicer screenshot](images/readme/slicer-screenshot-segment.png)
+
 ## Attribution and License
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
