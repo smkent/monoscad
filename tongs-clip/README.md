@@ -2,7 +2,7 @@
 
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
-Simple clip for a pair of tongs
+Simple retaining clip for a pair of tongs
 
 ![Model render](images/readme/demo.png)
 ![Photo of original clip next to printed clip](images/readme/photo1.jpg)
