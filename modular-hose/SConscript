@@ -72,8 +72,19 @@ for model_type_name, model_type in [
 b.Image(
     "demo.png",
     "demo.scad",
-    {"Inner_Diameter": interior_diameter},
+    {"Inner_Diameter": interior_diameter, "Demo": "parts"},
     view_options="axes,scales",
+)
+
+b.Image(
+    "demo-measurement.png",
+    "demo.scad",
+    {
+        "Inner_Diameter": interior_diameter,
+        "Demo": "measurement",
+        "Measurement_Text": 0,
+    },
+    camera="0,0,20,55,0,15,350",
 )
 
 b.add_default_targets()

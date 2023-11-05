@@ -23,6 +23,11 @@ Inspired by several other
 modular hose model and library! I chose [OpenSCAD][openscad] so the software and
 model would be fully open source.
 
+Sizing is based on the smallest (center) interior diameter, where the two halves
+of a connector segment join:
+
+![Measurement demo](images/readme/demo-measurement.png)
+
 ## Setup
 
 See [the top-level README.md](/README.md) for libraries installation.
