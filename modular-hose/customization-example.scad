@@ -16,7 +16,7 @@ modular_hose(inner_diameter=50) {
         // diameter (50mm). We can do this by creating a square with a hole
         // removed from the center, followed by extruding that to a 3D shape.
         color("lemonchiffon", 0.8)
-        linear_extrude(height=10)
+        linear_extrude(height=10) // Make the attachment part 10mm thick
         difference() {
             // Create the 100x100mm square
             square(100, center=true);
