@@ -108,6 +108,12 @@ for model_type, model_type_id in [("connector", 0), ("grommet", 1)]:
             camera="0,0,0,150,0,28,450" if model_type == "connector" else None,
         )
 
+b.Image(
+    "customization-example-render.png",
+    "customization-example.scad",
+    camera="0,0,0,40,0,28,350",
+)
+
 b.add_default_targets()
 
 # vim: ft=python
