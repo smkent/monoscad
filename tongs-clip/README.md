@@ -1,4 +1,4 @@
-# Tongs clip
+# Tongs Retaining Clip
 
 [![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
