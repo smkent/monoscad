@@ -51,6 +51,8 @@ Ensure all of the model's `*.scad` files are placed in the same directory. Open
 a part model file (such as `segment.scad`) in OpenSCAD. Select your desired
 sizing and options in the OpenSCAD Customizer before rendering each part.
 
+![OpenSCAD customizer screenshot](images/readme/customizer-screenshot-segment.png)
+
 ## Printing
 
 Hose segments and connectors are sized to be two walls thick with the default
