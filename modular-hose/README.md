@@ -32,6 +32,8 @@ diameter, such as where the two halves of a segment join at the center:
 
 This diameter, wall thickness, and connector size tolerance are configurable for
 all parts. Selecting the same values for each part will create compatible parts.
+The default thickness (0.8mm) and size tolerance (0mm) worked well on my printer
+with a 0.4mm nozzle.
 
 The model code is also organized as a library, so you can make your own custom
 parts!
