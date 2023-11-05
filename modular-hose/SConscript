@@ -87,6 +87,10 @@ b.Image(
     camera="0,0,20,55,0,15,350",
 )
 
+b.Image(
+    "part-segment.png", "segment.scad", {"Inner_Diameter": interior_diameter}
+)
+
 b.add_default_targets()
 
 # vim: ft=python

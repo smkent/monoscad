@@ -62,6 +62,12 @@ female connector end raised lip, depending on the connector diameter).
 
 ![Slicer screenshot](images/readme/slicer-screenshot-segment.png)
 
+## Available parts
+
+| Render | Part Info |
+| ------ | --------- |
+| ![Segment part render](images/readme/part-segment.png) | **Flexible segment** (`segment.scad`): Print as many of these as you need for your desired hose length! |
+
 ## Make your own custom parts and attachments!
 
 Make your own custom parts using `modular-hose-library.scad`!
