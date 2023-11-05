@@ -55,10 +55,10 @@ sizing and options in the OpenSCAD Customizer before rendering each part.
 
 ## Printing
 
-Hose segments and connectors are sized to be two walls thick with the default
-wall thickness of 0.8mm printed using a 0.4mm nozzle. Hose segments and
+Hose segments and connectors are sized to be two perimeters thick with the
+default wall thickness of 0.8mm printed using a 0.4mm nozzle. Hose segments and
 connectors should not generate any printed infill material (except for the
-female connector end raised lip, depending on the connector diameter).
+female connector end raised lip, if the hose diameter is large enough).
 
 ![Slicer screenshot](images/readme/slicer-screenshot-segment.png)
 
