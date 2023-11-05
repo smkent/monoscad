@@ -1,3 +1,12 @@
+/*
+ * Segmented Modular Hose
+ * By smkent (GitHub) / bulbasaur0 (Printables)
+ *
+ * Customization example from the model documentation
+ *
+ * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
+ */
+
 // Create this new model file in the same directory as modular-hose-library.scad
 include <modular-hose-library.scad>;
 
