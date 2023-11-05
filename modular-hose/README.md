@@ -25,8 +25,8 @@ model would be fully open source.
 
 ## Features
 
-This model was built with sizing based on the smallest interior diameter, such
-as where the two halves of a segment join at the center:
+This model was built with configurable sizing based on the smallest interior
+diameter, such as where the two halves of a segment join at the center:
 
 ![Measurement demo](images/readme/demo-measurement.png)
 
