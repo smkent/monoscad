@@ -102,11 +102,11 @@ This configures a box with a width of 40, length of 40, bottom height of 40, and
 top height of 15.
 
 Now, a part may be added as a child module to `rbox`. As the goal is to create a
-box bottom with cutouts, use `box_bottom`:
+box bottom with cutouts, use `rbox_bottom`:
 
 ```openscad
 rbox(40, 40, 40, 15)
-box_bottom();
+rbox_bottom();
 ```
 
 OpenSCAD should now render the box bottom.
