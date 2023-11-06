@@ -1,4 +1,4 @@
-# Parametric and Customizable Rugged Storage Box
+# Rugged Storage Box, Parametric and Customizable
 
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
@@ -19,7 +19,7 @@ Inspired by
 [rugged][waterproof-box-v2-by-zx82net]
 [box][parametrizable-rugged-box-openscad-by-dochni]
 [models][customizable-penguin-case-by-ctag],
-I decided to build a rugged box model of my own! This model can create
+I built a rugged box model of my own! This model can create
 parametric boxes, and can also be used as a library to make customized boxes! I
 chose [OpenSCAD][openscad] so the software and model would be fully open source.
 

@@ -1,4 +1,4 @@
-# Parametric and Customizable Segmented Modular Hose
+# Segmented Modular Hose, Parametric and Customizable
 
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
