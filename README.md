@@ -2,8 +2,8 @@
 
 [![bulbasaur0 on Printables][printables-profile-badge]][printables-profile]
 
-A monorepository for my [OpenSCAD][openscad] models and remixes. Finished models
-are also [published on Printables][printables-profile].
+A monorepository for my [OpenSCAD][openscad] models and remixes. Print-ready
+models are also [published on Printables][printables-profile].
 
 ## Setup
 
