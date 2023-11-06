@@ -49,11 +49,11 @@ This configures a box with a width of 60, length of 40, bottom height of 30, and
 top height of 10.
 
 Now, a part may be added as a child module to `rbox`. As the goal is to create a
-box bottom with dividers, use `box_bottom`:
+box bottom with dividers, use `rbox_bottom`:
 
 ```openscad
 rbox(60, 40, 30, 10)
-box_bottom();
+rbox_bottom();
 ```
 
 OpenSCAD should now render the box bottom.
@@ -106,7 +106,7 @@ your model code to use `rbox_for_bottom`:
 
 ```openscad
 rbox(60, 40, 30, 10)
-rbox_bottom() {
+rbox_for_bottom() {
     color("yellow")
     divider();
 }
