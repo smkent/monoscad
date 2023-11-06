@@ -7,21 +7,16 @@ A monorepository for my [OpenSCAD][openscad] models and remixes.
 ## Setup
 
 Models in this repository depend on various
-[third-party libraries][openscad-libraries].
+[third-party libraries][openscad-libraries], which are provided as
+[git submodules][git-submodules] using
+[smkent/openscad-libraries][smkent-openscad-libraries].
 
-Libraries can be installed by one of:
+After cloning this repository, install all third-party libraries by running in
+the repository directory:
 
-1. Initializing the included `libraries` submodule, by running:
-   `git submodule update --init --recursive`
-2. Cloning [smkent/openscad-libraries][smkent-openscad-libraries] to the
-   OpenSCAD default library path directly. The default library path is OS
-   dependent:
-
-| OS | Path |
-|--- |--- |
-| Linux | `$HOME/.local/share/OpenSCAD/libraries` |
-| Mac OS X | `$HOME/Documents/OpenSCAD/libraries` |
-| Windows | `My Documents\OpenSCAD\libraries` |
+```console
+git submodule update --init --recursive
+```
 
 ## Model samples
 
@@ -53,9 +48,10 @@ libraries) are licensed under [Creative Commons (4.0 International License)
 Attribution][license-cc-by-4.0].
 
 
+[git-submodules]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 [license-cc-by-4.0]: http://creativecommons.org/licenses/by/4.0/
-[openscad]: https://openscad.org
 [openscad-libraries]: https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries
-[smkent-openscad-libraries]: https://github.com/smkent/openscad-libraries
-[printables-profile]: https://www.printables.com/@bulbasaur0_1139994/models
+[openscad]: https://openscad.org
 [printables-profile-badge]: /_static/printables-profile-badge.svg
+[printables-profile]: https://www.printables.com/@bulbasaur0_1139994/models
+[smkent-openscad-libraries]: https://github.com/smkent/openscad-libraries
