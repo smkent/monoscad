@@ -1,8 +1,8 @@
-# My OpenSCAD Models
+# My OpenSCAD models for 3D printing
 
 [![bulbasaur0 on Printables][printables-profile-badge]][printables-profile]
 
-A monorepository for my [OpenSCAD][openscad] models and remixes.
+A monorepository for my [OpenSCAD][openscad] models and remixes
 
 ## Setup
 
@@ -19,6 +19,9 @@ git submodule update --init --recursive
 ```
 
 ## Model samples
+
+Click an image to view the corresponding model, or browse the repository's top
+level directories for all models.
 
 [![Rugged Storage Box](/rugged-box/images/readme/demo-dimensions.gif)](rugged-box/)
 [![Segmented Modular Hose](/modular-hose/images/readme/demo.png)](modular-hose/)
