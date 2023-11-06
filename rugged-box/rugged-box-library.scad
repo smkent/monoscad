@@ -33,6 +33,9 @@ screw_eyelet_size_proportion = 2.5; // [1.5:0.1:5]
 top_grip_depth = 6;
 top_grip_width = 100;
 
+// Latch size
+latch_edge_radius = 0.8;
+
 // Stacking latch size
 stacking_latch_catch_offset = 6;
 stacking_latch_grip_length = 8;
@@ -88,6 +91,7 @@ module rbox(
     edge_chamfer_proportion=0.4,
     lip_seal_type="wedge",
     reinforced_corners=false,
+    latch_type="draw",
     latch_count=0,
     top_grip=false
 ) {
@@ -100,9 +104,11 @@ module rbox(
     $b_edge_chamfer_proportion = edge_chamfer_proportion;
     $b_lip_seal_type = lip_seal_type;
     $b_reinforced_corners = reinforced_corners;
+    $b_latch_type = latch_type;
     $b_latch_count = latch_count;
     $b_top_grip = top_grip;
     // Set defaults
+    $b_preview_box_open = false;
     rbox_size_adjustments()
     _box_rib_angle(0)
     // Render modules
@@ -220,6 +226,7 @@ module rbox_part(part) {
             if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
         }
     } else if (part == "assembled_open") {
+        $b_preview_box_open = true;
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
         rbox_for_bottom() {
             rbox_handle(placement="box-preview-open");
@@ -228,6 +235,16 @@ module rbox_part(part) {
             translate([0, -$b_latch_screw_offset, 0])
             rotate([180, 0, 0])
             rbox_stacking_latch(placement="box-preview");
+            if ($b_latch_type == "draw") {
+                translate([
+                    0,
+                    -$b_latch_screw_offset,
+                    $b_outer_height - ($b_latch_screw_separation - $b_latch_amount_on_top)
+                ])
+                mirror([0, 1, 0])
+                _box_attachment_placement()
+                rbox_latch(placement="box-preview");
+            }
         }
         translate([
             0,
@@ -243,15 +260,17 @@ module rbox_part(part) {
         mirror([0, 0, 1]) {
             if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
             rbox_for_top() {
-                translate([
-                    0,
-                    -$b_latch_screw_offset,
-                    $b_outer_height - $b_latch_amount_on_top
-                ])
-                mirror([0, 1, 0])
-                _box_attachment_placement()
-                rotate([-135, 0, 0])
-                rbox_latch(placement="box-preview");
+                if ($b_latch_type == "clip") {
+                    translate([
+                        0,
+                        -$b_latch_screw_offset,
+                        $b_outer_height - $b_latch_amount_on_top
+                    ])
+                    mirror([0, 1, 0])
+                    _box_attachment_placement()
+                    rotate([-135, 0, 0])
+                    rbox_latch(placement="box-preview");
+                }
             }
         }
     } else if (part == "assembled_closed") {
@@ -262,19 +281,31 @@ module rbox_part(part) {
             translate([0, 0, $b_latch_screw_separation * 0.5])
             translate([0, -$b_latch_screw_offset, 0])
             rbox_stacking_latch(placement="box-preview");
+            if ($b_latch_type == "draw") {
+                translate([
+                    0,
+                    -$b_latch_screw_offset,
+                    $b_outer_height - ($b_latch_screw_separation - $b_latch_amount_on_top)
+                ])
+                mirror([0, 1, 0])
+                _box_attachment_placement()
+                rbox_latch(placement="box-preview");
+            }
         }
         translate([0, 0, $b_top_outer_height + $b_bottom_outer_height])
         mirror([0, 0, 1]) {
             if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
             rbox_for_top() {
-                translate([
-                    0,
-                    -$b_latch_screw_offset,
-                    $b_outer_height - $b_latch_amount_on_top
-                ])
-                mirror([0, 1, 0])
-                _box_attachment_placement()
-                rbox_latch(placement="box-preview");
+                if ($b_latch_type == "clip") {
+                    translate([
+                        0,
+                        -$b_latch_screw_offset,
+                        $b_outer_height - $b_latch_amount_on_top
+                    ])
+                    mirror([0, 1, 0])
+                    _box_attachment_placement()
+                    rbox_latch(placement="box-preview");
+                }
             }
         }
     } else if (part == "bottom") {
@@ -322,6 +353,20 @@ function rb_stacking_latch_positions() = [];
 screw_hole_diameter = screw_diameter;
 screw_eyelet_radius = screw_hole_diameter * screw_eyelet_size_proportion / 2;
 
+draw_latch_thickness = screw_eyelet_radius / 2;
+draw_latch_handle_length = screw_eyelet_radius * 3.25;
+draw_latch_screw_eyelet_radius = screw_hole_diameter * 1.1;
+draw_latch_pin_handle_radius = screw_hole_diameter * 1.5;
+draw_latch_pin_radius = draw_latch_pin_handle_radius - 2.2;
+draw_latch_sep = 0.4;
+draw_latch_body_width = screw_eyelet_radius - screw_hole_diameter / 2;
+draw_latch_pin_offset = [
+    draw_latch_screw_eyelet_radius - draw_latch_pin_handle_radius,
+    -draw_latch_handle_length,
+    0
+];
+draw_latch_poly_div = 10;
+
 // For _box_extrude and _box_corners_extrude
 corners_data = [
     // Rotate angle, X direction, Y direction
@@ -332,6 +377,10 @@ corners_data = [
 ];
 
 // Functions
+
+function _vec_add(vec, add) = [for (v = vec) v + add];
+function _vec_append_each(vec, append) = [for(i=vec) concat(i, append)];
+function _vec_reverse(vec) = [for (i = [len(vec) - 1:-1:0]) vec[i]];
 
 function _cumulative_sum(v) = [
     for (
@@ -361,9 +410,12 @@ function _init_latch_amount_on_top(latch_amount_on_top) = (
         ? latch_amount_on_top
         : min(
             ($b_top_inner_height + $b_wall_thickness) / 2,
-            min(
-                screw_eyelet_radius * 2.0,
-                $b_latch_screw_separation / 2
+            ($b_latch_type == "draw"
+                ? $b_latch_screw_separation - screw_eyelet_radius * 1.5
+                : min(
+                    screw_eyelet_radius * 2.0,
+                    $b_latch_screw_separation / 2
+                )
             )
         )
 );
@@ -411,11 +463,22 @@ module _rounded_cylinder(h, r1, r2=0, angle=360, center=false) {
 module _chamfer_edges(r) {
     minkowski() {
         children();
-        if (r > 0)
-        for (mz = [0:1:1])
-        mirror([0, 0, mz])
-        cylinder(d1=r, d2=0, h=r/2, $fn=4);
+        union() {
+            $fs = $preview ? $fs : $fs / 5;
+            if (r > 0)
+            for (mz = [0:1:1])
+            mirror([0, 0, mz])
+            cylinder(d1=r, d2=0, h=r/2);
+        }
     }
+}
+
+module _linear_extrude_with_chamfer(height, r, center=false) {
+    _chamfer_edges(r)
+    translate([0, 0, center ? 0 : (r / 2)])
+    linear_extrude(height=height - r, center=center)
+    offset(r=-r / 2)
+    children();
 }
 
 module _hull_in_order() {
@@ -1111,9 +1174,9 @@ module _box_top_grip() {
     }
 }
 
-// Latches
+// Clip latches
 
-module _latch_shape() {
+module _clip_latch_shape() {
     bw = screw_eyelet_radius - screw_hole_diameter / 2;
     shd = screw_hole_diameter + screw_hole_diameter_size_tolerance;
     _round_shape($b_edge_radius)
@@ -1149,29 +1212,343 @@ module _latch_shape() {
     }
 }
 
-module _latch_part() {
+module _clip_latch_part() {
     color("mintcream", 0.8)
-    union() {
-        rr = 0.8;
-        _chamfer_edges(r=rr)
-        union() {
-            rotate([90, 0, 0])
-            linear_extrude(height=$b_latch_width, center=true)
-            offset(r=-rr / 2)
-            _latch_shape();
+    _chamfer_edges(r=latch_edge_radius)
+    rotate([90, 0, 0])
+    linear_extrude(height=$b_latch_width, center=true)
+    offset(r=-latch_edge_radius / 2)
+    _clip_latch_shape();
+}
+
+// Draw latches
+
+module _draw_latch_each_segment(handle=false) {
+    vsep = (handle ? 0.4 : 0);
+    for (segment = [0:1:5 - 1]) {
+        if (segment % 2 == 1) {
+            ht = $b_latch_width / 5 + vsep * 2;
+            translate([0, 0, $b_latch_width / 5 * segment - vsep])
+            _linear_extrude_with_chamfer(height=ht, r=latch_edge_radius)
+            children();
         }
     }
 }
 
+module _draw_latch_handle_curve_shape() {
+    thick = draw_latch_thickness;
+    roff = draw_latch_pin_handle_radius- draw_latch_screw_eyelet_radius;
+    rr = draw_latch_pin_handle_radius;
+    offset(-rr * 1.25)
+    offset(rr * 1.25)
+    union() {
+        translate([-draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius, 0])
+        circle(draw_latch_pin_handle_radius);
+        translate([-roff + rr - thick, 0])
+        hull() {
+            translate([0, -thick])
+            square(thick);
+            translate([0, -(draw_latch_pin_handle_radius * 2 + thick / 2)])
+            square(thick);
+        }
+    }
+}
+
+module _draw_latch_handle_body_shape() {
+    difference() {
+        union() {
+            hull() {
+                circle(r=draw_latch_screw_eyelet_radius);
+                translate([-draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius, -draw_latch_handle_length, 0])
+                circle(r=draw_latch_pin_handle_radius);
+            }
+            translate([0, -draw_latch_handle_length])
+            _draw_latch_handle_curve_shape();
+        }
+        // Pin hole
+        translate([0, -draw_latch_handle_length, 0])
+        translate([-draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius, 0, 0])
+        circle(r=draw_latch_pin_radius + draw_latch_sep / 2);
+        // Screw hole
+        circle(d=screw_hole_diameter + screw_hole_diameter_size_tolerance);
+    }
+}
+
+module _draw_latch_grip_layer_polyhedron(h1=0, h2=1) {
+    curve_radius = 16;
+
+    function _curve_points(angle, radius) = [
+        let (steps = draw_latch_poly_div)
+        for (a = [0:angle/steps:angle + 0.001]) [radius * sin(a), radius* cos(a)]
+    ];
+
+    function _translate_points(vector, add=[]) = [
+        for (pt = vector) [
+            for (i = [0:1:len(pt) - 1]) pt[i] + (i < len(add) ? add[i] : 0)
+        ]
+    ];
+
+    function _curve_offset_inverse(ht) = ((curve_radius - _curve_offset(ht)) / 2);
+
+    function _curve_offset(y) = (
+        let (precision = 1000)
+        let (deg = abs(y - $b_latch_width / 2) / $b_latch_width / 2 * 360 * 0.8)
+        round((cos(deg) * (curve_radius * 0.9)) * precision) / precision
+    );
+
+    function _surface_points(h, z) = (
+        let (angle = 45)
+        let (crad = _curve_offset(h))
+        let (ler = latch_edge_radius / 2)
+        let (thick = draw_latch_thickness)
+        let (origin_edge_points = [
+            [ler, draw_latch_thickness - ler], [ler, ler]
+        ])
+        _vec_append_each(
+            concat(
+                origin_edge_points,
+                _translate_points(
+                    concat(
+                        _curve_points(angle, crad + ler),
+                        _vec_reverse(_curve_points(angle, crad + thick - ler))
+                    ),
+                    add=[_curve_offset_inverse(h), -crad]
+                )
+            ),
+            z
+        )
+    );
+
+    function _curve_faces(bpts) = [
+        for (i = [0:1:len(bpts) / 2 - 2]) [len(bpts)+i, len(bpts)+i+1, i+1, i]
+    ];
+
+    // Bottom points
+    bpts = _surface_points(h1, z=0);
+    // Top points
+    tpts = _surface_points(h2, z=(h2 - h1));
+    // All points
+    points = concat(bpts, tpts);
+    // Faces
+    faces_base = [
+        // Top
+        _vec_reverse(_vec_add([for(i = [0:1:len(bpts) - 1]) i], len(bpts))),
+        // Bottom
+        [for(i = [0:1:len(bpts) - 1]) i],
+        // Near end
+        [
+            0, len(bpts) - 1, len(bpts) * 2 - 1, len(bpts)
+        ],
+        // Far end
+        [
+            len(bpts) / 2,
+            len(bpts) / 2 - 1,
+            len(bpts) + len(bpts) / 2 - 1,
+            len(bpts) + len(bpts) / 2,
+        ],
+    ];
+    // Near curve faces
+    ncf = _curve_faces(bpts);
+    // Far curve faces
+    fcf = [for (f = _curve_faces(bpts)) _vec_add(f, len(bpts) / 2)];
+    faces = concat(faces_base, ncf, fcf);
+    polyhedron(points=points, faces=faces);
+}
+
+module _draw_latch_grip() {
+    tr = latch_edge_radius / 2;
+    top = $b_latch_width - tr * 2;
+    steps = draw_latch_poly_div * 2;
+
+    render(convexity=2)
+    _chamfer_edges(r=latch_edge_radius)
+    rotate([0, 0, 270])
+    for (h = [tr:top / steps:top + tr - 0.01]) {
+        translate([0, 0, h])
+        _draw_latch_grip_layer_polyhedron(h1=h, h2=h + (top / steps));
+    }
+}
+
+module _draw_latch_handle() {
+    render(convexity=4)
+    difference() {
+        union() {
+            _linear_extrude_with_chamfer(height=$b_latch_width, r=latch_edge_radius)
+            _draw_latch_handle_body_shape();
+
+            translate([0, -draw_latch_handle_length - (draw_latch_pin_handle_radius * 2)])
+            translate([draw_latch_screw_eyelet_radius, 0, 0])
+            mirror([1, 0, 0])
+            _draw_latch_grip();
+        }
+
+        _draw_latch_each_segment(handle=true)
+        union() {
+            translate([-draw_latch_sep / 2, draw_latch_sep / 2])
+            _draw_latch_attach_shape(sep=-draw_latch_sep);
+            translate([0, -draw_latch_handle_length, 0])
+            translate([-draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius, 0])
+            hull() {
+                circle(r=draw_latch_pin_radius + draw_latch_sep / 2);
+                translate([screw_eyelet_radius * 1.5 + draw_latch_sep, draw_latch_sep])
+                circle(draw_latch_screw_eyelet_radius);
+            }
+        }
+    }
+}
+
+module _draw_latch_attach_shape_base(sep=0.4) {
+    pin_diameter = draw_latch_pin_radius - sep / 2;
+    latch_offset_from_pin = sep + draw_latch_thickness + draw_latch_pin_handle_radius;
+    pin_latch_size_delta = pin_diameter - draw_latch_thickness;
+
+    _draw_latch_catch_shape_body();
+    translate([
+        -draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius,
+        -draw_latch_handle_length
+    ])
+    hull() {
+        circle(r=draw_latch_pin_radius);
+        for (i = [-1, 1])
+        translate([
+            latch_offset_from_pin,
+            latch_offset_from_pin + pin_latch_size_delta * i
+        ])
+        circle(draw_latch_thickness);
+    }
+}
+
+module _draw_latch_attach_shape(sep=0.4) {
+    round_factor = 6;
+    intersection() {
+        union() {
+            _draw_latch_attach_shape_base(sep=sep);
+            intersection() {
+                union() {
+                    hull()
+                    _draw_latch_attach_shape_base(sep=sep);
+                    _draw_latch_attach_shape_base(sep=sep);
+                }
+                _round_shape(round_factor)
+                for (dx = [0:1:round_factor], dy = [0:1:round_factor])
+                translate([dx * screw_eyelet_radius / 2, dy * -screw_eyelet_radius / 2])
+                _draw_latch_attach_shape_base(sep=sep);
+            }
+        }
+        translate([-draw_latch_handle_length, -draw_latch_handle_length * 1.75])
+        square(draw_latch_handle_length * 2);
+    }
+}
+
+module _draw_latch_catch_shape_body() {
+    pin_diameter = draw_latch_pin_radius - draw_latch_sep / 2;
+    latch_offset_from_pin = draw_latch_sep + draw_latch_thickness + draw_latch_pin_handle_radius;
+    pin_latch_size_delta = pin_diameter - draw_latch_thickness;
+
+    // Body
+    translate([draw_latch_screw_eyelet_radius + draw_latch_thickness + draw_latch_sep, 0])
+    hull() {
+        translate([0, -draw_latch_handle_length + latch_offset_from_pin - pin_latch_size_delta])
+        circle(draw_latch_thickness);
+        translate([0, -screw_eyelet_radius + screw_diameter / 2 - draw_latch_sep])
+        translate([0, $b_latch_screw_separation])
+        circle(draw_latch_thickness);
+    }
+}
+
+module _draw_latch_catch_shape_hook() {
+    compress_ratio = 0.55;
+    catchsep = draw_latch_sep * 1.5;
+    outr = draw_latch_screw_eyelet_radius + draw_latch_thickness * 2;
+
+    translate([draw_latch_sep, $b_latch_screw_separation])
+    translate([0, -screw_eyelet_radius + screw_diameter / 2 - catchsep])
+    difference() {
+        union() {
+            intersection() {
+                circle(r=outr);
+                square(outr);
+            }
+            mirror([1, 0]) {
+                translate([0, outr * 0.1])
+                square([outr * compress_ratio, outr * (1 - compress_ratio - 0.1)]);
+                translate([0, outr * (1 - compress_ratio)])
+                intersection() {
+                    circle(r=outr * compress_ratio);
+                    square(outr);
+                }
+            }
+        }
+        for (mx = [0:1:1])
+        mirror([mx, 0])
+        scale([mx ? 1 - (1 - compress_ratio) / 2 : 1, 1])
+        intersection() {
+            circle(r=draw_latch_screw_eyelet_radius);
+            square(draw_latch_screw_eyelet_radius);
+        }
+    }
+}
+
+module _draw_latch_pin_center_hole_shape() {
+    translate(draw_latch_pin_offset)
+    circle(r=(draw_latch_pin_radius + draw_latch_sep) / 5);
+}
+
+module _draw_latch_catch() {
+    _linear_extrude_with_chamfer(height=$b_latch_width, r=latch_edge_radius)
+    difference() {
+        union() {
+            _round_shape($b_edge_radius) {
+                _draw_latch_catch_shape_body();
+                _draw_latch_catch_shape_hook();
+            }
+            // Pin
+            translate(draw_latch_pin_offset)
+            circle(r=draw_latch_pin_radius);
+        }
+        _draw_latch_pin_center_hole_shape();
+    }
+
+    difference() {
+        _draw_latch_each_segment(handle=false)
+        _draw_latch_attach_shape();
+        linear_extrude(height=$b_latch_width)
+        _draw_latch_pin_center_hole_shape();
+    }
+}
+
+module _draw_latch_part() {
+    color("lightgray", 0.8)
+    _draw_latch_handle();
+    color("mintcream", 0.8)
+    translate(draw_latch_pin_offset)
+    rotate([0, 0, $b_preview_box_open ? -45 : 0])
+    translate(-draw_latch_pin_offset)
+    _draw_latch_catch();
+}
+
+// Main latch type selection
+
 module _latch(placement="default") {
+
+    module _latch_by_type() {
+        if ($b_latch_type == "clip") {
+            _clip_latch_part();
+        } else if ($b_latch_type == "draw") {
+            rotate([90, 0, 180])
+            translate([0, 0, -$b_latch_width / 2])
+            _draw_latch_part();
+        }
+    }
+
     if (placement == "print") {
         rotate([90, 0, 0])
-        _latch_part();
+        _latch_by_type();
     } else if (placement == "box-preview") {
         rotate([0, 0, 270])
-        _latch_part();
+        _latch_by_type();
     } else {
-        _latch_part();
+        _latch_by_type();
     }
 }
 
@@ -1234,12 +1611,11 @@ module _stacking_latch_shape() {
 module _stacking_latch_part() {
     color("mintcream", 0.8)
     union() {
-        rr = 0.8;
-        _chamfer_edges(r=rr)
+        _chamfer_edges(r=latch_edge_radius)
         union() {
             rotate([90, 0, 0])
             linear_extrude(height=$b_latch_width, center=true)
-            offset(r=-rr / 2)
+            offset(r=-latch_edge_radius / 2)
             _stacking_latch_shape();
         }
     }

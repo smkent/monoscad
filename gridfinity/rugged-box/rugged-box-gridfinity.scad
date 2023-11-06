@@ -44,6 +44,12 @@ Reinforced_Corners = true;
 // Add a front grip to the box top (for boxes with two latches)
 Top_Grip = true;
 
+// Add stacking latches and attachment points to the sides of the box
+Stacking_Latches = true;
+
+// Latch style
+Latch_Type = "draw"; // [clip: Clip, draw: Draw]
+
 /* [Advanced Size Adjustments] */
 // Base wall thickness in millimeters for most of the box
 Wall_Thickness = 3.0; // [2.4:0.1:10]
@@ -103,15 +109,19 @@ function rb_rear_rib_positions() = [
 
 function rb_latch_hinge_position() = (l_grid * (Width / 2 - 0.5));
 
-function rb_stacking_latch_positions() = [
-    let (points = [
-        each for (j = [
-            for (i = [0:2:Length / 2 - 1]) i
-        ]) (j == Length - 2 - j) ? [j] : [j, Length - 2 - j]
-    ])
-    for (j = [for (i = points) (i + 0.5) * l_grid])
-    j - (l_grid * (Length / 2 - 0.5))
-];
+function rb_stacking_latch_positions() = (
+    Stacking_Latches
+    ? [
+        let (points = [
+            each for (j = [
+                for (i = [0:2:Length / 2 - 1]) i
+            ]) (j == Length - 2 - j) ? [j] : [j, Length - 2 - j]
+        ])
+        for (j = [for (i = points) (i + 0.5) * l_grid])
+        j - (l_grid * (Length / 2 - 0.5))
+    ]
+    : []
+);
 
 // Functions
 
@@ -280,6 +290,7 @@ module main() {
         edge_chamfer_proportion=edge_chamfer_proportion,
         lip_seal_type=Lip_Seal_Type,
         reinforced_corners=Reinforced_Corners,
+        latch_type=Latch_Type,
         latch_count=(Width <= 1 ? 1 : 2),
         top_grip=Top_Grip
     )

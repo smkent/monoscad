@@ -43,6 +43,9 @@ Reinforced_Corners = false;
 // Add a front grip to the box top (for boxes with two latches)
 Top_Grip = false;
 
+// Latch style
+Latch_Type = "clip"; // [clip: Clip, draw: Draw]
+
 /* [Advanced Size Adjustments] */
 // Base wall thickness in millimeters for most of the box
 Wall_Thickness = 2.4; // [0.4:0.1:10]
@@ -75,6 +78,7 @@ rbox(
     edge_chamfer_proportion=Edge_Chamfer_Proportion,
     lip_seal_type=Lip_Seal_Type,
     reinforced_corners=Reinforced_Corners,
+    latch_type=Latch_Type,
     top_grip=Top_Grip
 )
 rbox_size_adjustments(
