@@ -1,5 +1,6 @@
 # Rugged Storage Box, Parametric and Customizable
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 A parametric and customizable rugged storage box or toolbox for OpenSCAD. Make
