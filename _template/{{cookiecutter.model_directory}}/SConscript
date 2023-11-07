@@ -1,7 +1,7 @@
 Import("env")
 b = ModelBuilder(env)
 
-model == "{{ cookiecutter.model_directory }}"
+model = "{{ cookiecutter.model_directory }}.scad"
 
 b.STL("{{ cookiecutter.model_directory }}.stl", model)
 b.Image("demo.png", model)
