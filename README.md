@@ -27,9 +27,9 @@ level directories for all models.
 [![Rugged Storage Box](/rugged-box/images/readme/demo-dimensions.gif)](rugged-box/)
 [![Segmented Modular Hose](/modular-hose/images/readme/demo.png)](modular-hose/)
 [![Gridfinity Material Swatches Holder V2](/gridfinity-bins-material-swatches/images/readme/demo.gif)](gridfinity-bins-material-swatches/)
+[![Bit insert clips for Bosch Custom Case](/bosch-custom-case/images/readme/demo-bits-insert.gif)](bosch-custom-case/)
 [![Bathtub Drain Hair Catcher](/bathtub-drain-hair-catcher/images/readme/demo-winged-round.png)](bathtub-drain-hair-catcher/)
 [![Material Swatches rebuilt in OpenSCAD (remix)](/material-swatches/images/readme/demo.gif)](material-swatches/)
-[![3D Printer Enclosure Filament Grommet](/filament-grommet/images/readme/top.png)](filament-grommet/)
 
 ## License
 
