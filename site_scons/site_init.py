@@ -30,6 +30,8 @@ def openscad_builder():
         action=(
             "$OPENSCAD -m make"
             " -o $TARGET -d ${TARGET}.deps"
+            " --enable fast-csg"
+            " --enable manifold"
             " $SOURCE"
             " $OPENSCAD_ARGS"
         ),
