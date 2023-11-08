@@ -1,0 +1,160 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "custom-case-bits-insert.scad"
+
+render_defaults = {
+    "Rows": 1,
+    "Slots": 9,
+    "Row_1_Slot_Type": "quick-change",
+    "Slot_Orientation": "default",
+    "Channel_Slots": 0,
+    "Quick_Change_Grip": 1,
+}
+
+for flipped in {True, False}:
+    fn_base = "custom-case-bits-insert"
+    fn_flipped = "-flipped" if flipped else ""
+    flipped_defaults = {
+        **render_defaults,
+        **{"Slot_Orientation": "flipped" if flipped else "default"},
+    }
+    for row_count, (slot_type_1, slot_type_2) in [
+        [1, ("quick-change", "")],
+        [1, ("driver", "")],
+        [2, ("quick-change", "quick-change")],
+        [2, ("quick-change", "driver")],
+        [2, ("driver", "quick-change")],
+        [2, ("driver", "driver")],
+    ]:
+        row_defaults = {
+            **flipped_defaults,
+            "Rows": row_count,
+            "Row_1_Slot_Type": slot_type_1,
+            "Row_2_Slot_Type": slot_type_2,
+        }
+        fn_row = f"-{row_count}row" if row_count > 1 else ""
+        fn_slots = (
+            f"-{slot_type_1}"
+            if row_count == 1
+            else f"-{slot_type_1},{slot_type_2}"
+        )
+        for slots in {8, 9}:
+            b.STL(
+                f"{fn_base}{fn_row}{fn_slots}-x{slots}{fn_flipped}.stl",
+                model,
+                {**row_defaults, **{"Slots": slots}},
+            )
+        for channel_side in {"left", "right"}:
+            b.STL(
+                (
+                    f"{fn_base}{fn_row}{fn_slots}-x4"
+                    f"-{channel_side}-flat{fn_flipped}.stl"
+                ),
+                model,
+                {
+                    **row_defaults,
+                    **{
+                        "Slots": 9,
+                        "Channel_Slots": 5,
+                        "Channel_Side": channel_side,
+                    },
+                },
+            )
+
+
+b.Image(
+    "demo-bits-insert.gif",
+    model,
+    [
+        render_defaults,
+        {**render_defaults, **{"Slots": 8}},
+        {**render_defaults, **{"Slots": 8, "Row_1_Slot_Type": "driver"}},
+        {**render_defaults, **{"Row_1_Slot_Type": "driver"}},
+        {
+            **render_defaults,
+            **{
+                "Rows": 2,
+                "Row_1_Slot_Type": "driver",
+                "Row_2_Slot_Type": "driver",
+            },
+        },
+        {
+            **render_defaults,
+            **{
+                "Rows": 2,
+                "Row_1_Slot_Type": "driver",
+                "Row_2_Slot_Type": "quick-change",
+            },
+        },
+        {
+            **render_defaults,
+            **{
+                "Rows": 2,
+                "Row_1_Slot_Type": "quick-change",
+                "Row_2_Slot_Type": "quick-change",
+            },
+        },
+        {
+            **render_defaults,
+            **{
+                "Rows": 2,
+                "Row_1_Slot_Type": "quick-change",
+                "Row_2_Slot_Type": "driver",
+            },
+        },
+        {
+            **render_defaults,
+            **{
+                "Rows": 2,
+                "Row_1_Slot_Type": "quick-change",
+                "Row_2_Slot_Type": "driver",
+                "Channel_Slots": 5,
+                "Channel_Side": "right",
+            },
+        },
+        {
+            **render_defaults,
+            **{
+                "Rows": 2,
+                "Row_1_Slot_Type": "quick-change",
+                "Row_2_Slot_Type": "driver",
+                "Channel_Slots": 5,
+                "Channel_Side": "right",
+                "Slot_Orientation": "flipped",
+            },
+        },
+        {
+            **render_defaults,
+            **{
+                "Row_1_Slot_Type": "quick-change",
+                "Channel_Slots": 5,
+                "Channel_Side": "right",
+                "Slot_Orientation": "flipped",
+            },
+        },
+        {
+            **render_defaults,
+            **{
+                "Row_1_Slot_Type": "quick-change",
+                "Slot_Orientation": "flipped",
+            },
+        },
+        {
+            **render_defaults,
+            **{
+                "Row_1_Slot_Type": "driver",
+                "Slot_Orientation": "flipped",
+            },
+        },
+        {
+            **render_defaults,
+            **{"Row_1_Slot_Type": "driver"},
+        },
+    ],
+    camera="42,18,0,15,0,15,200",
+)
+
+b.add_default_targets()
+
+# vim: ft=python
