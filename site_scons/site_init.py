@@ -27,12 +27,14 @@ class MainBuilder:
         SetOption("num_jobs", os.cpu_count())
 
     def build(self) -> None:
+        build_dir = Path(".") / "build"
+        build_dir.mkdir(exist_ok=True)
         for sc in Glob("*/SConscript", strings=True):
             env = self._env  # noqa: F841
             SConscript(
                 sc,
                 src_dir=Path(sc).parent,
-                variant_dir="build" / Path(sc).parent,
+                variant_dir=build_dir / Path(sc).parent,
                 duplicate=False,
                 exports="env",
             )
