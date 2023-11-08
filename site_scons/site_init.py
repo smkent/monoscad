@@ -355,7 +355,7 @@ class ModelBuilder:
                     capture_output=True,
                     text=True,
                 ).stdout.splitlines()
-                if fn.endswith(".scad")
+                if fn.endswith(".scad") or fn == "SConscript"
             }
             if self.src_dir_path.name not in dirs:
                 return False
