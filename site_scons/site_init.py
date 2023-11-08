@@ -21,19 +21,31 @@ IMAGE_TARGETS = {
 }
 
 
-def openscad_builder():
+def openscad_builder(openscad_path: str):
     def add_deps_target(target, source, env):
         target.append("${TARGET.name}.deps")
         return target, source
 
+    def openscad_has_features() -> bool:
+        help_text = subprocess.run(
+            [openscad_path, "--help"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stderr
+        return "--enable" in help_text
+
+    feature_args = (
+        " --enable fast-csg --enable manifold"
+        if openscad_has_features()
+        else ""
+    )
+
     return Builder(
         action=(
-            "$OPENSCAD -m make"
-            " -o $TARGET -d ${TARGET}.deps"
-            " --enable fast-csg"
-            " --enable manifold"
-            " $SOURCE"
-            " $OPENSCAD_ARGS"
+            "$OPENSCAD -m make -o $TARGET -d ${TARGET}.deps"
+            + feature_args
+            + " $SOURCE $OPENSCAD_ARGS"
         ),
         emitter=add_deps_target,
     )

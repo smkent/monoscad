@@ -4,9 +4,13 @@ from pathlib import Path
 # Build in parallel by default
 SetOption("num_jobs", os.cpu_count())
 
+openscad_path = ARGUMENTS.get(
+    "openscad", os.environ.get("OPENSCAD", "openscad")
+)
+
 env = Environment(
-    OPENSCAD=ARGUMENTS.get("openscad", os.environ.get("OPENSCAD", "openscad")),
-    BUILDERS={"openscad": openscad_builder()},
+    OPENSCAD=openscad_path,
+    BUILDERS={"openscad": openscad_builder(openscad_path)},
     PREV_REF=ARGUMENTS.get("ref", None),
 )
 
