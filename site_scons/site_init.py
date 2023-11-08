@@ -21,17 +21,53 @@ IMAGE_TARGETS = {
 }
 
 
-def openscad_builder(openscad_path: str):
+class MainBuilder:
+    def __init__(self):
+        # Build in parallel by default
+        SetOption("num_jobs", os.cpu_count())
+
+    def build(self) -> None:
+        for sc in Glob("*/SConscript", strings=True):
+            env = self._env  # noqa: F841
+            SConscript(
+                sc,
+                src_dir=Path(sc).parent,
+                variant_dir="build" / Path(sc).parent,
+                duplicate=False,
+                exports="env",
+            )
+
+    @functools.cached_property
+    def _env(self) -> SConsEnvironment:
+        env = Environment(
+            OPENSCAD=self._openscad_path,
+            PREV_REF=ARGUMENTS.get("ref", None),
+        )
+        add_openscad_builder(env)
+        env.Default("build/")
+        env.Alias("images", Glob("*/images"))
+        env.Alias("printables", ["build/", "images"])
+        return env
+
+    @functools.cached_property
+    def _openscad_path(self) -> str:
+        return ARGUMENTS.get(
+            "openscad", os.environ.get("OPENSCAD", "openscad")
+        )
+
+
+def add_openscad_builder(env: SConsEnvironment) -> None:
     def add_deps_target(target, source, env):
         target.append("${TARGET.name}.deps")
         return target, source
 
     def openscad_has_features() -> bool:
         help_text = subprocess.run(
-            [openscad_path, "--help"],
+            [env["OPENSCAD"], "--help"],
             check=True,
             capture_output=True,
             text=True,
+            env=env["ENV"],
         ).stderr
         return "--enable" in help_text
 
@@ -41,7 +77,7 @@ def openscad_builder(openscad_path: str):
         else ""
     )
 
-    return Builder(
+    env["BUILDERS"]["openscad"] = Builder(
         action=(
             "$OPENSCAD -m make -o $TARGET -d ${TARGET}.deps"
             + feature_args
