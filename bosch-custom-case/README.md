@@ -1,5 +1,6 @@
 # Drill bit clips for Bosch Custom Case
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 Parametric drill/drive bit clips for Bosch Custom Cases
@@ -51,9 +52,11 @@ models for various toolbox systems.
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
 
 
-[bosch-custom-case]: https://www.boschtools.com/us/en/boschtools-ocs/custom-case-system-35868-c/
-[license]: http://creativecommons.org/licenses/by-sa/4.0/
-[license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
-[bosch-custom-case-system-insert-by-benjamenjohnson]: https://www.thingiverse.com/thing:3440818
-[benjamenjohnson-web-site]: https://3dprints.electronsmith.com/?s=bosch+custom+case
 [benjamenjohnson-thingiverse]: https://www.thingiverse.com/benjamenjohnson/designs
+[benjamenjohnson-web-site]: https://3dprints.electronsmith.com/?s=bosch+custom+case
+[bosch-custom-case-system-insert-by-benjamenjohnson]: https://www.thingiverse.com/thing:3440818
+[bosch-custom-case]: https://www.boschtools.com/us/en/boschtools-ocs/custom-case-system-35868-c/
+[license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
+[license]: http://creativecommons.org/licenses/by-sa/4.0/
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/641652
