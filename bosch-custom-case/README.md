@@ -11,10 +11,10 @@ Parametric drill/drive bit clips for Bosch Custom Cases
 
 # Description
 
-Put the custom into your [Bosch Custom Case][bosch-custom-case] with custom bit
-clips! These cases have slots for clips of drill and drive bits, but the OEM
-clips are only available with bits included. Create your own bit clips with this
-model!
+Put the "custom" into your [Bosch Custom Case][bosch-custom-case] with custom
+3D-printed bit clips! These cases have slots for clips of drill and drive bits,
+but the OEM clips are only available with bits included. Create your own bit
+clips with this model!
 
 ## Features
 
