@@ -1,9 +1,9 @@
-# Drill bit clips for Bosch Custom Case
+# Drill bit clips for Bosch Custom Case / Pick and Click
 
 [![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
-Parametric drill/drive bit clips for Bosch Custom Cases
+Parametric drill/drive bit clips for Bosch Custom Case / Pick and Click cases
 
 ![Bit clip options animation](images/readme/demo-bits-insert.gif)
 
