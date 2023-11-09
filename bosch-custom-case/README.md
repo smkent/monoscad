@@ -38,9 +38,10 @@ work fine.
 Before making this model from scratch, I printed a couple clips using
 [Benjamen Johnson's bit clip model on
 Thingiverse][bosch-custom-case-system-insert-by-benjamenjohnson].
-[His web site][benjamenjohnson-web-site] has more models for the Bosch Custom
-Case system, and [his Thingiverse page][benjamenjohnson-thingiverse] has a
-variety of useful models for various toolbox systems.
+His web site has
+[more models for the Bosch Custom Case system][benjamenjohnson-web-site], and
+[his Thingiverse page][benjamenjohnson-thingiverse] has a variety of useful
+models for various toolbox systems.
 
 ## License
 
