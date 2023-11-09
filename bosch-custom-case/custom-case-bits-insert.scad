@@ -114,7 +114,10 @@ function cut_blank_side_left() = (
             (row_1_slots[0][1] == "blank")
             || (row_2_slots[0][1] == "blank")
         )
-        : (Channel_Slots > 0 && Channel_Side == "left")
+        : (
+            Row_2_Slot_Type == "blank"
+            || (Channel_Slots > 0 && Channel_Side == "left")
+        )
 );
 
 function cut_blank_side_right() = (
@@ -125,7 +128,10 @@ function cut_blank_side_right() = (
             (row_1_slots[len(row_1_slots) - 1][1] == "blank")
             || (row_2_slots[len(row_2_slots) - 1][1] == "blank")
         )
-        : (Channel_Slots > 0 && Channel_Side == "right")
+        : (
+            Row_2_Slot_Type == "blank"
+            || (Channel_Slots > 0 && Channel_Side == "right")
+        )
 );
 
 
