@@ -6,6 +6,9 @@ Parametric drill/drive bit clips for Bosch Custom Cases
 
 ![Bit clip options animation](images/readme/demo-bits-insert.gif)
 
+![Photo of bit clips in case](images/readme/photo-case-bit-inserts.jpg)
+![Photo of loose bit clips](images/readme/photo-loose-bit-inserts.jpg)
+
 # Description
 
 Put the custom into your [Bosch Custom Case][bosch-custom-case] with custom bit
