@@ -56,6 +56,8 @@ clip_lip_z = 2;
 
 left_tab_y = 11.5;
 left_tab_diameter = 4;
+left_tab_risers_y = 1.5;
+left_tab_risers_z = 1.0;
 
 bit_diagonal_short = 6.5;
 bit_diagonal_long = (bit_diagonal_short * 2) / sqrt(3);
@@ -195,6 +197,23 @@ module insert_body() {
     }
 }
 
+module insert_left_tab_risers() {
+    translate([0, 0, left_tab_y / 2])
+    for (mz = [0:1:1]) {
+        mirror([0, 0, mz])
+        translate([0, 0, left_tab_y / 2 - left_tab_risers_y * 2])
+        linear_extrude(height=left_tab_risers_y)
+        hull() {
+            edge = 0.001;
+            mirror([0, 1])
+            translate([left_tab_risers_z, left_tab_diameter - edge])
+            square([left_tab_diameter / 2, edge]);
+            translate([0, -left_tab_diameter / 2])
+            circle(left_tab_diameter / 2);
+        }
+    }
+}
+
 module insert_left_tab() {
     translate([-left_tab_diameter, (insert_y + left_tab_y) / 2, 0])
     translate([0, 0, left_tab_diameter / 2])
@@ -211,6 +230,7 @@ module insert_left_tab() {
         translate([-left_tab_y, -left_tab_diameter / 2, left_tab_diameter / 2])
         linear_extrude(height=left_tab_diameter / 2)
         rounded_square([left_tab_y, left_tab_diameter], insert_radius / 2);
+        insert_left_tab_risers();
     }
 }
 
