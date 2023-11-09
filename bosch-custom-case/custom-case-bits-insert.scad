@@ -28,6 +28,7 @@ Channel_Side = "right"; // [left: Left, right: Right]
 /* [Options] */
 
 Quick_Change_Grip = true;
+Extra_Driver_Bits_Row = false;
 
 module __end_customizer_options__() { }
 
@@ -40,12 +41,16 @@ $fs = $preview ? $fs : 0.4;
 
 wall_thickness = 1.6;
 
+bit_diagonal_short = 6.5;
+bit_diagonal_long = (bit_diagonal_short * 2) / sqrt(3);
+
 insert_x = 73.5;
 insert_y = 24;
 insert_z = 13;
 insert_radius = 1;
 insert_row_add_y = insert_y - wall_thickness * 7;
 insert_row_add_z = insert_z * 0.65;
+insert_extra_driver_bit_y = bit_diagonal_short * 1.5;
 
 clip_fitting_x = 4;
 clip_fitting_y = 18.6;
@@ -57,8 +62,6 @@ clip_lip_z = 2;
 left_tab_y = 11.5;
 left_tab_diameter = 4;
 
-bit_diagonal_short = 6.5;
-bit_diagonal_long = (bit_diagonal_short * 2) / sqrt(3);
 bit_separation = ((insert_x - Slots * bit_diagonal_short) / (Slots + 1));
 
 bit_rest_grip_diameter = 0.5;
@@ -157,6 +160,17 @@ module rounded_square(dimensions, radius) {
     square(dimensions);
 }
 
+module insert_body_add_extra() {
+    extra_y = Extra_Driver_Bits_Row ? insert_extra_driver_bit_y : 0;
+    if (Extra_Driver_Bits_Row) {
+        translate([0, extra_y])
+        children();
+        square([insert_z, extra_y]);
+    } else {
+        children();
+    }
+}
+
 module insert_body() {
     translate([
         0,
@@ -174,6 +188,7 @@ module insert_body() {
     offset(insert_radius)
     offset(-insert_radius * 2)
     offset(insert_radius)
+    insert_body_add_extra()
     difference() {
         for (row = [1:1:Rows]) {
             translate([insert_row_add_z * (row - 1), 0])
@@ -421,11 +436,13 @@ module bit_slot(type=Row_1_Slot_Type) {
 }
 
 module bit_slot_orientation() {
+    extra_y = Extra_Driver_Bits_Row ? insert_extra_driver_bit_y : 0;
     if (Slot_Orientation == "flipped") {
-        translate([0, insert_y, 0])
+        translate([0, insert_y - extra_y, 0])
         mirror([0, 1, 0])
         children();
     } else {
+        translate([0, extra_y, 0])
         children();
     }
 }
@@ -462,10 +479,51 @@ module insert_bit_slots(row=1) {
     }
 }
 
+module bit_slot_driver_extra() {
+    translate([
+        bit_diagonal_short / 2,
+        insert_extra_driver_bit_y / 2,
+    ])
+    rotate([0, 0, 90])
+    rotate((Slot_Orientation == "flipped") ? [0, 0, 180] : [0, 0, 0])
+    render()
+    difference() {
+        linear_extrude(height=insert_y)
+        circle(bit_diagonal_long / 2, $fn=6);
+        translate([bit_diagonal_long / 4, 0, -wall_thickness / 2])
+        linear_extrude(height=wall_thickness * 2)
+        circle(bit_diagonal_long / 2, $fn=6);
+    }
+}
+
+module insert_extra_driver_bits_row() {
+    $s_bit_separation = ((insert_x - Slots * bit_diagonal_short) / (Slots + 1));
+    translate([
+        wall_thickness,
+        (
+            (Slot_Orientation == "flipped")
+                ? (
+                    insert_extra_driver_bit_y
+                    + (Rows - 1) * insert_row_add_y
+                    + wall_thickness * 3
+                )
+                : 0
+            ),
+        0
+    ])
+    for (i = [1:Slots]) {
+        translate([($s_bit_separation + bit_diagonal_short) * (i - 1), 0, 0])
+        bit_slot_driver_extra();
+    }
+}
+
 module insert_bit_rows() {
     for (row = [1:Rows]) {
         translate([0, bit_slot_row_y_offset(row), insert_row_add_z * (row - 1)])
         insert_bit_slots(row=row);
+    }
+    if (Extra_Driver_Bits_Row) {
+        insert_extra_driver_bits_row();
     }
 }
 
