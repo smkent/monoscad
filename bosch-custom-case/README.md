@@ -20,7 +20,7 @@ model!
 * Optionally stack two rows of bits in one clip (up to 18 total bits)
 * Optionally point bit slots downward for easier bit storage at the top of your
   case
-* Optionally add a blank channel to part of a clip for tall bit pass through
+* Optionally add a blank channel to part of a clip for long bit pass through
 
 ## Rendering and Printing
 
