@@ -97,12 +97,13 @@ class ModelBuilder:
         self.src_dir_path = Path(str(self.src_dir))
         self.model_dir = self.src_dir_path.name
         self.publish_images = set()
+        self.zip_dirs: Dict[str, str] = {}
 
     def ref_filter(fn: Callable[..., Any]) -> Callable[..., Any]:
-        def _wrapper(self, *args: Any) -> Any:
+        def _wrapper(self, *args: Any, **kwargs: Any) -> Any:
             if not self._allowed_by_filter:
                 return
-            fn(self, *args)
+            fn(self, *args, **kwargs)
 
         return _wrapper
 
@@ -118,12 +119,15 @@ class ModelBuilder:
         model_file: str,
         stl_vals: Optional[Dict[str, Any]] = None,
         model_dependencies: Optional[Sequence[str]] = None,
+        zip_dir: Optional[str] = None,
     ) -> None:
         self.env.openscad(
             target=stl_file,
             source=[model_file] + (model_dependencies or []),
             OPENSCAD_ARGS=" ".join(self._openscad_var_args(stl_vals)),
         )
+        if zip_dir:
+            self.zip_dirs[stl_file] = zip_dir
 
     def make_doc(
         self,
@@ -296,14 +300,18 @@ class ModelBuilder:
             str(source),
             [str(self.build_dir) + "/", str(self.src_dir) + "/"],
         )
+        dest_path = Path(dest_stripped).name
+        zip_dir = self.zip_dirs.get(dest_stripped)
+        if zip_dir:
+            return f"{zip_dir}/" + dest_path
         if dest_stripped.startswith("images"):
             if "readme" in dest_stripped:
                 return None
-            return "images/" + Path(dest_stripped).name
+            return "images/" + dest_path
         elif dest_stripped.endswith(".stl"):
-            return "stl/" + Path(dest_stripped).name
+            return "stl/" + dest_path
         elif dest_stripped.endswith(".pdf"):
-            return "doc/" + Path(dest_stripped).name
+            return "doc/" + dest_path
         return str(dest_stripped)
 
     def make_zip(
