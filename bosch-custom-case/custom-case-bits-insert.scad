@@ -114,7 +114,10 @@ function cut_blank_side_left() = (
             (row_1_slots[0][1] == "blank")
             || (row_2_slots[0][1] == "blank")
         )
-        : (Channel_Slots > 0 && Channel_Side == "left")
+        : (
+            Row_2_Slot_Type == "blank"
+            || (Channel_Slots > 0 && Channel_Side == "left")
+        )
 );
 
 function cut_blank_side_right() = (
@@ -125,7 +128,10 @@ function cut_blank_side_right() = (
             (row_1_slots[len(row_1_slots) - 1][1] == "blank")
             || (row_2_slots[len(row_2_slots) - 1][1] == "blank")
         )
-        : (Channel_Slots > 0 && Channel_Side == "right")
+        : (
+            Row_2_Slot_Type == "blank"
+            || (Channel_Slots > 0 && Channel_Side == "right")
+        )
 );
 
 
@@ -389,7 +395,11 @@ module bit_slot_quick_change() {
 module bit_slot_blank() {
     cut_x = (!$s_first ? $s_bit_separation : 0) + 0.01;
     square_y = (insert_y + Rows * insert_row_add_y);
-    translate([0, 0, wall_thickness * 2])
+    translate([0, 0, (
+        $s_row > 1
+            ? (insert_z - insert_row_add_z)
+            : wall_thickness * 2
+    )])
     linear_extrude(height=insert_z * (Rows + 1))
     translate([-bit_diagonal_short / 2 - cut_x, -square_y / 2])
     square([
