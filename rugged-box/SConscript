@@ -137,6 +137,14 @@ for tutorial_name, steps in {
         [f"images/publish/{image}" for image in tutorial_images],
     )
 
+b.InsetImage(
+    "photo-demo-inset.gif",
+    "photo1.jpg",
+    "demo-dimensions.gif",
+    resize="33%",
+    gravity="southwest",
+)
+
 b.add_default_targets()
 
 # vim: ft=python
