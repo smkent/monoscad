@@ -220,6 +220,32 @@ class ModelBuilder:
             File(f"{self.src_dir}/images/publish/{target}")
         )
 
+    def InsetImage(
+        self,
+        target: str,
+        background_image: str,
+        foreground_image: str,
+        gravity: str = "southwest",
+        resize: str = "33%",
+    ) -> None:
+        for image_path in IMAGE_TARGETS.keys():
+            target_path = f"{self.src_dir}/{image_path}/{target}"
+            self.env.NoClean(
+                self.env.Command(
+                    target_path,
+                    [
+                        f"{self.src_dir}/{image_path}/{background_image}",
+                        f"{self.src_dir}/{image_path}/{foreground_image}",
+                    ],
+                    functools.partial(
+                        self.render_inset_image,
+                        resize=resize,
+                        gravity=gravity,
+                    ),
+                )
+            )
+            self.publish_images.add(File(target_path))
+
     @functools.cached_property
     def library_files(self) -> Sequence[Path]:
         return [
@@ -280,6 +306,42 @@ class ModelBuilder:
                 if target[0].suffix == ".gif":
                     cmd += ["-loop", "0", "-delay", str(delay)]
                 self._run(cmd + frames + [tt.path])
+
+    def render_inset_image(
+        self,
+        target: Sequence[SConsFile],
+        source: Sequence[SConsFile],
+        env: SConsEnvironment,
+        resize: str,
+        gravity: str,
+    ) -> None:
+        background_image, foreground_image = source
+        cmd = [
+            "convert",
+            background_image.path,
+            "null:",
+            "(",
+            foreground_image.path,
+            "-coalesce",
+            "-resize",
+            resize,
+            "+repage",
+            "-bordercolor",
+            "#ccc",
+            "-border",
+            "2x2",
+            ")",
+            "-gravity",
+            gravity,
+            "-geometry",
+            "+0+0",
+            "-layers",
+            "composite",
+            "-layers",
+            "optimizeplus",
+            target[0].path,
+        ]
+        self._run(cmd)
 
     def add_printables_zip_targets(self) -> None:
         sources = (
