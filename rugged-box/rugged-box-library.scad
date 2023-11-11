@@ -128,8 +128,8 @@ module rbox(
 module rbox_size_adjustments(
     wall_thickness=2.4,
     lip_thickness=2.0,
-    rib_width=5.0,
-    latch_width=24,
+    rib_width=4.0,
+    latch_width=22,
     latch_screw_separation=20,
     latch_amount_on_top=0,
     size_tolerance=0.05
