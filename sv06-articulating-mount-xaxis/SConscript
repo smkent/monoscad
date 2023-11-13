@@ -1,0 +1,40 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "sv06-articulating-mount-xaxis.scad"
+
+for printer in {"sv06", "sv06plus"}:
+    for link_type in {"male", "female"}:
+        for pos, pos_name in {0: "top", 50: "middle", 100: "bottom"}.items():
+            b.STL(
+                (
+                    f"{printer}-xaxis-articulating-mount"
+                    f"-{link_type}-{pos_name}.stl"
+                ),
+                model,
+                {
+                    "Printer": printer,
+                    "Link_Type": link_type,
+                    "Position_Shift_Percent": pos,
+                },
+            )
+    for link_type, name in {"none": "fitting-only", "blank": "blank"}.items():
+        b.STL(
+            f"{printer}-xaxis-mount-{name}.stl",
+            model,
+            {"Printer": printer, "Link_Type": link_type},
+        )
+
+b.Image("demo.png", model)
+
+# Package model and input STLs together
+b.Source(
+    "*.scad",
+    "sovol-sv06-x-axis-tensioning-mount-slice.stl",
+    "sovol-sv06plus-x-axis-tensioning-mount-slice.stl",
+    "sneaks-articulating-camera-mount-mflink-90.stl",
+)
+
+b.add_default_targets()
+
+# vim: ft=python
