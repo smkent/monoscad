@@ -126,7 +126,8 @@ module flink() {
 }
 
 module mlink_attach() {
-    rr = 2.5;
+    rotate_adj = (19.05 - 7.10) / 2;
+    rr = 2.5 + rotate_adj * 2;
     linkx = 7.10 + rr;
     translate([rr/2, 0, 0])
     translate([(newx - linkx) * (Position_Shift_Percent / 100), 0, 0])
