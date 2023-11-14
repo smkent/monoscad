@@ -2,10 +2,32 @@
 
 [![CC-BY-4.0 license][license-badge]][license]
 
-Articulating camera mount that screws onto the left-side X-axis stepper motor
-housing on the Sovol SV06 and Sovol SV06 Plus
+Articulating camera mount that screws onto the left -side X-axis stepper motor
+housing on the Sovol SV06 and SV06 Plus
 
-These models were created using TinkerCAD
+![Model render](images/readme/demo.png)
+![Photo of printed blank model](images/readme/photo-blank.jpg)
+
+# Description
+
+Mount a camera to move with your Sovol SV06 or SV06 Plus' Z-axis with this screw
+on mount! This part screws onto the the left side X-axis stepper motor housing,
+and provides an attachment base for
+[Sneaks' articulating camera mount system][original-model-url].
+
+Models for both male and female articulated camera mount bases are provided.
+
+## Printing and installation
+
+These parts print as oriented in the model files with no supports and no special
+instructions. Once printed, screw the part onto the left side X-axis stepper
+motor housing with an M3 bolt. Then, attach something to the articulated camera
+mount!
+
+## Remixing
+
+For further remixing, I've also included the blank piece I created to attach the
+articulated camera mount links onto. These parts were created with TinkerCAD.
 
 ## Attribution and License
 

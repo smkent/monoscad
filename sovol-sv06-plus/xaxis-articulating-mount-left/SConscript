@@ -1,6 +1,13 @@
 Import("env")
 b = ModelBuilder(env)
 
+b.Image(
+    "demo.png",
+    "render-image.scad",
+    {"Part": "female"},
+    camera="10,20,0,330,20,0,250",
+)
+
 # Package model and input STLs together
 b.Source(
     "sv06plus-x-axis-left-mount-block-articulated-camera-female.stl",
