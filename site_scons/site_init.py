@@ -29,7 +29,12 @@ class MainBuilder:
     def build(self) -> None:
         build_dir = Path(".") / "build"
         build_dir.mkdir(exist_ok=True)
-        for sc in Glob("*/SConscript", strings=True):
+        sconscript_files = {
+            str(x)
+            for x in Path(".").glob("**/SConscript")
+            if not str(x).startswith("_")
+        }
+        for sc in sconscript_files:
             env = self._env  # noqa: F841
             SConscript(
                 sc,
@@ -92,10 +97,10 @@ class ModelBuilder:
     def __init__(self, env: SConsEnvironment):
         self.env = env
         self.build_dir = Dir(".")
-        self.common_build_dir = Dir("..")
+        self.common_build_dir = Dir("#/build")
         self.src_dir = Dir(".").srcdir
-        self.src_dir_path = Path(str(self.src_dir))
-        self.model_dir = self.src_dir_path.name
+        self.src_dir_path = self.src_dir.path
+        self.model_dir = self.src_dir_path
         self.publish_images: Set[str] = set()
         self.publish_sources: Set[str] = set()
         self.zip_dirs: Dict[str, str] = {}
@@ -362,8 +367,9 @@ class ModelBuilder:
                 | self.publish_sources
             )
         ] + self.library_files
+        zip_name = self.model_dir.replace(os.sep, "__")
         self.env.Command(
-            f"{self.common_build_dir}/printables-{self.model_dir}.zip",
+            f"{self.common_build_dir}/printables-{zip_name}.zip",
             sorted(list(sources)),
             self.make_zip,
         )
@@ -431,7 +437,7 @@ class ModelBuilder:
             return True
         try:
             dirs = {
-                fn.split(os.sep)[0]
+                str(Path(fn).parent)
                 for fn in self._run(
                     ["git", "diff", f"{prev_ref}...@", "--name-only", "--"],
                     quiet=True,
@@ -440,7 +446,7 @@ class ModelBuilder:
                 ).stdout.splitlines()
                 if fn.endswith(".scad") or fn == "SConscript"
             }
-            if self.src_dir_path.name not in dirs:
+            if self.model_dir not in dirs:
                 return False
             print(
                 f"Including model directory {self.model_dir}"
