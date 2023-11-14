@@ -450,7 +450,7 @@ class ModelBuilder:
                     capture_output=True,
                     text=True,
                 ).stdout.splitlines()
-                if fn.endswith(".scad") or fn == "SConscript"
+                if fn.endswith(".scad") or fn.endswith("/SConscript")
             }
             if self.model_dir not in dirs:
                 return False
