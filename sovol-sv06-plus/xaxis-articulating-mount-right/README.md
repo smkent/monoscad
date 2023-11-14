@@ -23,13 +23,13 @@ The X-axis linear rod housing on the SV06 and SV06 Plus are different, and
 models for both printers are included. Plus, models for both male and female
 articulated camera mount bases are provided.
 
-# Printing and installation
+## Printing and installation
 
 These parts print as oriented in the model files with no supports and no special
 instructions. Once printed, simply slide the part into the right side X-axis
 housing and attach something to the articulated camera mount!
 
-# Remixing
+## Remixing
 
 For further remixing, I've also included blank and bare press-fit pieces for the
 SV06 and SV06 Plus X-axis housing. I used [OpenSCAD][openscad] to glue these
