@@ -25,7 +25,7 @@ for printer in {"sv06", "sv06plus"}:
             {"Printer": printer, "Link_Type": link_type},
         )
 
-b.Image("demo.png", model)
+b.Image("demo.png", model, camera="30,0,0,330,310,90,200")
 
 # Package model and input STLs together
 b.Source(
