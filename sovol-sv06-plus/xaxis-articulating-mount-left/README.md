@@ -1,11 +1,11 @@
-# Articulating Camera X-Axis Right-Side Mount for Sovol SV06 (Plus)
+# Articulating Camera X-Axis Left-Side Mount for Sovol SV06 (Plus)
 
 [![CC-BY-4.0 license][license-badge]][license]
 
-Articulating camera mount that pressure fits into the right-side X-axis linear
-rod housing on the Sovol SV06 and Sovol SV06 Plus
+Articulating camera mount that screws onto the left-side X-axis stepper motor
+housing on the Sovol SV06 and Sovol SV06 Plus
 
-![Model render](images/readme/demo.png)
+These models were created using TinkerCAD
 
 ## Attribution and License
 

@@ -1,0 +1,13 @@
+Import("env")
+b = ModelBuilder(env)
+
+# Package model and input STLs together
+b.Source(
+    "sv06plus-x-axis-left-mount-block-articulated-camera-female.stl",
+    "sv06plus-x-axis-left-mount-block-articulated-camera-male.stl",
+    "sv06plus-x-axis-left-mount-block-blank.stl",
+)
+
+b.add_default_targets()
+
+# vim: ft=python
