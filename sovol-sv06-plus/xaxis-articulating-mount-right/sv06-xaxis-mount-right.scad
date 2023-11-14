@@ -9,7 +9,7 @@
 
 Printer = "sv06plus"; // [sv06: Sovol SV06, sv06plus: Sovol SV06 Plus]
 
-Link_Type = "female"; // [none: X-Axis fitting only, blank: Blank slab, male: Male, female: Female, female_flipped: Female flipped]
+Link_Type = "female"; // [none: X-Axis fitting only, blank: Blank slab, male: Male, male_rotated: Male rotated, female: Female, female_flipped: Female flipped]
 
 Position_Shift_Percent = 0; // [0:1:100]
 
@@ -125,15 +125,16 @@ module flink() {
     }
 }
 
-module mlink_attach() {
+module mlink_attach(rotated=false) {
     rotate_adj = (19.05 - 7.10) / 2;
-    rr = 2.5 + rotate_adj * 2;
-    linkx = 7.10 + rr;
+    rr = 2.5 + (rotated ? 0 : rotate_adj * 2);
+    linkx = (rotated ? 19.05 : 7.10) + rr;
     translate([rr/2, 0, 0])
     translate([(newx - linkx) * (Position_Shift_Percent / 100), 0, 0])
     translate([8 - 4.45, 0, 0])
     translate([0, 0, 19.05 / 2])
-    rotate([90, 0, 0])
+    translate(rotated ? [rotate_adj, 0, -rotate_adj] : [0, 0, 0])
+    rotate([90, rotated ? 90 : 0, 0])
     mlink();
 }
 
@@ -214,6 +215,8 @@ module new_part() {
         translate([0, -newy, 0])
         if (Link_Type == "male") {
             mlink_attach();
+        } else if (Link_Type == "male_rotated") {
+            mlink_attach(rotated=true);
         } else if (Link_Type == "female") {
             flink_attach();
         } else if (Link_Type == "female_flipped") {
