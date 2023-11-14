@@ -1,5 +1,6 @@
 # Articulating Camera X-Axis Right-Side Mount for Sovol SV06 (Plus)
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-4.0 license][license-badge]][license]
 
 Articulating camera mount that press-fits into the right-side X-axis linear rod
@@ -56,5 +57,7 @@ Both the original model and this remix are licensed under
 [license]: http://creativecommons.org/licenses/by/4.0/
 [openscad]: https://openscad.org
 [original-model-url]: https://www.printables.com/model/3407-articulating-raspberry-pi-camera-mount-for-prusa-m
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/647686
 [sovol-sv06-plus]: https://github.com/Sovol3d/SV06-PLUS
 [sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
