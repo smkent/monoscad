@@ -1,6 +1,6 @@
 *.3mf
 *.json
-*.stl
+*.[Ss][Tt][Ll]
 *.zip
 .sconsign.dblite
 build/

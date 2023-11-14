@@ -5,7 +5,7 @@ import sys
 import tempfile
 from contextlib import ExitStack
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Set, Union
 from zipfile import ZipFile
 
 from SCons.Node.FS import File as SConsFile
@@ -96,7 +96,8 @@ class ModelBuilder:
         self.src_dir = Dir(".").srcdir
         self.src_dir_path = Path(str(self.src_dir))
         self.model_dir = self.src_dir_path.name
-        self.publish_images = set()
+        self.publish_images: Set[str] = set()
+        self.publish_sources: Set[str] = set()
         self.zip_dirs: Dict[str, str] = {}
 
     def ref_filter(fn: Callable[..., Any]) -> Callable[..., Any]:
@@ -111,6 +112,15 @@ class ModelBuilder:
     def add_default_targets(self) -> None:
         if PRINTABLES_TARGET in BUILD_TARGETS:
             self.add_printables_zip_targets()
+
+    def Source(self, *files: str) -> None:
+        self.publish_sources |= {
+            f
+            for fn in files
+            for f in (
+                self.src_dir.glob(fn, strings=True) if "*" in fn else [fn]
+            )
+        }
 
     @ref_filter
     def STL(
@@ -216,9 +226,7 @@ class ModelBuilder:
         self.env.NoClean(
             self.env.Command(image_targets.keys(), model_file, func)
         )
-        self.publish_images.add(
-            File(f"{self.src_dir}/images/publish/{target}")
-        )
+        self.publish_images.add(f"{self.src_dir}/images/publish/{target}")
 
     def InsetImage(
         self,
@@ -244,10 +252,10 @@ class ModelBuilder:
                     ),
                 )
             )
-            self.publish_images.add(File(target_path))
+            self.publish_images.add(target_path)
 
     @functools.cached_property
-    def library_files(self) -> Sequence[Path]:
+    def library_files(self) -> Sequence[SConsFile]:
         return [
             lib_file
             for lib_glob in [
@@ -344,13 +352,16 @@ class ModelBuilder:
         self._run(cmd)
 
     def add_printables_zip_targets(self) -> None:
-        sources = (
-            set(self.src_dir.glob("*.scad"))
-            | set(self.build_dir.glob("*.pdf"))
-            | set(self.build_dir.glob("*.stl"))
-            | set(self.library_files)
-            | set(self.publish_images)
-        )
+        sources = [
+            File(f)
+            for f in (
+                set(self.src_dir.glob("*.scad", strings=True))
+                | set(self.build_dir.glob("*.pdf", ondisk=False, strings=True))
+                | set(self.build_dir.glob("*.stl", ondisk=False, strings=True))
+                | self.publish_images
+                | self.publish_sources
+            )
+        ] + self.library_files
         self.env.Command(
             f"{self.common_build_dir}/printables-{self.model_dir}.zip",
             sorted(list(sources)),
@@ -366,6 +377,8 @@ class ModelBuilder:
         zip_dir = self.zip_dirs.get(dest_stripped)
         if zip_dir:
             return f"{zip_dir}/" + dest_path
+        if dest_stripped in self.publish_sources:
+            return "source/" + dest_path
         if dest_stripped.startswith("images"):
             if "readme" in dest_stripped:
                 return None
