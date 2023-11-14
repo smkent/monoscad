@@ -9,9 +9,7 @@
 
 Printer = "sv06plus"; // [sv06: Sovol SV06, sv06plus: Sovol SV06 Plus]
 
-Link_Type = "female"; // [none: X-Axis fitting only, blank: Blank slab, male: Male, female: Female]
-
-Flip_Link = false;
+Link_Type = "female"; // [none: X-Axis fitting only, blank: Blank slab, male: Male, female: Female, female_flipped: Female flipped]
 
 Position_Shift_Percent = 0; // [0:1:100]
 
@@ -102,7 +100,6 @@ module links() {
 
 module mlink() {
     render()
-    rotate([0, 0, Flip_Link ? 180 : 0])
     rotate([0, 0, 90])
     intersection() {
         translate([0, 0, -0.1])
@@ -114,7 +111,6 @@ module mlink() {
 
 module flink() {
     render()
-    rotate([0, 0, Flip_Link ? 180 : 0])
     intersection() {
         translate([0, 0, -3.5])
         mirror([0, 0, 1])
@@ -140,13 +136,14 @@ module mlink_attach() {
     mlink();
 }
 
-module flink_attach() {
+module flink_attach(flipped=false) {
     rr = 2.5;
     linkx = 19.05 + rr;
     translate([rr/2, 0, 0])
     translate([(newx - linkx) * (Position_Shift_Percent / 100), 0, 0])
     translate([12 - 2.475, 0, 20 / 2])
     rotate([90, 0, 0])
+    rotate([0, 0, flipped ? 180 : 0])
     flink();
 }
 
@@ -218,6 +215,8 @@ module new_part() {
             mlink_attach();
         } else if (Link_Type == "female") {
             flink_attach();
+        } else if (Link_Type == "female_flipped") {
+            flink_attach(flipped=true);
         }
     }
 }
