@@ -29,12 +29,7 @@ class MainBuilder:
     def build(self) -> None:
         build_dir = Path(".") / "build"
         build_dir.mkdir(exist_ok=True)
-        sconscript_files = {
-            str(x)
-            for x in Path(".").glob("**/SConscript")
-            if not str(x).startswith("_")
-        }
-        for sc in sconscript_files:
+        for sc in {str(md / "SConscript") for md in self._model_dirs}:
             env = self._env  # noqa: F841
             SConscript(
                 sc,
@@ -52,7 +47,10 @@ class MainBuilder:
         )
         self._add_openscad_builder(env)
         env.Default("build/")
-        env.Alias("images", Glob("*/images"))
+        env.Alias(
+            "images",
+            [d for md in self._model_dirs for d in Glob(str(md / "images"))],
+        )
         env.Alias("printables", ["build/", "images"])
         return env
 
@@ -91,6 +89,14 @@ class MainBuilder:
             ),
             emitter=_add_deps_target,
         )
+
+    @functools.cached_property
+    def _model_dirs(self) -> Set[Path]:
+        return {
+            x.parent
+            for x in Path(".").glob("**/SConscript")
+            if not str(x).startswith("_")
+        }
 
 
 class ModelBuilder:
@@ -444,7 +450,7 @@ class ModelBuilder:
                     capture_output=True,
                     text=True,
                 ).stdout.splitlines()
-                if fn.endswith(".scad") or fn == "SConscript"
+                if fn.endswith(".scad") or fn.endswith("/SConscript")
             }
             if self.model_dir not in dirs:
                 return False
