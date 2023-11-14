@@ -2,8 +2,8 @@
 
 [![CC-BY-4.0 license][license-badge]][license]
 
-Articulating camera mount that pressure fits into the right-side X-axis linear
-rod housing on the Sovol SV06 and Sovol SV06 Plus
+Articulating camera mount that press-fits into the right-side X-axis linear rod
+housing on the Sovol SV06 and SV06 Plus
 
 ![Photo of printed model in use](images/readme/photo-assembled.jpg)
 ![Model render](images/readme/demo.png)

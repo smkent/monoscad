@@ -30,9 +30,11 @@ b.Image("demo.png", model, camera="30,0,0,330,310,90,200")
 # Package model and input STLs together
 b.Source(
     "*.scad",
-    "sovol-sv06-x-axis-tensioning-mount-slice.stl",
-    "sovol-sv06plus-x-axis-tensioning-mount-slice.stl",
     "sneaks-articulating-camera-mount-mflink-90.stl",
+    "sovol-sv06-JXHSV06-03004-d X-axis tensioning mount.STL",
+    "sovol-sv06-x-axis-tensioning-mount-slice.stl",
+    "sovol-sv06plus-JXHSV06P-03004-d X-axis tensioning mounting seat.STL",
+    "sovol-sv06plus-x-axis-tensioning-mount-slice.stl",
 )
 
 b.add_default_targets()
