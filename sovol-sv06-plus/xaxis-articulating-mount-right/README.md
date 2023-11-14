@@ -42,6 +42,18 @@ copies of Sovol's original parts (also included). I did the initial slicing of
 the original parts in TinkerCAD as OpenSCAD produced CGAL errors while
 subtracting from the original parts.
 
+## See also
+
+I also have a [SV06 (Plus) X-axis left side mount!][x-axis-mount-left]
+
+I used
+[Zach's remixed articulating camera mount thumb bolt heads][zach-steel-m5-bolt-model]
+with steel M5x20 bolts.
+
+I used
+[areyouferretti's articulated mount tripod bolt][areyouferretti-tripod-bolt]
+to mount a Logitech C920 webcam to my articulated mount.
+
 ## Attribution and License
 
 This is a remix of:
@@ -61,3 +73,6 @@ Both the original model and this remix are licensed under
 [printables-model]: https://www.printables.com/model/647686
 [sovol-sv06-plus]: https://github.com/Sovol3d/SV06-PLUS
 [sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
+[x-axis-mount-left]: /sovol-sv06-plus/xaxis-articulating-mount-left
+[zach-steel-m5-bolt-model]: https://www.printables.com/model/424253-steel-thumb-bolt
+[areyouferretti-tripod-bolt]: https://www.printables.com/model/354264-14-inch-standard-tripod-thumb-bolt-for-articulatin

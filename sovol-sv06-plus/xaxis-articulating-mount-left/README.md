@@ -29,6 +29,18 @@ mount!
 For further remixing, I've also included the blank piece I created to attach the
 articulated camera mount links onto. These parts were created with TinkerCAD.
 
+## See also
+
+I also have a [SV06 (Plus) X-axis right side mount!][x-axis-mount-right]
+
+I used
+[Zach's remixed articulating camera mount thumb bolt heads][zach-steel-m5-bolt-model]
+with steel M5x20 bolts.
+
+I used
+[areyouferretti's articulated mount tripod bolt][areyouferretti-tripod-bolt]
+to mount a Logitech C920 webcam to my articulated mount.
+
 ## Attribution and License
 
 This is a remix of:
@@ -40,8 +52,11 @@ This is a remix of:
 Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution][license].
 
+[areyouferretti-tripod-bolt]: https://www.printables.com/model/354264-14-inch-standard-tripod-thumb-bolt-for-articulatin
 [original-model-url]: https://www.printables.com/model/3407-articulating-raspberry-pi-camera-mount-for-prusa-m
 [license]: http://creativecommons.org/licenses/by/4.0/
 [license-badge]: /_static/license-badge-cc-by-4.0.svg
 [sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
 [sovol-sv06-plus]: https://github.com/Sovol3d/SV06-PLUS
+[x-axis-mount-right]: /sovol-sv06-plus/xaxis-articulating-mount-right
+[zach-steel-m5-bolt-model]: https://www.printables.com/model/424253-steel-thumb-bolt
