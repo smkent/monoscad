@@ -42,6 +42,9 @@ copies of Sovol's original parts (also included). I did the initial slicing of
 the original parts in TinkerCAD as OpenSCAD produced CGAL errors while
 subtracting from the original parts.
 
+Sovol original part links:
+[SV06][original-part-link-sv06] and [SV06 Plus][original-part-link-sv06-plus]
+
 ## See also
 
 I also have a [SV06 (Plus) X-axis left side mount!][x-axis-mount-left]
@@ -65,14 +68,16 @@ This is a remix of:
 Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution][license].
 
+[areyouferretti-tripod-bolt]: https://www.printables.com/model/354264-14-inch-standard-tripod-thumb-bolt-for-articulatin
 [license-badge]: /_static/license-badge-cc-by-4.0.svg
 [license]: http://creativecommons.org/licenses/by/4.0/
 [openscad]: https://openscad.org
 [original-model-url]: https://www.printables.com/model/3407-articulating-raspberry-pi-camera-mount-for-prusa-m
+[original-part-link-sv06-plus]: https://github.com/Sovol3d/SV06-PLUS/blob/master/SV06%20PLUS%203D/STL/JXHSV06P-03000%20X-axis%20component/JXHSV06P-03004-d%20X-axis%20tensioning%20mounting%20seat.STL
+[original-part-link-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source/blob/main/Molded%20Parts%20STL/JXHSV06-03004-d%20X-axis%20tensioning%20mount.STL
 [printables-badge]: /_static/printables-badge.png
 [printables-model]: https://www.printables.com/model/647686
 [sovol-sv06-plus]: https://github.com/Sovol3d/SV06-PLUS
 [sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
 [x-axis-mount-left]: /sovol-sv06-plus/xaxis-articulating-mount-left
 [zach-steel-m5-bolt-model]: https://www.printables.com/model/424253-steel-thumb-bolt
-[areyouferretti-tripod-bolt]: https://www.printables.com/model/354264-14-inch-standard-tripod-thumb-bolt-for-articulatin
