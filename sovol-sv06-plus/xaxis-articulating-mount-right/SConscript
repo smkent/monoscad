@@ -1,7 +1,7 @@
 Import("env")
 b = ModelBuilder(env)
 
-model = "sv06-articulating-mount-xaxis.scad"
+model = "sv06-xaxis-mount-right.scad"
 
 for printer in {"sv06", "sv06plus"}:
     for link_type in {"male", "female"}:
