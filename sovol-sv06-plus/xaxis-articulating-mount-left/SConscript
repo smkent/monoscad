@@ -4,7 +4,7 @@ b = ModelBuilder(env)
 b.Image(
     "demo.png",
     "render-image.scad",
-    {"Part": "female"},
+    {"Part": "male"},
     camera="10,20,0,330,20,0,250",
 )
 
