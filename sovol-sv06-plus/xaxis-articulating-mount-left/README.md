@@ -17,12 +17,16 @@ and provides an attachment base for
 
 Models for both male and female articulated camera mount bases are provided.
 
+## Hardware
+
+A single M3 bolt is needed to attach the mount to the stepper motor housing.
+
 ## Printing and installation
 
 These parts print as oriented in the model files with no supports and no special
 instructions. Once printed, screw the part onto the left side X-axis stepper
-motor housing with an M3 bolt. Then, attach something to the articulated camera
-mount!
+motor housing using the M3 bolt. Then, attach something to the articulated
+camera mount!
 
 ## Remixing
 
