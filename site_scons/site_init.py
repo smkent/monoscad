@@ -38,6 +38,16 @@ class MainBuilder:
                 duplicate=False,
                 exports="env",
             )
+        env.Default("build/")
+        env.Alias(
+            "images",
+            [
+                i
+                for level in range(1, 3 + 1)
+                for i in Glob("*/" * level + "images/*", ondisk=False)
+            ],
+        )
+        env.Alias("printables", ["build/", "images"])
 
     @functools.cached_property
     def _env(self) -> SConsEnvironment:
@@ -46,12 +56,6 @@ class MainBuilder:
             PREV_REF=ARGUMENTS.get("ref", None),
         )
         self._add_openscad_builder(env)
-        env.Default("build/")
-        env.Alias(
-            "images",
-            [d for md in self._model_dirs for d in Glob(str(md / "images"))],
-        )
-        env.Alias("printables", ["build/", "images"])
         return env
 
     @functools.cached_property
@@ -108,7 +112,7 @@ class ModelBuilder:
         self.src_dir_path = self.src_dir.path
         self.model_dir = self.src_dir_path
         self.publish_images: Set[str] = set()
-        self.publish_sources: Set[str] = set()
+        self.publish_assets: Set[str] = set()
         self.zip_dirs: Dict[str, str] = {}
 
     def ref_filter(fn: Callable[..., Any]) -> Callable[..., Any]:
@@ -124,14 +128,22 @@ class ModelBuilder:
         if PRINTABLES_TARGET in BUILD_TARGETS:
             self.add_printables_zip_targets()
 
-    def Source(self, *files: str) -> None:
-        self.publish_sources |= {
+    def _source_glob(self, *files: str) -> None:
+        return {
             f
             for fn in files
             for f in (
                 self.src_dir.glob(fn, strings=True) if "*" in fn else [fn]
             )
         }
+
+    def Source(self, *files: str) -> None:
+        return self.Asset(*files, zip_dir="source")
+
+    def Asset(self, *files: str, zip_dir: str) -> None:
+        for f in self._source_glob(*files):
+            self.publish_assets.add(f)
+            self.zip_dirs[f] = zip_dir
 
     @ref_filter
     def STL(
@@ -370,7 +382,7 @@ class ModelBuilder:
                 | set(self.build_dir.glob("*.pdf", ondisk=False, strings=True))
                 | set(self.build_dir.glob("*.stl", ondisk=False, strings=True))
                 | self.publish_images
-                | self.publish_sources
+                | self.publish_assets
             )
         ] + self.library_files
         zip_name = self.model_dir.replace(os.sep, "__")
@@ -389,8 +401,6 @@ class ModelBuilder:
         zip_dir = self.zip_dirs.get(dest_stripped)
         if zip_dir:
             return f"{zip_dir}/" + dest_path
-        if dest_stripped in self.publish_sources:
-            return "source/" + dest_path
         if dest_stripped.startswith("images"):
             if "readme" in dest_stripped:
                 return None

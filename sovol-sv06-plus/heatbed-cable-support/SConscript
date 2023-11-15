@@ -1,0 +1,31 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "bed-strain-relief-support-v2.scad"
+
+b.STL(
+    "bed-strain-relief-support-v2.stl",
+    model,
+    {"Print_Orientation": 1},
+    zip_dir="models-for-printing",
+)
+b.Image("bed-strain-relief-render.png", model, {"Print_Orientation": 0})
+
+b.Asset(
+    "*.scad",
+    "sovol-sv06plus-cover-repaired-notext.stl",
+    "sovol-sv06plus-cover-repaired.stl",
+    "sovol-sv06plus-JXHSV06-01009-d Hot Bed Wire Fixing Cover.STL",
+    zip_dir="bed-clip-source-model",
+)
+
+b.Asset("frame-strain-relief-clip.stl", zip_dir="models-for-printing")
+
+b.Asset(
+    "bed-strain-relief-support-v1/bed-strain-relief-support-v1.stl",
+    zip_dir="old-version",
+)
+
+b.add_default_targets()
+
+# vim: ft=python
