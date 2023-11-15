@@ -1,5 +1,6 @@
 # Articulating Camera X-Axis Left-Side Mount for Sovol SV06 (Plus)
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-4.0 license][license-badge]][license]
 
 Articulating camera mount that screws onto the left-side X-axis stepper motor
@@ -57,10 +58,12 @@ Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution][license].
 
 [areyouferretti-tripod-bolt]: https://www.printables.com/model/354264-14-inch-standard-tripod-thumb-bolt-for-articulatin
-[original-model-url]: https://www.printables.com/model/3407-articulating-raspberry-pi-camera-mount-for-prusa-m
-[license]: http://creativecommons.org/licenses/by/4.0/
 [license-badge]: /_static/license-badge-cc-by-4.0.svg
-[sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
+[license]: http://creativecommons.org/licenses/by/4.0/
+[original-model-url]: https://www.printables.com/model/3407-articulating-raspberry-pi-camera-mount-for-prusa-m
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/647727
 [sovol-sv06-plus]: https://github.com/Sovol3d/SV06-PLUS
+[sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
 [x-axis-mount-right]: /sovol-sv06-plus/xaxis-articulating-mount-right
 [zach-steel-m5-bolt-model]: https://www.printables.com/model/424253-steel-thumb-bolt
