@@ -32,7 +32,11 @@ camera mount!
 ## Remixing
 
 For further remixing, I've also included the blank piece I created to attach the
-articulated camera mount links onto. These parts were created with TinkerCAD.
+articulated camera mount links onto. I used [OpenSCAD][openscad] to glue these
+parts together. That model file is included as well. With all of the source
+files in the same directory, open `sv06-xaxis-mount-right.scad` in OpenSCAD.
+The included articulated mount attachment base pieces were prepared in
+TinkerCAD.
 
 ## See also
 
@@ -60,6 +64,7 @@ Both the original model and this remix are licensed under
 [areyouferretti-tripod-bolt]: https://www.printables.com/model/354264-14-inch-standard-tripod-thumb-bolt-for-articulatin
 [license-badge]: /_static/license-badge-cc-by-4.0.svg
 [license]: http://creativecommons.org/licenses/by/4.0/
+[openscad]: https://openscad.org
 [original-model-url]: https://www.printables.com/model/3407-articulating-raspberry-pi-camera-mount-for-prusa-m
 [printables-badge]: /_static/printables-badge.png
 [printables-model]: https://www.printables.com/model/647727
