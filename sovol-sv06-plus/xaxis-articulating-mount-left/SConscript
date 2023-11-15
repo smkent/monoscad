@@ -10,9 +10,9 @@ b.Image(
 
 # Package model and input STLs together
 b.Source(
-    "sv06plus-x-axis-left-mount-block-articulated-camera-female.stl",
-    "sv06plus-x-axis-left-mount-block-articulated-camera-male.stl",
-    "sv06plus-x-axis-left-mount-block-blank.stl",
+    "x-axis-left-mount-block-articulated-camera-female.stl",
+    "x-axis-left-mount-block-articulated-camera-male.stl",
+    "x-axis-left-mount-block-blank.stl",
 )
 
 b.add_default_targets()
