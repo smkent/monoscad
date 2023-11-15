@@ -1,17 +1,27 @@
 Import("env")
 b = ModelBuilder(env)
 
+model = "sv06-xaxis-mount-left.scad"
+
+for link_type in {"male", "female"}:
+    b.STL(
+        f"x-axis-left-mount-block-articulated-camera-{link_type}.stl",
+        model,
+        {"Link_Type": link_type},
+    )
+
 b.Image(
     "demo.png",
-    "render-image.scad",
-    {"Part": "male"},
-    camera="10,20,0,330,20,0,250",
+    "sv06-xaxis-mount-left.scad",
+    {"Link_Type": "male"},
+    camera="10,-5,0,330,20,0,250",
 )
 
 # Package model and input STLs together
 b.Source(
-    "x-axis-left-mount-block-articulated-camera-female.stl",
-    "x-axis-left-mount-block-articulated-camera-male.stl",
+    "*.scad",
+    "sneaks-mount-base-slice-f.stl",
+    "sneaks-mount-base-slice-m.stl",
     "x-axis-left-mount-block-blank.stl",
 )
 
