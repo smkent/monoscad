@@ -1,12 +1,13 @@
 # Articulating Camera X-Axis Left-Side Mount for Sovol SV06 (Plus)
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-4.0 license][license-badge]][license]
 
-Articulating camera mount that screws onto the left -side X-axis stepper motor
+Articulating camera mount that screws onto the left-side X-axis stepper motor
 housing on the Sovol SV06 and SV06 Plus
 
+![Photo of printed model](images/readme/photo.jpg)
 ![Model render](images/readme/demo.png)
-![Photo of printed blank model](images/readme/photo-blank.jpg)
 
 # Description
 
@@ -17,12 +18,16 @@ and provides an attachment base for
 
 Models for both male and female articulated camera mount bases are provided.
 
+## Hardware
+
+A single M3x10 bolt is needed to attach the mount to the stepper motor housing.
+
 ## Printing and installation
 
 These parts print as oriented in the model files with no supports and no special
 instructions. Once printed, screw the part onto the left side X-axis stepper
-motor housing with an M3 bolt. Then, attach something to the articulated camera
-mount!
+motor housing using the M3x10 bolt. Then, attach something to the articulated
+camera mount!
 
 ## Remixing
 
@@ -53,10 +58,12 @@ Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution][license].
 
 [areyouferretti-tripod-bolt]: https://www.printables.com/model/354264-14-inch-standard-tripod-thumb-bolt-for-articulatin
-[original-model-url]: https://www.printables.com/model/3407-articulating-raspberry-pi-camera-mount-for-prusa-m
-[license]: http://creativecommons.org/licenses/by/4.0/
 [license-badge]: /_static/license-badge-cc-by-4.0.svg
-[sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
+[license]: http://creativecommons.org/licenses/by/4.0/
+[original-model-url]: https://www.printables.com/model/3407-articulating-raspberry-pi-camera-mount-for-prusa-m
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/647727
 [sovol-sv06-plus]: https://github.com/Sovol3d/SV06-PLUS
+[sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
 [x-axis-mount-right]: /sovol-sv06-plus/xaxis-articulating-mount-right
 [zach-steel-m5-bolt-model]: https://www.printables.com/model/424253-steel-thumb-bolt
