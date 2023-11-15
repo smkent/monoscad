@@ -5,8 +5,8 @@
 Articulating camera mount that screws onto the left-side X-axis stepper motor
 housing on the Sovol SV06 and SV06 Plus
 
+![Photo of printed model](images/readme/photo.jpg)
 ![Model render](images/readme/demo.png)
-![Photo of printed blank model](images/readme/photo-blank.jpg)
 
 # Description
 
