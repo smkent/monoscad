@@ -1,5 +1,5 @@
 /*
- * Articulating Camera X-Axis Mount for Sovol SV06 and Sovol SV06 Plus
+ * Articulating Camera X-Axis Right-Side Mount for Sovol SV06 and SV06 Plus
  * By smkent (GitHub) / bulbasaur0 (Printables)
  *
  * Licensed under Creative Commons (4.0 International License) Attribution
