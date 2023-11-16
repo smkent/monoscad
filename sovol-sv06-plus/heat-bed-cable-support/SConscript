@@ -9,7 +9,9 @@ b.STL(
     {"Print_Orientation": 1},
     zip_dir="models-for-printing",
 )
+
 b.Image("bed-strain-relief-render.png", model, {"Print_Orientation": 0})
+b.Image("frame-strain-relief-render.png", "frame-strain-relief-support.scad")
 
 b.Asset(
     "*.scad",
