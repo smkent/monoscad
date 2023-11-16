@@ -43,8 +43,8 @@ class MainBuilder:
             "images",
             [
                 i
-                for level in range(1, 3 + 1)
-                for i in Glob("*/" * level + "images/*", ondisk=False)
+                for md in self._model_dirs
+                for i in Glob(str(md / "images") + "/*")
             ],
         )
         env.Alias("printables", ["build/", "images"])

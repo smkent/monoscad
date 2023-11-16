@@ -18,10 +18,10 @@ b.Asset(
     "sovol-sv06plus-cover-repaired-notext.stl",
     "sovol-sv06plus-cover-repaired.stl",
     "sovol-sv06plus-JXHSV06-01009-d Hot Bed Wire Fixing Cover.STL",
-    zip_dir="bed-clip-source-model",
+    zip_dir="bed-support-source-model",
 )
 
-b.Asset("frame-strain-relief-clip.stl", zip_dir="models-for-printing")
+b.Asset("frame-strain-relief-support.stl", zip_dir="models-for-printing")
 
 b.Asset(
     "bed-strain-relief-support-v1/bed-strain-relief-support-v1.stl",
