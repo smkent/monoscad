@@ -51,11 +51,12 @@ You'll need 3 zip ties (2 of which should be small):
 
 ## Printing
 
-* Orientation: Both parts print oriented as is – the frame support clip prints
-  upright, and the heat end bed support clip prints on its back side.
-* Brim (optional): A brim for one or both parts may be needed depending on your
-  bed adhesion. The heat bed end support clip has a low bed contact surface
-  area.
+**Orientation**: Both parts print oriented as rendered – the frame support clip
+prints upright, and the heat end bed support clip prints on its back side.
+
+**Brim (optional)**: A brim for one or both parts may be needed depending on
+your bed adhesion. The heat bed end support clip has a low bed contact surface
+area.
 
 ![Slicer screenshot of bed support model](images/readme/slicer-screenshot-bed-support-v2.png)
 ![Slicer screenshot of frame support model](images/readme/slicer-screenshot-frame-support.png)
