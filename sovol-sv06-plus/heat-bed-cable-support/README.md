@@ -55,6 +55,9 @@ contact surface area is low.
 
 A brim for one or both parts may be needed depending on your bed adhesion.
 
+![Slicer screenshot of bed support model](images/readme/slicer-screenshot-bed-support-v2.png)
+![Slicer screenshot of frame support model](images/readme/slicer-screenshot-frame-support.png)
+
 ## Installation
 
 Both parts clip on and should be fastened with zip ties.
