@@ -1,4 +1,4 @@
-# Sovol SV06 Plus Heatbed Cable Support Bundle for tight spaces (remix)
+# Sovol SV06 Plus Heat Bed Cable Support Bundle for tight spaces
 
 [![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-NC-SA-4.0 license][license-badge]][license]
