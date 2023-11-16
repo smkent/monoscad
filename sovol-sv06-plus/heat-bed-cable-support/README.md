@@ -6,10 +6,10 @@
 This is a two-piece heat bed cable support set for the Sovol SV06 Plus when
 placed near a wall
 
-![Model render](images/readme/bed-strain-relief-render.png)
+![Photo of both printed model pieces with bed at rear](images/readme/v2-photo1.jpg)
+![Photo of both printed model pieces with bed at front](images/readme/v2-photo2.jpg)
 
-![Photo of V1 printed model](images/readme/v1-photo1.jpg)
-![Photo of V1 printed model](images/readme/v1-photo2.jpg)
+![Bed support model render](images/readme/bed-strain-relief-render.png)
 
 # Version 2
 
