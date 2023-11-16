@@ -9,6 +9,7 @@ placed near a wall
 ![Photo of both printed model pieces with bed at rear](images/readme/v2-photo1.jpg)
 ![Photo of both printed model pieces with bed at front](images/readme/v2-photo2.jpg)
 
+![Frame support model render](images/readme/frame-strain-relief-render.png)
 ![Bed support model render](images/readme/bed-strain-relief-render.png)
 
 # Version 2
