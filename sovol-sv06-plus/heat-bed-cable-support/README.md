@@ -8,6 +8,9 @@ placed near a wall
 
 ![Model render](images/readme/bed-strain-relief-render.png)
 
+![Photo of V1 printed model](images/readme/v1-photo1.jpg)
+![Photo of V1 printed model](images/readme/v1-photo2.jpg)
+
 # Version 2
 
 **Heat bed strain relief support V2 is here!**
