@@ -1,0 +1,25 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "dual-spool-holder.scad"
+
+b.STL(
+    "dual-spool-holder.stl",
+    model,
+    {"Print_Orientation": 1},
+    zip_dir="models-for-printing",
+)
+b.Image("demo.png", model, {"Print_Orientation": 0, "Image_Render": 1})
+
+b.Source("*.scad", "sovol-sv06-JXHSV06-07003-d Barrel nut.STL")
+
+b.Asset(
+    "sovol-sv06-JXHSV06-07002-d Filament Barrel.STL",
+    "sovol-sv06-filament-barrel-1mm-chamfered-threads.stl",
+    "sovol-sv06-filament-barrel-2mm-chamfered-threads.stl",
+    zip_dir="stock-sv06-filament-barrel",
+)
+
+b.add_default_targets()
+
+# vim: ft=python
