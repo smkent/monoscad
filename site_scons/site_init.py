@@ -21,6 +21,27 @@ IMAGE_TARGETS = {
 }
 
 
+def openscad_cmd(env: SConsEnvironment) -> Sequence[str]:
+    executable = ARGUMENTS.get(
+        "openscad", os.environ.get("OPENSCAD", "openscad")
+    )
+
+    def _openscad_has_features() -> bool:
+        help_text = subprocess.run(
+            [executable, "--help"],
+            check=True,
+            capture_output=True,
+            text=True,
+            env=env["ENV"],
+        ).stderr
+        return "--enable" in help_text
+
+    cmd = [executable]
+    if _openscad_has_features():
+        cmd += ["--enable", "fast-csg", "--enable", "manifold"]
+    return cmd
+
+
 class MainBuilder:
     def __init__(self):
         # Build in parallel by default
@@ -52,43 +73,22 @@ class MainBuilder:
     @functools.cached_property
     def _env(self) -> SConsEnvironment:
         env = Environment(
-            OPENSCAD=self._openscad_path,
             PREV_REF=ARGUMENTS.get("ref", None),
         )
         self._add_openscad_builder(env)
         return env
-
-    @functools.cached_property
-    def _openscad_path(self) -> str:
-        return ARGUMENTS.get(
-            "openscad", os.environ.get("OPENSCAD", "openscad")
-        )
 
     def _add_openscad_builder(self, env: SConsEnvironment) -> None:
         def _add_deps_target(target, source, env):
             target.append("${TARGET.name}.deps")
             return target, source
 
-        def _openscad_has_features() -> bool:
-            help_text = subprocess.run(
-                [self._openscad_path, "--help"],
-                check=True,
-                capture_output=True,
-                text=True,
-                env=env["ENV"],
-            ).stderr
-            return "--enable" in help_text
-
-        feature_args = (
-            " --enable fast-csg --enable manifold"
-            if _openscad_has_features()
-            else ""
-        )
-
+        cmd = openscad_cmd(env)
+        env["OPENSCAD"] = cmd[0]
+        env["OPENSCAD_FEATURES"] = cmd[1:]
         env["BUILDERS"]["openscad"] = Builder(
             action=(
-                "$OPENSCAD -m make -o $TARGET -d ${TARGET}.deps"
-                + feature_args
+                "$OPENSCAD $OPENSCAD_FEATURES -m make -o $TARGET -d ${TARGET}.deps"
                 + " $SOURCE $OPENSCAD_ARGS"
             ),
             emitter=_add_deps_target,
@@ -319,6 +319,7 @@ class ModelBuilder:
                     "-o",
                     str(image_target),
                 ]
+                + self.env["OPENSCAD_FEATURES"]
                 + render_args
             )
 
