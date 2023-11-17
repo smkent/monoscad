@@ -8,12 +8,12 @@
 /* [Rendering Options] */
 Render_Mode = "print"; // [print: Print Orientation, normal: Upright installed orientation, model_preview: Preview of model installed on gantry]
 
-Installed_Model_Preview = false;
-
 /* [Options] */
+Base_Type = "gantry"; // [gantry: Gantry support, flat: Flat]
+
+/* [Advanced Options] */
 Width = 45; // [45:0.1:65]
 Tilt_Angle = 9.5; // [0:0.5:45]
-Base_Type = "gantry"; // [gantry: Gantry support, flat: Flat]
 
 module __end_customizer_options__() { }
 
