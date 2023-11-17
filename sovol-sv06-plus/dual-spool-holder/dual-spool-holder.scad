@@ -35,6 +35,7 @@ foot_y = 8.9;
 hole_d = 5.5;
 hole_x = 30 / 2;
 hole_pos_y = 16.7;
+hole_inner_z = 5.5;
 
 stem_rot = Tilt_Angle;
 stem_z = 130;
@@ -51,6 +52,13 @@ round_radius = 1;
 slop = 0.01;
 
 // Modules //
+
+module round_shape(r) {
+    offset(r=r)
+    offset(r=-r * 2)
+    offset(r=r)
+    children();
+}
 
 module original_sv06_barrel_nut() {
     translate([0, -0.11, 10.40] - [36, 39.6, 0] / 2)
@@ -70,28 +78,11 @@ module updated_original_sv06_barrel_nut() {
 }
 
 module screw_hole() {
-    rr = round_radius / 2;
-    module hole_rounding_overhang() {
-        mirror([0, 1])
-        square([hole_d + rr * 2, rr * 2]);
-        translate([0, gantry_fitting_z])
-        square([hole_d + rr * 2, rr * 2]);
-    }
-
     rotate_extrude(angle=360)
-    difference() {
-        offset(r=-rr)
-        offset(delta=rr)
-        union() {
-            translate([0, -slop])
-            square([hole_d / 2, gantry_fitting_z + slop * 2]);
-            translate([0, 5])
-            offset(r=rr)
-            offset(r=-rr)
-            square([hole_d, gantry_fitting_z - 5 + slop]);
-            hole_rounding_overhang();
-        }
-        hole_rounding_overhang();
+    translate([0, hole_inner_z]) {
+        mirror([0, 1])
+        square([hole_d * 0.5 + round_radius, gantry_fitting_z * 5]);
+        square([hole_d * 0.9 + round_radius, gantry_fitting_z * 5]);
     }
 }
 
@@ -99,20 +90,11 @@ module screw_holes_cut() {
     difference() {
         children();
 
+        translate([outer_x / 2, 0, 0])
         for (x = [-hole_x, hole_x])
         translate([x, -hole_pos_y, 0])
         screw_hole();
     }
-}
-
-module gantry_fitting() {
-    translate([0, -gantry_fitting_y, -foot_z])
-    color("lemonchiffon", 0.6)
-    rotate([90, 0, 90])
-    translate([0, 0, round_radius])
-    linear_extrude(height=outer_x - round_radius * 2)
-    offset(delta=-round_radius)
-    square([foot_y + gantry_fitting_y, foot_z + gantry_fitting_z]);
 }
 
 module extended_nut() {
@@ -136,9 +118,7 @@ module extended_nut() {
         midz = middle_z + 4;
         translate([(nut_d - 2.125) / 2, -midz / 2])
         difference() {
-            offset(r=round_radius)
-            offset(r=-round_radius * 2)
-            offset(r=round_radius)
+            round_shape(round_radius)
             polygon(points=[
                 [-ribx, -ribx * 3],
                 [0, -ribx * 3],
@@ -174,7 +154,8 @@ module stem_part() {
             offset(r=-stem_round_radius)
             offset(delta=stem_round_radius)
             union() {
-                square([stem_y, stem_z]);
+                translate([0, stem_z / 3])
+                square([stem_y, stem_z * (2 / 3)]);
                 translate([(nut_d - stem_y) / 2, stem_z + nut_d / 2 - stem_nut_z])
                 circle(d=nut_d - 3);
             }
@@ -184,9 +165,9 @@ module stem_part() {
     }
 }
 
-module place_stem() {
-    translate([0, foot_y, -foot_z])
-    rotate([-stem_rot, 0, 0])
+module place_stem(dimensions=3) {
+    translate(dimensions == 3 ? [0, foot_y, -foot_z] : [foot_y, -foot_z])
+    rotate(dimensions == 3 ? [-stem_rot, 0, 0] : -stem_rot)
     children();
 }
 
@@ -199,6 +180,55 @@ module stem_nut() {
     place_stem()
     translate([0, -(nut_d - stem_y) / 2, stem_z + nut_d / 2 - stem_nut_z])
     nut();
+}
+
+module base_shape(exaggerate_multiple=1) {
+    translate([gantry_fitting_y, foot_z])
+    place_stem(dimensions=2)
+    translate([-stem_y, 0])
+    offset(delta=-round_radius)
+    square([stem_y * exaggerate_multiple, stem_z / 2 * exaggerate_multiple]);
+
+    offset(delta=-round_radius)
+    translate([-(foot_y + gantry_fitting_y) * (exaggerate_multiple - 1), -(foot_z + gantry_fitting_z) * (exaggerate_multiple - 1)])
+    square([(foot_y + gantry_fitting_y) * exaggerate_multiple, (foot_z + gantry_fitting_z) * exaggerate_multiple]);
+}
+
+module gantry_fitting() {
+    translate([0, -gantry_fitting_y, -foot_z])
+    color("lemonchiffon", 0.6)
+    rotate([90, 0, 90])
+    translate([0, 0, round_radius])
+    linear_extrude(height=outer_x - round_radius * 2)
+    round_shape(stem_y / 3)
+    union() {
+        color("yellow")
+        render()
+        intersection() {
+            round_shape(stem_y * 1.5)
+            union() {
+                base_shape(exaggerate_multiple=5);
+
+                xx = foot_y + (foot_z * tan(stem_rot));
+                zz = stem_z / 2;
+                color("lightgreen", 0.6)
+                translate([gantry_fitting_y / 2, gantry_fitting_z + foot_z - round_radius])
+                polygon(points=[
+                    [0, 0],
+                    [(xx + zz * tan(stem_rot)) * 0.5, zz * 0.25],
+                    [xx + zz * tan(stem_rot), zz],
+                    [xx, 0]
+                ]);
+            }
+            color("yellow", 0.6)
+            hull() {
+                base_shape();
+                translate([0, stem_z / 2])
+                base_shape();
+            }
+        }
+        base_shape();
+    }
 }
 
 module gantry_cut() {
@@ -215,10 +245,11 @@ module gantry_cut() {
 module dual_spool_holder() {
     color("#caf", 0.8)
     maybe_render()
-    screw_holes_cut()
-    translate([-outer_x / 2, 0, 0]) {
+    translate([-outer_x / 2, 0, 0])
+    union() {
         minkowski() {
             render(convexity=2)
+            screw_holes_cut()
             gantry_cut() {
                 union() {
                     gantry_fitting();
