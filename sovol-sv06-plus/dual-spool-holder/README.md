@@ -34,6 +34,9 @@ barrel(s) print upright, with no supports if printing one of the included
 chamfered versions. You can reuse the stock spool holder for one of the two
 sides, or print two new ones.
 
+![Slicer screenshot of dual spool holder](images/readme/slicer-screenshot-dual-spool-holder.png)
+![Slicer screenshot of filament barrel with 1mm chamfer](images/readme/slicer-screenshot-filament-barrel-1mm.png)
+
 ## Installation
 
 Remove the original spool holder from the gantry, and reuse the original M4
