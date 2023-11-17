@@ -46,6 +46,13 @@ Also pictured is
 [rogerquin's terrific SV06 (Plus) spool holder add-on][rogerquin-spool-holder-for-sovol-sv06],
 which I'm using with each filament barrel. Highly recommended!
 
+## Previous version
+
+I created an [earlier dual spool holder model version][v1-model]
+in TinkerCAD. That model is a combined remix of the double-ended nut from
+[braga3dprint's model][braga3dprint-double-spool-holder] and
+[Andrew Gipson's model][andrew-gipson-sv06-spool-holder].
+
 ## Attribution and License
 
 This model uses the original [Sovol SV06 barrel nut][original-part-link-sv06].
@@ -59,3 +66,6 @@ This model is licensed under
 [original-part-link-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source/blob/main/Molded%20Parts%20STL/JXHSV06-07003-d%20Barrel%20nut.STL
 [sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
 [rogerquin-spool-holder-for-sovol-sv06]: https://www.printables.com/model/409684-spool-holder-for-sovol-sv06-3d-printer
+[v1-model]: https://www.printables.com/model/584632-sovol-sv06-plus-90-degree-dual-spool-holder
+[braga3dprint-double-spool-holder]: https://www.printables.com/model/458130-sovol-sv06sv06-plus-double-filamentspool-holder
+[andrew-gipson-sv06-spool-holder]: https://www.printables.com/model/501529-sv06-spool-holder-with-filament-guide-v1
