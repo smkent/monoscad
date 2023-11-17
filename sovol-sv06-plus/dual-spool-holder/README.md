@@ -15,7 +15,7 @@ Plus. Using
 I created a longer double-ended nut combined with a new base to create this dual
 spool holder.
 
-I'm including a slightly tweaked stock spool holder model that increases the
+Also included is a slightly tweaked stock spool holder model that increases the
 spool holder threads for printing without supports, but may result in a looser
 fit. I'm using the included looser spool holder and haven't any fit issues.
 
