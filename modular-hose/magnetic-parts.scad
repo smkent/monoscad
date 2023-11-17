@@ -49,7 +49,7 @@ Magnet_Thickness = 3; // [1:0.1:5]
 
 /* [Screws] */
 Screw_Holes = true;
-Screw_Diameter = 4; // [3:1:8]
+Screw_Diameter = 4; // [3:0.1:8]
 Screw_Hole_Top = "inset"; // [none: None, chamfer: Chamfer, inset: Inset]
 
 /* [Advanced Size Adjustment] */
@@ -61,6 +61,17 @@ Thickness = 0.8; // [0.2:0.1:5]
 Size_Tolerance = 0.0; // [0:0.1:2]
 
 module __end_customizer_options__() { }
+
+// Constants
+
+knurl_depth = 1.5;
+
+// Functions
+
+function round_plate_diameter() = (
+    $fhp_fan_size + $fhp_magnet_diameter * 2
+    + ($fhp_plate_knurled ? knurl_depth : 0)
+);
 
 // Modules
 
@@ -82,7 +93,6 @@ module circle_even_placement(count, stagger=false) {
     mdiff = $fhp_fan_size - $fhp_grommet_diameter;
     for (rot = [0:360/count:360]) {
         rotate([0, 0, rot + (stagger ? 360 / count / 2 : 0)])
-        translate([1 + ($fh_origin_inner_diameter + $fhp_magnet_diameter + 3) / 2, 0, 0])
         children();
     }
 }
@@ -92,33 +102,28 @@ module fan_screw_placement_selection() {
         fan_screw_placement()
         children();
     } else {
+        x_offset = (round_plate_diameter() + $fhp_grommet_diameter) / 4;
         circle_even_placement(4, stagger=true)
-        translate([
-            max(0,
-                ($fhp_grommet_diameter - $fh_origin_inner_diameter) / 2
-            ) - $fhp_screw_diameter / 2,
-            0,
-            0
-        ])
+        translate([x_offset, 0, 0])
         children();
     }
 }
 
 module plate_body(solid=false) {
-    plate_size = $fhp_fan_size + 0;
     difference() {
         difference() {
             if ($fhp_plate_type == "fan") {
+                plate_size = $fhp_fan_size;
                 linear_extrude(height=$fhp_plate_thickness)
                 offset($fhp_plate_screw_hole_inset)
                 offset(-$fhp_plate_screw_hole_inset)
                 square([plate_size, plate_size], center=true);
             } else {
+                plate_size = round_plate_diameter();
                 if ($fhp_plate_knurled) {
-                    knurl_depth = 1.5;
                     knurled_cylinder(
                         $fhp_plate_thickness,
-                        plate_size + $fhp_magnet_diameter * 2 + knurl_depth,
+                        plate_size,
                         knurl_width=7,
                         knurl_height=5,
                         knurl_depth=knurl_depth,
@@ -127,7 +132,7 @@ module plate_body(solid=false) {
                     );
                 } else {
                     linear_extrude(height=$fhp_plate_thickness)
-                    circle(plate_size / 2 + $fhp_magnet_diameter);
+                    circle(d=plate_size);
                 }
             }
             translate([0, 0, -0.01])
@@ -161,8 +166,9 @@ module plate_body(solid=false) {
             }
         }
         if ($fhp_magnet_holes) {
+            x_offset = (round_plate_diameter() +  $fh_origin_inner_diameter) / 4;
             circle_even_placement(8, stagger=true)
-            translate([0, 0, $fhp_plate_thickness - $fhp_magnet_thickness])
+            translate([x_offset, 0, $fhp_plate_thickness - $fhp_magnet_thickness])
             linear_extrude(height=$fhp_magnet_thickness + 0.001)
             circle(($fhp_magnet_diameter * 1.05) / 2);
         }
