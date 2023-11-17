@@ -14,6 +14,7 @@ b.Image(
     "render-model-preview.png",
     model,
     {"Render_Mode": "model_preview", "Image_Render": 1},
+    camera="0,0,90,55,0,25,900",
 )
 
 b.Source(
