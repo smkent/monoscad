@@ -32,7 +32,7 @@ foot_y = 8.9;
 
 hole_d = 5.5;
 hole_x = 30 / 2;
-hole_pos_y = 16.5;
+hole_pos_y = 16.7;
 
 stem_rot = 9.5;
 stem_z = 130;
