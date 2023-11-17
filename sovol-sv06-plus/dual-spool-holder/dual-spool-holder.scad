@@ -9,7 +9,9 @@
 Print_Orientation = true;
 
 /* [Options] */
-Gantry_Fitting_Size = 30.25; // [24:0.005:40]
+Tilt_Angle = 9.5; // [0:0.5:15]
+Base_Type = "gantry"; // [gantry: Gantry beam, flat: Flat]
+Base_Length = 30.25; // [24:0.005:40]
 
 module __end_customizer_options__() { }
 
@@ -24,7 +26,7 @@ $fs = $preview ? $fs : 0.4;
 
 outer_x = 45;
 
-gantry_fitting_y = Gantry_Fitting_Size;
+gantry_fitting_y = Base_Length;
 gantry_fitting_z = 10;
 
 foot_z = 23.5;
@@ -32,9 +34,9 @@ foot_y = 8.9;
 
 hole_d = 5.5;
 hole_x = 30 / 2;
-hole_pos_y = 16.5;
+hole_pos_y = 16.7;
 
-stem_rot = 9.5;
+stem_rot = Tilt_Angle;
 stem_z = 130;
 stem_y = 19;
 stem_nut_z = 1.5;
@@ -103,7 +105,7 @@ module screw_holes_cut() {
     }
 }
 
-module new_gantry_fitting() {
+module gantry_fitting() {
     translate([0, -gantry_fitting_y, -foot_z])
     color("lemonchiffon", 0.6)
     rotate([90, 0, 90])
@@ -154,7 +156,7 @@ module extended_nut() {
     }
 }
 
-module new_nut() {
+module nut() {
     translate([outer_x / 2, 0, 0])
     mirror([1, 0, 0])
     rotate([stem_rot, 0, 0])
@@ -162,7 +164,7 @@ module new_nut() {
     extended_nut();
 }
 
-module new_stem_part() {
+module stem_part() {
     mirror([0, 1, 0])
     rotate([90, 0, 90])
     translate([0, 0, round_radius])
@@ -188,29 +190,29 @@ module place_stem() {
     children();
 }
 
-module new_stem() {
+module stem() {
     place_stem()
-    new_stem_part();
+    stem_part();
 }
 
-module new_stem_nut() {
+module stem_nut() {
     place_stem()
     translate([0, -(nut_d - stem_y) / 2, stem_z + nut_d / 2 - stem_nut_z])
-    new_nut();
+    nut();
 }
 
 module gantry_cut() {
     difference() {
         children();
 
-        translate([0, round_radius, round_radius])
-        translate([0, -gantry_fitting_y - foot_y - slop, -foot_z])
-        translate([-slop, foot_y, -slop])
-        cube([outer_x + slop * 2, gantry_fitting_y + slop, foot_z + slop]);
+        translate(Base_Type == "flat" ? [0, gantry_fitting_y, 0] : [0, 0, 0])
+        translate([-slop, round_radius - slop, -foot_z + round_radius - slop])
+        mirror([0, 1, 0])
+        cube([outer_x + slop * 2, gantry_fitting_y * 2 + slop, foot_z + slop]);
     }
 }
 
-module new_part() {
+module dual_spool_holder() {
     color("#caf", 0.8)
     maybe_render()
     screw_holes_cut()
@@ -219,17 +221,17 @@ module new_part() {
             render(convexity=2)
             gantry_cut() {
                 union() {
-                    new_gantry_fitting();
-                    new_stem();
+                    gantry_fitting();
+                    stem();
                 }
             }
             sphere(r=round_radius);
         }
-        new_stem_nut();
+        stem_nut();
     }
 }
 
-module orient_part() {
+module orient_model() {
     if (Print_Orientation) {
         translate([-stem_z / 2, 0, outer_x / 2])
         rotate([0, 90, 0])
@@ -249,8 +251,8 @@ module maybe_render() {
 }
 
 module main() {
-    orient_part()
-    new_part();
+    orient_model()
+    dual_spool_holder();
 }
 
 main();
