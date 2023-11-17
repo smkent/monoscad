@@ -4,7 +4,8 @@
 
 Sovol SV06 (Plus) 90-degree dual spool holder
 
-![Model render](images/readme/demo.png)
+![Model render](images/readme/render-part.png)
+![Installed model preview render](images/readme/render-model-preview.png)
 
 ## Attribution and License
 
