@@ -6,18 +6,27 @@ model = "dual-spool-holder.scad"
 b.STL(
     "dual-spool-holder.stl",
     model,
-    {"Print_Orientation": 1},
+    {"Render_Mode": "print"},
     zip_dir="models-for-printing",
 )
-b.Image("demo.png", model, {"Print_Orientation": 0, "Image_Render": 1})
+b.Image("render-part.png", model, {"Render_Mode": "normal", "Image_Render": 1})
+b.Image(
+    "render-model-preview.png",
+    model,
+    {"Render_Mode": "model_preview", "Image_Render": 1},
+)
 
-b.Source("*.scad", "sovol-sv06-JXHSV06-07003-d Barrel nut.STL")
+b.Source(
+    "*.scad",
+    "sovol-sv06-JXHSV06-07003-d Barrel nut.STL",
+    "sovol-sv06-JXHSV06-02005-d Gantry beam.STL",
+    "sovol-sv06-JXHSV06-07002-d Filament Barrel.STL",
+)
 
 b.Asset(
-    "sovol-sv06-JXHSV06-07002-d Filament Barrel.STL",
     "sovol-sv06-filament-barrel-1mm-chamfered-threads.stl",
     "sovol-sv06-filament-barrel-2mm-chamfered-threads.stl",
-    zip_dir="stock-sv06-filament-barrel",
+    zip_dir="printable-filament-barrel",
 )
 
 b.add_default_targets()

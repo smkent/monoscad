@@ -6,12 +6,14 @@
  */
 
 /* [Rendering Options] */
-Print_Orientation = true;
+Render_Mode = "print"; // [print: Print Orientation, normal: Upright installed orientation, model_preview: Preview of model installed on gantry]
+
+Installed_Model_Preview = false;
 
 /* [Options] */
-Tilt_Angle = 9.5; // [0:0.5:15]
-Base_Type = "gantry"; // [gantry: Gantry beam, flat: Flat]
-Base_Length = 30.25; // [24:0.005:40]
+Width = 45; // [45:0.1:65]
+Tilt_Angle = 9.5; // [0:0.5:45]
+Base_Type = "gantry"; // [gantry: Gantry support, flat: Flat]
 
 module __end_customizer_options__() { }
 
@@ -24,21 +26,21 @@ Image_Render = 0;
 $fa = $preview ? $fa : 2;
 $fs = $preview ? $fs : 0.4;
 
-outer_x = 45;
+outer_x = Width;
 
-gantry_fitting_y = Base_Length;
+gantry_fitting_y = 25.7;
 gantry_fitting_z = 10;
 
-foot_z = 23.5;
+foot_z = 32.8;
 foot_y = 8.9;
 
 hole_d = 5.5;
 hole_x = 30 / 2;
-hole_pos_y = 16.7;
+hole_pos_y = 16.7 - 0.5;
 hole_inner_z = 5.5;
 
 stem_rot = Tilt_Angle;
-stem_z = 130;
+stem_z = 106.5 + foot_z;
 stem_y = 19;
 stem_nut_z = 1.5;
 stem_round_radius = 16;
@@ -243,7 +245,7 @@ module gantry_cut() {
 }
 
 module dual_spool_holder() {
-    color("#caf", 0.8)
+    color("#94c5db", 0.8)
     maybe_render()
     translate([-outer_x / 2, 0, 0])
     union() {
@@ -263,7 +265,7 @@ module dual_spool_holder() {
 }
 
 module orient_model() {
-    if (Print_Orientation) {
+    if (Render_Mode == "print") {
         translate([-stem_z / 2, 0, outer_x / 2])
         rotate([0, 90, 0])
         children();
@@ -281,9 +283,61 @@ module maybe_render() {
     }
 }
 
+module preview_filament_spool() {
+    w = 80;
+    translate([98.2 / 2 + outer_x / 2, 0, 0])
+    color("#778", 0.2)
+    render(convexity=10)
+    rotate([90, 0, 90])
+    translate([0, 0, -w / 2])
+    difference() {
+        union() {
+            for (z = [0, w - 5])
+            translate([0, 0, z])
+            cylinder(h=5, d=200);
+            cylinder(h=w, d=100);
+        }
+        cylinder(h=w * 2, d=50, center=true);
+    }
+}
+
+module preview_filament_barrel() {
+    translate([outer_x / 2, 0, 0] - [11.8, 0, 0])
+    color("mintcream", 0.6)
+    mirror([1, 0, 0])
+    rotate(90)
+    translate([-0.11, 0.005, 0] - [36, 0, 36] / 2)
+    import("sovol-sv06-JXHSV06-07002-d Filament Barrel.STL", convexity=4);
+}
+
+module preview_spool_parts() {
+    for (ch = [0:1:$children-1])
+    for (mx = [0:1:1])
+    mirror([mx, 0, 0])
+    place_stem()
+    translate([0, -(nut_d - stem_y) / 2, stem_z + nut_d / 2 - stem_nut_z])
+    children(ch);
+}
+
+module preview_gantry() {
+    color("#aab", 0.9)
+    translate([-380 / 2, 1.5453 / 2, -37.4])
+    rotate([90, 0, 0])
+    import("sovol-sv06-JXHSV06-02005-d Gantry beam.STL");
+}
+
 module main() {
-    orient_model()
-    dual_spool_holder();
+    if ($preview && Render_Mode == "model_preview") {
+        dual_spool_holder();
+        preview_gantry();
+        preview_spool_parts() {
+            preview_filament_barrel();
+            preview_filament_spool();
+        }
+    } else {
+        orient_model()
+        dual_spool_holder();
+    }
 }
 
 main();
