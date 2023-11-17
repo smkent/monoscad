@@ -9,7 +9,9 @@
 Print_Orientation = true;
 
 /* [Options] */
-Gantry_Fitting_Size = 30.25; // [24:0.005:40]
+Tilt_Angle = 9.5; // [0:0.5:15]
+Base_Type = "gantry"; // [gantry: Gantry beam, flat: Flat]
+Base_Length = 30.25; // [24:0.005:40]
 
 module __end_customizer_options__() { }
 
@@ -24,7 +26,7 @@ $fs = $preview ? $fs : 0.4;
 
 outer_x = 45;
 
-gantry_fitting_y = Gantry_Fitting_Size;
+gantry_fitting_y = Base_Length;
 gantry_fitting_z = 10;
 
 foot_z = 23.5;
@@ -34,7 +36,7 @@ hole_d = 5.5;
 hole_x = 30 / 2;
 hole_pos_y = 16.7;
 
-stem_rot = 9.5;
+stem_rot = Tilt_Angle;
 stem_z = 130;
 stem_y = 19;
 stem_nut_z = 1.5;
@@ -203,10 +205,10 @@ module gantry_cut() {
     difference() {
         children();
 
-        translate([0, round_radius, round_radius])
-        translate([0, -gantry_fitting_y - foot_y - slop, -foot_z])
-        translate([-slop, foot_y, -slop])
-        cube([outer_x + slop * 2, gantry_fitting_y + slop, foot_z + slop]);
+        translate(Base_Type == "flat" ? [0, gantry_fitting_y, 0] : [0, 0, 0])
+        translate([-slop, round_radius - slop, -foot_z + round_radius - slop])
+        mirror([0, 1, 0])
+        cube([outer_x + slop * 2, gantry_fitting_y * 2 + slop, foot_z + slop]);
     }
 }
 
