@@ -24,6 +24,13 @@ $fs = $preview ? $fs : 0.4;
 
 runout_exit_pos = [3.4972, 8.0042, 0.005936];
 runout_foot_height = 6.8;
+runout_connector_x = 30.209;
+runout_connector_coords = [
+    [5.5045, 18.688],
+    [9.5045, 18.688],
+    [9.505, 25.688],
+    [5.505, 25.688],
+];
 
 extruder_assembly_width = 69.405;
 extruder_assembly_height = 53.794;
@@ -66,18 +73,48 @@ module orient_sensor() {
     }
 }
 
-module sensor() {
+module runout_sensor() {
     orient_sensor()
     color("#ccc", 0.7)
     translate(-runout_exit_pos)
     import("sovol-sv06plus-runout-sensor-rotated.stl", convexity=4);
 }
 
+module runout_sensor_wire_harness() {
+    orient_sensor()
+    rotate(-90)
+    translate([runout_exit_pos[1], -runout_exit_pos[0], runout_exit_pos[2]])
+    translate([0, runout_connector_x, 0])
+    mirror([1, 0, 0])
+    mirror([0, 1, 0])
+    rotate([90, 0, 0])
+    union() {
+        color("mintcream", 0.6)
+        linear_extrude(height=4) {
+            difference() {
+                polygon(points=[for (c = runout_connector_coords) c]);
+                offset(delta=-0.5)
+                polygon(points=[for (c = runout_connector_coords) c]);
+            }
+        }
+        runout_x = (runout_connector_coords[2][0] - runout_connector_coords[0][0]);
+        runout_z = (runout_connector_coords[2][1] - runout_connector_coords[0][1]);
+        translate(runout_connector_coords[0])
+        translate([runout_x / 2, runout_z / 2])
+        for (vec = [[-1, "silver"], [0, "gray"], [1, "slategray"]]) {
+            color(vec[1], 0.5)
+            linear_extrude(height=20)
+            translate([0, runout_z / 3 * vec[0]])
+            circle(d=1.5, $fn=15);
+        }
+    }
+}
+
 module sensor_foot_shape() {
     hull()
     projection(cut=true)
     translate([0, 0, -1])
-    sensor();
+    runout_sensor();
 }
 
 module extruder_assembly() {
@@ -253,7 +290,10 @@ module position_model() {
             translate(extruder_inlet_pos - [0, 0, 5])
             filament();
             translate(extruder_inlet_pos + [0, 0, mount_height - runout_foot_height])
-            sensor();
+            union() {
+                runout_sensor();
+                runout_sensor_wire_harness();
+            }
             extruder_assembly();
         }
     }
