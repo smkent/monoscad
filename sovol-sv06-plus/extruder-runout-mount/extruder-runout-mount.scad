@@ -90,15 +90,6 @@ module filament() {
     cylinder(h=70, d=1.75, $fn=15);
 }
 
-module hull_stack() {
-    for (ch = [1:1:$children - 1]) {
-        hull() {
-            children(ch - 1);
-            children(ch);
-        }
-    }
-}
-
 module extruder_top_outline_shape() {
     sub = mount_base_path_height;
     translate([0, -adj_height])
@@ -109,37 +100,6 @@ module extruder_top_outline_shape() {
         [sub, extruder_assembly_height],
         [sub, extruder_assembly_height - extruder_corner_chamfer - sub],
     ]);
-}
-
-module part_base_curve_shape_1() {
-    bpath_x = 8;
-    bpath_y = 10.79;
-    bpath_top = 53.794;
-    bpath_adj = bpath_top - bpath_y;
-    r = 4.0;
-    offset(r=-r)
-    offset(r=r * 2)
-    offset(r=-r)
-    for (mx = [0:1:1])
-    translate(mx ? [extruder_assembly_width, 0] : [0, 0])
-    mirror([mx, 0])
-    hull_stack() {
-        extruder_top_outline_shape();
-        translate([0, -adj_height])
-        translate([bpath_x * 2.0, bpath_adj + bpath_y * 0.5])
-        scale([1, bpath_y / bpath_x])
-        circle(d=bpath_x);
-        translate([0, -adj_height])
-        translate([0, extruder_inlet_pos[2] - bpath_y * 0.5 + (mount_height) ])
-        translate([bpath_x * 3.5, 0])
-        scale([1, bpath_y / bpath_x])
-        circle(d=bpath_x);
-        translate([0, -adj_height])
-        translate([0, extruder_inlet_pos[2] - bpath_y * 0.5 + (mount_height) ])
-        translate([bpath_x * 4.5, 0]) //bpath_adj + mount_height - bpath_y / 2])
-        scale([1, bpath_y / bpath_x])
-        circle(d=bpath_x);
-    }
 }
 
 module extruder_outline_polygon() {
@@ -221,37 +181,6 @@ module screw_holes_chamfer_cut() {
         translate([hole_pos[0], hole_pos[1] - adj_height])
         translate([0, 0, mount_thick / 2])
         cylinder(h=mount_thick / 2 + 0.1, r2=screw_hole_diameter + edge_radius, r1=screw_hole_diameter / 2 + edge_radius);
-    }
-}
-
-module part_base_intersect_scoop(style="center") {
-    r = (style == "center" ? 15.0 : 10.0);
-    cx = (mount_height - mount_top_thick);
-    rotate([90, 0, 90])
-    translate([-mount_height + mount_top_thick, 0, extruder_assembly_width / 2])
-    linear_extrude(height=extruder_assembly_width * 2, center=true)
-    difference() {
-        offset(r=-r)
-        offset(r=r * 2)
-        offset(r=-r)
-        difference() {
-            union() {
-                square([mount_height + extruder_assembly_width, base_y]);
-                translate([-extruder_assembly_width, mount_thick])
-                mirror([0, 1])
-                square([mount_height + extruder_assembly_width * 2, mount_thick + extruder_assembly_width]);
-            }
-            cr = base_y - mount_thick;
-            color("crimson", 0.6)
-            translate([0, base_y])
-            translate(style == "center" ? [0, 0] : [5, 0])
-            scale(style == "center" ? [0.8, 1] : [0.8, 1])
-            scale([cx / cr, 1])
-            circle(r=cr);
-        }
-        mirror([0, 1])
-        translate([-extruder_assembly_width * 2, 0])
-        square(extruder_assembly_width * 4);
     }
 }
 
