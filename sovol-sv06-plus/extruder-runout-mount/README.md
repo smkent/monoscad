@@ -5,7 +5,7 @@
 An extruder mount for the filament runout sensor on the Sovol SV06 Plus
 
 ![Model render](images/readme/render-part.png)
-![Installed model preview render](images/readme/render-model-preview.png)
+![Installed model preview animation](images/readme/demo-rotation.gif)
 
 ## License
 

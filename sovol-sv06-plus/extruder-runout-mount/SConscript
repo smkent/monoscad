@@ -3,7 +3,7 @@ b = ModelBuilder(env)
 
 model = "extruder-runout-mount.scad"
 
-for orientation in {"front", "rear", "left", "right"}:
+for orientation in {"rear", "right"}:
     b.STL(
         f"extruder-runout-mount-connector-facing-{orientation}.stl",
         model,
@@ -14,10 +14,10 @@ for orientation in {"front", "rear", "left", "right"}:
         },
     )
 
-for render_mode, file_name in {
-    "normal": "part",
-    "model_preview": "model-preview",
-}.items():
+for render_mode, file_name, camera in [
+    ("normal", "part", None),
+    ("model_preview", "model-preview", "15,20,25,55,0,25,350"),
+]:
     b.Image(
         f"render-{file_name}.png",
         model,
@@ -27,7 +27,25 @@ for render_mode, file_name in {
             "Round_Edges": 1,
             "Runout_Sensor_Orientation": "right",
         },
+        camera=camera,
     )
+
+b.Image(
+    f"demo-rotation.gif",
+    model,
+    [
+        {
+            "$fn": 25,
+            "Render_Mode": "model_preview",
+            "Round_Edges": 1,
+            "Runout_Sensor_Orientation": orientation,
+        }
+        for orientation in {"rear", "right"}
+    ],
+    camera="15,20,25,55,0,25,350",
+    delay=150,
+)
+
 
 b.add_default_targets()
 
