@@ -91,18 +91,6 @@ module filament() {
 }
 
 module extruder_top_outline_shape() {
-    sub = mount_base_path_height;
-    translate([0, -adj_height])
-    polygon(points=[
-        [0, extruder_assembly_height - extruder_corner_chamfer - sub],
-        [0, extruder_assembly_height - extruder_corner_chamfer],
-        [extruder_corner_chamfer, extruder_assembly_height],
-        [sub, extruder_assembly_height],
-        [sub, extruder_assembly_height - extruder_corner_chamfer - sub],
-    ]);
-}
-
-module extruder_outline_polygon() {
     extra = $curve_size_extension;
     polygon(points=[
         [-extra, -extra],
@@ -119,7 +107,7 @@ module mount_curve_shape_base(extra_size=0) {
     $curve_size_extension = extra_size;
     difference() {
         union() {
-            extruder_outline_polygon();
+            extruder_top_outline_shape();
             translate([extruder_inlet_pos[0], 0])
             hull()
             for (mx = [0:1:1])
@@ -146,7 +134,7 @@ module mount_curve_shape_solid(x_offset=5, custom_r=0) {
         offset(r=-r)
         mount_curve_shape_base(extra_size=50);
         union() {
-            extruder_outline_polygon();
+            extruder_top_outline_shape();
             translate([extruder_corner_chamfer, 0])
             square([extruder_assembly_width - extruder_corner_chamfer * 2, mount_height * 2]);
         }
@@ -184,7 +172,7 @@ module screw_holes_chamfer_cut() {
     }
 }
 
-module part_base_intersect() {
+module mount_height_intersect() {
     intersection() {
         children();
 
@@ -213,7 +201,7 @@ module sensor_foot_cut() {
     }
 }
 
-module part_base_assembled_shape() {
+module mount_assembled_shape() {
     translate([0, 0, edge_radius])
     linear_extrude(height=mount_thick - edge_radius * 2)
     screw_holes_shape_cut()
@@ -246,8 +234,8 @@ module extruder_runout_mount() {
     render(convexity=2)
     screw_holes_chamfer_cut()
     sensor_foot_cut()
-    part_base_intersect()
-    part_base_assembled_shape();
+    mount_height_intersect()
+    mount_assembled_shape();
 }
 
 module position_model() {
