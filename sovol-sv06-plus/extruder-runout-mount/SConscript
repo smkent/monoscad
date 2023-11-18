@@ -16,7 +16,7 @@ for orientation in {"rear", "right"}:
 
 for render_mode, file_name, camera in [
     ("normal", "part", None),
-    ("model_preview", "model-preview", "15,20,25,55,0,25,350"),
+    ("model_preview", "model-preview", "20,20,25,55,0,25,350"),
 ]:
     b.Image(
         f"render-{file_name}.png",
@@ -42,7 +42,7 @@ b.Image(
         }
         for orientation in {"rear", "right"}
     ],
-    camera="15,20,25,55,0,25,350",
+    camera="20,20,25,55,0,25,350",
     delay=150,
 )
 
