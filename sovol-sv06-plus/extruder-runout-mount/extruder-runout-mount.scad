@@ -24,6 +24,13 @@ $fs = $preview ? $fs : 0.4;
 
 runout_exit_pos = [3.4972, 8.0042, 0.005936];
 runout_foot_height = 6.8;
+runout_connector_x = 30.209;
+runout_connector_coords = [
+    [5.5045, 18.688],
+    [9.5045, 18.688],
+    [9.505, 25.688],
+    [5.505, 25.688],
+];
 
 extruder_assembly_width = 69.405;
 extruder_assembly_height = 53.794;
@@ -66,18 +73,48 @@ module orient_sensor() {
     }
 }
 
-module sensor() {
+module runout_sensor() {
     orient_sensor()
     color("#ccc", 0.7)
     translate(-runout_exit_pos)
     import("sovol-sv06plus-runout-sensor-rotated.stl", convexity=4);
 }
 
+module runout_sensor_wire_harness() {
+    orient_sensor()
+    rotate(-90)
+    translate([runout_exit_pos[1], -runout_exit_pos[0], runout_exit_pos[2]])
+    translate([0, runout_connector_x, 0])
+    mirror([1, 0, 0])
+    mirror([0, 1, 0])
+    rotate([90, 0, 0])
+    union() {
+        color("mintcream", 0.6)
+        linear_extrude(height=4) {
+            difference() {
+                polygon(points=[for (c = runout_connector_coords) c]);
+                offset(delta=-0.5)
+                polygon(points=[for (c = runout_connector_coords) c]);
+            }
+        }
+        runout_x = (runout_connector_coords[2][0] - runout_connector_coords[0][0]);
+        runout_z = (runout_connector_coords[2][1] - runout_connector_coords[0][1]);
+        translate(runout_connector_coords[0])
+        translate([runout_x / 2, runout_z / 2])
+        for (vec = [[-1, "silver"], [0, "gray"], [1, "slategray"]]) {
+            color(vec[1], 0.5)
+            linear_extrude(height=20)
+            translate([0, runout_z / 3 * vec[0]])
+            circle(d=1.5, $fn=15);
+        }
+    }
+}
+
 module sensor_foot_shape() {
     hull()
     projection(cut=true)
     translate([0, 0, -1])
-    sensor();
+    runout_sensor();
 }
 
 module extruder_assembly() {
@@ -90,59 +127,7 @@ module filament() {
     cylinder(h=70, d=1.75, $fn=15);
 }
 
-module hull_stack() {
-    for (ch = [1:1:$children - 1]) {
-        hull() {
-            children(ch - 1);
-            children(ch);
-        }
-    }
-}
-
 module extruder_top_outline_shape() {
-    sub = mount_base_path_height;
-    translate([0, -adj_height])
-    polygon(points=[
-        [0, extruder_assembly_height - extruder_corner_chamfer - sub],
-        [0, extruder_assembly_height - extruder_corner_chamfer],
-        [extruder_corner_chamfer, extruder_assembly_height],
-        [sub, extruder_assembly_height],
-        [sub, extruder_assembly_height - extruder_corner_chamfer - sub],
-    ]);
-}
-
-module part_base_curve_shape_1() {
-    bpath_x = 8;
-    bpath_y = 10.79;
-    bpath_top = 53.794;
-    bpath_adj = bpath_top - bpath_y;
-    r = 4.0;
-    offset(r=-r)
-    offset(r=r * 2)
-    offset(r=-r)
-    for (mx = [0:1:1])
-    translate(mx ? [extruder_assembly_width, 0] : [0, 0])
-    mirror([mx, 0])
-    hull_stack() {
-        extruder_top_outline_shape();
-        translate([0, -adj_height])
-        translate([bpath_x * 2.0, bpath_adj + bpath_y * 0.5])
-        scale([1, bpath_y / bpath_x])
-        circle(d=bpath_x);
-        translate([0, -adj_height])
-        translate([0, extruder_inlet_pos[2] - bpath_y * 0.5 + (mount_height) ])
-        translate([bpath_x * 3.5, 0])
-        scale([1, bpath_y / bpath_x])
-        circle(d=bpath_x);
-        translate([0, -adj_height])
-        translate([0, extruder_inlet_pos[2] - bpath_y * 0.5 + (mount_height) ])
-        translate([bpath_x * 4.5, 0]) //bpath_adj + mount_height - bpath_y / 2])
-        scale([1, bpath_y / bpath_x])
-        circle(d=bpath_x);
-    }
-}
-
-module extruder_outline_polygon() {
     extra = $curve_size_extension;
     polygon(points=[
         [-extra, -extra],
@@ -159,7 +144,7 @@ module mount_curve_shape_base(extra_size=0) {
     $curve_size_extension = extra_size;
     difference() {
         union() {
-            extruder_outline_polygon();
+            extruder_top_outline_shape();
             translate([extruder_inlet_pos[0], 0])
             hull()
             for (mx = [0:1:1])
@@ -186,7 +171,7 @@ module mount_curve_shape_solid(x_offset=5, custom_r=0) {
         offset(r=-r)
         mount_curve_shape_base(extra_size=50);
         union() {
-            extruder_outline_polygon();
+            extruder_top_outline_shape();
             translate([extruder_corner_chamfer, 0])
             square([extruder_assembly_width - extruder_corner_chamfer * 2, mount_height * 2]);
         }
@@ -224,38 +209,7 @@ module screw_holes_chamfer_cut() {
     }
 }
 
-module part_base_intersect_scoop(style="center") {
-    r = (style == "center" ? 15.0 : 10.0);
-    cx = (mount_height - mount_top_thick);
-    rotate([90, 0, 90])
-    translate([-mount_height + mount_top_thick, 0, extruder_assembly_width / 2])
-    linear_extrude(height=extruder_assembly_width * 2, center=true)
-    difference() {
-        offset(r=-r)
-        offset(r=r * 2)
-        offset(r=-r)
-        difference() {
-            union() {
-                square([mount_height + extruder_assembly_width, base_y]);
-                translate([-extruder_assembly_width, mount_thick])
-                mirror([0, 1])
-                square([mount_height + extruder_assembly_width * 2, mount_thick + extruder_assembly_width]);
-            }
-            cr = base_y - mount_thick;
-            color("crimson", 0.6)
-            translate([0, base_y])
-            translate(style == "center" ? [0, 0] : [5, 0])
-            scale(style == "center" ? [0.8, 1] : [0.8, 1])
-            scale([cx / cr, 1])
-            circle(r=cr);
-        }
-        mirror([0, 1])
-        translate([-extruder_assembly_width * 2, 0])
-        square(extruder_assembly_width * 4);
-    }
-}
-
-module part_base_intersect() {
+module mount_height_intersect() {
     intersection() {
         children();
 
@@ -284,7 +238,7 @@ module sensor_foot_cut() {
     }
 }
 
-module part_base_assembled_shape() {
+module mount_assembled_shape() {
     translate([0, 0, edge_radius])
     linear_extrude(height=mount_thick - edge_radius * 2)
     screw_holes_shape_cut()
@@ -317,8 +271,8 @@ module extruder_runout_mount() {
     render(convexity=2)
     screw_holes_chamfer_cut()
     sensor_foot_cut()
-    part_base_intersect()
-    part_base_assembled_shape();
+    mount_height_intersect()
+    mount_assembled_shape();
 }
 
 module position_model() {
@@ -336,7 +290,10 @@ module position_model() {
             translate(extruder_inlet_pos - [0, 0, 5])
             filament();
             translate(extruder_inlet_pos + [0, 0, mount_height - runout_foot_height])
-            sensor();
+            union() {
+                runout_sensor();
+                runout_sensor_wire_harness();
+            }
             extruder_assembly();
         }
     }
