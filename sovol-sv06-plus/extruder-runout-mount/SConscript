@@ -1,0 +1,34 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "extruder-runout-mount.scad"
+
+for orientation in {"front", "rear", "left", "right"}:
+    b.STL(
+        f"extruder-runout-mount-connector-facing-{orientation}.stl",
+        model,
+        {
+            "Render_Mode": "print",
+            "Round_Edges": 1,
+            "Runout_Sensor_Orientation": orientation,
+        },
+    )
+
+for render_mode, file_name in {
+    "normal": "part",
+    "model_preview": "model-preview",
+}.items():
+    b.Image(
+        f"render-{file_name}.png",
+        model,
+        {
+            "$fn": 25,
+            "Render_Mode": render_mode,
+            "Round_Edges": 1,
+            "Runout_Sensor_Orientation": "right",
+        },
+    )
+
+b.add_default_targets()
+
+# vim: ft=python
