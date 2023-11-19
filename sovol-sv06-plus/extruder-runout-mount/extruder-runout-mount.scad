@@ -76,7 +76,6 @@ module orient_sensor() {
 module runout_sensor() {
     orient_sensor()
     color("#ccc", 0.7)
-    translate(-runout_exit_pos)
     import("sovol-sv06plus-runout-sensor-rotated.stl", convexity=4);
 }
 
