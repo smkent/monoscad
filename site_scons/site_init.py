@@ -4,6 +4,7 @@ import subprocess
 import sys
 import tempfile
 from contextlib import ExitStack
+from math import ceil
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Sequence, Set, Union
 from zipfile import ZipFile
@@ -333,6 +334,22 @@ class ModelBuilder:
                 _render_single_image(
                     fn, frame_stl_vals, IMAGE_RENDER_SIZE.replace("x", ",")
                 )
+            if len(frames) > 1 and target[0].suffix != ".gif":
+                row_len = str(ceil(len(frames) / 2))
+                montage_fn = str(tdp / "montage") + target[0].suffix
+                montage_cmd = [
+                    "montage",
+                    "-background",
+                    "#333",
+                    "-border",
+                    0,
+                    "-geometry",
+                    "+0+0",
+                    "-tile",
+                    f"{row_len}x{row_len}",
+                ]
+                self._run(montage_cmd + frames + [montage_fn])
+                frames = [montage_fn]
             for tt in target:
                 cmd = ["convert", "-resize", image_targets[tt.abspath]]
                 if target[0].suffix == ".gif":
@@ -482,9 +499,10 @@ class ModelBuilder:
         check: bool = True,
         **kwargs: Any,
     ) -> subprocess.CompletedProcess:
+        cmds = [str(c) for c in cmd]
         if not quiet:
-            print("+", " ".join([str(c) for c in cmd]), file=sys.stderr)
-        return subprocess.run(cmd, *args, check=check, **kwargs)
+            print("+", " ".join(cmds), file=sys.stderr)
+        return subprocess.run(cmds, *args, check=check, **kwargs)
 
     @staticmethod
     def _remove_prefix(value: str, prefixes: Union[str, Sequence[str]]) -> str:
