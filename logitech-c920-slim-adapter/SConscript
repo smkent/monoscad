@@ -6,18 +6,25 @@ model = "logitech-c920-slim-adapter.scad"
 link_types = ["male", "female", "male_flat", "none"]
 
 for link_type in link_types:
-    b.STL(
-        f"logitech-c920-slim-adapter-{link_type}.stl",
-        model,
-        {"Link_Type": link_type},
-        zip_dir="models-for-printing",
-    )
+    for ball_mount in [0, 1]:
+        fn_ball_mount = "-ball" if ball_mount else ""
+        b.STL(
+            f"logitech-c920-slim-adapter-{link_type}{fn_ball_mount}.stl",
+            model,
+            {"Link_Type": link_type, "Ball_Mount": ball_mount},
+            zip_dir="models-for-printing",
+        )
 
 b.Image(
     "demo.png",
     model,
-    [{"Link_Type": link_type} for link_type in link_types],
-    camera="0,2,5,55,0,70,120",
+    [
+        {"Link_Type": "female", "Ball_Mount": 0},
+        {"Link_Type": "male", "Ball_Mount": 0},
+        {"Link_Type": "none", "Ball_Mount": 1},
+        {"Link_Type": "male", "Ball_Mount": 1},
+    ],
+    camera="0,2,0,55,0,70,125",
 )
 
 b.Source("*.scad", "sneaks-*.stl")

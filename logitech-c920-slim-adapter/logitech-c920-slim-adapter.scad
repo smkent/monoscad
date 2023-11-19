@@ -1,5 +1,5 @@
 /*
- * Logitech C920 low profile articulating camera adapter
+ * Logitech C920 low profile articulating camera mount adapter
  * By smkent (GitHub) / bulbasaur0 (Printables)
  *
  * Licensed under Creative Commons (4.0 International License) Attribution
@@ -7,7 +7,14 @@
 
 /* [Options] */
 // Articulating mount attachment type
-Link_Type = "female"; // [none: None, male: Male, male_flat: Male flat, female: Female, female_flipped: Female flipped]
+Link_Type = "female"; // [none: None, blank: Blank, male: Male, male_flat: Male flat, female: Female, female_flipped: Female flipped]
+
+// Add ball mount to the bottom. When using articulating mount link types, the resulting model will need supports to print.
+Ball_Mount = false;
+
+/* [Advanced Options] */
+// Enabling these will reduce print bed adhesion
+Ball_Mount_Fillets = false;
 
 // Mount body thickness in millimeters
 Base_Thickness = 2.5; // [2:0.1:4]
@@ -36,6 +43,13 @@ hinge_extra_vertical_offset = 1;
 
 articulating_mount_height = 20;
 
+ball_diameter = (19.126 - 2.738);
+ball_mount_grip_radius = 3;
+ball_mount_channel_radius = 1.6;
+ball_mount_wing_count = 4;
+ball_mount_wing_width = ball_mount_channel_radius;
+ball_mount_fillets = Ball_Mount_Fillets ? 1 : 0;
+
 slop = 0.01;
 
 // Functions //
@@ -52,6 +66,7 @@ module sneaks_articulating_camera_link_stl() {
 
 module sneaks_articulating_camera_link() {
     height = (Link_Type == "male_flat" ? 6.8 : 20);
+    render()
     intersection() {
         translate([0, height / 2, 0])
         if (is_female()) {
@@ -86,13 +101,19 @@ module hinge_base_shape() {
         dd = base_thickness - hinge_diameter;
         circle(d=hinge_diameter);
         for (xf = [0.5, 1])
-        translate([xf * dd / 2, dd / 2 - base_thickness - hinge_extra_vertical_offset])
+        translate([
+            xf * dd / 2,
+            dd / 2 - base_thickness - hinge_extra_vertical_offset
+        ])
         circle(d=base_thickness);
     }
 
     rad = hinge_insert_diameter * 0.5;
     translate([slop, 0])
-    translate([-rad - hinge_diameter / 2, -hinge_diameter / 2 + rad - hinge_extra_vertical_offset])
+    translate([
+        -rad - hinge_diameter / 2,
+        -hinge_diameter / 2 + rad - hinge_extra_vertical_offset
+    ])
     rotate(270)
     fillet(rad);
 }
@@ -112,7 +133,9 @@ module hinge_base() {
             offset(r=hinge_insert_diameter / 8)
             offset(r=-hinge_insert_diameter / 8)
             translate([0, -hinge_insert_diameter / 4])
-            square([hinge_insert_diameter, hinge_insert_diameter / 2], center=true);
+            square(
+                [hinge_insert_diameter, hinge_insert_diameter / 2], center=true
+            );
         }
     }
 }
@@ -157,7 +180,7 @@ module attachment_profile_shape() {
 
 module attachment_height_cut() {
     mid_width = articulating_mount_height + (is_female() ? -1 : 0);
-    mid_height = (Link_Type == "male_flat" ? 7.1 + 2 : articulating_mount_height);
+    mid_height = (Link_Type == "male_flat" ? 9.1 : articulating_mount_height);
     intersection() {
         children();
 
@@ -166,7 +189,9 @@ module attachment_height_cut() {
 
         rotate([90, 0, 0])
         translate([0, 0, -articulating_mount_height])
-        linear_extrude(height=articulating_mount_height + base_length + base_thickness + slop * 2)
+        linear_extrude(height=(
+            articulating_mount_height + base_length + base_thickness + slop * 2
+        ))
         translate([-hinge_width / 2, 0])
         union() {
             r1 = 7;
@@ -198,9 +223,11 @@ module mount_body() {
         linear_extrude(height=base_thickness)
         mount_base_shape();
 
-        rotate([0, -90, 0])
-        linear_extrude(height=hinge_width, center=true)
-        attachment_profile_shape();
+        if (Link_Type != "none") {
+            rotate([0, -90, 0])
+            linear_extrude(height=hinge_width, center=true)
+            attachment_profile_shape();
+        }
     }
 }
 
@@ -208,7 +235,7 @@ module mount_base() {
     color("lightblue", 0.8)
     mount_body();
     color("lightgreen", 0.8)
-    if (Link_Type != "none") {
+    if (is_male() || is_female()) {
         translate([0, base_thickness, 0])
         rotate([90, 0, 180])
         sneaks_articulating_camera_link();
@@ -221,6 +248,159 @@ module c920_mount() {
     color("lavender", 0.8)
     hinge_pair();
     mount_base();
+    if (Ball_Mount) {
+        translate([0, 0, -ball_diameter * 0.8])
+        translate([0, -(base_length - base_thickness) / 2, 0])
+        ball_mount();
+    }
+}
+
+module ball_mount_curve_base() {
+    intersection() {
+        difference() {
+            circle(d=ball_diameter + ball_mount_grip_radius * 2);
+            circle(d=ball_diameter);
+        }
+        square(ball_diameter);
+    }
+}
+
+module ball_mount_curve_half() {
+    intersection() {
+        ball_mount_curve_base();
+        rotate(-45)
+        square(ball_diameter);
+    }
+}
+
+module ball_mount_curve_double() {
+    render()
+    offset(delta=-1)
+    offset(delta=1)
+    rotate(45)
+    translate([ball_diameter + ball_mount_grip_radius, 0])
+    mirror([1, 0])
+    ball_mount_curve_half();
+    ball_mount_curve_half();
+}
+
+module ball_mount_shape_base(ball=true) {
+    for (my = [0:1])
+    mirror([0, my])
+    union() {
+        if (ball) {
+            ball_mount_curve_base();
+        }
+        translate([ball_mount_grip_radius + ball_mount_channel_radius, 0])
+        ball_mount_curve_double();
+    }
+}
+
+module ball_shape_cut(ball=true) {
+    color("lightgreen", 0.8)
+    translate([0, ball_diameter / 2 * 0.4])
+    render()
+    difference() {
+        intersection() {
+            circle(d=(
+                ball_diameter
+                + ball_mount_grip_radius * 2
+                + ball_mount_channel_radius * 2.5
+            ));
+            translate([0, -ball_diameter * 0.2])
+            square([ball_diameter * 10, ball_diameter * 0.7]);
+        }
+        union() {
+            intersection() {
+                ball_mount_shape_base(ball=ball);
+                square([ball_diameter * 2, ball_diameter / 2]);
+            }
+            offset(r=ball_mount_fillets * 1)
+            offset(r=ball_mount_fillets * -1)
+            intersection() {
+                ball_mount_shape_base(ball=ball);
+                square(
+                    [ball_diameter * 2, ball_diameter / 2 * 0.8], center=true
+                );
+            }
+        }
+    }
+}
+
+module ball_wings_cut() {
+    render()
+    difference() {
+        children();
+
+        color("lightblue", 0.8)
+        intersection() {
+            for (r = [0:360/ball_mount_wing_count:360-0.01])
+            rotate(r)
+            union() {
+                rotate([90, 0, 0])
+                linear_extrude(height=ball_diameter)
+                translate([-ball_mount_wing_width / 2, 0])
+                offset(r=-ball_mount_wing_width * 0.49)
+                offset(r=ball_mount_wing_width * 0.49 * 2)
+                offset(r=-ball_mount_wing_width * 0.49)
+                union() {
+                    square([ball_mount_wing_width, ball_diameter / 2]);
+                    translate([ball_mount_wing_width / 2, -ball_diameter / 2])
+                    square(
+                        ball_mount_fillets
+                            ? ball_diameter
+                            : [ball_mount_wing_width, ball_diameter],
+                        center=true
+                    );
+                }
+            }
+            rotate_extrude(angle=360)
+            ball_shape_cut(ball=false);
+        }
+    }
+}
+
+module ball_mount_cut() {
+    difference() {
+        children();
+        color("lightgreen", 0.8)
+        rotate_extrude(angle=360)
+        ball_shape_cut();
+    }
+}
+
+module ball_mount_body() {
+    body_diameter = (
+        ball_diameter
+        + ball_mount_grip_radius * 2
+        + ball_mount_channel_radius * 2
+        + base_thickness * 2
+    );
+    hull() {
+        translate([0, 0, slop])
+        rotate_extrude(angle=360)
+        union() {
+            offset(r=base_thickness * 0.45)
+            offset(r=-base_thickness * 0.45)
+            square([body_diameter / 2, ball_diameter * 0.2]);
+            if (!ball_mount_fillets) {
+                square([body_diameter / 2, ball_diameter * 0.1]);
+            }
+        }
+
+        translate([0, 0, ball_diameter * 0.8 - slop])
+        linear_extrude(height=slop)
+        translate([0, (base_length - base_thickness) / 2])
+        mount_base_shape();
+    }
+}
+
+module ball_mount() {
+    color("lemonchiffon", 0.5)
+    render()
+    ball_mount_cut()
+    ball_wings_cut()
+    ball_mount_body();
 }
 
 module main() {
