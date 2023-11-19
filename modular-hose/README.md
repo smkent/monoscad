@@ -6,7 +6,10 @@ A flexible and segmented modular hose to use as an air duct or with a vacuum.
 Make and customize your own attachments!
 
 ![Model renders](images/readme/demo.png)
+![Segment model renders](images/readme/part-segment-options.gif)
+
 ![Photo of multiple segment sizes](images/readme/1.jpg)
+
 ![Photo of magnetic base and connector, attached](images/readme/2.jpg)
 ![Photo of magnetic base and connector, detached](images/readme/3.jpg)
 
