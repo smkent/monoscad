@@ -89,6 +89,31 @@ b.Image(
     "part-segment.png", "segment.scad", {"Inner_Diameter": interior_diameter}
 )
 b.Image(
+    "part-segment-options.gif",
+    "segment.scad",
+    [
+        {
+            "Inner_Diameter": interior_diameter,
+            "Extra_Segment_Length": length,
+            "Bend_Angle": angle,
+            "Bend_Radius": radius,
+        }
+        for (length, angle, radius) in [
+            (0, 0, 0),
+            (0, 0, 0),
+            (0, 15, 0),
+            (0, 15, 30),
+            (0, 30, 30),
+            (30, 30, 30),
+            (60, 30, 30),
+            (60, 30, 0),
+            (60, 15, 0),
+            (60, 0, 0),
+            (30, 0, 0),
+        ]
+    ],
+)
+b.Image(
     "part-vacuum-attachment.png",
     "vacuum-attachment.scad",
     {"Inner_Diameter": interior_diameter},
