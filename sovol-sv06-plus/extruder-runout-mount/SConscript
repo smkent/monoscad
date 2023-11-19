@@ -40,12 +40,11 @@ b.Image(
             "Round_Edges": 1,
             "Runout_Sensor_Orientation": orientation,
         }
-        for orientation in {"rear", "right"}
+        for orientation in ["rear", "right"]
     ],
     camera="20,20,25,55,0,25,350",
     delay=150,
 )
-
 
 b.add_default_targets()
 
