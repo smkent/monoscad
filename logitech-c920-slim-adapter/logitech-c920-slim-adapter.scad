@@ -16,6 +16,9 @@ Ball_Mount = false;
 // Enabling these will reduce print bed adhesion
 Ball_Mount_Fillets = false;
 
+// Removing the ball mount shroud decreases the part footprint, but increases print difficulty and/or requires supports.
+Ball_Mount_Shroud = true;
+
 // Mount body thickness in millimeters
 Base_Thickness = 2.5; // [2:0.1:4]
 
@@ -243,19 +246,6 @@ module mount_base() {
     }
 }
 
-module c920_mount() {
-    mirror([0, 1, 0])
-    translate([0, base_length])
-    color("lavender", 0.8)
-    hinge_pair();
-    mount_base();
-    if (Ball_Mount) {
-        translate([0, 0, -ball_diameter * 0.8])
-        translate([0, -(base_length - base_thickness) / 2, 0])
-        ball_mount();
-    }
-}
-
 module ball_mount_curve_base() {
     intersection() {
         difference() {
@@ -372,28 +362,47 @@ module ball_mount_cut() {
     }
 }
 
+module hull_sequence() {
+    for (ch = [0:1:$children - 2])
+    hull() {
+        children(ch);
+        children(ch + 1);
+    }
+}
+
 module ball_mount_body() {
     body_diameter = (
         ball_diameter
         + ball_mount_grip_radius * 2
-        + ball_mount_channel_radius * 2
-        + base_thickness * 2
+        + (Ball_Mount_Shroud
+            ? ball_mount_channel_radius * 2 + base_thickness * 2
+            : 0
+        )
     );
-    hull() {
-        translate([0, 0, slop])
-        rotate_extrude(angle=360) {
-            offset(r=base_thickness * 0.45)
-            offset(r=-base_thickness * 0.45)
-            square([body_diameter / 2, ball_diameter * 0.35]);
-            if (!ball_mount_fillets) {
-                square([body_diameter / 2, ball_diameter * 0.1]);
+    mid_height = ball_diameter * (Ball_Mount_Shroud ? 0.35 : 0.5);
+    hull_sequence() {
+        if (Ball_Mount_Shroud) {
+            translate([0, 0, slop])
+            rotate_extrude(angle=360) {
+                offset(r=base_thickness * 0.45)
+                offset(r=-base_thickness * 0.45)
+                square([body_diameter / 2, mid_height]);
+                if (!ball_mount_fillets) {
+                    square([body_diameter / 2, mid_height / 2]);
+                }
             }
+        } else {
+            translate([0, 0, mid_height])
+            cylinder(h=slop, d=body_diameter - ball_mount_channel_radius * sqrt(2));
         }
 
         translate([0, 0, ball_diameter * 0.8 - slop])
         linear_extrude(height=slop)
         translate([0, (base_length - base_thickness) / 2])
         mount_base_shape();
+    }
+    if (!Ball_Mount_Shroud) {
+        cylinder(d=body_diameter, h=mid_height);
     }
 }
 
@@ -403,6 +412,19 @@ module ball_mount() {
     ball_mount_cut()
     ball_wings_cut()
     ball_mount_body();
+}
+
+module c920_mount() {
+    mirror([0, 1, 0])
+    translate([0, base_length])
+    color("lavender", 0.8)
+    hinge_pair();
+    mount_base();
+    if (Ball_Mount) {
+        translate([0, 0, -ball_diameter * 0.8])
+        translate([0, -(base_length - base_thickness) / 2, 0])
+        ball_mount();
+    }
 }
 
 module main() {
