@@ -104,7 +104,7 @@ module fillet(rad=base_thickness) {
 
 module hinge_base_shape() {
     hull() {
-        vertical_adjustment = (base_thickness - hinge_diameter);
+        position_adjustment = (base_thickness - hinge_diameter) / 2;
         circle(d=hinge_diameter);
         translate([
             0,
@@ -112,9 +112,11 @@ module hinge_base_shape() {
         ]) {
             translate([-base_hinge_to_curve, 0])
             circle(d=base_thickness);
-            translate([vertical_adjustment / 2, 0])
+            translate([position_adjustment, 0])
             circle(d=base_thickness);
         }
+        translate([-position_adjustment, position_adjustment])
+        circle(d=base_thickness);
     }
 
     rad = hinge_insert_diameter * 0.5;
