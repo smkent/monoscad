@@ -20,7 +20,7 @@ Ball_Mount_Fillets = false;
 Base_Thickness = 2.5; // [2:0.1:4]
 
 // The default hinge insert fit is snug. Increase this value for a looser fit.
-Hinge_Insert_Size_Tolerance = 0; // [0:0.05:2]
+Hinge_Insert_Size_Tolerance = 0.20; // [0:0.05:2]
 
 module __end_customizer_options__() { }
 
@@ -33,7 +33,8 @@ hinge_width = 38.8;
 hinge_diameter = 7;
 
 base_thickness = Base_Thickness;
-base_length = 13 + base_thickness;
+base_hinge_to_curve = (hinge_diameter - base_thickness) / 8;
+base_length = 13 + base_thickness + base_hinge_to_curve;
 
 hinge_insert_diameter = 4.0;
 hinge_insert_length = 6.8;
@@ -43,7 +44,7 @@ hinge_extra_vertical_offset = 1;
 
 articulating_mount_height = 20;
 
-ball_diameter = (19.126 - 2.738);
+ball_diameter = 16.0;
 ball_mount_grip_radius = 3;
 ball_mount_channel_radius = 1.6;
 ball_mount_wing_count = 4;
@@ -96,16 +97,18 @@ module fillet(rad=base_thickness) {
 }
 
 module hinge_base_shape() {
-    hull()
-    union() {
-        dd = base_thickness - hinge_diameter;
+    hull() {
+        vertical_adjustment = (base_thickness - hinge_diameter);
         circle(d=hinge_diameter);
-        for (xf = [0.5, 1])
         translate([
-            xf * dd / 2,
-            dd / 2 - base_thickness - hinge_extra_vertical_offset
-        ])
-        circle(d=base_thickness);
+            0,
+            -(base_thickness + hinge_diameter) / 2 - hinge_extra_vertical_offset
+        ]) {
+            translate([-base_hinge_to_curve, 0])
+            circle(d=base_thickness);
+            translate([vertical_adjustment / 2, 0])
+            circle(d=base_thickness);
+        }
     }
 
     rad = hinge_insert_diameter * 0.5;
@@ -192,13 +195,11 @@ module attachment_height_cut() {
         linear_extrude(height=(
             articulating_mount_height + base_length + base_thickness + slop * 2
         ))
-        translate([-hinge_width / 2, 0])
-        union() {
+        translate([-hinge_width / 2, 0]) {
             r1 = 7;
             offset(r=r1)
             offset(r=-r1 * 2)
-            offset(r=r1)
-            union() {
+            offset(r=r1) {
                 translate([(hinge_width - mid_width) / 2, base_thickness])
                 square([mid_width, mid_height - base_thickness]);
                 mirror([0, 1])
@@ -286,8 +287,7 @@ module ball_mount_curve_double() {
 
 module ball_mount_shape_base(ball=true) {
     for (my = [0:1])
-    mirror([0, my])
-    union() {
+    mirror([0, my]) {
         if (ball) {
             ball_mount_curve_base();
         }
@@ -316,19 +316,17 @@ module ball_shape_cut(ball=true) {
                 }
             }
         }
-        union() {
-            intersection() {
-                ball_mount_shape_base(ball=ball);
-                square([ball_diameter * 2, ball_diameter / 2]);
-            }
-            offset(r=ball_mount_fillets * 1)
-            offset(r=ball_mount_fillets * -1)
-            intersection() {
-                ball_mount_shape_base(ball=ball);
-                square(
-                    [ball_diameter * 2, ball_diameter / 2 * 0.8], center=true
-                );
-            }
+        intersection() {
+            ball_mount_shape_base(ball=ball);
+            square([ball_diameter * 2, ball_diameter / 2]);
+        }
+        offset(r=ball_mount_fillets * 1)
+        offset(r=ball_mount_fillets * -1)
+        intersection() {
+            ball_mount_shape_base(ball=ball);
+            square(
+                [ball_diameter * 2, ball_diameter / 2 * 0.8], center=true
+            );
         }
     }
 }
@@ -341,8 +339,7 @@ module ball_wings_cut() {
         color("lightblue", 0.8)
         intersection() {
             for (r = [0:360/ball_mount_wing_count:360-0.01])
-            rotate(r)
-            union() {
+            rotate(r) {
                 rotate([90, 0, 0])
                 linear_extrude(height=ball_diameter)
                 translate([-ball_mount_wing_width / 2, 0])
@@ -384,11 +381,10 @@ module ball_mount_body() {
     );
     hull() {
         translate([0, 0, slop])
-        rotate_extrude(angle=360)
-        union() {
+        rotate_extrude(angle=360) {
             offset(r=base_thickness * 0.45)
             offset(r=-base_thickness * 0.45)
-            square([body_diameter / 2, ball_diameter * 0.2]);
+            square([body_diameter / 2, ball_diameter * 0.35]);
             if (!ball_mount_fillets) {
                 square([body_diameter / 2, ball_diameter * 0.1]);
             }
