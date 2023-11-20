@@ -55,7 +55,7 @@ For better ball mount strength, I recommend printing ball mount adapters with
 100% infill for the first 9 mm.
 
 ![Slicer screenshot of adapter with ball mount](images/readme/slicer-screenshot-ball.png)
-![Slicer screenshot of adapter with ball mount and no shroud](images/readme/slicer-screenshot-ball-noshroud.png)
+![Slicer screenshot of adapter with ball mount and 100% infill modifier](images/readme/slicer-screenshot-ball-infill.png)
 
 Adapters with both a ball mount and articulated link attachment are provided.
 These models need supports on the articulated link to print as the ball mount
