@@ -19,7 +19,7 @@ customized in [OpenSCAD][openscad]!
 As this mount replaces the built-in mount on the Logitech C920, some disassembly
 of the camera is needed to remove the built-in mount.
 I read [this guide][c920-disassembly-guide] and watched
-[this video][c92-disassembly-video] to disassemble my camera.
+[this video][c920-disassembly-video] to disassemble my camera.
 
 ## Printing
 
@@ -33,14 +33,21 @@ more brittle than other materials.
 Adapters with an articulated link and no ball mount are straightforward to
 print, and require no supports.
 
+![Slicer screenshot of adapter with articulated link](images/readme/slicer-screenshot-link.png)
+
 Adapters with a ball mount can be printed without supports, but are trickier as
 the contact area with the bed is small. I had a few false starts printing these
 until I cleaned my print bed. Adapters with a ball mount and no shroud are
 especially tricky as the bed contact area is even smaller.
 
+![Slicer screenshot of adapter with ball mount](images/readme/slicer-screenshot-ball.png)
+![Slicer screenshot of adapter with ball mount and no shroud](images/readme/slicer-screenshot-ball-noshroud.png)
+
 Adapters with both a ball mount and articulated link attachment are provided.
 These models need supports on the articulated link to print as the ball mount
 raises the rest of the model off of the print bed.
+
+![Slicer screenshot of adapter with ball mount, no shroud, and articulated link](images/readme/slicer-screenshot-ball-noshroud-link.png)
 
 ## Installation
 
