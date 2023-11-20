@@ -7,6 +7,8 @@ link_types = ["male", "female", "male_flat", "none"]
 
 for link_type in link_types:
     for ball_mount in [0, 1]:
+        if link_type == "none" and not ball_mount:
+            continue
         for ball_mount_shroud in [0, 1] if ball_mount else [1]:
             fn_ball_mount_shroud = "" if ball_mount_shroud else "-noshroud"
             fn_ball_mount = "-ball" if ball_mount else ""
