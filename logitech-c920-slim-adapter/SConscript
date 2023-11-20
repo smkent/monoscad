@@ -41,6 +41,27 @@ b.Image(
     camera="0,2,0,55,0,70,125",
 )
 
+b.Image(
+    "demo-row.png",
+    model,
+    [
+        {"Link_Type": "female", "Ball_Mount": 0, "Ball_Mount_Shroud": 1},
+        {"Link_Type": "male", "Ball_Mount": 0, "Ball_Mount_Shroud": 1},
+        {"Link_Type": "none", "Ball_Mount": 1, "Ball_Mount_Shroud": 1},
+        {"Link_Type": "male", "Ball_Mount": 1, "Ball_Mount_Shroud": 0},
+    ],
+    camera="0,2,0,55,0,70,125",
+    tile="4x1",
+)
+
+b.InsetImage(
+    "photo-demo-inset.jpg",
+    "photo-adapter-attached-1.jpg",
+    "demo-row.png",
+    resize="25%",
+    gravity="south",
+)
+
 b.Source("*.scad", "sneaks-*.stl")
 
 b.add_default_targets()

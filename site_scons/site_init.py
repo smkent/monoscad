@@ -228,7 +228,8 @@ class ModelBuilder:
         stl_vals: Optional[Union[List[Dict[str, Any]], Dict[str, Any]]] = None,
         camera: Optional[str] = None,
         view_options: Optional[str] = None,
-        delay=75,
+        delay: int = 75,
+        tile: str = "",
     ) -> None:
         image_targets = {
             f"{self.src_dir}/{image_path}/{target}": size
@@ -245,6 +246,7 @@ class ModelBuilder:
             camera=camera,
             view_options=view_options,
             delay=delay,
+            tile=tile,
         )
         func.__name__ = self.render_image.__name__
         self.env.NoClean(
@@ -300,6 +302,7 @@ class ModelBuilder:
         delay: int = 75,
         camera: Optional[str] = None,
         view_options: Optional[str] = None,
+        tile: str = "",
     ) -> None:
         def _render_single_image(
             image_target: str, stl_vals: Dict[str, Any], size=None
@@ -335,7 +338,9 @@ class ModelBuilder:
                     fn, frame_stl_vals, IMAGE_RENDER_SIZE.replace("x", ",")
                 )
             if len(frames) > 1 and target[0].suffix != ".gif":
-                row_len = str(ceil(len(frames) / 2))
+                if not tile:
+                    row_len = ceil(len(frames) / 2)
+                    tile = f"{row_len}x{row_len}"
                 montage_fn = str(tdp / "montage") + target[0].suffix
                 montage_cmd = [
                     "montage",
@@ -346,12 +351,13 @@ class ModelBuilder:
                     "-geometry",
                     "+0+0",
                     "-tile",
-                    f"{row_len}x{row_len}",
+                    tile,
                 ]
                 self._run(montage_cmd + frames + [montage_fn])
                 frames = [montage_fn]
             for tt in target:
-                cmd = ["convert", "-resize", image_targets[tt.abspath]]
+                size_arg = "x" + image_targets[tt.abspath].split("x")[1]
+                cmd = ["convert", "-resize", size_arg]
                 if target[0].suffix == ".gif":
                     cmd += ["-loop", "0", "-delay", str(delay)]
                 self._run(cmd + frames + [tt.path])
