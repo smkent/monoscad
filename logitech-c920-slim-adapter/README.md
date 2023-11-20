@@ -51,6 +51,9 @@ the contact area with the bed is small. I had a few false starts printing these
 until I cleaned my print bed. Adapters with a ball mount and no shroud are
 especially tricky as the bed contact area is even smaller.
 
+For better ball mount strength, I recommend printing ball mount adapters with
+100% infill for the first 9 mm.
+
 ![Slicer screenshot of adapter with ball mount](images/readme/slicer-screenshot-ball.png)
 ![Slicer screenshot of adapter with ball mount and no shroud](images/readme/slicer-screenshot-ball-noshroud.png)
 
