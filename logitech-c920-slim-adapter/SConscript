@@ -6,18 +6,39 @@ model = "logitech-c920-slim-adapter.scad"
 link_types = ["male", "female", "male_flat", "none"]
 
 for link_type in link_types:
-    b.STL(
-        f"logitech-c920-slim-adapter-{link_type}.stl",
-        model,
-        {"Link_Type": link_type},
-        zip_dir="models-for-printing",
-    )
+    for ball_mount in [0, 1]:
+        if link_type == "none" and not ball_mount:
+            continue
+        for ball_mount_shroud in [0, 1] if ball_mount else [1]:
+            fn_ball_mount_shroud = "" if ball_mount_shroud else "-noshroud"
+            fn_ball_mount = "-ball" if ball_mount else ""
+            b.STL(
+                (
+                    f"logitech-c920-slim-adapter-{link_type}"
+                    f"{fn_ball_mount}{fn_ball_mount_shroud}.stl"
+                ),
+                model,
+                {
+                    "Link_Type": link_type,
+                    "Ball_Mount": ball_mount,
+                    "Ball_Mount_Shroud": ball_mount_shroud,
+                },
+                zip_dir=(
+                    "models-for-printing"
+                    f"{fn_ball_mount}{fn_ball_mount_shroud}"
+                ),
+            )
 
 b.Image(
     "demo.png",
     model,
-    [{"Link_Type": link_type} for link_type in link_types],
-    camera="0,2,5,55,0,70,120",
+    [
+        {"Link_Type": "female", "Ball_Mount": 0, "Ball_Mount_Shroud": 1},
+        {"Link_Type": "male", "Ball_Mount": 0, "Ball_Mount_Shroud": 1},
+        {"Link_Type": "none", "Ball_Mount": 1, "Ball_Mount_Shroud": 1},
+        {"Link_Type": "male", "Ball_Mount": 1, "Ball_Mount_Shroud": 0},
+    ],
+    camera="0,2,0,55,0,70,125",
 )
 
 b.Source("*.scad", "sneaks-*.stl")
