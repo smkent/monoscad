@@ -50,7 +50,7 @@ hinge_extra_vertical_offset = 1;
 
 articulating_mount_height = 20;
 
-ball_diameter = 15.8;
+ball_diameter = 15.9;
 ball_mount_grip_radius = 3;
 ball_mount_channel_radius = 1.6;
 ball_mount_grip_count = Ball_Mount_Grip_Count;
