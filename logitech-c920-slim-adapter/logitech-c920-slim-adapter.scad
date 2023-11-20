@@ -307,8 +307,14 @@ module ball_shape_cut(ball=true) {
                 + ball_mount_grip_radius * 2
                 + ball_mount_channel_radius * 2.5
             ));
-            translate([0, -ball_diameter * 0.2])
-            square([ball_diameter * 10, ball_diameter * 0.7]);
+            union() {
+                translate([0, -ball_diameter * 0.2])
+                square([ball_diameter * 10, ball_diameter * 0.5]);
+                intersection() {
+                    circle(d=ball_diameter);
+                    square(ball_diameter / 2);
+                }
+            }
         }
         union() {
             intersection() {
