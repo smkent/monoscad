@@ -21,6 +21,12 @@ of the camera is needed to remove the built-in mount.
 I read [this guide][c920-disassembly-guide] and watched
 [this video][c920-disassembly-video] to disassemble my camera.
 
+Save the metal hinge inserts to use with the new printed adapter.
+
+![Photo of hinge inserts from original mount](images/readme/photo-c920-hinge-inserts-1.jpg)
+![Photo of hinge inserts attached to printed adapter](images/readme/photo-c920-hinge-inserts-2.jpg)
+![Photo of printed adapter installed on camera](images/readme/photo-c920-hinge-inserts-3.jpg)
+
 ## Printing
 
 Several model variants are included, and you can further customize your specific
@@ -48,6 +54,9 @@ These models need supports on the articulated link to print as the ball mount
 raises the rest of the model off of the print bed.
 
 ![Slicer screenshot of adapter with ball mount, no shroud, and articulated link](images/readme/slicer-screenshot-ball-noshroud-link.png)
+
+![Photo of printed adapter with ball mount, no shroud, and articulated link](images/readme/photo-printed-ball-noshroud-link-1.jpg)
+![Photo of printed adapter with ball mount, no shroud, and articulated link](images/readme/photo-printed-ball-noshroud-link-2.jpg)
 
 ## Installation
 
