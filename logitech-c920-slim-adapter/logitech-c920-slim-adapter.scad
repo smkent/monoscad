@@ -14,7 +14,7 @@ Ball_Mount = false;
 
 /* [Advanced Options] */
 // The default hinge insert fit is snug. Increase this value for a looser fit.
-Hinge_Insert_Size_Tolerance = 0.20; // [0:0.05:2]
+Hinge_Insert_Size_Tolerance = 0.10; // [0:0.05:2]
 
 // Mount body thickness in millimeters
 Base_Thickness = 2.5; // [2:0.1:4]
