@@ -19,7 +19,8 @@ customized in [OpenSCAD][openscad]!
 As this mount replaces the built-in mount on the Logitech C920, some disassembly
 of the camera is needed to remove the built-in mount.
 I read [this guide][c920-disassembly-guide] and watched
-[this video][c920-disassembly-video] to disassemble my camera.
+[this video][c920-disassembly-video] to disassemble my camera. You'll want a
+phillips 00-size screwdriver or similar.
 
 Save the metal hinge inserts to use with the new printed adapter.
 
