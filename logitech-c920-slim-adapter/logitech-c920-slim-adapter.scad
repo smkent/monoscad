@@ -13,17 +13,20 @@ Link_Type = "female"; // [none: None, blank: Blank, male: Male, male_flat: Male 
 Ball_Mount = false;
 
 /* [Advanced Options] */
+// The default hinge insert fit is snug. Increase this value for a looser fit.
+Hinge_Insert_Size_Tolerance = 0.20; // [0:0.05:2]
+
+// Mount body thickness in millimeters
+Base_Thickness = 2.5; // [2:0.1:4]
+
 // Enabling these will reduce print bed adhesion
 Ball_Mount_Fillets = false;
 
 // Removing the ball mount shroud decreases the part footprint, but increases print difficulty and/or requires supports.
 Ball_Mount_Shroud = true;
 
-// Mount body thickness in millimeters
-Base_Thickness = 2.5; // [2:0.1:4]
-
-// The default hinge insert fit is snug. Increase this value for a looser fit.
-Hinge_Insert_Size_Tolerance = 0.20; // [0:0.05:2]
+// Increasing the number of grips produces smaller grips, which are harder to print
+Ball_Mount_Grip_Count = 4; // [2:1:8]
 
 module __end_customizer_options__() { }
 
@@ -50,8 +53,8 @@ articulating_mount_height = 20;
 ball_diameter = 16.0;
 ball_mount_grip_radius = 3;
 ball_mount_channel_radius = 1.6;
-ball_mount_wing_count = 4;
-ball_mount_wing_width = ball_mount_channel_radius;
+ball_mount_grip_count = Ball_Mount_Grip_Count;
+ball_mount_grip_width = ball_mount_channel_radius;
 ball_mount_fillets = Ball_Mount_Fillets ? 1 : 0;
 
 slop = 0.01;
@@ -328,21 +331,21 @@ module ball_wings_cut() {
 
         color("lightblue", 0.8)
         intersection() {
-            for (r = [0:360/ball_mount_wing_count:360-0.01])
+            for (r = [0:360/ball_mount_grip_count:360-0.01])
             rotate(r) {
                 rotate([90, 0, 0])
                 linear_extrude(height=ball_diameter)
-                translate([-ball_mount_wing_width / 2, 0])
-                offset(r=-ball_mount_wing_width * 0.49)
-                offset(r=ball_mount_wing_width * 0.49 * 2)
-                offset(r=-ball_mount_wing_width * 0.49)
+                translate([-ball_mount_grip_width / 2, 0])
+                offset(r=-ball_mount_grip_width * 0.49)
+                offset(r=ball_mount_grip_width * 0.49 * 2)
+                offset(r=-ball_mount_grip_width * 0.49)
                 union() {
-                    square([ball_mount_wing_width, ball_diameter / 2]);
-                    translate([ball_mount_wing_width / 2, -ball_diameter / 2])
+                    square([ball_mount_grip_width, ball_diameter / 2]);
+                    translate([ball_mount_grip_width / 2, -ball_diameter / 2])
                     square(
                         ball_mount_fillets
                             ? ball_diameter
-                            : [ball_mount_wing_width, ball_diameter],
+                            : [ball_mount_grip_width, ball_diameter],
                         center=true
                     );
                 }
