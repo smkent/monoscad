@@ -14,7 +14,7 @@ Ball_Mount = false;
 
 /* [Advanced Options] */
 // The default hinge insert fit is snug. Increase this value for a looser fit.
-Hinge_Insert_Size_Tolerance = 0.20; // [0:0.05:2]
+Hinge_Insert_Size_Tolerance = 0.00; // [0:0.05:2]
 
 // Mount body thickness in millimeters
 Base_Thickness = 2.5; // [2:0.1:4]
@@ -42,15 +42,16 @@ base_thickness = Base_Thickness;
 base_hinge_to_curve = (hinge_diameter - base_thickness) / 8;
 base_length = 13 + base_thickness + base_hinge_to_curve;
 
-hinge_insert_diameter = 4.0;
+hinge_insert_diameter = 4.15;
 hinge_insert_length = 6.8;
 hinge_insert_size_tolerance = Hinge_Insert_Size_Tolerance;
+hinge_insert_pre_length = 2;
 hinge_housing_length = 7.6;
 hinge_extra_vertical_offset = 1;
 
 articulating_mount_height = 20;
 
-ball_diameter = 15.8;
+ball_diameter = 15.9;
 ball_mount_grip_radius = 3;
 ball_mount_channel_radius = 1.6;
 ball_mount_grip_count = Ball_Mount_Grip_Count;
@@ -129,6 +130,28 @@ module hinge_base_shape() {
     fillet(rad);
 }
 
+module hinge_insert_shape() {
+    offset(r=hinge_insert_size_tolerance / 2)
+    hull() {
+        circle(d=hinge_insert_diameter);
+        offset(r=hinge_insert_diameter / 8)
+        offset(r=-hinge_insert_diameter / 8)
+        translate([0, -hinge_insert_diameter / 4])
+        square(
+            [hinge_insert_diameter, hinge_insert_diameter / 2], center=true
+        );
+    }
+}
+
+module hinge_insert_cut() {
+    linear_extrude(height=hinge_insert_length)
+    hinge_insert_shape();
+    translate([0, 0, hinge_insert_pre_length])
+    mirror([0, 0, 1])
+    linear_extrude(height=hinge_insert_pre_length, scale=[1.2, 1])
+    hinge_insert_shape();
+}
+
 module hinge_base() {
     render(convexity=2)
     difference() {
@@ -137,17 +160,7 @@ module hinge_base() {
             hinge_base_shape();
             circle(d=hinge_insert_diameter / 2);
         }
-        linear_extrude(height=hinge_insert_length)
-        offset(r=hinge_insert_size_tolerance / 2)
-        hull() {
-            circle(d=hinge_insert_diameter);
-            offset(r=hinge_insert_diameter / 8)
-            offset(r=-hinge_insert_diameter / 8)
-            translate([0, -hinge_insert_diameter / 4])
-            square(
-                [hinge_insert_diameter, hinge_insert_diameter / 2], center=true
-            );
-        }
+        hinge_insert_cut();
     }
 }
 
@@ -367,14 +380,6 @@ module ball_mount_cut() {
     }
 }
 
-module hull_sequence() {
-    for (ch = [0:1:$children - 2])
-    hull() {
-        children(ch);
-        children(ch + 1);
-    }
-}
-
 module ball_mount_body() {
     body_diameter = (
         ball_diameter
@@ -385,7 +390,7 @@ module ball_mount_body() {
         )
     );
     mid_height = ball_diameter * (Ball_Mount_Shroud ? 0.35 : 0.5);
-    hull_sequence() {
+    hull() {
         if (Ball_Mount_Shroud) {
             translate([0, 0, slop])
             rotate_extrude(angle=360) {
