@@ -1,4 +1,4 @@
-# Logitech C920 low profile adapter for articulating camera mount
+# Logitech C920 adapter for articulating camera mount
 
 [![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-4.0 license][license-badge]][license]
@@ -22,7 +22,7 @@ customized in [OpenSCAD][openscad]!
 As this mount replaces the built-in mount on the Logitech C920, some disassembly
 of the camera is needed to remove the built-in mount.
 I watched [this video][c920-disassembly-video] and read
-[this guide][c920-disassembly-guide] to learn how to dissasemble my camera.
+[this guide][c920-disassembly-guide] to learn how to disassemble my camera.
 You'll want a phillips 00-size screwdriver or similar.
 
 Save the metal hinge inserts to use with the new printed adapter.
