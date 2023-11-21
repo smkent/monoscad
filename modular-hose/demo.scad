@@ -58,9 +58,9 @@ module modular_hose_demo_parts() {
     modular_hose_segment(id);
 
     place_part(-1, 0)
-    translate([0, 0, -id * 0.6])
+    rotate(180)
     modular_hose(id)
-    modular_hose_connector_female();
+    modular_hose_segment(id, bend_angle=30);
 
     place_part(-0.5, 1)
     modular_hose_vacuum_attachment(id, connector_type="female");
