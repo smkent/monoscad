@@ -16,6 +16,8 @@ use <vacuum-attachment.scad>;
 
 Demo = "parts"; // [parts: Part assortment, measurement: Measurement example]
 
+Enable_Plate_Knurling = false;
+
 /* [Model Options] */
 
 Inner_Diameter = 100; // [20:1:100]
@@ -56,23 +58,23 @@ module modular_hose_demo_parts() {
     modular_hose_segment(id);
 
     place_part(-1, 0)
-    translate([0, 0, -id * 0.6])
+    rotate(180)
     modular_hose(id)
-    modular_hose_connector_female();
+    modular_hose_segment(id, bend_angle=30);
 
     place_part(-0.5, 1)
-    modular_hose_vacuum_attachment(id, connector_type=2);
+    modular_hose_vacuum_attachment(id, connector_type="female");
 
     place_part(1, 0)
     stack_parts() {
-        modular_hose_magnetic_part(id, model_type=1, plate_type=1, grommet_diameter=101.6, magnet_holes=true, screw_holes=true);
-        modular_hose_magnetic_part(id, model_type=0, connector_type=1, plate_type=1, grommet_diameter=101.6, magnet_holes=true, screw_holes=false);
+        modular_hose_magnetic_part(id, model_type="grommet", plate_type="fan", grommet_diameter=101.6, magnet_holes=true, screw_holes=true, plate_knurled=Enable_Plate_Knurling);
+        modular_hose_magnetic_part(id, model_type="connector", connector_type="male", plate_type="fan", grommet_diameter=101.6, magnet_holes=true, screw_holes=false, plate_knurled=Enable_Plate_Knurling);
     }
 
     place_part(1, 1)
     stack_parts() {
-        modular_hose_magnetic_part(id, model_type=1, plate_type=0, grommet_diameter=101.6, magnet_holes=true, screw_holes=true);
-        modular_hose_magnetic_part(id, model_type=0, connector_type=2, plate_type=0, grommet_diameter=101.6, magnet_holes=true, screw_holes=false);
+        modular_hose_magnetic_part(id, model_type="grommet", plate_type="round", grommet_diameter=101.6, magnet_holes=true, screw_holes=true, plate_knurled=Enable_Plate_Knurling);
+        modular_hose_magnetic_part(id, model_type="connector", connector_type="female", plate_type="round", grommet_diameter=101.6, magnet_holes=true, screw_holes=false, plate_knurled=Enable_Plate_Knurling);
     }
 }
 
@@ -80,7 +82,7 @@ module modular_hose_demo_measurement() {
     id = Inner_Diameter;
     line_height = id / 10;
     text_size = line_height * 0.9;
-    modular_hose_segment(inner_diameter=Inner_Diameter, render_mode=1);
+    modular_hose_segment(inner_diameter=Inner_Diameter, render_mode="half");
 
     color("yellow", 0.2)
     linear_extrude(height=0.1)

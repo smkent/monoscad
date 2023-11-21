@@ -123,7 +123,7 @@ module modular_hose_segment(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
-    connector_type=CONNECTOR_MALE,
+    connector_type=CONNECTOR_BOTH,
     extra_segment_length=0,
     bend_angle=0,
     bend_radius=0,
