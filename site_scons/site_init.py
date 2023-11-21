@@ -12,7 +12,7 @@ from zipfile import ZipFile
 from SCons.Node.FS import File as SConsFile
 from SCons.Script.SConscript import SConsEnvironment
 
-PRINTABLES_TARGET = "printables"
+PRINTABLES_TARGETS = {"printables", "zip"}
 DIST_PRINTABLES_ZIP = "dist-printables.zip"
 LIBRARIES_ZIP = "libraries.zip"
 IMAGE_RENDER_SIZE = "1200x900"
@@ -49,7 +49,7 @@ class MainBuilder:
         SetOption("num_jobs", os.cpu_count())
 
     def build(self) -> None:
-        build_dir = Path(".") / "build"
+        build_dir = Path(Dir("#").path) / "build"
         build_dir.mkdir(exist_ok=True)
         for sc in {str(md / "SConscript") for md in self._model_dirs}:
             env = self._env  # noqa: F841
@@ -60,7 +60,6 @@ class MainBuilder:
                 duplicate=False,
                 exports="env",
             )
-        env.Default("build/")
         env.Alias(
             "images",
             [
@@ -69,7 +68,8 @@ class MainBuilder:
                 for i in Glob(str(md / "images") + "/*")
             ],
         )
-        env.Alias("printables", ["build/", "images"])
+        for alias in {"printables", "zip"}:
+            env.Alias(alias, ["build/", "images"])
 
     @functools.cached_property
     def _env(self) -> SConsEnvironment:
@@ -97,9 +97,14 @@ class MainBuilder:
 
     @functools.cached_property
     def _model_dirs(self) -> Set[Path]:
+        start_dir = Path(
+            "."
+            if Dir("#").path == GetLaunchDir()
+            else Dir(GetLaunchDir()).path
+        )
         return {
-            x.parent
-            for x in Path(".").glob("**/SConscript")
+            Path(Dir(x.parent).path)
+            for x in start_dir.glob("**/SConscript")
             if not str(x).startswith("_")
         }
 
@@ -126,7 +131,7 @@ class ModelBuilder:
 
     @ref_filter
     def add_default_targets(self) -> None:
-        if PRINTABLES_TARGET in BUILD_TARGETS:
+        if any(t in BUILD_TARGETS for t in PRINTABLES_TARGETS):
             self.add_printables_zip_targets()
 
     def _source_glob(self, *files: str) -> None:
