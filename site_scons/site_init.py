@@ -136,7 +136,10 @@ class ModelBuilder:
 
         def _inner(fn: Callable[..., Any]) -> Callable[..., Any]:
             def _wrapper(self, *args: Any, **kwargs: Any) -> Any:
-                if not any(t in BUILD_TARGETS for t in required_targets):
+                if not (
+                    GetOption("clean")
+                    or any(t in BUILD_TARGETS for t in required_targets)
+                ):
                     return
                 fn(self, *args, **kwargs)
 
