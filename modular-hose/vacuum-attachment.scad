@@ -32,13 +32,13 @@ module __end_customizer_options__() { }
 
 module utility_nozzle() {
     module nozzle_shape(reduce=0) {
-        rr = $fh_origin_inner_diameter / 2;
+        rr = $mh_origin_inner_diameter / 2;
         r = rr - reduce;
         hull() {
             translate([0, 0, reduce ? -0.01 : 0])
             linear_extrude(height=0.01)
             difference() {
-                circle(r + $fh_thickness);
+                circle(r + $mh_thickness);
                 circle(r);
             }
 
@@ -57,8 +57,8 @@ module utility_nozzle() {
 
     difference() {
         nozzle_shape();
-        nozzle_shape(reduce=$fh_thickness);
-        cylinder($fh_thickness * 2, $fh_origin_inner_diameter / 2, $fh_origin_inner_diameter / 2);
+        nozzle_shape(reduce=$mh_thickness);
+        cylinder($mh_thickness * 2, $mh_origin_inner_diameter / 2, $mh_origin_inner_diameter / 2);
     }
 }
 

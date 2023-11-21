@@ -67,18 +67,18 @@ module segment_placement(render_mode, bottom_bend_angle) {
 module modular_hose_middle(length=0) {
     for (ch = [0, 1]) {
         tr = length / 2 * (ch == 0 ? 1 : -1);
-        translate($fh_render_mode == RENDER_MODE_2D_PROFILE ? [tr, 0] : [0, 0, tr])
+        translate($mh_render_mode == RENDER_MODE_2D_PROFILE ? [tr, 0] : [0, 0, tr])
         children(ch);
     }
     color("lightslategray", 0.8)
-    if ($fh_render_mode == RENDER_MODE_2D_PROFILE) {
-        translate([-length / 2, $fh_origin_inner_radius])
-        square([length, $fh_thickness]);
+    if ($mh_render_mode == RENDER_MODE_2D_PROFILE) {
+        translate([-length / 2, $mh_origin_inner_radius])
+        square([length, $mh_thickness]);
     } else {
         translate([0, 0, -length / 2])
-        rotate_extrude(angle=$fh_render_mode == RENDER_MODE_NORMAL ? 360 : 180)
-        translate([$fh_origin_inner_radius, 0])
-        square([$fh_thickness, length]);
+        rotate_extrude(angle=$mh_render_mode == RENDER_MODE_NORMAL ? 360 : 180)
+        translate([$mh_origin_inner_radius, 0])
+        square([$mh_thickness, length]);
     }
 }
 
