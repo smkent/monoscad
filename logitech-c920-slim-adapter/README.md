@@ -1,8 +1,8 @@
-# Logitech C920 low profile articulating camera mount adapter
+# Logitech C920 low profile adapter for articulating camera mount
 
 [![CC-BY-4.0 license][license-badge]][license]
 
-Low profile articulating camera mount adapter base for the Logitech C920
+Low profile Logitech C920 adapter for Sneaks' articulating camera mount system
 
 ![Photo of printed model installed on articulating mount](images/readme/photo-installed-1.jpg)
 ![Photo of printed model installed on articulating mount](images/readme/photo-installed-3.jpg)
@@ -16,7 +16,7 @@ This mount provides an articulating link attachment and/or a ball joint
 attachment, and replaces the built-in mount. Plus, the mount can be further
 customized in [OpenSCAD][openscad]!
 
-## Camera disassembly preparation
+## Camera disassembly
 
 As this mount replaces the built-in mount on the Logitech C920, some disassembly
 of the camera is needed to remove the built-in mount.

@@ -1,5 +1,5 @@
 /*
- * Logitech C920 low profile articulating camera mount adapter
+ * Logitech C920 low profile adapter for articulating camera mount
  * By smkent (GitHub) / bulbasaur0 (Printables)
  *
  * Licensed under Creative Commons (4.0 International License) Attribution
