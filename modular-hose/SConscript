@@ -93,6 +93,19 @@ b.Image(
     "part-segment.png", "segment.scad", {"Inner_Diameter": interior_diameter}
 )
 b.Image(
+    "part-segment-advanced.png",
+    "segment-advanced.scad",
+    {
+        "Inner_Diameter": interior_diameter,
+        "Top_Bend_Angle": 30,
+        "Bottom_Extra_Length": 15,
+        "Bottom_Bend_Angle": 45,
+        "Bottom_Bend_Radius": 10,
+        "Middle_Extra_Length": 10,
+        "Join_Rotation": 90,
+    },
+)
+b.Image(
     "part-segment-options.gif",
     "segment.scad",
     [

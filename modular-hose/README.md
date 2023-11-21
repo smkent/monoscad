@@ -70,6 +70,7 @@ female connector end raised lip, if the hose diameter is large enough).
 | Render | Part Info |
 | ------ | --------- |
 | ![Segment part render](images/readme/part-segment.png) | **Flexible segment** (`segment.scad`): Print as many of these as you need for your desired hose length |
+| ![Segment with advanced options part render](images/readme/part-segment-advanced.png) | **Flexible segment (advanced options)** (`segment-advanced.scad`): Segment with more advanced bend/length options than `segment.scad` |
 | ![Magnetic round connector](images/readme/part-magnetic-connector-round.png) | **Round connector** (`magnetic-parts.scad`): A round base connector with base holes for magnets/screws (configurable size). Use with another connector or a grommet. |
 | ![Magnetic round grommet](images/readme/part-magnetic-grommet-round.png) | **Round grommet** (`magnetic-parts.scad`): A round base grommet with base holes for magnets/screws (configurable size). Use with a connector. |
 | ![Magnetic 120mm fan connector](images/readme/part-magnetic-connector-fan.png) | **120mm fan connector** (`magnetic-parts.scad`): A 120mm fan base connector with base holes for magnets/screws (configurable size). Use with another connector or a grommet. |

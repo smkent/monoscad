@@ -12,13 +12,13 @@ use <segment.scad>;
 use <magnetic-parts.scad>;
 use <vacuum-attachment.scad>;
 
-/* [Demo Selection] */
+/* [Demo selection] */
 
 Demo = "parts"; // [parts: Part assortment, measurement: Measurement example]
 
 Enable_Plate_Knurling = false;
 
-/* [Model Options] */
+/* [Model options] */
 
 Inner_Diameter = 100; // [20:1:100]
 

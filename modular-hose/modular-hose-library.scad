@@ -68,10 +68,13 @@ module modular_hose(
     $fh_render_mode = render_mode;
     // Set computed values
     $fh_origin_inner_radius = inner_diameter / 2;
+    $fh_connector_rotate_edge_offset = 0;
     // Set defaults
     $fh_connector_extra_length = 0;
     $fh_connector_bend_angle = 0;
     $fh_connector_bend_radius = 0;
+    $fh_connector_join_rotation = 0;
+    $fh_connector_bottom = false;
     children();
 }
 
@@ -112,14 +115,18 @@ module modular_hose_connector(connector_type=CONNECTOR_FEMALE) {
     _connector();
 }
 
-module modular_hose_modify_connector(
+module modular_hose_configure_connector(
     extra_length=$fh_connector_extra_length,
     bend_angle=$fh_connector_bend_angle,
-    bend_radius=$fh_connector_bend_radius
+    bend_radius=$fh_connector_bend_radius,
+    join_rotation=$fh_connector_join_rotation,
+    bottom=$fh_connector_bottom
 ) {
     $fh_connector_extra_length = extra_length;
     $fh_connector_bend_angle = bend_angle;
     $fh_connector_bend_radius = bend_radius;
+    $fh_connector_join_rotation = join_rotation;
+    $fh_connector_bottom = bottom;
     // Set constants
     $fh_connector_rotate_edge_offset = (
         $fh_origin_inner_radius + $fh_thickness + $fh_connector_bend_radius
@@ -247,8 +254,32 @@ module _connector_origin_segment(
         ));
 }
 
+module _connector_placement() {
+    if ($fh_connector_bottom) {
+        mirror(
+            $fh_render_mode == RENDER_MODE_2D_PROFILE
+                ? [1, 0, 0]
+                : [0, 0, 1]
+        )
+        children();
+    } else {
+        children();
+    }
+}
+
+module _connector_rotation() {
+    rotate(
+        $fh_render_mode == RENDER_MODE_2D_PROFILE
+            ? 0
+            : $fh_connector_join_rotation
+    )
+    children();
+}
+
 module _connector() {
     // Connector bend
+    _connector_placement()
+    _connector_rotation()
     _connector_bend() {
         // Connector body
         color(_connector_color()[0], 0.8)
@@ -299,6 +330,7 @@ module _connector_bend() {
             circle(d=$fh_origin_inner_diameter + $fh_thickness * 2);
             circle(d=$fh_origin_inner_diameter);
             if ($fh_render_mode == RENDER_MODE_HALF) {
+                rotate($fh_connector_join_rotation)
                 translate([-$fh_origin_inner_diameter * 2, 0])
                 square($fh_origin_inner_diameter * 4);
             }
@@ -401,6 +433,7 @@ module _connector_extrude() {
         $fh_render_mode == RENDER_MODE_NORMAL
         || $fh_render_mode == RENDER_MODE_HALF
     ) {
+        rotate(-$fh_connector_join_rotation)
         rotate([180, 0, 0])
         rotate_extrude(angle=(
             $fh_render_mode == RENDER_MODE_NORMAL ? 360 : -180

@@ -9,24 +9,22 @@
 
 include <modular-hose-library.scad>;
 
-/* [Model Options] */
+/* [Modular Hose base options -- use consistent values to make compatible parts] */
 
-Connector_Type = "female"; // [male: Male, female: Female]
-
-// Inner diameter at the center (connector attachment point)
+// Inner diameter at the center in millimeters (connector attachment point)
 Inner_Diameter = 100;
+
+// Wall thickness in millimeters, a multiple of nozzle size is recommended
+Thickness = 0.8; // [0.2:0.1:5]
+
+// Increase the female connector diameter this many millimeters to adjust fit
+Size_Tolerance = 0.0; // [0:0.1:2]
+
+/* [Vacuum attachment options] */
+Connector_Type = "female"; // [male: Male, female: Female]
 
 // Optional extra hose length to add between the attachment and connector
 Extra_Length = 0; // [0:1:200]
-
-/* [Advanced Size Adjustment] */
-// All units in millimeters
-
-// Wall thickness, a multiple of nozzle size is recommended
-Thickness = 0.8; // [0.2:0.1:5]
-
-// Increase the female connector diameter this much to adjust fit
-Size_Tolerance = 0.0; // [0:0.1:2]
 
 module __end_customizer_options__() { }
 
@@ -73,7 +71,7 @@ module modular_hose_vacuum_attachment(
 ) {
     modular_hose(inner_diameter, thickness, size_tolerance) {
         mirror([0, 0, 1])
-        modular_hose_modify_connector(extra_length=extra_length)
+        modular_hose_configure_connector(extra_length=extra_length)
         modular_hose_connector(connector_type);
 
         color("thistle", 0.8)
