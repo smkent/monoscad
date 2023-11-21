@@ -152,11 +152,13 @@ function _connector_color() = (
     colors[$fh_connector_type_is_female ? 0 : 1]
 );
 
-function _circle_radius_at_offset_from_center(circle_radius, offset_from_center) = (
-    sqrt(circle_radius^2 - offset_from_center^2)
-);
+function _circle_radius_at_offset_from_center(
+    circle_radius, offset_from_center
+) = (sqrt(circle_radius^2 - offset_from_center^2));
 
-module _connector_circle_segment(circle_segment_radius_at_center, x_min=0, x_max=0, grip=false) {
+module _connector_circle_segment(
+    circle_segment_radius_at_center, x_min=0, x_max=0, grip=false
+) {
     grip_radius = circle_segment_radius_at_center / 15;
     outer_radius_at_center = circle_segment_radius_at_center + $fh_thickness;
     difference() {
@@ -164,7 +166,9 @@ module _connector_circle_segment(circle_segment_radius_at_center, x_min=0, x_max
             circle(outer_radius_at_center);
             if (grip) {
                 grip_x = x_max - grip_radius * 0.6;
-                outer_radius_at_grip = _circle_radius_at_offset_from_center(circle_segment_radius_at_center, grip_x);
+                outer_radius_at_grip = _circle_radius_at_offset_from_center(
+                    circle_segment_radius_at_center, grip_x
+                );
                 translate([
                     grip_x,
                     outer_radius_at_grip + $fh_thickness - grip_radius / 4
@@ -175,19 +179,30 @@ module _connector_circle_segment(circle_segment_radius_at_center, x_min=0, x_max
         // Hollow circle
         circle(circle_segment_radius_at_center);
         // Half circle
-        translate([-circle_segment_radius_at_center, -circle_segment_radius_at_center * 2])
-        square([circle_segment_radius_at_center * 2, circle_segment_radius_at_center * 2]);
+        translate([
+            -circle_segment_radius_at_center,
+            -circle_segment_radius_at_center * 2
+        ])
+        square(circle_segment_radius_at_center * 2);
         // truncate circle
         for(mx = [0:1:1]) {
             mirror([mx, 0, 0])
             translate([mx ? x_min : x_max, -circle_segment_radius_at_center * 2])
-            square([circle_segment_radius_at_center * 2, circle_segment_radius_at_center * 4]);
+            square([
+                circle_segment_radius_at_center * 2,
+                circle_segment_radius_at_center * 4
+            ]);
         }
     }
 }
 
-module _connector_origin_segment(circle_segment_radius_at_center, circle_segment_offset_from_origin) {
-    function bezier_curve_from_origin_to_circle_segment(out_radius, in_radius, length) = (
+module _connector_origin_segment(
+    circle_segment_radius_at_center, circle_segment_offset_from_origin
+) {
+
+    function bezier_curve_from_origin_to_circle_segment(
+        out_radius, in_radius, length
+    ) = (
         let (curve_control_point_offset_proportion = 0.35)
         let (curve_control_point_additional_offset_proportion = 0.35)
         let (control_prop =
@@ -205,7 +220,9 @@ module _connector_origin_segment(circle_segment_radius_at_center, circle_segment
         ]
     );
 
-    circle_segment_origin_connection_truncate_prop = sphere_truncate_proportion + sphere_attach_truncate_proportion / 2;
+    circle_segment_origin_connection_truncate_prop = (
+        sphere_truncate_proportion + sphere_attach_truncate_proportion / 2
+    );
     circle_segment_attach_radius_inner = _circle_radius_at_offset_from_center(
             circle_segment_radius_at_center,
             $fh_origin_inner_radius * circle_segment_origin_connection_truncate_prop
@@ -299,13 +316,18 @@ module _connector_bend() {
     } else {
         color(_connector_color()[2], 0.8)
         _connector_bend_3d();
-        rotate_at([0, $fh_connector_bend_angle, 0], [-$fh_connector_rotate_edge_offset, 0, 0])
+        rotate_at(
+            [0, $fh_connector_bend_angle, 0],
+            [-$fh_connector_rotate_edge_offset, 0, 0]
+        )
         children();
     }
 }
 
 module _connector_shape() {
-    function circle_radius_from_offset_prop_from_center(offset_radius, offset_prop_from_center) = (
+    function circle_radius_from_offset_prop_from_center(
+        offset_radius, offset_prop_from_center
+    ) = (
         sqrt(offset_radius^2 + (offset_radius * offset_prop_from_center)^2)
     );
 
@@ -335,7 +357,9 @@ module _connector_shape() {
     );
 
     function circle_segment_origin_connection_truncate_offset_fn() = (
-        $fh_origin_inner_radius * (sphere_truncate_proportion + sphere_attach_truncate_proportion / 2)
+        $fh_origin_inner_radius * (
+            sphere_truncate_proportion + sphere_attach_truncate_proportion / 2
+        )
     );
 
     function circle_segment_x_max_fn() = (
@@ -349,7 +373,9 @@ module _connector_shape() {
 
     circle_segment_radius_at_center = circle_segment_radius_at_center_fn();
     circle_segment_offset_from_origin = circle_segment_offset_from_origin_fn();
-    circle_segment_origin_connection_truncate_offset = circle_segment_origin_connection_truncate_offset_fn();
+    circle_segment_origin_connection_truncate_offset = (
+        circle_segment_origin_connection_truncate_offset_fn()
+    );
 
     translate([
         (
@@ -364,7 +390,10 @@ module _connector_shape() {
         x_max=circle_segment_x_max_fn(),
         grip=$fh_connector_type_is_female
     );
-    _connector_origin_segment(circle_segment_radius_at_center, circle_segment_offset_from_origin);
+    _connector_origin_segment(
+        circle_segment_radius_at_center,
+        circle_segment_offset_from_origin
+    );
 }
 
 module _connector_extrude() {
