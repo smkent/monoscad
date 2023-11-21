@@ -14,7 +14,7 @@ Ball_Mount = false;
 
 /* [Advanced Options] */
 // The default hinge insert fit is snug. Increase this value for a looser fit.
-Hinge_Insert_Size_Tolerance = 0.15; // [0:0.05:2]
+Hinge_Insert_Size_Tolerance = 0.00; // [0:0.05:2]
 
 // Mount body thickness in millimeters
 Base_Thickness = 2.5; // [2:0.1:4]
@@ -42,7 +42,7 @@ base_thickness = Base_Thickness;
 base_hinge_to_curve = (hinge_diameter - base_thickness) / 8;
 base_length = 13 + base_thickness + base_hinge_to_curve;
 
-hinge_insert_diameter = 4.0;
+hinge_insert_diameter = 4.15;
 hinge_insert_length = 6.8;
 hinge_insert_size_tolerance = Hinge_Insert_Size_Tolerance;
 hinge_insert_pre_length = 2;
