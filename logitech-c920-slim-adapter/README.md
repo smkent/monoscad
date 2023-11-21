@@ -1,9 +1,11 @@
-# Logitech C920 low profile articulating camera mount adapter
+# Logitech C920 low profile adapter for articulating camera mount
 
 [![CC-BY-4.0 license][license-badge]][license]
 
-Low profile articulating camera mount adapter base for the Logitech C920
+Low profile Logitech C920 adapter for Sneaks' articulating camera mount system
 
+![Photo of printed model installed on articulating mount](images/readme/photo-installed-1.jpg)
+![Photo of printed model installed on articulating mount](images/readme/photo-installed-3.jpg)
 ![Model render](images/readme/demo.png)
 
 # Description
@@ -14,7 +16,7 @@ This mount provides an articulating link attachment and/or a ball joint
 attachment, and replaces the built-in mount. Plus, the mount can be further
 customized in [OpenSCAD][openscad]!
 
-## Camera disassembly preparation
+## Camera disassembly
 
 As this mount replaces the built-in mount on the Logitech C920, some disassembly
 of the camera is needed to remove the built-in mount.
@@ -27,7 +29,6 @@ Save the metal hinge inserts to use with the new printed adapter.
 ![Photo of hinge inserts from original mount](images/readme/photo-c920-hinge-inserts-1.jpg)
 ![Photo of hinge inserts attached to printed adapter](images/readme/photo-c920-hinge-inserts-2.jpg)
 ![Photo of hinge inserts attached to printed adapter](images/readme/photo-c920-hinge-inserts-3.jpg)
-![Photo of printed adapter installed on camera](images/readme/photo-c920-hinge-inserts-4.jpg)
 
 ## Printing
 
@@ -70,7 +71,7 @@ Insert the metal hinge clips from the original Logitech C920 mount into the
 hinge base on your printed adapter. Then, screw it onto the camera like the
 original mount and reassemble the rest of the camera.
 
-![Photo of printed adapter installed on camera](images/readme/photo-adapter-attached-1.jpg)
+![Photo of printed adapter installed on camera](images/readme/photo-c920-hinge-inserts-4.jpg)
 ![Photo of printed adapter installed on camera](images/readme/photo-adapter-attached-2.jpg)
 
 ## Remixing
@@ -82,6 +83,14 @@ STL file used in the OpenSCAD model is from
 all the source files are in the same directory and then open
 `logitech-c920-slim-adapter.scad` in OpenSCAD.
 
+## See also
+
+I attached my Logitech C920 and new adapter to my articulated mount using
+[darkcoffee's steel ball nut remix][darkcoffee-ball-nut].
+
+Also pictured is my
+[Sovol SV06 / SV06 Plus x-axis articulating mount base!](/sovol-sv06-plus/xaxis-articulating-mount-right/)
+
 ## Attribution and License
 
 This is a remix of
@@ -90,9 +99,10 @@ This is a remix of
 Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution][license].
 
+[c920-disassembly-guide]: https://www.ifixit.com/Guide/Logitech+C920+Webcam+Disassembly/115077
+[c920-disassembly-video]: https://www.youtube.com/watch?v=a39iWgSwaBk
+[darkcoffee-ball-nut]: https://www.printables.com/model/577816-steel-ballnut-for-articulating-raspberry-pi-camera
 [license-badge]: /_static/license-badge-cc-by-4.0.svg
 [license]: http://creativecommons.org/licenses/by/4.0/
 [openscad]: https://openscad.org
 [original-model-url]: https://www.printables.com/model/3407-articulating-raspberry-pi-camera-mount-for-prusa-m
-[c920-disassembly-video]: https://www.youtube.com/watch?v=a39iWgSwaBk
-[c920-disassembly-guide]: https://www.ifixit.com/Guide/Logitech+C920+Webcam+Disassembly/115077

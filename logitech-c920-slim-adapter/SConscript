@@ -56,7 +56,7 @@ b.Image(
 
 b.InsetImage(
     "photo-demo-inset.jpg",
-    "photo-adapter-attached-1.jpg",
+    "photo-installed-offset.jpg",
     "demo-row.png",
     resize="25%",
     gravity="south",
