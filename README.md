@@ -21,13 +21,14 @@ git submodule update --init --recursive
 
 ## Rendering models via CLI
 
-Models published on printables are rendered via the [OpenSCAD CLI][openscad-cli]
-using [SCons][scons].
+Each model has preconfigured renders to be created via the
+[OpenSCAD CLI][openscad-cli] using [SCons][scons].
+Model STL files published to Printables are rendered this way.
 
 SCons is a Python package and can be installed using `pip`:
 
 ```console
-pip install scons  # or pip install --user scons
+pip install --user scons
 ```
 
 To build the configured model renders for a particular model, change to the
