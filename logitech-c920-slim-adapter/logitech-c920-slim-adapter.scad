@@ -45,6 +45,7 @@ base_length = 13 + base_thickness + base_hinge_to_curve;
 hinge_insert_diameter = 4.0;
 hinge_insert_length = 6.8;
 hinge_insert_size_tolerance = Hinge_Insert_Size_Tolerance;
+hinge_insert_pre_length = 2;
 hinge_housing_length = 7.6;
 hinge_extra_vertical_offset = 1;
 
@@ -129,6 +130,28 @@ module hinge_base_shape() {
     fillet(rad);
 }
 
+module hinge_insert_shape() {
+    offset(r=hinge_insert_size_tolerance / 2)
+    hull() {
+        circle(d=hinge_insert_diameter);
+        offset(r=hinge_insert_diameter / 8)
+        offset(r=-hinge_insert_diameter / 8)
+        translate([0, -hinge_insert_diameter / 4])
+        square(
+            [hinge_insert_diameter, hinge_insert_diameter / 2], center=true
+        );
+    }
+}
+
+module hinge_insert_cut() {
+    linear_extrude(height=hinge_insert_length)
+    hinge_insert_shape();
+    translate([0, 0, hinge_insert_pre_length])
+    mirror([0, 0, 1])
+    linear_extrude(height=hinge_insert_pre_length, scale=[1.2, 1])
+    hinge_insert_shape();
+}
+
 module hinge_base() {
     render(convexity=2)
     difference() {
@@ -137,17 +160,7 @@ module hinge_base() {
             hinge_base_shape();
             circle(d=hinge_insert_diameter / 2);
         }
-        linear_extrude(height=hinge_insert_length)
-        offset(r=hinge_insert_size_tolerance / 2)
-        hull() {
-            circle(d=hinge_insert_diameter);
-            offset(r=hinge_insert_diameter / 8)
-            offset(r=-hinge_insert_diameter / 8)
-            translate([0, -hinge_insert_diameter / 4])
-            square(
-                [hinge_insert_diameter, hinge_insert_diameter / 2], center=true
-            );
-        }
+        hinge_insert_cut();
     }
 }
 
