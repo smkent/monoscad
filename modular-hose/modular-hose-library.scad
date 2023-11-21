@@ -70,6 +70,8 @@ module modular_hose(
     $fh_origin_inner_radius = inner_diameter / 2;
     // Set defaults
     $fh_connector_extra_length = 0;
+    $fh_connector_bend_angle = 0;
+    $fh_connector_bend_radius = 0;
     children();
 }
 
@@ -110,8 +112,18 @@ module modular_hose_connector(connector_type=CONNECTOR_FEMALE) {
     _connector();
 }
 
-module modular_hose_modify_connector(extra_length=0) {
+module modular_hose_modify_connector(
+    extra_length=$fh_connector_extra_length,
+    bend_angle=$fh_connector_bend_angle,
+    bend_radius=$fh_connector_bend_radius
+) {
     $fh_connector_extra_length = extra_length;
+    $fh_connector_bend_angle = bend_angle;
+    $fh_connector_bend_radius = bend_radius;
+    // Set constants
+    $fh_connector_rotate_edge_offset = (
+        $fh_origin_inner_radius + $fh_thickness + $fh_connector_bend_radius
+    );
     children();
 }
 
@@ -130,6 +142,15 @@ female_connector_sphere_offset_max_proportion = 0.21; // [0.1:0.01:0.5]
 separation_adjustment_proportion = 1.0; // [0.5:0.01:1.5]
 
 // Private Modules
+
+function _connector_color() = (
+    let (colors = [
+        // Connector, extra length, bend
+        ["darkseagreen", "#729672", "#557055"],
+        ["lightsteelblue", "#95a6bc", "#8190a3"]
+    ])
+    colors[$fh_connector_type_is_female ? 0 : 1]
+);
 
 function _circle_radius_at_offset_from_center(circle_radius, offset_from_center) = (
     sqrt(circle_radius^2 - offset_from_center^2)
@@ -210,20 +231,76 @@ module _connector_origin_segment(circle_segment_radius_at_center, circle_segment
 }
 
 module _connector() {
-    // Connector body
-    color(
-        $fh_connector_type_is_female ? "darkseagreen" : "lightsteelblue",
-        0.8
-    )
-    _connector_extrude()
-    translate([$fh_connector_extra_length, 0])
-    _connector_shape();
-    // Extra length
-    color("slategray", 0.8)
-    if ($fh_connector_extra_length > 0) {
+    // Connector bend
+    _connector_bend() {
+        // Connector body
+        color(_connector_color()[0], 0.8)
         _connector_extrude()
-        translate([0, $fh_origin_inner_radius])
-        square([$fh_connector_extra_length, $fh_thickness]);
+        translate([$fh_connector_extra_length, 0])
+        _connector_shape();
+        // Extra length
+        color(_connector_color()[1], 0.8)
+        if ($fh_connector_extra_length > 0) {
+            _connector_extrude()
+            translate([0, $fh_origin_inner_radius])
+            square([$fh_connector_extra_length, $fh_thickness]);
+        }
+    }
+}
+
+module rotate_at(rotation, rotate_offset) {
+    translate(-rotate_offset)
+    rotate(rotation)
+    translate(rotate_offset)
+    children();
+}
+
+module _connector_bend() {
+    arc_radius = $fh_origin_inner_radius * 2 + $fh_connector_bend_radius;
+
+    module _connector_bend_2d() {
+        arc_cut_size = ($fh_origin_inner_diameter + $fh_connector_bend_radius) * 4;
+        translate([0, arc_radius + $fh_origin_inner_radius + $fh_thickness])
+        difference() {
+            circle(r=arc_radius + $fh_thickness);
+            circle(r=arc_radius);
+            rotate($fh_connector_bend_angle)
+            translate([0, -arc_cut_size / 2])
+            square(arc_cut_size);
+            mirror([1, 0])
+            translate([0, -arc_cut_size / 2])
+            square(arc_cut_size);
+        }
+    }
+
+    module _connector_bend_3d() {
+        rotate([90, 0, 0])
+        translate([$fh_connector_rotate_edge_offset, 0])
+        rotate_extrude(angle=-$fh_connector_bend_angle)
+        translate([-$fh_connector_rotate_edge_offset, 0])
+        difference() {
+            circle(d=$fh_origin_inner_diameter + $fh_thickness * 2);
+            circle(d=$fh_origin_inner_diameter);
+            if ($fh_render_mode == RENDER_MODE_HALF) {
+                translate([-$fh_origin_inner_diameter * 2, 0])
+                square($fh_origin_inner_diameter * 4);
+            }
+        }
+    }
+
+    if ($fh_render_mode == RENDER_MODE_2D_PROFILE) {
+        color(_connector_color()[2], 0.8)
+        _connector_bend_2d();
+        rotate_at(
+            $fh_connector_bend_angle,
+            [0, -(arc_radius + $fh_origin_inner_radius + $fh_thickness)]
+        )
+        children();
+    } else {
+        color(_connector_color()[2], 0.8)
+        _connector_bend_3d();
+        rotate_at([0, $fh_connector_bend_angle, 0], [-$fh_connector_rotate_edge_offset, 0, 0])
+        children();
     }
 }
 

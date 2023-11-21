@@ -42,59 +42,6 @@ module __end_customizer_options__() { }
 
 // Modules
 
-module rotate_at(rotation, rotate_offset) {
-    translate(-rotate_offset)
-    rotate(rotation)
-    translate(rotate_offset)
-    children();
-}
-
-module segment_bend() {
-    rotate([90, 0, 0])
-    translate([$fhs_rotate_edge_offset, 0])
-    difference() {
-        rotate_extrude(angle=-$fhs_bend_angle)
-        translate([-$fhs_rotate_edge_offset, 0])
-        difference() {
-            circle(d=$fh_origin_inner_diameter + $fh_thickness * 2);
-            circle(d=$fh_origin_inner_diameter);
-            if ($fh_render_mode == RENDER_MODE_HALF) {
-                translate([-$fh_origin_inner_diameter * 2, 0])
-                square($fh_origin_inner_diameter * 4);
-            }
-        }
-    }
-}
-
-module add_segment_bend() {
-    if ($fh_render_mode == RENDER_MODE_2D_PROFILE) {
-        arc_radius = $fh_origin_inner_radius * 2 + $fhs_bend_radius;
-        rotate_at(
-            $fhs_bend_angle,
-            [0, -(arc_radius + $fh_origin_inner_radius + $fh_thickness)]
-        )
-        children();
-        color("lightslategray", 0.8)
-        translate([0, arc_radius + $fh_origin_inner_radius + $fh_thickness])
-        difference() {
-            arc_cut_size = ($fh_origin_inner_diameter + $fhs_bend_radius) * 4;
-            circle(r=arc_radius + $fh_thickness);
-            circle(r=arc_radius);
-            rotate($fhs_bend_angle)
-            translate([0, -arc_cut_size / 2])
-            square(arc_cut_size);
-            mirror([1, 0])
-            translate([0, -arc_cut_size / 2])
-            square(arc_cut_size);
-        }
-    } else {
-        color("lightslategray", 0.8)
-        segment_bend();
-        rotate_at([0, $fhs_bend_angle, 0], [-$fhs_rotate_edge_offset, 0, 0])
-        children();
-    }
-}
-
 module modular_hose_segment(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
@@ -105,15 +52,13 @@ module modular_hose_segment(
     bend_radius=0,
     render_mode=RENDER_MODE_NORMAL
 ) {
-    $fhs_bend_angle = bend_angle;
-    $fhs_bend_radius = bend_radius;
-    $fhs_extra_segment_length = extra_length;
     modular_hose(inner_diameter, thickness, size_tolerance, render_mode)
-    modular_hose_modify_connector(extra_length=extra_length / 2) {
-        $fhs_rotate_edge_offset = (
-            $fh_origin_inner_radius + $fh_thickness + $fhs_bend_radius
-        );
-        add_segment_bend()
+    modular_hose_modify_connector(extra_length=extra_length / 2)
+    union() {
+        modular_hose_modify_connector(
+            bend_angle=bend_angle,
+            bend_radius=bend_radius
+        )
         if (connector_type == CONNECTOR_BOTH || connector_type == CONNECTOR_MALE) {
             modular_hose_connector_male();
         }
