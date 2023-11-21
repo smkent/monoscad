@@ -42,7 +42,7 @@ base_thickness = Base_Thickness;
 base_hinge_to_curve = (hinge_diameter - base_thickness) / 8;
 base_length = 13 + base_thickness + base_hinge_to_curve;
 
-hinge_insert_diameter = 4.15;
+hinge_insert_diameter = 4.10;
 hinge_insert_length = 6.8;
 hinge_insert_size_tolerance = Hinge_Insert_Size_Tolerance;
 hinge_insert_pre_length = 2;
@@ -148,7 +148,7 @@ module hinge_insert_cut() {
     hinge_insert_shape();
     translate([0, 0, hinge_insert_pre_length])
     mirror([0, 0, 1])
-    linear_extrude(height=hinge_insert_pre_length, scale=[1.2, 1])
+    linear_extrude(height=hinge_insert_pre_length, scale=[1.2, 1.2])
     hinge_insert_shape();
 }
 

@@ -38,21 +38,18 @@ For all adapter variations, I recommend:
 
 * Print with something other than PLA (I used PETG). The hinge housings are
   small to fit on the camera, and PLA is more brittle than other materials.
-* Print at slower speeds, especially for adapters with ball mounts. I limited my
-  printer to 60mm/sec for this print.
 
 Adapters with an articulated link and no ball mount are straightforward to
 print, and require no supports.
 
 ![Slicer screenshot of adapter with articulated link](images/readme/slicer-screenshot-link.png)
 
-Adapters with a ball mount can be printed without supports, but are trickier as
-the contact area with the bed is small. I had a few false starts printing these
-until I cleaned my print bed. Adapters with a ball mount and no shroud are
-especially tricky as the bed contact area is even smaller.
+For adapters with ball mounts, I additionally recommend:
 
-For better ball mount strength, I recommend printing ball mount adapters with
-100% infill for the first 9 mm.
+* Clean your print bed. I had a few false starts printing these until I did so.
+* Set the bottom 9mm to 100% infill, for strength on the ball mount part.
+* Print at slower speeds. These can be printed without supports, but the contact
+  area with the bed is small. I limited my printer to 60mm/sec for this print.
 
 ![Slicer screenshot of adapter with ball mount](images/readme/slicer-screenshot-ball.png)
 ![Slicer screenshot of adapter with ball mount and 100% infill modifier](images/readme/slicer-screenshot-ball-infill.png)
