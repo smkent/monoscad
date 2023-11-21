@@ -70,7 +70,11 @@ for model_type in {"connector", "grommet", "plate"}:
 b.Image(
     "demo.png",
     "demo.scad",
-    {"Inner_Diameter": interior_diameter, "Demo": "parts"},
+    {
+        "Inner_Diameter": interior_diameter,
+        "Demo": "parts",
+        "Enable_Plate_Knurling": 1,
+    },
     view_options="axes,scales",
 )
 
