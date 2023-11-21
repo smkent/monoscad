@@ -6,13 +6,15 @@ import tempfile
 from contextlib import ExitStack
 from math import ceil
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence, Set, Union
+from typing import (Any, Callable, Dict, Iterable, List, Optional, Sequence,
+                    Set, Union)
 from zipfile import ZipFile
 
 from SCons.Node.FS import File as SConsFile
 from SCons.Script.SConscript import SConsEnvironment
 
-PRINTABLES_TARGET = "printables"
+IMAGES_TARGET = "images"
+PRINTABLES_TARGETS = {"printables", "zip"}
 DIST_PRINTABLES_ZIP = "dist-printables.zip"
 LIBRARIES_ZIP = "libraries.zip"
 IMAGE_RENDER_SIZE = "1200x900"
@@ -49,7 +51,7 @@ class MainBuilder:
         SetOption("num_jobs", os.cpu_count())
 
     def build(self) -> None:
-        build_dir = Path(".") / "build"
+        build_dir = Path(Dir("#").path) / "build"
         build_dir.mkdir(exist_ok=True)
         for sc in {str(md / "SConscript") for md in self._model_dirs}:
             env = self._env  # noqa: F841
@@ -60,7 +62,6 @@ class MainBuilder:
                 duplicate=False,
                 exports="env",
             )
-        env.Default("build/")
         env.Alias(
             "images",
             [
@@ -69,7 +70,8 @@ class MainBuilder:
                 for i in Glob(str(md / "images") + "/*")
             ],
         )
-        env.Alias("printables", ["build/", "images"])
+        for alias in {"printables", "zip"}:
+            env.Alias(alias, ["build/", "images"])
 
     @functools.cached_property
     def _env(self) -> SConsEnvironment:
@@ -97,9 +99,14 @@ class MainBuilder:
 
     @functools.cached_property
     def _model_dirs(self) -> Set[Path]:
+        start_dir = Path(
+            "."
+            if Dir("#").path == GetLaunchDir()
+            else Dir(GetLaunchDir()).path
+        )
         return {
-            x.parent
-            for x in Path(".").glob("**/SConscript")
+            Path(Dir(x.parent).path)
+            for x in start_dir.glob("**/SConscript")
             if not str(x).startswith("_")
         }
 
@@ -118,16 +125,31 @@ class ModelBuilder:
 
     def ref_filter(fn: Callable[..., Any]) -> Callable[..., Any]:
         def _wrapper(self, *args: Any, **kwargs: Any) -> Any:
-            if not self._allowed_by_filter:
+            if not self._allowed_by_ref_filter:
                 return
             fn(self, *args, **kwargs)
 
         return _wrapper
 
+    def target_filter(
+        required_targets: Union[str, Iterable[str]]
+    ) -> Callable[..., Any]:
+        if isinstance(required_targets, str):
+            required_targets = [required_targets]
+
+        def _inner(fn: Callable[..., Any]) -> Callable[..., Any]:
+            def _wrapper(self, *args: Any, **kwargs: Any) -> Any:
+                if not any(t in BUILD_TARGETS for t in required_targets):
+                    return
+                fn(self, *args, **kwargs)
+
+            return _wrapper
+
+        return _inner
+
     @ref_filter
     def add_default_targets(self) -> None:
-        if PRINTABLES_TARGET in BUILD_TARGETS:
-            self.add_printables_zip_targets()
+        self.add_printables_zip_targets()
 
     def _source_glob(self, *files: str) -> None:
         return {
@@ -221,6 +243,7 @@ class ModelBuilder:
             target, [source] + [image_dependencies or []], self.make_doc
         )
 
+    @target_filter(IMAGES_TARGET)
     def Image(
         self,
         target: str,
@@ -254,6 +277,7 @@ class ModelBuilder:
         )
         self.publish_images.add(f"{self.src_dir}/images/publish/{target}")
 
+    @target_filter(IMAGES_TARGET)
     def InsetImage(
         self,
         target: str,
@@ -398,6 +422,7 @@ class ModelBuilder:
         ]
         self._run(cmd)
 
+    @target_filter(PRINTABLES_TARGETS)
     def add_printables_zip_targets(self) -> None:
         sources = [
             File(f)
@@ -471,7 +496,7 @@ class ModelBuilder:
                     z.write(str(ss), zdest)
 
     @functools.cached_property
-    def _allowed_by_filter(self) -> bool:
+    def _allowed_by_ref_filter(self) -> bool:
         prev_ref = self.env.get("PREV_REF")
         if not prev_ref:
             return True
