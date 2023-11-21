@@ -82,6 +82,14 @@ STL file used in the OpenSCAD model is from
 all the source files are in the same directory and then open
 `logitech-c920-slim-adapter.scad` in OpenSCAD.
 
+## See also
+
+I attached my Logitech C920 and new adapter to my articulated mount using
+[darkcoffee's steel ball nut remix][darkcoffee-ball-nut].
+
+Also pictured is my
+[Sovol SV06 / SV06 Plus x-axis articulating mount base!](/sovol-sv06-plus/xaxis-articulating-mount-right/)
+
 ## Attribution and License
 
 This is a remix of
@@ -90,9 +98,10 @@ This is a remix of
 Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution][license].
 
+[c920-disassembly-guide]: https://www.ifixit.com/Guide/Logitech+C920+Webcam+Disassembly/115077
+[c920-disassembly-video]: https://www.youtube.com/watch?v=a39iWgSwaBk
+[darkcoffee-ball-nut]: https://www.printables.com/model/577816-steel-ballnut-for-articulating-raspberry-pi-camera
 [license-badge]: /_static/license-badge-cc-by-4.0.svg
 [license]: http://creativecommons.org/licenses/by/4.0/
 [openscad]: https://openscad.org
 [original-model-url]: https://www.printables.com/model/3407-articulating-raspberry-pi-camera-mount-for-prusa-m
-[c920-disassembly-video]: https://www.youtube.com/watch?v=a39iWgSwaBk
-[c920-disassembly-guide]: https://www.ifixit.com/Guide/Logitech+C920+Webcam+Disassembly/115077

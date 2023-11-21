@@ -49,13 +49,13 @@ Sovol original part links:
 
 I also have a [SV06 (Plus) X-axis left side mount!][x-axis-mount-left]
 
-I used
-[Zach's remixed articulating camera mount thumb bolt heads][zach-steel-m5-bolt-model]
-with steel M5x20 bolts.
+My Logitech C920 is attached to the articulated mount using my
+[Logitech C920 articulated mount adapter](/logitech-c920-slim-adapter).
 
 I used
-[areyouferretti's articulated mount tripod bolt][areyouferretti-tripod-bolt]
-to mount a Logitech C920 webcam to my articulated mount.
+[Zach's remixed articulating camera mount thumb bolt heads][zach-steel-m5-bolt-model]
+with steel M5x20 bolts, and
+[darkcoffee's steel ball nut remix][darkcoffee-ball-nut].
 
 ## Attribution and License
 
@@ -68,7 +68,7 @@ This is a remix of:
 Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution][license].
 
-[areyouferretti-tripod-bolt]: https://www.printables.com/model/354264-14-inch-standard-tripod-thumb-bolt-for-articulatin
+[darkcoffee-ball-nut]: https://www.printables.com/model/577816-steel-ballnut-for-articulating-raspberry-pi-camera
 [license-badge]: /_static/license-badge-cc-by-4.0.svg
 [license]: http://creativecommons.org/licenses/by/4.0/
 [openscad]: https://openscad.org
