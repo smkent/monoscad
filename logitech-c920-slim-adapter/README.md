@@ -29,7 +29,6 @@ Save the metal hinge inserts to use with the new printed adapter.
 ![Photo of hinge inserts from original mount](images/readme/photo-c920-hinge-inserts-1.jpg)
 ![Photo of hinge inserts attached to printed adapter](images/readme/photo-c920-hinge-inserts-2.jpg)
 ![Photo of hinge inserts attached to printed adapter](images/readme/photo-c920-hinge-inserts-3.jpg)
-![Photo of printed adapter installed on camera](images/readme/photo-c920-hinge-inserts-4.jpg)
 
 ## Printing
 
@@ -72,7 +71,7 @@ Insert the metal hinge clips from the original Logitech C920 mount into the
 hinge base on your printed adapter. Then, screw it onto the camera like the
 original mount and reassemble the rest of the camera.
 
-![Photo of printed adapter installed on camera](images/readme/photo-adapter-attached-1.jpg)
+![Photo of printed adapter installed on camera](images/readme/photo-c920-hinge-inserts-4.jpg)
 ![Photo of printed adapter installed on camera](images/readme/photo-adapter-attached-2.jpg)
 
 ## Remixing
