@@ -51,14 +51,12 @@ class MainBuilder:
         SetOption("num_jobs", os.cpu_count())
 
     def build(self) -> None:
-        build_dir = Path(Dir("#").path) / "build"
-        build_dir.mkdir(exist_ok=True)
-        for sc in {str(md / "SConscript") for md in self._model_dirs}:
+        for sc in {md / "SConscript" for md in self._model_dirs}:
             env = self._env  # noqa: F841
             SConscript(
-                sc,
-                src_dir=Path(sc).parent,
-                variant_dir=build_dir / Path(sc).parent,
+                str(sc),
+                src_dir=sc.parent,
+                variant_dir=sc.parent / "build",
                 duplicate=False,
                 exports="env",
             )
@@ -71,7 +69,7 @@ class MainBuilder:
             ],
         )
         for alias in {"printables", "zip"}:
-            env.Alias(alias, ["build/", "images"])
+            env.Alias(alias, [".", "images"])
 
     @functools.cached_property
     def _env(self) -> SConsEnvironment:
@@ -115,7 +113,6 @@ class ModelBuilder:
     def __init__(self, env: SConsEnvironment):
         self.env = env
         self.build_dir = Dir(".")
-        self.common_build_dir = Dir("#/build")
         self.src_dir = Dir(".").srcdir
         self.src_dir_path = self.src_dir.path
         self.model_dir = self.src_dir_path
@@ -435,11 +432,8 @@ class ModelBuilder:
             )
         ] + self.library_files
         zip_name = self.model_dir.replace(os.sep, "__")
-        self.env.Command(
-            f"{self.common_build_dir}/printables-{zip_name}.zip",
-            sorted(list(sources)),
-            self.make_zip,
-        )
+        fn = f"{self.build_dir}/printables-{zip_name}.zip"
+        self.env.Command(fn, sorted(list(sources)), self.make_zip)
 
     def zip_file_dest(self, source: Union[str, Path]) -> str:
         dest_stripped = self._remove_prefix(
