@@ -98,7 +98,7 @@ b.Image(
     [
         {
             "Inner_Diameter": interior_diameter,
-            "Extra_Segment_Length": length,
+            "Extra_Length": length,
             "Bend_Angle": angle,
             "Bend_Radius": radius,
         }

@@ -17,7 +17,7 @@ Connector_Type = "female"; // [male: Male, female: Female]
 Inner_Diameter = 100;
 
 // Optional extra hose length to add between the attachment and connector
-Extra_Segment_Length = 0; // [0:1:200]
+Extra_Length = 0; // [0:1:200]
 
 /* [Advanced Size Adjustment] */
 // All units in millimeters
@@ -69,26 +69,15 @@ module modular_hose_vacuum_attachment(
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
     connector_type=CONNECTOR_FEMALE,
-    extra_segment_length=0,
+    extra_length=0,
 ) {
     modular_hose(inner_diameter, thickness, size_tolerance) {
-        translate([0, 0, -extra_segment_length / 2])
         mirror([0, 0, 1])
+        modular_hose_modify_connector(extra_length=extra_length)
         modular_hose_connector(connector_type);
 
         color("thistle", 0.8)
-        translate([0, 0, extra_segment_length / 2])
         utility_nozzle();
-
-        color("slategray", 0.8)
-        if (extra_segment_length) {
-            translate([0, 0, -extra_segment_length / 2])
-            linear_extrude(height=extra_segment_length)
-            difference() {
-                circle(inner_diameter / 2 + thickness);
-                circle(inner_diameter / 2);
-            }
-        }
     }
 }
 
@@ -97,5 +86,5 @@ modular_hose_vacuum_attachment(
     Thickness,
     Size_Tolerance,
     Connector_Type,
-    Extra_Segment_Length
+    Extra_Length
 );

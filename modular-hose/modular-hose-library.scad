@@ -68,6 +68,8 @@ module modular_hose(
     $fh_render_mode = render_mode;
     // Set computed values
     $fh_origin_inner_radius = inner_diameter / 2;
+    // Set defaults
+    $fh_connector_extra_length = 0;
     children();
 }
 
@@ -105,12 +107,12 @@ module modular_hose_connector_male() { modular_hose_connector(CONNECTOR_MALE); }
 module modular_hose_connector_female() { modular_hose_connector(CONNECTOR_FEMALE); }
 module modular_hose_connector(connector_type=CONNECTOR_FEMALE) {
     $fh_connector_type_is_female = (connector_type == CONNECTOR_FEMALE);
-    color(
-        $fh_connector_type_is_female ? "darkseagreen" : "lightsteelblue",
-        0.8
-    )
-    _connector_extrude()
-    _connector_shape();
+    _connector();
+}
+
+module modular_hose_modify_connector(extra_length=0) {
+    $fh_connector_extra_length = extra_length;
+    children();
 }
 
 // Constants
@@ -207,6 +209,24 @@ module _connector_origin_segment(circle_segment_radius_at_center, circle_segment
         ));
 }
 
+module _connector() {
+    // Connector body
+    color(
+        $fh_connector_type_is_female ? "darkseagreen" : "lightsteelblue",
+        0.8
+    )
+    _connector_extrude()
+    translate([$fh_connector_extra_length, 0])
+    _connector_shape();
+    // Extra length
+    color("slategray", 0.8)
+    if ($fh_connector_extra_length > 0) {
+        _connector_extrude()
+        translate([0, $fh_origin_inner_radius])
+        square([$fh_connector_extra_length, $fh_thickness]);
+    }
+}
+
 module _connector_shape() {
     function circle_radius_from_offset_prop_from_center(offset_radius, offset_prop_from_center) = (
         sqrt(offset_radius^2 + (offset_radius * offset_prop_from_center)^2)
@@ -254,7 +274,13 @@ module _connector_shape() {
     circle_segment_offset_from_origin = circle_segment_offset_from_origin_fn();
     circle_segment_origin_connection_truncate_offset = circle_segment_origin_connection_truncate_offset_fn();
 
-    translate([circle_segment_origin_connection_truncate_offset + circle_segment_offset_from_origin, 0])
+    translate([
+        (
+            circle_segment_origin_connection_truncate_offset
+            + circle_segment_offset_from_origin
+        ),
+        0
+    ])
     _connector_circle_segment(
         circle_segment_radius_at_center=circle_segment_radius_at_center,
         x_min=circle_segment_origin_connection_truncate_offset,

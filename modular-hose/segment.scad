@@ -18,7 +18,7 @@ Inner_Diameter = 100;
 Connector_Type = "both"; // ["both": Both, "male": Male, "female": Female]
 
 // Optional extra straight length to add between the segment connectors
-Extra_Segment_Length = 0; // [0:1:200]
+Extra_Length = 0; // [0:1:200]
 
 // Optional bend angle to add between the segment connectors
 Bend_Angle = 0; // [0:1:180]
@@ -95,54 +95,29 @@ module add_segment_bend() {
     }
 }
 
-module add_extra_segment_length() {
-    segment_offset = $fhs_extra_segment_length / 2;
-    segment_position = (
-        $fh_render_mode == RENDER_MODE_2D_PROFILE
-            ? [segment_offset, 0, 0] : [0, 0, segment_offset]
-    );
-    translate(segment_position)
-    children();
-    color("slategray", 0.8)
-    if ($fhs_extra_segment_length) {
-        if ($fh_render_mode == RENDER_MODE_2D_PROFILE) {
-            rotate(-90)
-            translate([-$fh_origin_inner_radius, 0])
-            mirror([1, 0])
-            square([$fh_thickness, $fhs_extra_segment_length / 2]);
-        } else {
-            translate([0, 0, 0 * -$fhs_extra_segment_length / 2])
-            rotate_extrude(angle=($fh_render_mode == RENDER_MODE_NORMAL ? 360 : 180))
-            translate([$fh_origin_inner_radius, 0])
-            square([$fh_thickness, $fhs_extra_segment_length / 2]);
-        }
-    }
-}
-
 module modular_hose_segment(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
     connector_type=CONNECTOR_BOTH,
-    extra_segment_length=0,
+    extra_length=0,
     bend_angle=0,
     bend_radius=0,
     render_mode=RENDER_MODE_NORMAL
 ) {
     $fhs_bend_angle = bend_angle;
     $fhs_bend_radius = bend_radius;
-    $fhs_extra_segment_length = extra_segment_length;
-    modular_hose(inner_diameter, thickness, size_tolerance, render_mode) {
+    $fhs_extra_segment_length = extra_length;
+    modular_hose(inner_diameter, thickness, size_tolerance, render_mode)
+    modular_hose_modify_connector(extra_length=extra_length / 2) {
         $fhs_rotate_edge_offset = (
             $fh_origin_inner_radius + $fh_thickness + $fhs_bend_radius
         );
         add_segment_bend()
-        add_extra_segment_length()
         if (connector_type == CONNECTOR_BOTH || connector_type == CONNECTOR_MALE) {
             modular_hose_connector_male();
         }
         mirror(render_mode == RENDER_MODE_2D_PROFILE ? [1, 0, 0] : [0, 0, 1])
-        add_extra_segment_length()
         if (connector_type == CONNECTOR_BOTH || connector_type == CONNECTOR_FEMALE) {
             modular_hose_connector_female();
         }
@@ -154,7 +129,7 @@ modular_hose_segment(
     Thickness,
     Size_Tolerance,
     Connector_Type,
-    Extra_Segment_Length,
+    Extra_Length,
     Bend_Angle,
     Bend_Radius,
     Render_Mode
