@@ -4,6 +4,8 @@
 
 Low profile articulating camera mount adapter base for the Logitech C920
 
+![Photo of printed model installed on articulating mount](images/readme/photo-installed-1.jpg)
+![Photo of printed model installed on articulating mount](images/readme/photo-installed-3.jpg)
 ![Model render](images/readme/demo.png)
 
 # Description
