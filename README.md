@@ -19,6 +19,27 @@ the repository directory:
 git submodule update --init --recursive
 ```
 
+## Rendering models via CLI
+
+Models published on printables are rendered via the [OpenSCAD CLI][openscad-cli]
+using [SCons][scons].
+
+SCons is a Python package and can be installed using `pip`:
+
+```console
+pip install scons  # or pip install --user scons
+```
+
+To build the configured model renders for a particular model, change to the
+desired model directory and run:
+
+```console
+scons -u
+```
+
+Rendered models will be placed in a `build` subdirectory within the model
+directory.
+
 ## Model samples
 
 Click an image to view the corresponding model, or browse the repository's top
@@ -54,8 +75,10 @@ Attribution][license-cc-by-4.0].
 
 [git-submodules]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 [license-cc-by-4.0]: http://creativecommons.org/licenses/by/4.0/
+[openscad-cli]: https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Using_OpenSCAD_in_a_command_line_environment
 [openscad-libraries]: https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries
 [openscad]: https://openscad.org
 [printables-profile-badge]: /_static/printables-profile-badge.svg
 [printables-profile]: https://www.printables.com/@bulbasaur0_1139994/models
+[scons]: https://scons.org/
 [smkent-openscad-libraries]: https://github.com/smkent/openscad-libraries
