@@ -380,14 +380,6 @@ module ball_mount_cut() {
     }
 }
 
-module hull_sequence() {
-    for (ch = [0:1:$children - 2])
-    hull() {
-        children(ch);
-        children(ch + 1);
-    }
-}
-
 module ball_mount_body() {
     body_diameter = (
         ball_diameter
@@ -398,7 +390,7 @@ module ball_mount_body() {
         )
     );
     mid_height = ball_diameter * (Ball_Mount_Shroud ? 0.35 : 0.5);
-    hull_sequence() {
+    hull() {
         if (Ball_Mount_Shroud) {
             translate([0, 0, slop])
             rotate_extrude(angle=360) {
