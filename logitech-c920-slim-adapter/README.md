@@ -18,15 +18,16 @@ customized in [OpenSCAD][openscad]!
 
 As this mount replaces the built-in mount on the Logitech C920, some disassembly
 of the camera is needed to remove the built-in mount.
-I read [this guide][c920-disassembly-guide] and watched
-[this video][c920-disassembly-video] to disassemble my camera. You'll want a
-phillips 00-size screwdriver or similar.
+I watched [this video][c920-disassembly-video] and read
+[this guide][c920-disassembly-guide] to learn how to dissasemble my camera.
+You'll want a phillips 00-size screwdriver or similar.
 
 Save the metal hinge inserts to use with the new printed adapter.
 
 ![Photo of hinge inserts from original mount](images/readme/photo-c920-hinge-inserts-1.jpg)
 ![Photo of hinge inserts attached to printed adapter](images/readme/photo-c920-hinge-inserts-2.jpg)
-![Photo of printed adapter installed on camera](images/readme/photo-c920-hinge-inserts-3.jpg)
+![Photo of hinge inserts attached to printed adapter](images/readme/photo-c920-hinge-inserts-3.jpg)
+![Photo of printed adapter installed on camera](images/readme/photo-c920-hinge-inserts-4.jpg)
 
 ## Printing
 
@@ -50,14 +51,18 @@ the contact area with the bed is small. I had a few false starts printing these
 until I cleaned my print bed. Adapters with a ball mount and no shroud are
 especially tricky as the bed contact area is even smaller.
 
+For better ball mount strength, I recommend printing ball mount adapters with
+100% infill for the first 9 mm.
+
 ![Slicer screenshot of adapter with ball mount](images/readme/slicer-screenshot-ball.png)
-![Slicer screenshot of adapter with ball mount and no shroud](images/readme/slicer-screenshot-ball-noshroud.png)
+![Slicer screenshot of adapter with ball mount and 100% infill modifier](images/readme/slicer-screenshot-ball-infill.png)
 
 Adapters with both a ball mount and articulated link attachment are provided.
 These models need supports on the articulated link to print as the ball mount
 raises the rest of the model off of the print bed.
 
 ![Slicer screenshot of adapter with ball mount, no shroud, and articulated link](images/readme/slicer-screenshot-ball-noshroud-link.png)
+![Slicer screenshot of adapter with ball mount, no shroud, and articulated link showing paint-on supports](images/readme/slicer-screenshot-ball-noshroud-link-supports.png)
 
 ![Photo of printed adapter with ball mount, no shroud, and articulated link](images/readme/photo-printed-ball-noshroud-link-1.jpg)
 ![Photo of printed adapter with ball mount, no shroud, and articulated link](images/readme/photo-printed-ball-noshroud-link-2.jpg)
@@ -67,6 +72,9 @@ raises the rest of the model off of the print bed.
 Insert the metal hinge clips from the original Logitech C920 mount into the
 hinge base on your printed adapter. Then, screw it onto the camera like the
 original mount and reassemble the rest of the camera.
+
+![Photo of printed adapter installed on camera](images/readme/photo-adapter-attached-1.jpg)
+![Photo of printed adapter installed on camera](images/readme/photo-adapter-attached-2.jpg)
 
 ## Remixing
 
