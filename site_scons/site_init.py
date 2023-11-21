@@ -6,12 +6,14 @@ import tempfile
 from contextlib import ExitStack
 from math import ceil
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence, Set, Union
+from typing import (Any, Callable, Dict, Iterable, List, Optional, Sequence,
+                    Set, Union)
 from zipfile import ZipFile
 
 from SCons.Node.FS import File as SConsFile
 from SCons.Script.SConscript import SConsEnvironment
 
+IMAGES_TARGET = "images"
 PRINTABLES_TARGETS = {"printables", "zip"}
 DIST_PRINTABLES_ZIP = "dist-printables.zip"
 LIBRARIES_ZIP = "libraries.zip"
@@ -123,16 +125,31 @@ class ModelBuilder:
 
     def ref_filter(fn: Callable[..., Any]) -> Callable[..., Any]:
         def _wrapper(self, *args: Any, **kwargs: Any) -> Any:
-            if not self._allowed_by_filter:
+            if not self._allowed_by_ref_filter:
                 return
             fn(self, *args, **kwargs)
 
         return _wrapper
 
+    def target_filter(
+        required_targets: Union[str, Iterable[str]]
+    ) -> Callable[..., Any]:
+        if isinstance(required_targets, str):
+            required_targets = [required_targets]
+
+        def _inner(fn: Callable[..., Any]) -> Callable[..., Any]:
+            def _wrapper(self, *args: Any, **kwargs: Any) -> Any:
+                if not any(t in BUILD_TARGETS for t in required_targets):
+                    return
+                fn(self, *args, **kwargs)
+
+            return _wrapper
+
+        return _inner
+
     @ref_filter
     def add_default_targets(self) -> None:
-        if any(t in BUILD_TARGETS for t in PRINTABLES_TARGETS):
-            self.add_printables_zip_targets()
+        self.add_printables_zip_targets()
 
     def _source_glob(self, *files: str) -> None:
         return {
@@ -226,6 +243,7 @@ class ModelBuilder:
             target, [source] + [image_dependencies or []], self.make_doc
         )
 
+    @target_filter(IMAGES_TARGET)
     def Image(
         self,
         target: str,
@@ -259,6 +277,7 @@ class ModelBuilder:
         )
         self.publish_images.add(f"{self.src_dir}/images/publish/{target}")
 
+    @target_filter(IMAGES_TARGET)
     def InsetImage(
         self,
         target: str,
@@ -403,6 +422,7 @@ class ModelBuilder:
         ]
         self._run(cmd)
 
+    @target_filter(PRINTABLES_TARGETS)
     def add_printables_zip_targets(self) -> None:
         sources = [
             File(f)
@@ -476,7 +496,7 @@ class ModelBuilder:
                     z.write(str(ss), zdest)
 
     @functools.cached_property
-    def _allowed_by_filter(self) -> bool:
+    def _allowed_by_ref_filter(self) -> bool:
         prev_ref = self.env.get("PREV_REF")
         if not prev_ref:
             return True
