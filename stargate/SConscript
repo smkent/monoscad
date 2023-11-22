@@ -1,7 +1,7 @@
 Import("env")
 b = ModelBuilder(env)
 
-model = "stargate.scad"
+model = "Stargate.scad"
 
 b.STL("stargate.stl", model)
 b.Image("demo.png", model)
