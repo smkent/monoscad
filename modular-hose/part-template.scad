@@ -7,7 +7,7 @@
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
  */
 
-include <modular-hose-library.scad>;
+include <mh-library.scad>;
 
 /* [Model Options] */
 

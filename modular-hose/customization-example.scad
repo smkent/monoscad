@@ -7,8 +7,8 @@
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
  */
 
-// Create this new model file in the same directory as modular-hose-library.scad
-include <modular-hose-library.scad>;
+// Create this new model file in the same directory as mh-library.scad
+include <mh-library.scad>;
 
 // Initialize a modular hose part with an inner diameter of 50mm
 mh(inner_diameter=50) {

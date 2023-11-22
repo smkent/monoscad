@@ -79,15 +79,15 @@ female connector end raised lip, if the hose diameter is large enough).
 
 ## Design your own custom parts and attachments!
 
-Design your own custom parts using `modular-hose-library.scad`!
+Design your own custom parts using `mh-library.scad`!
 
 Here's an example of how to create a hose part with a connector on top of
 another shape:
 
 ```openscad
 
-// Create this new model file in the same directory as modular-hose-library.scad
-include <modular-hose-library.scad>;
+// Create this new model file in the same directory as mh-library.scad
+include <mh-library.scad>;
 
 // Initialize a modular hose part with an inner diameter of 50mm
 mh(inner_diameter=50) {
