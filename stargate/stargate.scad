@@ -30,7 +30,7 @@ symbols_count = 39;
 outer_ring_depth = 7;
 inner_ring_depth = 5;
 symbols_height = 1;
-symbols_depth = 2;
+symbols_depth = 0.6;
 
 fudge = 0.1;
 scale_factor = (25.4 * 8.5);
@@ -190,7 +190,7 @@ module add_symbols(rotate_symbols, symbols_style="raised") {
     if (symbols_style == "inset") {
         difference() {
             children();
-            color("mintcream", 0.8)
+            color("#dee", 0.8)
             render(convexity=2)
             rotate(rotate_symbols)
             translate([0, 0, inner_ring_depth - symbols_depth])
@@ -198,6 +198,7 @@ module add_symbols(rotate_symbols, symbols_style="raised") {
             symbols();
         }
     } else {
+        color("mintcream", 0.8)
         rotate(rotate_symbols)
         translate([0, 0, inner_ring_depth])
         linear_extrude(height=symbols_height)
@@ -216,14 +217,14 @@ module stargate(diameter=0, rotate_symbols=0, symbols_style="raised")
     scale(diameter / scale_factor)
     add_symbols(rotate_symbols, symbols_style)
     union() {
-        color("darkgray", 0.8)
+        color("#abb", 0.8)
         ring();
         for_each_chevron()
         translate([0, 0.8, 0]) {
             color("coral", 0.8)
             linear_extrude(height=9)
             chevron_highlight();
-            color("lightgray", 0.8)
+            color("#788", 0.8)
             linear_extrude(height=8)
             chevron();
         }
