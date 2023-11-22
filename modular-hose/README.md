@@ -54,7 +54,7 @@ Ensure all of the model's `*.scad` files are placed in the same directory. Open
 a part model file (such as `mh-segment.scad`) in OpenSCAD. Select your desired
 sizing and options in the OpenSCAD Customizer before rendering each part.
 
-![OpenSCAD customizer screenshot](images/readme/customizer-screenshot-segment.png)
+![OpenSCAD customizer screenshot](images/readme/customizer-screenshot-compatibility.png)
 
 ## Printing
 
