@@ -39,7 +39,7 @@ module __end_customizer_options__() { }
 
 // Modules
 
-module modular_hose_segment(
+module mh_segment(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
@@ -49,26 +49,26 @@ module modular_hose_segment(
     bend_radius=0,
     render_mode=RENDER_MODE_NORMAL
 ) {
-    modular_hose(inner_diameter, thickness, size_tolerance, render_mode) {
-        modular_hose_configure_connector(
+    mh(inner_diameter, thickness, size_tolerance, render_mode) {
+        mh_configure_connector(
             extra_length=extra_length / 2,
             bend_angle=bend_angle,
             bend_radius=bend_radius,
         )
-        modular_hose_connector_male();
-        modular_hose_configure_connector(
+        mh_connector_male();
+        mh_configure_connector(
             extra_length = extra_length / 2,
             bottom=true
         )
-        modular_hose_connector_female();
+        mh_connector_female();
     }
 }
 
-module modular_hose_segment_detail() {
+module mh_segment_detail() {
     children();
 }
 
-modular_hose_segment(
+mh_segment(
     Inner_Diameter,
     Thickness,
     Size_Tolerance,

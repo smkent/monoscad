@@ -64,7 +64,7 @@ module segment_placement(render_mode, bottom_bend_angle) {
     children();
 }
 
-module modular_hose_middle(length=0) {
+module mh_middle(length=0) {
     for (ch = [0, 1]) {
         tr = length / 2 * (ch == 0 ? 1 : -1);
         translate($mh_render_mode == RENDER_MODE_2D_PROFILE ? [tr, 0] : [0, 0, tr])
@@ -82,7 +82,7 @@ module modular_hose_middle(length=0) {
     }
 }
 
-module modular_hose_segment(
+module mh_segment(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
@@ -98,31 +98,31 @@ module modular_hose_segment(
     join_rotation=0,
     render_mode=RENDER_MODE_NORMAL
 ) {
-    modular_hose(inner_diameter, thickness, size_tolerance, render_mode)
+    mh(inner_diameter, thickness, size_tolerance, render_mode)
     segment_placement(render_mode, bottom_bend_angle)
-    modular_hose_middle(length=middle_extra_length) {
-        modular_hose_configure_connector(
+    mh_middle(length=middle_extra_length) {
+        mh_configure_connector(
             extra_length=top_extra_length,
             bend_angle=top_bend_angle,
             bend_radius=top_bend_radius,
             join_rotation=join_rotation
         )
-        modular_hose_connector(top_connector_type);
-        modular_hose_configure_connector(
+        mh_connector(top_connector_type);
+        mh_configure_connector(
             extra_length=bottom_extra_length,
             bend_angle=bottom_bend_angle,
             bend_radius=bottom_bend_radius,
             bottom=true
         )
-        modular_hose_connector(bottom_connector_type);
+        mh_connector(bottom_connector_type);
     }
 }
 
-module modular_hose_segment_detail() {
+module mh_segment_detail() {
     children();
 }
 
-modular_hose_segment(
+mh_segment(
     Inner_Diameter,
     Thickness,
     Size_Tolerance,

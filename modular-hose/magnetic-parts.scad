@@ -215,7 +215,7 @@ module grommet_interior() {
     );
 }
 
-module modular_hose_magnetic_part(
+module mh_magnetic_part(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
@@ -251,13 +251,13 @@ module modular_hose_magnetic_part(
     $mhp_grommet_depth = grommet_depth;
     $mhp_grommet_diameter = grommet_diameter;
     $mhp_grommet_diameter_adjustment = grommet_diameter_adjustment ? thickness : 0;
-    modular_hose(inner_diameter, thickness, size_tolerance) {
+    mh(inner_diameter, thickness, size_tolerance) {
         difference() {
             union() {
                 mirror([0, 0, 1])
                 plate_full(solid=(model_type == "grommet"));
                 if (model_type == "connector") {
-                    modular_hose_connector(connector_type);
+                    mh_connector(connector_type);
                 } else if (model_type == "grommet") {
                     grommet_body();
                 }
@@ -269,7 +269,7 @@ module modular_hose_magnetic_part(
     }
 }
 
-modular_hose_magnetic_part(
+mh_magnetic_part(
     Inner_Diameter,
     Thickness,
     Size_Tolerance,

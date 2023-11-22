@@ -47,16 +47,16 @@ RENDER_MODE_2D_PROFILE = "2d-profile";
  *
  * Example:
  *
- *      modular_hose(inner_diameter=100, thickness=0.8, size_tolerance=0) {
+ *      mh(inner_diameter=100, thickness=0.8, size_tolerance=0) {
  *          // Render male connector on top
- *          modular_hose_connector_male();
+ *          mh_connector_male();
  *
  *          // Render male connector on bottom, flipped along the Z axis
  *          mirror([0, 0, 1])
- *          modular_hose_connector_female();
+ *          mh_connector_female();
  *      }
  */
-module modular_hose(
+module mh(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
@@ -83,9 +83,9 @@ module modular_hose(
  *
  * Use one of these modules to create the corresponding connector.
  *
- * - modular_hose_connector_male() creates a male connector.
- * - modular_hose_connector_female() creates a female connector.
- * - modular_hose_connector() creates a male or female connector depending on
+ * - mh_connector_male() creates a male connector.
+ * - mh_connector_female() creates a female connector.
+ * - mh_connector() creates a male or female connector depending on
  *   the argument value ("male" or "female").
  *
  * Connectors are created at the origin facing upwards. A full part can be
@@ -99,23 +99,23 @@ module modular_hose(
  *
  * Example:
  *
- *      modular_hose(inner_diameter=100, thickness=0.8, size_tolerance=0) {
+ *      mh(inner_diameter=100, thickness=0.8, size_tolerance=0) {
  *          // Render male connector on top
- *          modular_hose_connector_male();
+ *          mh_connector_male();
  *
  *          // Render male connector on bottom, flipped along the Z axis
  *          mirror([0, 0, 1])
- *          modular_hose_connector_female();
+ *          mh_connector_female();
  *      }
  */
-module modular_hose_connector_male() { modular_hose_connector(CONNECTOR_MALE); }
-module modular_hose_connector_female() { modular_hose_connector(CONNECTOR_FEMALE); }
-module modular_hose_connector(connector_type=CONNECTOR_FEMALE) {
+module mh_connector_male() { mh_connector(CONNECTOR_MALE); }
+module mh_connector_female() { mh_connector(CONNECTOR_FEMALE); }
+module mh_connector(connector_type=CONNECTOR_FEMALE) {
     $mh_connector_type_is_female = (connector_type == CONNECTOR_FEMALE);
     _connector();
 }
 
-module modular_hose_configure_connector(
+module mh_configure_connector(
     extra_length=$mh_connector_extra_length,
     bend_angle=$mh_connector_bend_angle,
     bend_radius=$mh_connector_bend_radius,

@@ -62,24 +62,24 @@ module utility_nozzle() {
     }
 }
 
-module modular_hose_vacuum_attachment(
+module mh_vacuum_attachment(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
     connector_type=CONNECTOR_FEMALE,
     extra_length=0,
 ) {
-    modular_hose(inner_diameter, thickness, size_tolerance) {
+    mh(inner_diameter, thickness, size_tolerance) {
         mirror([0, 0, 1])
-        modular_hose_configure_connector(extra_length=extra_length)
-        modular_hose_connector(connector_type);
+        mh_configure_connector(extra_length=extra_length)
+        mh_connector(connector_type);
 
         color("thistle", 0.8)
         utility_nozzle();
     }
 }
 
-modular_hose_vacuum_attachment(
+mh_vacuum_attachment(
     Inner_Diameter,
     Thickness,
     Size_Tolerance,
