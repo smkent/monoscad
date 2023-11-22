@@ -11,11 +11,19 @@
 // Approximate diameter in millimeters
 Diameter = 75; // [20:1:300]
 
-// Rotate the symbols this many degrees
+// Approximate ring thickness in millimeters. The full thickness with chevrons is about 1mm greater than this value.
+Ring_Thickness = 3; // [0.1:0.1:20]
+
+// Rotate the symbols this many degrees. The top chevron overlaps ᐰ at 0 degrees.
 Rotate_Symbols = 4.5; // [0:0.5:360]
 
 // Symbols raised or inset
 Symbols_Style = "inset"; // [raised: Raised, inset: Inset]
+
+/* [Modifiers] */
+
+// Add a second Stargate face to the rear of the ring. This doubles the overall ring thickness.
+Double_Sided = false;
 
 module __end_customizer_options__() { }
 
@@ -26,14 +34,16 @@ $fs = $preview ? $fs / 4 : 0.4;
 
 outer_ring_radius = 106.64;
 symbols_count = 39;
+chevrons_count = 9;
 
-outer_ring_depth = 7;
-inner_ring_depth = 5;
+inner_ring_depth = Ring_Thickness + 2;
+outer_ring_depth = inner_ring_depth + 2;
 symbols_height = 1;
-symbols_depth = 2;
+symbols_depth = 0.6;
 
 fudge = 0.1;
-scale_factor = (25.4 * 8.5);
+diameter_scale_factor = (25.4 * 8.5);
+thickness_scale_factor = 1.233;
 
 // Functions
 
@@ -44,7 +54,7 @@ function ch_sub_x(y) = ( (y - 83.296) / 1.886 );
 // Modules
 
 module for_each_chevron() {
-    for (ang = [0:360/9:360-fudge])
+    for (ang = [0:360/chevrons_count:360-fudge])
     rotate(ang)
     children();
 }
@@ -190,7 +200,7 @@ module add_symbols(rotate_symbols, symbols_style="raised") {
     if (symbols_style == "inset") {
         difference() {
             children();
-            color("mintcream", 0.8)
+            color("#dee", 0.8)
             render(convexity=2)
             rotate(rotate_symbols)
             translate([0, 0, inner_ring_depth - symbols_depth])
@@ -198,6 +208,7 @@ module add_symbols(rotate_symbols, symbols_style="raised") {
             symbols();
         }
     } else {
+        color("mintcream", 0.8)
         rotate(rotate_symbols)
         translate([0, 0, inner_ring_depth])
         linear_extrude(height=symbols_height)
@@ -210,21 +221,37 @@ module add_symbols(rotate_symbols, symbols_style="raised") {
     symbol_dividers();
 }
 
-module stargate(diameter=0, rotate_symbols=0, symbols_style="raised")
-{
-    scale([1, 1, 1.27])
-    scale(diameter / scale_factor)
+module for_each_side(double_sided=false) {
+    if (double_sided) {
+        for (mz = [0:1:1])
+        mirror([0, 0, mz])
+        children();
+    } else {
+        children();
+    }
+}
+
+module stargate(
+    diameter=75,
+    ring_thickness=3,
+    rotate_symbols=4.5,
+    symbols_style="raised",
+    double_sided=false
+) {
+    for_each_side(double_sided)
+    scale([1, 1, thickness_scale_factor])
+    scale(diameter / diameter_scale_factor)
     add_symbols(rotate_symbols, symbols_style)
     union() {
-        color("darkgray", 0.8)
+        color("#abb", 0.8)
         ring();
         for_each_chevron()
         translate([0, 0.8, 0]) {
             color("coral", 0.8)
-            linear_extrude(height=9)
+            linear_extrude(height=outer_ring_depth + 2)
             chevron_highlight();
-            color("lightgray", 0.8)
-            linear_extrude(height=8)
+            color("#788", 0.8)
+            linear_extrude(height=outer_ring_depth + 1)
             chevron();
         }
     }
@@ -232,6 +259,8 @@ module stargate(diameter=0, rotate_symbols=0, symbols_style="raised")
 
 stargate(
     diameter=Diameter,
+    ring_thickness=Ring_Thickness,
     rotate_symbols=Rotate_Symbols,
-    symbols_style=Symbols_Style
+    symbols_style=Symbols_Style,
+    double_sided=Double_Sided
 );
