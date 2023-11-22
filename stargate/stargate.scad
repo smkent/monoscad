@@ -234,7 +234,7 @@ module for_each_side(double_sided=false) {
 module stargate(
     diameter=75,
     ring_thickness=3,
-    rotate_symbols=0,
+    rotate_symbols=4.5,
     symbols_style="raised",
     double_sided=false
 ) {
