@@ -20,6 +20,11 @@ Rotate_Symbols = 4.5; // [0:0.5:360]
 // Symbols raised or inset
 Symbols_Style = "inset"; // [raised: Raised, inset: Inset]
 
+/* [Modifiers] */
+
+// Add a second Stargate face to the rear of the ring. This doubles the overall ring thickness.
+Double_Sided = false;
+
 module __end_customizer_options__() { }
 
 // Constants //
@@ -216,12 +221,24 @@ module add_symbols(rotate_symbols, symbols_style="raised") {
     symbol_dividers();
 }
 
+module for_each_side(double_sided=false) {
+    if (double_sided) {
+        for (mz = [0:1:1])
+        mirror([0, 0, mz])
+        children();
+    } else {
+        children();
+    }
+}
+
 module stargate(
     diameter=75,
     ring_thickness=3,
     rotate_symbols=0,
-    symbols_style="raised"
+    symbols_style="raised",
+    double_sided=false
 ) {
+    for_each_side(double_sided)
     scale([1, 1, thickness_scale_factor])
     scale(diameter / diameter_scale_factor)
     add_symbols(rotate_symbols, symbols_style)
@@ -244,5 +261,6 @@ stargate(
     diameter=Diameter,
     ring_thickness=Ring_Thickness,
     rotate_symbols=Rotate_Symbols,
-    symbols_style=Symbols_Style
+    symbols_style=Symbols_Style,
+    double_sided=Double_Sided
 );
