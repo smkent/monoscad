@@ -11,7 +11,7 @@ Stargate(approximateRadius__inches=3);
 
 module Stargate(approximateRadius__inches=8.5)
 {
-    assign(scaleFactor = approximateRadius__inches/8.5)
+    scaleFactor = approximateRadius__inches / 8.5;
     scale([scaleFactor,scaleFactor,scaleFactor*25.4/2/10])
     {
         scale([1,1,1])
