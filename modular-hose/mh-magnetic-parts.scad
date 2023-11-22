@@ -7,7 +7,7 @@
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
  */
 
-include <modular-hose-library.scad>;
+include <mh-library.scad>;
 use <knurled-openscad/knurled.scad>;
 
 /* [Model Options] */
@@ -69,28 +69,28 @@ knurl_depth = 1.5;
 // Functions
 
 function round_plate_diameter() = (
-    $fhp_fan_size + $fhp_magnet_diameter * 2
-    + ($fhp_plate_knurled ? knurl_depth : 0)
+    $mhp_fan_size + $mhp_magnet_diameter * 2
+    + ($mhp_plate_knurled ? knurl_depth : 0)
 );
 
 // Modules
 
 module fan_screw_placement() {
     translate([
-        -($fhp_fan_size - 2 * $fhp_plate_screw_hole_inset) / 2,
-        -($fhp_fan_size - 2 * $fhp_plate_screw_hole_inset) / 2,
+        -($mhp_fan_size - 2 * $mhp_plate_screw_hole_inset) / 2,
+        -($mhp_fan_size - 2 * $mhp_plate_screw_hole_inset) / 2,
         ])
     for (mx = [0:1:1]) for (my = [0:1:1]) {
         translate([
-            mx * ($fhp_fan_size - 2 * $fhp_plate_screw_hole_inset),
-            my * ($fhp_fan_size - 2 * $fhp_plate_screw_hole_inset),
+            mx * ($mhp_fan_size - 2 * $mhp_plate_screw_hole_inset),
+            my * ($mhp_fan_size - 2 * $mhp_plate_screw_hole_inset),
         ])
         children();
     }
 }
 
 module circle_even_placement(count, stagger=false) {
-    mdiff = $fhp_fan_size - $fhp_grommet_diameter;
+    mdiff = $mhp_fan_size - $mhp_grommet_diameter;
     for (rot = [0:360/count:360]) {
         rotate([0, 0, rot + (stagger ? 360 / count / 2 : 0)])
         children();
@@ -98,11 +98,11 @@ module circle_even_placement(count, stagger=false) {
 }
 
 module fan_screw_placement_selection() {
-    if ($fhp_plate_type == "fan") {
+    if ($mhp_plate_type == "fan") {
         fan_screw_placement()
         children();
     } else {
-        x_offset = (round_plate_diameter() + $fhp_grommet_diameter) / 4;
+        x_offset = (round_plate_diameter() + $mhp_grommet_diameter) / 4;
         circle_even_placement(4, stagger=true)
         translate([x_offset, 0, 0])
         children();
@@ -112,75 +112,75 @@ module fan_screw_placement_selection() {
 module plate_body(solid=false) {
     difference() {
         difference() {
-            if ($fhp_plate_type == "fan") {
-                plate_size = $fhp_fan_size;
-                linear_extrude(height=$fhp_plate_thickness)
-                offset($fhp_plate_screw_hole_inset)
-                offset(-$fhp_plate_screw_hole_inset)
+            if ($mhp_plate_type == "fan") {
+                plate_size = $mhp_fan_size;
+                linear_extrude(height=$mhp_plate_thickness)
+                offset($mhp_plate_screw_hole_inset)
+                offset(-$mhp_plate_screw_hole_inset)
                 square([plate_size, plate_size], center=true);
             } else {
                 plate_size = round_plate_diameter();
-                if ($fhp_plate_knurled) {
+                if ($mhp_plate_knurled) {
                     knurled_cylinder(
-                        $fhp_plate_thickness,
+                        $mhp_plate_thickness,
                         plate_size,
                         knurl_width=7,
                         knurl_height=5,
                         knurl_depth=knurl_depth,
-                        bevel=$fhp_plate_thickness / 3,
+                        bevel=$mhp_plate_thickness / 3,
                         smooth=50
                     );
                 } else {
-                    linear_extrude(height=$fhp_plate_thickness)
+                    linear_extrude(height=$mhp_plate_thickness)
                     circle(d=plate_size);
                 }
             }
             translate([0, 0, -0.01])
-            linear_extrude(height=$fhp_plate_thickness + 0.02) {
+            linear_extrude(height=$mhp_plate_thickness + 0.02) {
                 if (!solid) {
-                    circle($fh_origin_inner_diameter / 2);
+                    circle($mh_origin_inner_diameter / 2);
                 }
-                if ($fhp_screw_holes) {
+                if ($mhp_screw_holes) {
                     fan_screw_placement_selection()
-                    circle(($fhp_screw_diameter * 1.2) / 2);
+                    circle(($mhp_screw_diameter * 1.2) / 2);
                 }
             }
         }
-        if ($fhp_screw_holes) {
+        if ($mhp_screw_holes) {
             fan_screw_placement_selection()
-            if ($fhp_screw_hole_top == "chamfer") {
-                translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter])
-                cylinder($fhp_screw_diameter + 0.001, $fhp_screw_diameter / 2, $fhp_screw_diameter);
-            } else if ($fhp_screw_hole_top == "inset") {
-                translate([0, 0, $fhp_plate_thickness - $fhp_screw_diameter])
+            if ($mhp_screw_hole_top == "chamfer") {
+                translate([0, 0, $mhp_plate_thickness - $mhp_screw_diameter])
+                cylinder($mhp_screw_diameter + 0.001, $mhp_screw_diameter / 2, $mhp_screw_diameter);
+            } else if ($mhp_screw_hole_top == "inset") {
+                translate([0, 0, $mhp_plate_thickness - $mhp_screw_diameter])
                 difference() {
-                    linear_extrude(height=$fhp_screw_diameter + 0.001)
-                    circle($fhp_screw_diameter);
+                    linear_extrude(height=$mhp_screw_diameter + 0.001)
+                    circle($mhp_screw_diameter);
                     linear_extrude(height=0.2)
                     for (mx = [0:1:1]) {
                         mirror([mx, 0])
-                        translate([$fhp_screw_diameter*1.1, 0])
-                        square([$fhp_screw_diameter, $fhp_screw_diameter*2], center=true);
+                        translate([$mhp_screw_diameter*1.1, 0])
+                        square([$mhp_screw_diameter, $mhp_screw_diameter*2], center=true);
                     }
                 }
             }
         }
-        if ($fhp_magnet_holes) {
-            x_offset = (round_plate_diameter() +  $fh_origin_inner_diameter) / 4;
+        if ($mhp_magnet_holes) {
+            x_offset = (round_plate_diameter() +  $mh_origin_inner_diameter) / 4;
             circle_even_placement(8, stagger=true)
-            translate([x_offset, 0, $fhp_plate_thickness - $fhp_magnet_thickness])
-            linear_extrude(height=$fhp_magnet_thickness + 0.001)
-            circle(($fhp_magnet_diameter * 1.05) / 2);
+            translate([x_offset, 0, $mhp_plate_thickness - $mhp_magnet_thickness])
+            linear_extrude(height=$mhp_magnet_thickness + 0.001)
+            circle(($mhp_magnet_diameter * 1.05) / 2);
         }
     }
 }
 
 module plate_connector_support(height) {
     rotate_extrude(angle=360)
-    translate([$fh_origin_inner_radius, 0])
+    translate([$mh_origin_inner_radius, 0])
     difference() {
         square([height / 2, height]);
-        translate([$fh_thickness, 0])
+        translate([$mh_thickness, 0])
         translate([height * 2, 0, 0])
         circle(height * 2);
     }
@@ -188,8 +188,8 @@ module plate_connector_support(height) {
 
 module plate_full(solid=false) {
     color("mintcream", 0.8) {
-        if ($fhp_model_type == "connector") {
-            connector_support_height = $fh_origin_inner_radius / 10;
+        if ($mhp_model_type == "connector") {
+            connector_support_height = $mh_origin_inner_radius / 10;
             plate_connector_support(connector_support_height);
             translate([0, 0, connector_support_height])
             plate_body();
@@ -201,21 +201,21 @@ module plate_full(solid=false) {
 
 module grommet_body() {
     color("lightskyblue", 0.8)
-    linear_extrude(height=$fhp_grommet_depth)
-    circle($fhp_grommet_diameter / 2 + $fhp_grommet_diameter_adjustment);
+    linear_extrude(height=$mhp_grommet_depth)
+    circle($mhp_grommet_diameter / 2 + $mhp_grommet_diameter_adjustment);
 }
 
 module grommet_interior() {
     color("lightskyblue", 0.8)
-    translate([0, 0, -$fhp_plate_thickness - 0.01])
+    translate([0, 0, -$mhp_plate_thickness - 0.01])
     cylinder(
-        $fhp_grommet_depth + $fhp_plate_thickness + 0.02,
-        $fh_origin_inner_radius,
-        $fhp_grommet_diameter / 2 - $fh_thickness + $fhp_grommet_diameter_adjustment
+        $mhp_grommet_depth + $mhp_plate_thickness + 0.02,
+        $mh_origin_inner_radius,
+        $mhp_grommet_diameter / 2 - $mh_thickness + $mhp_grommet_diameter_adjustment
     );
 }
 
-module modular_hose_magnetic_part(
+module mh_magnetic_part(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
@@ -236,28 +236,28 @@ module modular_hose_magnetic_part(
     grommet_diameter=115,
     grommet_diameter_adjustment=0
 ) {
-    $fhp_model_type = model_type;
-    $fhp_fan_size = fan_size;
-    $fhp_plate_type = plate_type;
-    $fhp_plate_screw_hole_inset = plate_screw_hole_inset;
-    $fhp_plate_thickness = plate_thickness;
-    $fhp_plate_knurled = plate_knurled;
-    $fhp_magnet_holes = magnet_holes;
-    $fhp_magnet_diameter = magnet_diameter;
-    $fhp_magnet_thickness = magnet_thickness;
-    $fhp_screw_holes = screw_holes;
-    $fhp_screw_diameter = screw_diameter;
-    $fhp_screw_hole_top = screw_hole_top;
-    $fhp_grommet_depth = grommet_depth;
-    $fhp_grommet_diameter = grommet_diameter;
-    $fhp_grommet_diameter_adjustment = grommet_diameter_adjustment ? thickness : 0;
-    modular_hose(inner_diameter, thickness, size_tolerance) {
+    $mhp_model_type = model_type;
+    $mhp_fan_size = fan_size;
+    $mhp_plate_type = plate_type;
+    $mhp_plate_screw_hole_inset = plate_screw_hole_inset;
+    $mhp_plate_thickness = plate_thickness;
+    $mhp_plate_knurled = plate_knurled;
+    $mhp_magnet_holes = magnet_holes;
+    $mhp_magnet_diameter = magnet_diameter;
+    $mhp_magnet_thickness = magnet_thickness;
+    $mhp_screw_holes = screw_holes;
+    $mhp_screw_diameter = screw_diameter;
+    $mhp_screw_hole_top = screw_hole_top;
+    $mhp_grommet_depth = grommet_depth;
+    $mhp_grommet_diameter = grommet_diameter;
+    $mhp_grommet_diameter_adjustment = grommet_diameter_adjustment ? thickness : 0;
+    mh(inner_diameter, thickness, size_tolerance) {
         difference() {
             union() {
                 mirror([0, 0, 1])
                 plate_full(solid=(model_type == "grommet"));
                 if (model_type == "connector") {
-                    modular_hose_connector(connector_type);
+                    mh_connector(connector_type);
                 } else if (model_type == "grommet") {
                     grommet_body();
                 }
@@ -269,7 +269,7 @@ module modular_hose_magnetic_part(
     }
 }
 
-modular_hose_magnetic_part(
+mh_magnetic_part(
     Inner_Diameter,
     Thickness,
     Size_Tolerance,

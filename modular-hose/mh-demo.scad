@@ -7,18 +7,18 @@
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
  */
 
-include <modular-hose-library.scad>;
-use <segment.scad>;
-use <magnetic-parts.scad>;
-use <vacuum-attachment.scad>;
+include <mh-library.scad>;
+use <mh-segment.scad>;
+use <mh-magnetic-parts.scad>;
+use <mh-vacuum-attachment.scad>;
 
-/* [Demo Selection] */
+/* [Demo selection] */
 
 Demo = "parts"; // [parts: Part assortment, measurement: Measurement example]
 
 Enable_Plate_Knurling = false;
 
-/* [Model Options] */
+/* [Model options] */
 
 Inner_Diameter = 100; // [20:1:100]
 
@@ -52,37 +52,37 @@ module stack_parts() {
     }
 }
 
-module modular_hose_demo_parts() {
+module mh_demo_parts() {
     id = Inner_Diameter;
     place_part(0, 0)
-    modular_hose_segment(id);
+    mh_segment(id);
 
     place_part(-1, 0)
     rotate(180)
-    modular_hose(id)
-    modular_hose_segment(id, bend_angle=30);
+    mh(id)
+    mh_segment(id, bend_angle=30);
 
     place_part(-0.5, 1)
-    modular_hose_vacuum_attachment(id, connector_type="female");
+    mh_vacuum_attachment(id, connector_type="female");
 
     place_part(1, 0)
     stack_parts() {
-        modular_hose_magnetic_part(id, model_type="grommet", plate_type="fan", grommet_diameter=101.6, magnet_holes=true, screw_holes=true, plate_knurled=Enable_Plate_Knurling);
-        modular_hose_magnetic_part(id, model_type="connector", connector_type="male", plate_type="fan", grommet_diameter=101.6, magnet_holes=true, screw_holes=false, plate_knurled=Enable_Plate_Knurling);
+        mh_magnetic_part(id, model_type="grommet", plate_type="fan", grommet_diameter=101.6, magnet_holes=true, screw_holes=true, plate_knurled=Enable_Plate_Knurling);
+        mh_magnetic_part(id, model_type="connector", connector_type="male", plate_type="fan", grommet_diameter=101.6, magnet_holes=true, screw_holes=false, plate_knurled=Enable_Plate_Knurling);
     }
 
     place_part(1, 1)
     stack_parts() {
-        modular_hose_magnetic_part(id, model_type="grommet", plate_type="round", grommet_diameter=101.6, magnet_holes=true, screw_holes=true, plate_knurled=Enable_Plate_Knurling);
-        modular_hose_magnetic_part(id, model_type="connector", connector_type="female", plate_type="round", grommet_diameter=101.6, magnet_holes=true, screw_holes=false, plate_knurled=Enable_Plate_Knurling);
+        mh_magnetic_part(id, model_type="grommet", plate_type="round", grommet_diameter=101.6, magnet_holes=true, screw_holes=true, plate_knurled=Enable_Plate_Knurling);
+        mh_magnetic_part(id, model_type="connector", connector_type="female", plate_type="round", grommet_diameter=101.6, magnet_holes=true, screw_holes=false, plate_knurled=Enable_Plate_Knurling);
     }
 }
 
-module modular_hose_demo_measurement() {
+module mh_demo_measurement() {
     id = Inner_Diameter;
     line_height = id / 10;
     text_size = line_height * 0.9;
-    modular_hose_segment(inner_diameter=Inner_Diameter, render_mode="half");
+    mh_segment(inner_diameter=Inner_Diameter, render_mode="half");
 
     color("yellow", 0.2)
     linear_extrude(height=0.1)
@@ -115,7 +115,7 @@ module modular_hose_demo_measurement() {
 if (Demo == "parts") {
     mirror([1, 0, 0])
     center_demo(1, 1)
-    modular_hose_demo_parts();
+    mh_demo_parts();
 } else if (Demo == "measurement") {
-    modular_hose_demo_measurement();
+    mh_demo_measurement();
 }

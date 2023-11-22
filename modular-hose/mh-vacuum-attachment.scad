@@ -7,26 +7,24 @@
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
  */
 
-include <modular-hose-library.scad>;
+include <mh-library.scad>;
 
-/* [Model Options] */
+/* [Modular Hose base options -- use consistent values to make compatible parts] */
 
-Connector_Type = "female"; // [male: Male, female: Female]
-
-// Inner diameter at the center (connector attachment point)
+// Inner diameter at the center in millimeters (connector attachment point)
 Inner_Diameter = 100;
 
-// Optional extra hose length to add between the attachment and connector
-Extra_Segment_Length = 0; // [0:1:200]
-
-/* [Advanced Size Adjustment] */
-// All units in millimeters
-
-// Wall thickness, a multiple of nozzle size is recommended
+// Wall thickness in millimeters, a multiple of nozzle size is recommended
 Thickness = 0.8; // [0.2:0.1:5]
 
-// Increase the female connector diameter this much to adjust fit
+// Increase the female connector diameter this many millimeters to adjust fit
 Size_Tolerance = 0.0; // [0:0.1:2]
+
+/* [Vacuum attachment options] */
+Connector_Type = "female"; // [male: Male, female: Female]
+
+// Optional extra hose length to add between the attachment and connector
+Extra_Length = 0; // [0:1:200]
 
 module __end_customizer_options__() { }
 
@@ -34,13 +32,13 @@ module __end_customizer_options__() { }
 
 module utility_nozzle() {
     module nozzle_shape(reduce=0) {
-        rr = $fh_origin_inner_diameter / 2;
+        rr = $mh_origin_inner_diameter / 2;
         r = rr - reduce;
         hull() {
             translate([0, 0, reduce ? -0.01 : 0])
             linear_extrude(height=0.01)
             difference() {
-                circle(r + $fh_thickness);
+                circle(r + $mh_thickness);
                 circle(r);
             }
 
@@ -59,43 +57,32 @@ module utility_nozzle() {
 
     difference() {
         nozzle_shape();
-        nozzle_shape(reduce=$fh_thickness);
-        cylinder($fh_thickness * 2, $fh_origin_inner_diameter / 2, $fh_origin_inner_diameter / 2);
+        nozzle_shape(reduce=$mh_thickness);
+        cylinder($mh_thickness * 2, $mh_origin_inner_diameter / 2, $mh_origin_inner_diameter / 2);
     }
 }
 
-module modular_hose_vacuum_attachment(
+module mh_vacuum_attachment(
     inner_diameter=default_inner_diameter,
     thickness=default_thickness,
     size_tolerance=default_size_tolerance,
     connector_type=CONNECTOR_FEMALE,
-    extra_segment_length=0,
+    extra_length=0,
 ) {
-    modular_hose(inner_diameter, thickness, size_tolerance) {
-        translate([0, 0, -extra_segment_length / 2])
+    mh(inner_diameter, thickness, size_tolerance) {
         mirror([0, 0, 1])
-        modular_hose_connector(connector_type);
+        mh_configure_connector(extra_length=extra_length)
+        mh_connector(connector_type);
 
         color("thistle", 0.8)
-        translate([0, 0, extra_segment_length / 2])
         utility_nozzle();
-
-        color("slategray", 0.8)
-        if (extra_segment_length) {
-            translate([0, 0, -extra_segment_length / 2])
-            linear_extrude(height=extra_segment_length)
-            difference() {
-                circle(inner_diameter / 2 + thickness);
-                circle(inner_diameter / 2);
-            }
-        }
     }
 }
 
-modular_hose_vacuum_attachment(
+mh_vacuum_attachment(
     Inner_Diameter,
     Thickness,
     Size_Tolerance,
     Connector_Type,
-    Extra_Segment_Length
+    Extra_Length
 );
