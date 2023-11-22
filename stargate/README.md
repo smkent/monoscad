@@ -1,4 +1,4 @@
-# Stargate (remix)
+# SG-1 Stargate with symbols (remix)
 
 [![CC-BY-4.0 license][license-badge]][license]
 
