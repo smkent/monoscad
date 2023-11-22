@@ -19,31 +19,45 @@ $fa = $preview ? $fa / 4 : 2;
 $fs = $preview ? $fs / 4 : 0.4;
 
 outer_ring_radius = 106.64;
+symbols_count = 39;
+
+outer_ring_depth = 7;
+inner_ring_depth = 5;
 
 fudge = 0.1;
+
+// Functions
+
+function hl_sub_x(y) = ( (y - 86.728) / 2.897 );
+
+function ch_sub_x(y) = ( (y - 83.296) / 1.886 );
+
+// Modules
+
+module for_each_chevron() {
+    for (ang = [0:360/9:360-fudge])
+    rotate(ang)
+    children();
+}
 
 module ring() {
     render()
     difference() {
         // Outer ring
-        linear_extrude(height=7)
+        linear_extrude(height=outer_ring_depth)
         difference() {
             circle(r=outer_ring_radius);
             circle(r=76.53);
         }
         // Subtract inner ring
-        translate([0, 0, 5])
-        linear_extrude(height=2 + fudge)
+        translate([0, 0, inner_ring_depth])
+        linear_extrude(height=(outer_ring_depth - inner_ring_depth) + fudge)
         difference() {
             circle(r=92.95);
             circle(r=80.84);
         }
     }
 }
-
-// y = 2.897x + 86.945
-// y = -2.89x + 86.728
-function hl_sub_x(y) = ( (y - 86.728) / 2.897 );
 
 module highlight() {
     // Chevron wedge
@@ -77,13 +91,7 @@ module highlight() {
     }
 }
 
-module highlights_new() {
-    highlight();
-}
-
-function ch_sub_x(y) = ( (y - 83.296) / 1.886 );
-
-module chevrons_new() {
+module chevron() {
     // Lower wedge
     difference() {
         union() {
@@ -150,20 +158,24 @@ module chevrons_new() {
     }
 }
 
-module multiply_chevrons() {
-    for (ang = [0:360/9:360-fudge])
-    rotate(ang)
-    children();
-}
-
-module symbols_svg() {
-    sc = 0.75;
-    linear_extrude(height=6)
-    scale(sc)
+module symbols() {
+    // Import symbols SVG
+    translate([0, 0, inner_ring_depth])
+    linear_extrude(height=1)
+    scale(0.75)
     import("stargate-symbols.svg", center=true);
+
+    // Symbol dividers
+    for (ang = [0:360/symbols_count:360-fudge])
+    rotate(ang + 360 / symbols_count * (0.5 + 0.05)) {
+        translate([0, 0, inner_ring_depth])
+        linear_extrude(height=1)
+        translate([0, 80.84])
+        square([0.8, (92.95 - 80.84)]);
+    }
 }
 
-module Stargate(diameter=8.5)
+module stargate(diameter=8.5)
 {
     scaleFactor = diameter / 8.5;
     scale([scaleFactor,scaleFactor,scaleFactor*25.4/2/10])
@@ -172,17 +184,17 @@ module Stargate(diameter=8.5)
         ring();
 
         color("mintcream", 0.8)
-        symbols_svg();
+        symbols();
 
-        multiply_chevrons() {
+        for_each_chevron() {
             color("coral", 0.8)
             linear_extrude(height=9)
-            highlights_new();
+            highlight();
             color("lightgray", 0.8)
             linear_extrude(height=8)
-            chevrons_new();
+            chevron();
         }
     }
 }
 
-Stargate(diameter=Diameter);
+stargate(diameter=Diameter);
