@@ -7,8 +7,6 @@
  * Licensed under Creative Commons (4.0 International License) Attribution
  */
 
-use <Symbols.scad>
-
 /* [Size] */
 // Approximate diameter in inches
 Diameter = 3; // [1:0.1:20]
@@ -158,6 +156,13 @@ module multiply_chevrons() {
     children();
 }
 
+module symbols_svg() {
+    sc = 0.75;
+    linear_extrude(height=6)
+    scale(sc)
+    import("stargate-symbols.svg", center=true);
+}
+
 module Stargate(diameter=8.5)
 {
     scaleFactor = diameter / 8.5;
@@ -167,8 +172,7 @@ module Stargate(diameter=8.5)
         ring();
 
         color("mintcream", 0.8)
-        scale([1,1,1.2])
-        symbols();
+        symbols_svg();
 
         multiply_chevrons() {
             color("coral", 0.8)
