@@ -1,12 +1,29 @@
+/*
+ * SG-1 Stargate with symbols
+ * by wtgibson on Thingiverse: https://www.thingiverse.com/thing:87691
+ *
+ * Modified by smkent (GitHub) / bulbasaur0 (Printables)
+ *
+ * Licensed under Creative Commons (4.0 International License) Attribution
+ */
+
 use <Chevrons.scad>
 use <Highlights.scad>
 use <OuterRing.scad>
 use <Symbols.scad>
 use <InnerRing.scad>
 
+/* [Size] */
+// Approximate diameter in inches
+Diameter = 3; // [1:0.1:20]
 
+module __end_customizer_options__() { }
 
-Stargate(approximateRadius__inches=3);
+// Constants //
+
+$fa = $preview ? $fa : 2;
+$fs = $preview ? $fs : 0.4;
+
 
 module Stargate(approximateRadius__inches=8.5)
 {
@@ -34,3 +51,5 @@ module Stargate(approximateRadius__inches=8.5)
         chevrons();
     }
 }
+
+Stargate(approximateRadius__inches=Diameter);
