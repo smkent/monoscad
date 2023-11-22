@@ -1,0 +1,16 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "stargate.scad"
+
+b.STL("stargate.stl", model, {"Symbols_Style": "inset", "Diameter": 100})
+b.Image(
+    "demo.png",
+    model,
+    {"Symbols_Style": "inset", "Diameter": 100},
+    camera="0,0,0,33,0,0,250",
+)
+
+b.add_default_targets()
+
+# vim: ft=python
