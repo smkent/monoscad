@@ -1,7 +1,7 @@
 Import("env")
 b = ModelBuilder(env)
 
-model = "Stargate.scad"
+model = "stargate.scad"
 
 b.STL("stargate.stl", model, {"Symbols_Style": "inset", "Diameter": 100})
 b.Image(
