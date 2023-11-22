@@ -1,17 +1,17 @@
 Import("env")
 b = ModelBuilder(env)
 
-parts_model = "magnetic-parts.scad"
+parts_model = "mh-magnetic-parts.scad"
 interior_diameter = 100
 
 b.STL(
     f"segment-{interior_diameter}mm.stl",
-    "segment.scad",
+    "mh-segment.scad",
     {"Inner_Diameter": interior_diameter},
 )
 b.STL(
     f"vacuum-attachment-{interior_diameter}mm.stl",
-    "vacuum-attachment.scad",
+    "mh-vacuum-attachment.scad",
     {"Inner_Diameter": interior_diameter, "Connector_Type": "female"},
 )
 
@@ -69,7 +69,7 @@ for model_type in {"connector", "grommet", "plate"}:
 
 b.Image(
     "demo.png",
-    "demo.scad",
+    "mh-demo.scad",
     {
         "Inner_Diameter": interior_diameter,
         "Demo": "parts",
@@ -80,7 +80,7 @@ b.Image(
 
 b.Image(
     "demo-measurement.png",
-    "demo.scad",
+    "mh-demo.scad",
     {
         "Inner_Diameter": interior_diameter,
         "Demo": "measurement",
@@ -90,11 +90,13 @@ b.Image(
 )
 
 b.Image(
-    "part-segment.png", "segment.scad", {"Inner_Diameter": interior_diameter}
+    "part-segment.png",
+    "mh-segment.scad",
+    {"Inner_Diameter": interior_diameter},
 )
 b.Image(
     "part-segment-advanced.png",
-    "segment-advanced.scad",
+    "mh-segment-advanced.scad",
     {
         "Inner_Diameter": interior_diameter,
         "Top_Bend_Angle": 30,
@@ -107,7 +109,7 @@ b.Image(
 )
 b.Image(
     "part-segment-options.gif",
-    "segment.scad",
+    "mh-segment.scad",
     [
         {
             "Inner_Diameter": interior_diameter,
@@ -132,14 +134,14 @@ b.Image(
 )
 b.Image(
     "part-vacuum-attachment.png",
-    "vacuum-attachment.scad",
+    "mh-vacuum-attachment.scad",
     {"Inner_Diameter": interior_diameter},
 )
 for model_type in {"connector", "grommet"}:
     for plate_type in {"round", "fan"}:
         b.Image(
             f"part-magnetic-{model_type}-{plate_type}.png",
-            "magnetic-parts.scad",
+            parts_model,
             {
                 "Inner_Diameter": interior_diameter,
                 "Model_Type": model_type,

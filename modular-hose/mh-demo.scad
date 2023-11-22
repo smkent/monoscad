@@ -8,9 +8,9 @@
  */
 
 include <mh-library.scad>;
-use <segment.scad>;
-use <magnetic-parts.scad>;
-use <vacuum-attachment.scad>;
+use <mh-segment.scad>;
+use <mh-magnetic-parts.scad>;
+use <mh-vacuum-attachment.scad>;
 
 /* [Demo selection] */
 

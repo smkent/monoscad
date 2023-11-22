@@ -51,7 +51,7 @@ math. See [the top-level README.md](/README.md) for libraries installation.
 ### Model files and rendering
 
 Ensure all of the model's `*.scad` files are placed in the same directory. Open
-a part model file (such as `segment.scad`) in OpenSCAD. Select your desired
+a part model file (such as `mh-segment.scad`) in OpenSCAD. Select your desired
 sizing and options in the OpenSCAD Customizer before rendering each part.
 
 ![OpenSCAD customizer screenshot](images/readme/customizer-screenshot-segment.png)
@@ -69,13 +69,13 @@ female connector end raised lip, if the hose diameter is large enough).
 
 | Render | Part Info |
 | ------ | --------- |
-| ![Segment part render](images/readme/part-segment.png) | **Flexible segment** (`segment.scad`): Print as many of these as you need for your desired hose length |
-| ![Segment with advanced options part render](images/readme/part-segment-advanced.png) | **Flexible segment (advanced options)** (`segment-advanced.scad`): Segment with more advanced bend/length options than `segment.scad` |
-| ![Magnetic round connector](images/readme/part-magnetic-connector-round.png) | **Round connector** (`magnetic-parts.scad`): A round base connector with base holes for magnets/screws (configurable size). Use with another connector or a grommet. |
-| ![Magnetic round grommet](images/readme/part-magnetic-grommet-round.png) | **Round grommet** (`magnetic-parts.scad`): A round base grommet with base holes for magnets/screws (configurable size). Use with a connector. |
-| ![Magnetic 120mm fan connector](images/readme/part-magnetic-connector-fan.png) | **120mm fan connector** (`magnetic-parts.scad`): A 120mm fan base connector with base holes for magnets/screws (configurable size). Use with another connector or a grommet. |
-| ![Magnetic 120mm fan grommet](images/readme/part-magnetic-grommet-fan.png) | **120mm fan grommet** (`magnetic-parts.scad`): A 120mm fan base grommet with base holes for magnets/screws (configurable size). Use with a connector. |
-| ![Vacuum attachment render](images/readme/part-vacuum-attachment.png) | **Vacuum attachment** (`vacuum-attachment.scad`): A sample vacuum attachment that can connect to the end of a hose |
+| ![Segment part render](images/readme/part-segment.png) | **Flexible segment** (`mh-segment.scad`): Print as many of these as you need for your desired hose length |
+| ![Segment with advanced options part render](images/readme/part-segment-advanced.png) | **Flexible segment (advanced options)** (`mh-segment-advanced.scad`): Segment with more advanced bend/length options than `mh-segment.scad` |
+| ![Magnetic round connector](images/readme/part-magnetic-connector-round.png) | **Round connector** (`mh-magnetic-parts.scad`): A round base connector with base holes for magnets/screws (configurable size). Use with another connector or a grommet. |
+| ![Magnetic round grommet](images/readme/part-magnetic-grommet-round.png) | **Round grommet** (`mh-magnetic-parts.scad`): A round base grommet with base holes for magnets/screws (configurable size). Use with a connector. |
+| ![Magnetic 120mm fan connector](images/readme/part-magnetic-connector-fan.png) | **120mm fan connector** (`mh-magnetic-parts.scad`): A 120mm fan base connector with base holes for magnets/screws (configurable size). Use with another connector or a grommet. |
+| ![Magnetic 120mm fan grommet](images/readme/part-magnetic-grommet-fan.png) | **120mm fan grommet** (`mh-magnetic-parts.scad`): A 120mm fan base grommet with base holes for magnets/screws (configurable size). Use with a connector. |
+| ![Vacuum attachment render](images/readme/part-vacuum-attachment.png) | **Vacuum attachment** (`mh-vacuum-attachment.scad`): A sample vacuum attachment that can connect to the end of a hose |
 
 ## Design your own custom parts and attachments!
 
