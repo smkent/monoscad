@@ -53,7 +53,7 @@ module mh_segment(
         mh_configure_connector(
             extra_length=extra_length / 2,
             bend_angle=bend_angle,
-            bend_radius=bend_radius,
+            bend_radius=bend_radius
         )
         mh_connector_male();
         mh_configure_connector(
