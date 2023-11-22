@@ -9,6 +9,12 @@
 
 include <stargate-library.scad>;
 
+/* [Rendering Options] */
+Print_Orientation = true;
+
+// Enable integrated print supports base
+Print_Supports = true;
+
 /* [Handle Options] */
 
 // Hole spacing, will be used to determine diameter
@@ -32,11 +38,29 @@ diameter = (
     Hole_Spacing
     + (
         (
-         outer_ring_outer_outer_radius - outer_ring_outer_inner_radius
+            outer_ring_outer_outer_radius - outer_ring_outer_inner_radius
         )
         * (Hole_Spacing / diameter_scale_factor)
     )
 );
+
+support_top_thickness = (
+    rescale(outer_ring_depth * 2 * thickness_scale_factor) * 0.8
+);
+support_body_thickness = 0.4 * 3;
+support_offset = 0.2;
+support_arc_radius = rescale(outer_ring_inner_inner_radius);
+support_arc_thickness = 0.4;
+support_arc_angle = 50;
+support_body_radius = support_arc_radius - support_arc_thickness;
+support_arc_width = support_body_radius * cos(90 - support_arc_angle) * 2;
+support_arc_base_height = support_body_radius * sin(90 - support_arc_angle);
+
+// Functions //
+
+function rescale(value) = (value * (diameter / diameter_scale_factor));
+
+// Modules //
 
 module stargate_half() {
     intersection() {
@@ -65,7 +89,127 @@ module handle_holes() {
     }
 }
 
+module print_support_arc() {
+    linear_extrude(height=support_top_thickness, center=true)
+    intersection() {
+        difference() {
+            translate([-support_arc_radius, 0])
+            square(support_arc_radius*2);
+            for (mx = [0:1:1])
+            mirror([mx, 0])
+            rotate(support_arc_angle)
+            mirror([1, 0])
+            square(support_arc_radius*2);
+        }
+        union() {
+            for (ang = [-180:support_offset * 6:180])
+            rotate(ang)
+            translate([0, support_arc_radius - support_offset * 1.5])
+            circle(r=support_offset, $fn=12);
+            difference() {
+                circle(r=support_arc_radius - support_offset * 1.5);
+                circle(r=support_arc_radius - support_arc_thickness);
+            }
+        }
+    }
+}
+
+module print_support_body() {
+    difference() {
+        linear_extrude(height=support_top_thickness, center=true)
+        intersection() {
+            translate([-support_arc_width / 2, support_arc_base_height])
+            square([support_arc_width, support_arc_base_height]);
+            circle(r = support_body_radius);
+        }
+        for (mz = [0:1:1])
+        mirror([0, 0, mz])
+        translate([0, 0, support_body_thickness / 2])
+        cylinder(
+            h=(support_top_thickness - support_body_thickness) / 2 + fudge,
+            r1=support_body_radius - support_arc_thickness * 3,
+            r2=support_body_radius
+        );
+    }
+
+    rotate([-90, 0, 0])
+    linear_extrude(height=support_arc_base_height)
+    offset(delta=fudge)
+    offset(delta=-fudge)
+    difference() {
+        xx = (
+            (support_body_radius - support_arc_thickness * 3)
+            * cos(90 - support_arc_angle + 2)
+        );
+        yy = (support_top_thickness - support_body_thickness);
+        square([support_arc_width, support_top_thickness], center=true);
+        for (my = [0:1:1])
+        mirror([0, my])
+        translate([0, support_body_thickness / 2])
+        polygon([
+            [xx, 0],
+            [-xx, 0],
+            [-support_arc_width / 2, yy / 2],
+            [support_arc_width / 2, yy / 2]
+        ]);
+    }
+}
+
+module print_support_foot() {
+    rotate([-90, 0, 0])
+    linear_extrude(height=support_arc_thickness)
+    offset(r=-2)
+    offset(r=6)
+    square([2 * support_arc_width / 3, support_body_thickness], center=true);
+}
+
+module print_supports() {
+    print_support_foot();
+    difference() {
+        union() {
+            print_support_body();
+            print_support_arc();
+        }
+        linear_extrude(height=support_top_thickness, center=true) {
+            polygon([
+                [
+                    -support_arc_width / 32,
+                    support_body_radius - support_arc_thickness * 4
+                ],
+                [
+                    support_arc_width / 32,
+                    support_body_radius - support_arc_thickness * 4
+                ],
+                [support_arc_width / 5, 0],
+                [-support_arc_width / 5, 0]
+            ]);
+            for (mx = [0:1:1])
+            mirror([mx, 0]) {
+                polygon([
+                    [support_arc_width / 3, 0],
+                    [support_arc_width / 2, support_arc_base_height],
+                    [support_arc_width / 2 + support_arc_thickness, 0]
+                ]);
+                translate([support_arc_width * 0.28, support_body_radius / 5])
+                scale([1, 2.0])
+                rotate(45)
+                square(support_arc_width / 8);
+            }
+        }
+    }
+}
+
+module add_print_supports() {
+    children();
+    color("plum", 0.6)
+    if (Print_Supports) {
+        print_supports();
+    }
+}
+
 module stargate_handle() {
+    rotate(Print_Orientation ? [90, 0, 0] : 0)
+    add_print_supports()
     handle_holes()
     stargate_half();
 }
