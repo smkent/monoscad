@@ -115,28 +115,7 @@ module chevron_highlight() {
     }
 }
 
-module chevron() {
-    // Lower wedge
-    difference() {
-        union() {
-            points = [
-                for (y = [87.374, 102.37])
-                for (xfac = [-1, 1])
-                [xfac * (ch_sub_x(y)), y]
-            ];
-            polygon(points=[for (i = [0, 1, 3, 2]) points[i]]);
-        }
-        union() {
-            points = [
-                for (y = [92.01, 102.37])
-                for (xfac = [-1, 1])
-                [xfac * (hl_sub_x(y) + 0.2), y]
-            ];
-            polygon(points=[for (i = [0, 1, 3, 2]) points[i]]);
-        }
-    }
-
-    // Upper wedge
+module chevron_upper_wedge() {
     chevron_light_wedge_cut()
     difference() {
         union() {
@@ -164,6 +143,31 @@ module chevron() {
             )
         );
     }
+}
+
+module chevron() {
+    // Lower wedge
+    difference() {
+        union() {
+            points = [
+                for (y = [87.374, 102.37])
+                for (xfac = [-1, 1])
+                [xfac * (ch_sub_x(y)), y]
+            ];
+            polygon(points=[for (i = [0, 1, 3, 2]) points[i]]);
+        }
+        union() {
+            points = [
+                for (y = [92.01, 102.37])
+                for (xfac = [-1, 1])
+                [xfac * (hl_sub_x(y) + 0.2), y]
+            ];
+            polygon(points=[for (i = [0, 1, 3, 2]) points[i]]);
+        }
+    }
+
+    // Upper wedge
+    chevron_upper_wedge();
 
     // Wings
     for (mx = [0:1:1])
@@ -225,7 +229,8 @@ module stargate(
     diameter=75,
     rotate_symbols=4.5,
     symbols_style="raised",
-    double_sided=false
+    double_sided=false,
+    hanging_loop=false
 ) {
     for (mz = [0:1:(double_sided ? 1 : 0)])
     mirror([0, 0, mz])
@@ -242,6 +247,13 @@ module stargate(
             color("#788", 0.8)
             linear_extrude(height=outer_ring_depth + 1)
             chevron();
+        }
+        if (hanging_loop) {
+            color("#788", 0.8)
+            linear_extrude(height=outer_ring_depth + 1)
+            translate([0, (107.89 + 0.2) * 2])
+            mirror([0, 1])
+            chevron_upper_wedge();
         }
     }
 }
