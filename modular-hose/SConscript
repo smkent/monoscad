@@ -9,11 +9,13 @@ demo_model = "mh-demo.scad"
 
 
 def model_renders_for_diameter(inner_diameter) -> None:
+    zip_dir = f"{inner_diameter}mm"
     for opts in GenerateOptions(bend_angle=[0, (15, "-15°"), (30, "-30°")]):
         b.STL(
             f"{inner_diameter}mm-segment{opts.bend_angle_fn}.stl",
             segment_model,
             {"Inner_Diameter": inner_diameter, "Bend_Angle": opts.bend_angle},
+            zip_dir=zip_dir,
         )
 
     # 120mm fan parts (only for a hose diameter of 100)
@@ -45,6 +47,7 @@ def model_renders_for_diameter(inner_diameter) -> None:
                         else "none"
                     ),
                 },
+                zip_dir=zip_dir,
             )
 
     # Magnetic plate connector parts
@@ -74,12 +77,14 @@ def model_renders_for_diameter(inner_diameter) -> None:
                 "Screw_Holes": 0 if opts.model_type == "connector" else 1,
                 "Screw_Hole_Top": "chamfer",
             },
+            zip_dir=zip_dir,
         )
 
     b.STL(
         f"{inner_diameter}mm-vacuum-attachment.stl",
         vacuum_attachment_model,
         {"Inner_Diameter": inner_diameter, "Connector_Type": "female"},
+        zip_dir=zip_dir,
     )
 
 
@@ -95,6 +100,7 @@ b.Image(
         "Enable_Plate_Knurling": 1,
     },
     view_options="axes,scales",
+    camera="50,10,-30,55,0,25,1000",
 )
 
 b.Image(
@@ -174,10 +180,19 @@ for opts in GenerateOptions(
 
 b.Image(
     "customization-example-render.png",
-    "customization-example.scad",
+    "readme-customization-example.scad",
     camera="0,0,0,40,0,28,350",
     view_options="axes,scales",
 )
+
+b.InsetImage(
+    "photo-demo-inset.gif",
+    "photo-3dprinter-hose.jpg",
+    "part-segment-options.gif",
+    resize="33%",
+    gravity="southeast",
+)
+
 
 b.add_default_targets()
 
