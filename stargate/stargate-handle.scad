@@ -48,7 +48,7 @@ layer_height = 0.2;
 support_top_thickness = (
     rescale(outer_ring_depth * 2 * thickness_scale_factor) * 0.8
 );
-support_body_thickness = 0.4 * 4;
+support_body_thickness = 0.4 * 8;
 support_offset = layer_height;
 support_arc_radius = rescale(outer_ring_inner_inner_radius);
 support_arc_thickness = layer_height * 2;
@@ -199,14 +199,7 @@ module print_supports() {
         }
         linear_extrude(height=support_top_thickness, center=true) {
             polygon([
-                [
-                    -support_arc_width / 32,
-                    support_body_radius - support_arc_thickness * 4
-                ],
-                [
-                    support_arc_width / 32,
-                    support_body_radius - support_arc_thickness * 4
-                ],
+                [0, (support_body_radius - support_arc_thickness * 4) * 0.8],
                 [support_arc_width / 5, support_arc_thickness * 6],
                 [-support_arc_width / 5, support_arc_thickness * 6]
             ]);
