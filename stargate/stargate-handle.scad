@@ -116,27 +116,7 @@ module print_support_arc() {
     }
 }
 
-module print_support_body() {
-    difference() {
-        linear_extrude(height=support_top_thickness, center=true)
-        intersection() {
-            translate([-support_arc_width / 2, support_arc_base_height])
-            square([support_arc_width, support_arc_base_height]);
-            circle(r = support_body_radius);
-        }
-        for (mz = [0:1:1])
-        mirror([0, 0, mz])
-        translate([0, 0, support_body_thickness / 2])
-        cylinder(
-            h=(support_top_thickness - support_body_thickness) / 2 + fudge,
-            r1=support_body_radius - support_arc_thickness * 3,
-            r2=support_body_radius
-        );
-    }
-
-    rotate([-90, 0, 0])
-    for (div_fac = [1:2])
-    linear_extrude(height=support_arc_base_height / div_fac ^ 2)
+module print_support_body_shape(div_fac=1) {
     offset(delta=fudge)
     offset(delta=-fudge)
     difference() {
@@ -156,6 +136,43 @@ module print_support_body() {
             [-support_arc_width / 2, yy / 2],
             [support_arc_width / 2, yy / 2]
         ]);
+    }
+}
+
+module print_support_body() {
+    difference() {
+        linear_extrude(height=support_top_thickness, center=true)
+        intersection() {
+            translate([-support_arc_width / 2, support_arc_base_height])
+            square([support_arc_width, support_arc_base_height]);
+            circle(r = support_body_radius);
+        }
+        for (mz = [0:1:1])
+        mirror([0, 0, mz])
+        translate([0, 0, support_body_thickness / 2])
+        cylinder(
+            h=(support_top_thickness - support_body_thickness) / 2 + fudge,
+            r1=support_body_radius - support_arc_thickness * 3,
+            r2=support_body_radius
+        );
+    }
+
+    rotate([-90, 0, 0]) {
+        linear_extrude(height=support_arc_base_height)
+        print_support_body_shape(1);
+        intersection() {
+            linear_extrude(height=support_arc_base_height / 4)
+            print_support_body_shape(2);
+
+            rotate([90, 0, 90])
+            linear_extrude(height=support_arc_width, center=true)
+            polygon([
+                [-support_top_thickness / 2, 0],
+                [-support_body_thickness / 2, support_arc_base_height / 4],
+                [support_body_thickness / 2, support_arc_base_height / 4],
+                [support_top_thickness / 2, 0]
+            ]);
+        }
     }
 }
 
