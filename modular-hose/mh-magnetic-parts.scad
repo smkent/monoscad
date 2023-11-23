@@ -10,27 +10,36 @@
 include <mh-library.scad>;
 use <knurled-openscad/knurled.scad>;
 
+/* [Modular Hose base options -- use consistent values to make compatible parts] */
+
+// Inner diameter at the center in millimeters (connector attachment point)
+Inner_Diameter = 100;
+
+// Wall thickness in millimeters, a multiple of nozzle size is recommended
+Thickness = 0.8; // [0.2:0.1:5]
+
+// Increase the female connector diameter this many millimeters to adjust fit
+Size_Tolerance = 0.0; // [0:0.1:2]
+
 /* [Model Options] */
 Model_Type = "connector"; // [plate_only: Plate only, connector: Connector, grommet: Grommet]
 Connector_Type = "male"; // [male: Male, female: Female]
 Plate_Type = "round"; // [round: Round, fan: Fan]
 
-/* [Size Adjustment] */
-// Inner diameter at the center (connector attachment point)
-Inner_Diameter = 100; // [10:0.1:200]
-
-/* [Plate] */
-// Fan size (e.g. 120mm)
-Fan_Size = 120; // [40:1:200]
-
-// Fan screw hole corner inset (e.g. 120mm fans have a 7.5mm inset)
-Plate_Screw_Hole_Inset = 7.5; // [1:0.1:20]
+/* [Plate options] */
+// Plate diameter or fan size (e.g. 120mm fan)
+Plate_Size = 120; // [40:1:200]
 
 // Total plate thickness. Must be greater than Magnet Thickness if magnets are enabled.
 Plate_Thickness = 6.0; // [0.8:0.2:10]
 
+/* [Fan Plate Type options] */
+// Fan screw hole corner inset (e.g. 120mm fans have a 7.5mm inset)
+Fan_Plate_Screw_Hole_Inset = 7.5; // [1:0.1:20]
+
+/* [Round Plate Type options] */
 // Enable plate edge knurling
-Plate_Knurled = true;
+Round_Plate_Knurled = true;
 
 /* [Grommet] */
 // Depth of grommet ring
@@ -52,14 +61,6 @@ Screw_Holes = true;
 Screw_Diameter = 4; // [3:0.1:8]
 Screw_Hole_Top = "inset"; // [none: None, chamfer: Chamfer, inset: Inset]
 
-/* [Advanced Size Adjustment] */
-
-// Wall thickness, a multiple of nozzle size is recommended
-Thickness = 0.8; // [0.2:0.1:5]
-
-// Increase the female connector diameter this much to adjust fit
-Size_Tolerance = 0.0; // [0:0.1:2]
-
 module __end_customizer_options__() { }
 
 // Constants
@@ -69,28 +70,28 @@ knurl_depth = 1.5;
 // Functions
 
 function round_plate_diameter() = (
-    $mhp_fan_size + $mhp_magnet_diameter * 2
-    + ($mhp_plate_knurled ? knurl_depth : 0)
+    $mhp_plate_size + $mhp_magnet_diameter * 2
+    + ($mhp_round_plate_knurled ? knurl_depth : 0)
 );
 
 // Modules
 
 module fan_screw_placement() {
     translate([
-        -($mhp_fan_size - 2 * $mhp_plate_screw_hole_inset) / 2,
-        -($mhp_fan_size - 2 * $mhp_plate_screw_hole_inset) / 2,
+        -($mhp_plate_size - 2 * $mhp_fan_plate_screw_hole_inset) / 2,
+        -($mhp_plate_size - 2 * $mhp_fan_plate_screw_hole_inset) / 2,
         ])
     for (mx = [0:1:1]) for (my = [0:1:1]) {
         translate([
-            mx * ($mhp_fan_size - 2 * $mhp_plate_screw_hole_inset),
-            my * ($mhp_fan_size - 2 * $mhp_plate_screw_hole_inset),
+            mx * ($mhp_plate_size - 2 * $mhp_fan_plate_screw_hole_inset),
+            my * ($mhp_plate_size - 2 * $mhp_fan_plate_screw_hole_inset),
         ])
         children();
     }
 }
 
 module circle_even_placement(count, stagger=false) {
-    mdiff = $mhp_fan_size - $mhp_grommet_diameter;
+    mdiff = $mhp_plate_size - $mhp_grommet_diameter;
     for (rot = [0:360/count:360]) {
         rotate([0, 0, rot + (stagger ? 360 / count / 2 : 0)])
         children();
@@ -113,14 +114,14 @@ module plate_body(solid=false) {
     difference() {
         difference() {
             if ($mhp_plate_type == "fan") {
-                plate_size = $mhp_fan_size;
+                plate_size = $mhp_plate_size;
                 linear_extrude(height=$mhp_plate_thickness)
-                offset($mhp_plate_screw_hole_inset)
-                offset(-$mhp_plate_screw_hole_inset)
+                offset($mhp_fan_plate_screw_hole_inset)
+                offset(-$mhp_fan_plate_screw_hole_inset)
                 square([plate_size, plate_size], center=true);
             } else {
                 plate_size = round_plate_diameter();
-                if ($mhp_plate_knurled) {
+                if ($mhp_round_plate_knurled) {
                     knurled_cylinder(
                         $mhp_plate_thickness,
                         plate_size,
@@ -221,11 +222,11 @@ module mh_magnetic_part(
     size_tolerance=default_size_tolerance,
     model_type="connector",
     connector_type=CONNECTOR_MALE,
-    fan_size=120,
+    plate_size=120,
     plate_type="round",
-    plate_screw_hole_inset=7.5,
     plate_thickness=4.0,
-    plate_knurled=true,
+    fan_plate_screw_hole_inset=7.5,
+    round_plate_knurled=true,
     magnet_holes=true,
     magnet_diameter=8,
     magnet_thickness=3,
@@ -237,11 +238,11 @@ module mh_magnetic_part(
     grommet_diameter_adjustment=0
 ) {
     $mhp_model_type = model_type;
-    $mhp_fan_size = fan_size;
+    $mhp_plate_size = plate_size;
     $mhp_plate_type = plate_type;
-    $mhp_plate_screw_hole_inset = plate_screw_hole_inset;
     $mhp_plate_thickness = plate_thickness;
-    $mhp_plate_knurled = plate_knurled;
+    $mhp_fan_plate_screw_hole_inset = fan_plate_screw_hole_inset;
+    $mhp_round_plate_knurled = round_plate_knurled;
     $mhp_magnet_holes = magnet_holes;
     $mhp_magnet_diameter = magnet_diameter;
     $mhp_magnet_thickness = magnet_thickness;
@@ -275,11 +276,11 @@ mh_magnetic_part(
     Size_Tolerance,
     Model_Type,
     Connector_Type,
-    Fan_Size,
+    Plate_Size,
     Plate_Type,
-    Plate_Screw_Hole_Inset,
     Plate_Thickness,
-    Plate_Knurled,
+    Fan_Plate_Screw_Hole_Inset,
+    Round_Plate_Knurled,
     Magnet_Holes,
     Magnet_Diameter,
     Magnet_Thickness,
