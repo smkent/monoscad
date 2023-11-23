@@ -6,21 +6,24 @@ model = "stargate.scad"
 for diameter in [100, 150, 200]:
     for symbols_style in ["inset", "raised"]:
         fn_symbols_style = f"-{symbols_style}-symbols"
-        for double_sided in [0, 1]:
-            fn_double_sided = "-double-sided" if double_sided else ""
-            b.STL(
-                (
-                    f"stargate-{diameter}mm"
-                    f"{fn_symbols_style}{fn_double_sided}.stl"
-                ),
-                model,
-                {
-                    "Symbols_Style": symbols_style,
-                    "Diameter": diameter,
-                    "Double_Sided": double_sided,
-                },
-                zip_dir=f"{diameter}mm",
-            )
+        for hanging_loop in [0, 1]:
+            fn_hanging_loop = "-ornament" if hanging_loop else ""
+            for double_sided in [0, 1]:
+                fn_double_sided = "-double-sided" if double_sided else ""
+                b.STL(
+                    (
+                        f"stargate-{diameter}mm{fn_symbols_style}"
+                        f"{fn_double_sided}{fn_hanging_loop}.stl"
+                    ),
+                    model,
+                    {
+                        "Symbols_Style": symbols_style,
+                        "Diameter": diameter,
+                        "Double_Sided": double_sided,
+                        "Hanging_Loop": hanging_loop,
+                    },
+                    zip_dir=f"{diameter}mm",
+                )
         for supports in [0, 1]:
             supports_fn = "-supports" if supports else ""
             b.STL(
