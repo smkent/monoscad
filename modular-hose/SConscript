@@ -7,35 +7,32 @@ magnetic_parts_model = "mh-magnetic-parts.scad"
 vacuum_attachment_model = "mh-vacuum-attachment.scad"
 demo_model = "mh-demo.scad"
 
-
-interior_diameter = 100
+inner_diameter = 100
 
 b.STL(
-    f"segment-{interior_diameter}mm.stl",
+    f"segment-{inner_diameter}mm.stl",
     segment_model,
-    {"Inner_Diameter": interior_diameter},
+    {"Inner_Diameter": inner_diameter},
 )
 b.STL(
-    f"vacuum-attachment-{interior_diameter}mm.stl",
+    f"vacuum-attachment-{inner_diameter}mm.stl",
     vacuum_attachment_model,
-    {"Inner_Diameter": interior_diameter, "Connector_Type": "female"},
+    {"Inner_Diameter": inner_diameter, "Connector_Type": "female"},
 )
 
 for model_type in {"grommet", "connector"}:
     for magnet_holes in [0, 1]:
-        fn_magnets = "-magnets" if magnet_holes else ""
+        fn_magnets = "-8mm-magnets" if magnet_holes else ""
         b.STL(
-            (
-                f"120mm-fan-{model_type}"
-                f"-{interior_diameter}mm{fn_magnets}.stl"
-            ),
+            (f"120mm-fan-{model_type}" f"-{inner_diameter}mm{fn_magnets}.stl"),
             magnetic_parts_model,
             {
-                "Inner_Diameter": interior_diameter,
+                "Inner_Diameter": inner_diameter,
                 "Model_Type": model_type,
                 "Connector_Type": "male",
                 "Plate_Type": "fan",
                 "Grommet_Diameter": 120,
+                "Magnet_Diameter": 8,
                 "Magnet_Holes": magnet_holes,
                 "Screw_Holes": 1,
                 "Screw_Hole_Top": (
@@ -57,11 +54,11 @@ for model_type in {"connector", "grommet", "plate"}:
         b.STL(
             (
                 f"magnetic-{model_type}"
-                f"-{interior_diameter}mm{fn_connector_type}.stl"
+                f"-{inner_diameter}mm{fn_connector_type}.stl"
             ),
             magnetic_parts_model,
             {
-                "Inner_Diameter": interior_diameter,
+                "Inner_Diameter": inner_diameter,
                 "Model_Type": model_type,
                 "Connector_Type": connector_type,
                 "Plate_Type": "round",
@@ -77,7 +74,7 @@ b.Image(
     "demo.png",
     demo_model,
     {
-        "Inner_Diameter": interior_diameter,
+        "Inner_Diameter": inner_diameter,
         "Demo": "parts",
         "Enable_Plate_Knurling": 1,
     },
@@ -88,7 +85,7 @@ b.Image(
     "demo-measurement.png",
     demo_model,
     {
-        "Inner_Diameter": interior_diameter,
+        "Inner_Diameter": inner_diameter,
         "Demo": "measurement",
         "Measurement_Text": 0,
     },
@@ -98,13 +95,13 @@ b.Image(
 b.Image(
     "part-segment.png",
     segment_model,
-    {"Inner_Diameter": interior_diameter},
+    {"Inner_Diameter": inner_diameter},
 )
 b.Image(
     "part-segment-advanced.png",
     segment_advanced_model,
     {
-        "Inner_Diameter": interior_diameter,
+        "Inner_Diameter": inner_diameter,
         "Top_Bend_Angle": 30,
         "Bottom_Extra_Length": 15,
         "Bottom_Bend_Angle": 45,
@@ -118,7 +115,7 @@ b.Image(
     segment_model,
     [
         {
-            "Inner_Diameter": interior_diameter,
+            "Inner_Diameter": inner_diameter,
             "Extra_Length": length,
             "Bend_Angle": angle,
             "Bend_Radius": radius,
@@ -141,7 +138,7 @@ b.Image(
 b.Image(
     "part-vacuum-attachment.png",
     vacuum_attachment_model,
-    {"Inner_Diameter": interior_diameter},
+    {"Inner_Diameter": inner_diameter},
 )
 for model_type in {"connector", "grommet"}:
     for plate_type in {"round", "fan"}:
@@ -149,7 +146,7 @@ for model_type in {"connector", "grommet"}:
             f"part-magnetic-{model_type}-{plate_type}.png",
             magnetic_parts_model,
             {
-                "Inner_Diameter": interior_diameter,
+                "Inner_Diameter": inner_diameter,
                 "Model_Type": model_type,
                 "Plate_Type": plate_type,
             },
