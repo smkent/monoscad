@@ -64,7 +64,7 @@ function rescale(value) = (value * (diameter / diameter_scale_factor));
 // Modules //
 
 module stargate_half() {
-    intersection() {
+    difference() {
         stargate(
             diameter=diameter,
             rotate_symbols=Rotate_Symbols,
@@ -73,6 +73,7 @@ module stargate_half() {
         );
         color("#abb", 0.8)
         render(convexity=8)
+        mirror([0, 1, 0])
         translate([0, diameter * 2, 0])
         cube(diameter * 4, center=true);
     }

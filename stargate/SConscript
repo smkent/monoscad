@@ -52,7 +52,7 @@ b.Image(
 b.Image(
     "render-stargate-handle.png",
     "stargate-handle.scad",
-    {"Symbols_Style": "inset", "Hole_Spacing": 150},
+    {"Symbols_Style": "inset", "Hole_Spacing": 150, "Print_Supports": 0},
 )
 b.Image(
     "render-stargate-handle-drill-guide.png",
