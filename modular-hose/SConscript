@@ -175,7 +175,7 @@ for opts in GenerateOptions(
 
 b.Image(
     "customization-example-render.png",
-    "customization-example.scad",
+    "readme-customization-example.scad",
     camera="0,0,0,40,0,28,350",
     view_options="axes,scales",
 )
