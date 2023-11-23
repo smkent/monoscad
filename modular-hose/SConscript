@@ -9,16 +9,12 @@ demo_model = "mh-demo.scad"
 
 inner_diameter = 100
 
-b.STL(
-    f"segment-{inner_diameter}mm.stl",
-    segment_model,
-    {"Inner_Diameter": inner_diameter},
-)
-b.STL(
-    f"vacuum-attachment-{inner_diameter}mm.stl",
-    vacuum_attachment_model,
-    {"Inner_Diameter": inner_diameter, "Connector_Type": "female"},
-)
+for opts in GenerateOptions(bend_angle=[0, (15, "-15°"), (30, "-30°")]):
+    b.STL(
+        f"segment-{inner_diameter}mm{opts.bend_angle_fn}.stl",
+        segment_model,
+        {"Inner_Diameter": inner_diameter, "Bend_Angle": opts.bend_angle},
+    )
 
 for opts in GenerateOptions(
     model_type=["connector", "grommet"], magnet_holes=[0, (1, "-8mm-magnets")]
@@ -74,6 +70,11 @@ for opts in GenerateOptions(
         },
     )
 
+b.STL(
+    f"vacuum-attachment-{inner_diameter}mm.stl",
+    vacuum_attachment_model,
+    {"Inner_Diameter": inner_diameter, "Connector_Type": "female"},
+)
 
 b.Image(
     "demo.png",
