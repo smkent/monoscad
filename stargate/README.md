@@ -29,14 +29,14 @@ OpenSCAD.
 
 Single-sided Stargate models print easily facing upwards.
 
-![Slicer screenshot](images/readme/slicer-screenshot-stargate.png)]
+![Slicer screenshot](images/readme/slicer-screenshot-stargate.png)
 
 Stargate handle models print standing up, and are best printed with supports.
 You can add supports with your slicer or use the model's built-in supports
 option.
 
-![Slicer screenshot of handle with slicer supports](images/readme/slicer-screenshot-handle-1.png)]
-![Slicer screenshot of handle with model supports](images/readme/slicer-screenshot-handle-2.png)]
+![Slicer screenshot of handle with slicer supports](images/readme/slicer-screenshot-handle-1.png)
+![Slicer screenshot of handle with model supports](images/readme/slicer-screenshot-handle-2.png)
 
 ## Differences of the remix compared to the original
 
