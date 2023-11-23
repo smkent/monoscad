@@ -8,6 +8,7 @@ for diameter in [100, 150, 200]:
         fn_symbols_style = f"-{symbols_style}-symbols"
         for hanging_loop in [0, 1]:
             fn_hanging_loop = "-ornament" if hanging_loop else ""
+            zip_hanging_loop = "ornament-" if hanging_loop else ""
             for double_sided in [0, 1]:
                 fn_double_sided = "-double-sided" if double_sided else ""
                 b.STL(
@@ -22,7 +23,7 @@ for diameter in [100, 150, 200]:
                         "Double_Sided": double_sided,
                         "Hanging_Loop": hanging_loop,
                     },
-                    zip_dir=f"{diameter}mm",
+                    zip_dir=f"{zip_hanging_loop}{diameter}mm",
                 )
         for supports in [0, 1]:
             supports_fn = "-supports" if supports else ""
@@ -37,7 +38,7 @@ for diameter in [100, 150, 200]:
                     "Hole_Spacing": diameter,
                     "Print_Supports": supports,
                 },
-                zip_dir=f"{diameter}mm",
+                zip_dir=f"handle-{diameter}mm",
             )
     b.STL(
         f"stargate-handle-{diameter}mm-drill-guide.stl",
