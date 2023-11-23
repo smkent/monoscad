@@ -3,20 +3,20 @@
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 A flexible and segmented modular hose to use as an air duct or with a vacuum.
-Make and customize your own attachments!
+Customize your own segments and attachments!
 
 ![Model renders](images/readme/demo.png)
 ![Segment model renders](images/readme/part-segment-options.gif)
 
-![Photo of multiple segment sizes](images/readme/1.jpg)
-
-![Photo of magnetic base and connector, attached](images/readme/2.jpg)
-![Photo of magnetic base and connector, detached](images/readme/3.jpg)
+![Photo of hose installed on 3D printer enclosure](images/readme/photo-3dprinter-hose.jpg)
+![Photo of hose with several segments](images/readme/photo-extended-hose-1.jpg)
+![Photo of magnetic grommets with no hose](images/readme/photo-magnetic-grommets.jpg)
+![Photo of magnetic grommets with hose](images/readme/photo-magnetic-grommets-and-hose-1.jpg)
 
 # Description
 
-A flexible segmented hose makes a great air duct for my 3D printer enclosure
-exhaust fan.
+A flexible segmented hose makes a great air duct for the exhaust fan on my 3D
+printer enclosure.
 
 Inspired by several other
 [terrific][flexible-segmented-hose-100mm-by-marius-hornberger]
