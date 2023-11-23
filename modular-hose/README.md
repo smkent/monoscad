@@ -59,6 +59,9 @@ sizing and options in the OpenSCAD Customizer before rendering each part.
 
 ## Printing
 
+I recommend printing with PETG for the additional flexibility it provides
+compared to PLA. The hose segments bend slightly when fitting together.
+
 Hose segments and connectors are sized to be two perimeters thick with the
 default wall thickness of 0.8mm printed using a 0.4mm nozzle. Hose segments and
 connectors should not generate any printed infill material (except for the
