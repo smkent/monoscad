@@ -14,11 +14,16 @@ for better use in [OpenSCAD][openscad], and further reimplemented a
 half-stargate handle like [viper1619's remix][original-handle-model-url].
 Stargates and handles of any diameters can be created using OpenSCAD.
 
-## Hardware
+## Hardware and installation
 
 Handle models install with two screws or bolts. The handles are sized by hole
 separation similar to most drawer or cabinet pulls. The hole size is
 configurable within OpenSCAD.
+
+For easier installation, a drill guide for the handle can be created in
+OpenSCAD.
+
+![Render of drill guide model](images/readme/render-stargate-handle-drill-guide.png)
 
 ## Printing
 
