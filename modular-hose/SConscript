@@ -9,11 +9,13 @@ demo_model = "mh-demo.scad"
 
 
 def model_renders_for_diameter(inner_diameter) -> None:
+    zip_dir = f"{inner_diameter}mm"
     for opts in GenerateOptions(bend_angle=[0, (15, "-15°"), (30, "-30°")]):
         b.STL(
             f"{inner_diameter}mm-segment{opts.bend_angle_fn}.stl",
             segment_model,
             {"Inner_Diameter": inner_diameter, "Bend_Angle": opts.bend_angle},
+            zip_dir=zip_dir,
         )
 
     # 120mm fan parts (only for a hose diameter of 100)
@@ -45,6 +47,7 @@ def model_renders_for_diameter(inner_diameter) -> None:
                         else "none"
                     ),
                 },
+                zip_dir=zip_dir,
             )
 
     # Magnetic plate connector parts
@@ -74,12 +77,14 @@ def model_renders_for_diameter(inner_diameter) -> None:
                 "Screw_Holes": 0 if opts.model_type == "connector" else 1,
                 "Screw_Hole_Top": "chamfer",
             },
+            zip_dir=zip_dir,
         )
 
     b.STL(
         f"{inner_diameter}mm-vacuum-attachment.stl",
         vacuum_attachment_model,
         {"Inner_Diameter": inner_diameter, "Connector_Type": "female"},
+        zip_dir=zip_dir,
     )
 
 
