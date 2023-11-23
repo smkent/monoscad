@@ -46,7 +46,10 @@ Round_Plate_Knurled = true;
 Grommet_Depth = 19; // [1:0.1:50.8]
 
 // Hole diameter (Outer diameter of grommet ring)
-Grommet_Diameter = 115; // [10:0.1:200]
+Grommet_Diameter = 105; // [10:0.1:200]
+
+// Whether to make the grommet straight or reduce diameter from one end to the other
+Grommet_Type = "straight"; // [reduce: Reduce from Grommet Diameter minus Thickness to Inner Diameter, straight: Consistent grommet diameter]
 
 /* [Magnets] */
 Magnet_Holes = true;
@@ -209,7 +212,11 @@ module grommet_interior() {
     cylinder(
         $mhp_grommet_depth + $mhp_plate_thickness + 0.02,
         $mh_origin_inner_radius,
-        $mhp_grommet_diameter / 2 - $mh_thickness
+        (
+            $mhp_grommet_type == "straight"
+                ? $mh_origin_inner_radius
+                : $mhp_grommet_diameter / 2 - $mh_thickness
+        )
     );
 }
 
@@ -231,7 +238,8 @@ module mh_magnetic_part(
     screw_diameter=4,
     screw_hole_top="none",
     grommet_depth=19,
-    grommet_diameter=115
+    grommet_diameter=115,
+    grommet_type="straight"
 ) {
     $mhp_model_type = model_type;
     $mhp_plate_size = plate_size;
@@ -247,6 +255,7 @@ module mh_magnetic_part(
     $mhp_screw_hole_top = screw_hole_top;
     $mhp_grommet_depth = grommet_depth;
     $mhp_grommet_diameter = grommet_diameter;
+    $mhp_grommet_type = grommet_type;
     mh(inner_diameter, thickness, size_tolerance) {
         difference() {
             union() {
@@ -283,5 +292,6 @@ mh_magnetic_part(
     Screw_Diameter,
     Screw_Hole_Top,
     Grommet_Depth,
-    Grommet_Diameter
+    Grommet_Diameter,
+    Grommet_Type
 );
