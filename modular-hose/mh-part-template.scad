@@ -9,18 +9,15 @@
 
 include <mh-library.scad>;
 
-/* [Model Options] */
+/* [Modular Hose base options -- use consistent values to make compatible parts] */
 
-// Inner diameter at the center (connector attachment point)
+// Inner diameter at the center in millimeters (connector attachment point)
 Inner_Diameter = 100;
 
-/* [Advanced Size Adjustment] */
-// All units in millimeters
-
-// Wall thickness, a multiple of nozzle size is recommended
+// Wall thickness in millimeters, a multiple of nozzle size is recommended
 Thickness = 0.8; // [0.2:0.1:5]
 
-// Increase the female connector diameter this much to adjust fit
+// Increase the female connector diameter this many millimeters to adjust fit
 Size_Tolerance = 0.0; // [0:0.1:2]
 
 module __end_customizer_options__() { }
@@ -29,9 +26,12 @@ module __end_customizer_options__() { }
 
 module mh_template_part() {
     // Example module, replace this with your new part
-    color("pink", 0.8)
+    color("lemonchiffon", 0.8)
     linear_extrude(height=10)
-    square(Inner_Diameter, center=true);
+    difference() {
+        square(Inner_Diameter * 1.2, center=true);
+        circle(d=Inner_Diameter);
+    }
 }
 
 module mh_template(
