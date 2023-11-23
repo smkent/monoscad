@@ -95,6 +95,7 @@ b.Image(
         "Enable_Plate_Knurling": 1,
     },
     view_options="axes,scales",
+    camera="50,10,-30,55,0,25,1000",
 )
 
 b.Image(
@@ -178,6 +179,15 @@ b.Image(
     camera="0,0,0,40,0,28,350",
     view_options="axes,scales",
 )
+
+b.InsetImage(
+    "photo-demo-inset.gif",
+    "photo-3dprinter-hose.jpg",
+    "part-segment-options.gif",
+    resize="33%",
+    gravity="southeast",
+)
+
 
 b.add_default_targets()
 
