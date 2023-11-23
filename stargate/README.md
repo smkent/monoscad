@@ -40,7 +40,8 @@ Single-sided Stargate models print easily facing upwards.
 
 Stargate handle models print standing up, and are best printed with supports.
 You can add supports with your slicer or use the model's built-in supports
-option.
+option. I printed my handles with 3 perimeters for better strength around the
+holes.
 
 ![Slicer screenshot of handle with slicer supports](images/readme/slicer-screenshot-handle-1.png)
 ![Slicer screenshot of handle with model supports](images/readme/slicer-screenshot-handle-2.png)
