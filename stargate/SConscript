@@ -3,13 +3,64 @@ b = ModelBuilder(env)
 
 model = "stargate.scad"
 
-b.STL("stargate.stl", model, {"Symbols_Style": "inset", "Diameter": 100})
+for diameter in [100, 150, 200]:
+    for symbols_style in ["inset", "raised"]:
+        fn_symbols_style = f"-{symbols_style}-symbols"
+        for double_sided in [0, 1]:
+            fn_double_sided = "-double-sided" if double_sided else ""
+            b.STL(
+                (
+                    f"stargate-{diameter}mm"
+                    f"{fn_symbols_style}{fn_double_sided}.stl"
+                ),
+                model,
+                {
+                    "Symbols_Style": symbols_style,
+                    "Diameter": diameter,
+                    "Double_Sided": double_sided,
+                },
+                zip_dir=f"{diameter}mm",
+            )
+        for supports in [0, 1]:
+            supports_fn = "-supports" if supports else ""
+            b.STL(
+                (
+                    f"stargate-handle-{diameter}mm"
+                    f"{fn_symbols_style}{supports_fn}.stl"
+                ),
+                "stargate-handle.scad",
+                {
+                    "Symbols_Style": symbols_style,
+                    "Hole_Spacing": diameter,
+                    "Print_Supports": supports,
+                },
+                zip_dir=f"{diameter}mm",
+            )
+    b.STL(
+        f"stargate-handle-{diameter}mm-drill-guide.stl",
+        "stargate-handle.scad",
+        {"Part_Selection": "drill-guide", "Hole_Spacing": diameter},
+        zip_dir=f"{diameter}mm",
+    )
+
 b.Image(
-    "demo.png",
+    "render-stargate.png",
     model,
-    {"Symbols_Style": "inset", "Diameter": 100},
-    camera="0,0,0,33,0,0,250",
+    {"Symbols_Style": "inset", "Diameter": 150},
+    camera="0,-5,0,33,0,0,350",
 )
+b.Image(
+    "render-stargate-handle.png",
+    "stargate-handle.scad",
+    {"Symbols_Style": "inset", "Hole_Spacing": 150},
+)
+b.Image(
+    "render-stargate-handle-drill-guide.png",
+    "stargate-handle.scad",
+    {"Part_Selection": "drill-guide", "Hole_Spacing": 150},
+)
+
+b.Source("*.scad", "stargate-symbols.svg")
 
 b.add_default_targets()
 
