@@ -45,11 +45,8 @@ Round_Plate_Knurled = true;
 // Depth of grommet ring
 Grommet_Depth = 19; // [1:0.1:50.8]
 
-// Outer diameter of grommet ring
+// Hole diameter (Outer diameter of grommet ring)
 Grommet_Diameter = 115; // [10:0.1:200]
-
-// Advanced diameter adjustment
-Grommet_Diameter_Adjustment = 0; // [0: No Adjustment, 1: Add Connector Thickness]
 
 /* [Magnets] */
 Magnet_Holes = true;
@@ -139,11 +136,11 @@ module plate_body(solid=false) {
             translate([0, 0, -0.01])
             linear_extrude(height=$mhp_plate_thickness + 0.02) {
                 if (!solid) {
-                    circle($mh_origin_inner_diameter / 2);
+                    circle(d=$mh_origin_inner_diameter);
                 }
                 if ($mhp_screw_holes) {
                     fan_screw_placement_selection()
-                    circle(($mhp_screw_diameter * 1.2) / 2);
+                    circle(d=$mhp_screw_diameter * 1.2);
                 }
             }
         }
@@ -171,7 +168,7 @@ module plate_body(solid=false) {
             circle_even_placement(8, stagger=true)
             translate([x_offset, 0, $mhp_plate_thickness - $mhp_magnet_thickness])
             linear_extrude(height=$mhp_magnet_thickness + 0.001)
-            circle(($mhp_magnet_diameter * 1.05) / 2);
+            circle(d=$mhp_magnet_diameter * 1.05);
         }
     }
 }
@@ -203,7 +200,7 @@ module plate_full(solid=false) {
 module grommet_body() {
     color("lightskyblue", 0.8)
     linear_extrude(height=$mhp_grommet_depth)
-    circle($mhp_grommet_diameter / 2 + $mhp_grommet_diameter_adjustment);
+    circle(d=$mhp_grommet_diameter);
 }
 
 module grommet_interior() {
@@ -212,7 +209,7 @@ module grommet_interior() {
     cylinder(
         $mhp_grommet_depth + $mhp_plate_thickness + 0.02,
         $mh_origin_inner_radius,
-        $mhp_grommet_diameter / 2 - $mh_thickness + $mhp_grommet_diameter_adjustment
+        $mhp_grommet_diameter / 2 - $mh_thickness
     );
 }
 
@@ -234,8 +231,7 @@ module mh_magnetic_part(
     screw_diameter=4,
     screw_hole_top="none",
     grommet_depth=19,
-    grommet_diameter=115,
-    grommet_diameter_adjustment=0
+    grommet_diameter=115
 ) {
     $mhp_model_type = model_type;
     $mhp_plate_size = plate_size;
@@ -251,7 +247,6 @@ module mh_magnetic_part(
     $mhp_screw_hole_top = screw_hole_top;
     $mhp_grommet_depth = grommet_depth;
     $mhp_grommet_diameter = grommet_diameter;
-    $mhp_grommet_diameter_adjustment = grommet_diameter_adjustment ? thickness : 0;
     mh(inner_diameter, thickness, size_tolerance) {
         difference() {
             union() {
@@ -288,6 +283,5 @@ mh_magnetic_part(
     Screw_Diameter,
     Screw_Hole_Top,
     Grommet_Depth,
-    Grommet_Diameter,
-    Grommet_Diameter_Adjustment
+    Grommet_Diameter
 );
