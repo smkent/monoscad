@@ -4,7 +4,8 @@
 
 SG-1 Stargate
 
-![Model render](images/readme/demo.png)
+![Model render](images/readme/render-stargate.png)
+![Model render](images/readme/render-stargate-handle.png)
 
 ## Attribution and License
 
