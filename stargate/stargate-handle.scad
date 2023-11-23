@@ -48,7 +48,7 @@ layer_height = 0.2;
 support_top_thickness = (
     rescale(outer_ring_depth * 2 * thickness_scale_factor) * 0.8
 );
-support_body_thickness = 0.4 * 3;
+support_body_thickness = 0.4 * 4;
 support_offset = layer_height;
 support_arc_radius = rescale(outer_ring_inner_inner_radius);
 support_arc_thickness = layer_height * 2;
@@ -134,7 +134,8 @@ module print_support_body() {
     }
 
     rotate([-90, 0, 0])
-    linear_extrude(height=support_arc_base_height)
+    for (div_fac = [1:2])
+    linear_extrude(height=support_arc_base_height / div_fac ^ 2)
     offset(delta=fudge)
     offset(delta=-fudge)
     difference() {
@@ -142,11 +143,12 @@ module print_support_body() {
             (support_body_radius - support_arc_thickness * 3)
             * cos(90 - support_arc_angle + 2)
         );
-        yy = (support_top_thickness - support_body_thickness);
+        yy = (support_top_thickness - support_body_thickness) / div_fac;
+        thickness_delta = (support_top_thickness - support_body_thickness) - yy;
         square([support_arc_width, support_top_thickness], center=true);
         for (my = [0:1:1])
         mirror([0, my])
-        translate([0, support_body_thickness / 2])
+        translate([0, support_body_thickness / 2 + thickness_delta / 2])
         polygon([
             [xx, 0],
             [-xx, 0],
@@ -158,10 +160,16 @@ module print_support_body() {
 
 module print_support_foot() {
     rotate([-90, 0, 0])
-    linear_extrude(height=support_arc_thickness)
+    linear_extrude(height=support_arc_thickness * 2)
     offset(r=-2)
     offset(r=6)
-    square([2 * support_arc_width / 3, support_body_thickness], center=true);
+    union() {
+        square([2 * support_arc_width / 3, support_body_thickness], center=true);
+        for (mx = [0:1:1])
+        mirror([mx, 0])
+        translate([support_arc_width / (3 + 0.75), 0])
+        square([support_arc_width / 12, support_arc_width / 3], center=true);
+    }
 }
 
 module print_supports() {
@@ -181,8 +189,8 @@ module print_supports() {
                     support_arc_width / 32,
                     support_body_radius - support_arc_thickness * 4
                 ],
-                [support_arc_width / 5, 0],
-                [-support_arc_width / 5, 0]
+                [support_arc_width / 5, support_arc_thickness * 6],
+                [-support_arc_width / 5, support_arc_thickness * 6]
             ]);
             for (mx = [0:1:1])
             mirror([mx, 0]) {
