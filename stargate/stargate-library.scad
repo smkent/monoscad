@@ -64,15 +64,34 @@ module ring() {
     }
 }
 
-module chevron_highlight() {
-    // Chevron wedge
+module chevron_light_wedge_shape() {
     polygon(points=[
         [-1.0546, 98.16],
         [0.95798, 98.16],
-        [4.3094, 107.87],
-        [-4.406, 107.87],
+        [4.085, 107.2],
+        [-4.085, 107.2],
     ]);
+}
+
+module chevron_light_wedge_cut() {
+    difference() {
+        children();
+        polygon([
+            [5.2877, 107.9],
+            [0, 105],
+            [-5.2877, 107.9],
+        ]);
+    }
+}
+
+module chevron_highlight() {
+    linear_extrude(height=outer_ring_depth + 1 - 0.4)
+    chevron_light_wedge_cut()
+    chevron_light_wedge_shape();
+    linear_extrude(height=outer_ring_depth + fudge / 10)
+    chevron_light_wedge_shape();
     // Lines
+    linear_extrude(height=outer_ring_depth + 2)
     difference() {
         polygon(points=[
             [-6.4396, 95.721],
@@ -118,6 +137,7 @@ module chevron() {
     }
 
     // Upper wedge
+    chevron_light_wedge_cut()
     difference() {
         union() {
             points = [
@@ -127,6 +147,7 @@ module chevron() {
             ];
             polygon(points=[for (i = [0, 1, 3, 2]) points[i]]);
         }
+        chevron_light_wedge_shape();
         // Cut outer corners
         for (mx = [0:1:1])
         mirror([mx, 0])
@@ -142,13 +163,6 @@ module chevron() {
                 ]
             )
         );
-        // Inner cut
-        polygon([
-            [5.2877, 107.9],
-            [4.1188, 107.32],
-            [-4.1188, 107.32],
-            [-5.2877, 107.9],
-        ]);
     }
 
     // Wings
@@ -224,7 +238,6 @@ module stargate(
         for_each_chevron()
         translate([0, 0.8, 0]) {
             color("coral", 0.8)
-            linear_extrude(height=outer_ring_depth + 2)
             chevron_highlight();
             color("#788", 0.8)
             linear_extrude(height=outer_ring_depth + 1)
