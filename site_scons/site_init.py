@@ -13,8 +13,8 @@ from zipfile import ZipFile
 from SCons.Node.FS import File as SConsFile
 from SCons.Script.SConscript import SConsEnvironment
 
-IMAGES_TARGET = "images"
 PRINTABLES_TARGETS = {"printables", "zip"}
+IMAGES_TARGETS = {"images"} | PRINTABLES_TARGETS
 DIST_PRINTABLES_ZIP = "dist-printables.zip"
 LIBRARIES_ZIP = "libraries.zip"
 IMAGE_RENDER_SIZE = "1200x900"
@@ -243,7 +243,7 @@ class ModelBuilder:
             target, [source] + [image_dependencies or []], self.make_doc
         )
 
-    @target_filter(IMAGES_TARGET)
+    @target_filter(IMAGES_TARGETS)
     def Image(
         self,
         target: str,
@@ -277,7 +277,7 @@ class ModelBuilder:
         )
         self.publish_images.add(f"{self.src_dir}/images/publish/{target}")
 
-    @target_filter(IMAGES_TARGET)
+    @target_filter(IMAGES_TARGETS)
     def InsetImage(
         self,
         target: str,
