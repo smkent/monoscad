@@ -84,13 +84,7 @@ module chevron_light_wedge_cut() {
     }
 }
 
-module chevron_highlight() {
-    linear_extrude(height=outer_ring_depth + 1 - 0.4)
-    chevron_light_wedge_cut()
-    chevron_light_wedge_shape();
-    linear_extrude(height=outer_ring_depth + fudge / 10)
-    chevron_light_wedge_shape();
-    // Lines
+module chevron_highlight_lines() {
     linear_extrude(height=outer_ring_depth + 2)
     difference() {
         polygon(points=[
@@ -113,6 +107,15 @@ module chevron_highlight() {
             square([40, inc]);
         }
     }
+}
+
+module chevron_highlight() {
+    linear_extrude(height=outer_ring_depth + 1 - 0.4)
+    chevron_light_wedge_cut()
+    chevron_light_wedge_shape();
+    linear_extrude(height=outer_ring_depth + fudge / 10)
+    chevron_light_wedge_shape();
+    chevron_highlight_lines();
 }
 
 module chevron_upper_wedge() {
@@ -145,8 +148,7 @@ module chevron_upper_wedge() {
     }
 }
 
-module chevron() {
-    // Lower wedge
+module chevron_lower_wedge() {
     difference() {
         union() {
             points = [
@@ -165,8 +167,10 @@ module chevron() {
             polygon(points=[for (i = [0, 1, 3, 2]) points[i]]);
         }
     }
+}
 
-    // Upper wedge
+module chevron() {
+    chevron_lower_wedge();
     chevron_upper_wedge();
 
     // Wings
@@ -225,6 +229,20 @@ module add_symbols(rotate_symbols, symbols_style="raised") {
     symbol_dividers();
 }
 
+module hanging_loop() {
+    translate([0, 102.37 + 3])
+    scale([1.5, 1.5])
+    translate([0, 102.37])
+    mirror([0, 1])
+    union() {
+        color("#788", 0.8)
+        linear_extrude(height=outer_ring_depth + 1)
+        chevron_lower_wedge();
+        color("coral", 0.8)
+        chevron_highlight_lines();
+    }
+}
+
 module stargate(
     diameter=75,
     rotate_symbols=4.5,
@@ -249,11 +267,7 @@ module stargate(
             chevron();
         }
         if (hanging_loop) {
-            color("#788", 0.8)
-            linear_extrude(height=outer_ring_depth + 1)
-            translate([0, (107.89 + 0.2) * 2])
-            mirror([0, 1])
-            chevron_upper_wedge();
+            hanging_loop();
         }
     }
 }
