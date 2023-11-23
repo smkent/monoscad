@@ -83,7 +83,7 @@ def model_renders_for_diameter(inner_diameter) -> None:
     )
 
 
-for inner_diameter in [50, 100]:
+for inner_diameter in [25, 50, 75, 100]:
     model_renders_for_diameter(inner_diameter)
 
 b.Image(
