@@ -20,7 +20,7 @@ Print_Supports = true;
 // Hole spacing, will be used to determine diameter
 Hole_Spacing = 150; // [20:1:300]
 
-Hole_Diameter = 4; // [2:0.1:10]
+Hole_Diameter = 2.8; // [2:0.1:10]
 Hole_Depth = 8; // [2:0.1:20]
 
 /* [Stargate options] */
