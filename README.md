@@ -50,8 +50,8 @@ models.
 [![Segmented Modular Hose](modular-hose/images/readme/demo.png)](modular-hose/)
 [![Gridfinity Material Swatches Holder V2](gridfinity-bins-material-swatches/images/readme/demo.gif)](gridfinity-bins-material-swatches/)
 [![Bit insert clips for Bosch Custom Case](bosch-custom-case/images/readme/demo-bits-insert.gif)](bosch-custom-case/)
+[![SG-1 Stargate](stargate/images/readme/render-stargate.png)](stargate/)
 [![Bathtub Drain Hair Catcher](bathtub-drain-hair-catcher/images/readme/demo-winged-round.png)](bathtub-drain-hair-catcher/)
-[![Material Swatches rebuilt in OpenSCAD (remix)](material-swatches/images/readme/demo.gif)](material-swatches/)
 
 ## License
 
