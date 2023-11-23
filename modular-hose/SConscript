@@ -20,54 +20,58 @@ b.STL(
     {"Inner_Diameter": inner_diameter, "Connector_Type": "female"},
 )
 
-for model_type in {"grommet", "connector"}:
-    for magnet_holes in [0, 1]:
-        fn_magnets = "-8mm-magnets" if magnet_holes else ""
-        b.STL(
-            (f"120mm-fan-{model_type}" f"-{inner_diameter}mm{fn_magnets}.stl"),
-            magnetic_parts_model,
-            {
-                "Inner_Diameter": inner_diameter,
-                "Model_Type": model_type,
-                "Connector_Type": "male",
-                "Plate_Type": "fan",
-                "Grommet_Diameter": 120,
-                "Magnet_Diameter": 8,
-                "Magnet_Holes": magnet_holes,
-                "Screw_Holes": 1,
-                "Screw_Hole_Top": (
-                    "inset"
-                    if model_type == "grommet" and magnet_holes
-                    else "none"
-                ),
-            },
-        )
-
-for model_type in {"connector", "grommet", "plate"}:
-    connector_types = {"male"}
-    if model_type == "connector":
-        connector_types.add("female")
-    for connector_type in connector_types:
-        fn_connector_type = (
-            f"-{connector_type}" if model_type == "connector" else ""
-        )
-        b.STL(
-            (
-                f"magnetic-{model_type}"
-                f"-{inner_diameter}mm{fn_connector_type}.stl"
+for opts in GenerateOptions(
+    model_type=["connector", "grommet"], magnet_holes=[0, (1, "-8mm-magnets")]
+):
+    b.STL(
+        (
+            f"120mm-fan-{opts.model_type}"
+            f"-{inner_diameter}mm{opts.magnet_holes_fn}.stl"
+        ),
+        magnetic_parts_model,
+        {
+            "Inner_Diameter": inner_diameter,
+            "Model_Type": opts.model_type,
+            "Connector_Type": "male",
+            "Plate_Type": "fan",
+            "Grommet_Diameter": 120,
+            "Magnet_Diameter": 8,
+            "Magnet_Holes": opts.magnet_holes,
+            "Screw_Holes": 1,
+            "Screw_Hole_Top": (
+                "inset"
+                if opts.model_type == "grommet" and opts.magnet_holes
+                else "none"
             ),
-            magnetic_parts_model,
-            {
-                "Inner_Diameter": inner_diameter,
-                "Model_Type": model_type,
-                "Connector_Type": connector_type,
-                "Plate_Type": "round",
-                "Grommet_Diameter": 101.6,
-                "Magnet_Holes": 1,
-                "Screw_Holes": 0 if model_type == "connector" else 1,
-                "Screw_Hole_Top": 0 if model_type == "connector" else 1,
-            },
-        )
+        },
+    )
+
+for opts in GenerateOptions(
+    model_type=["connector", "grommet", "plate"],
+    connector_type=["male", "female"],
+):
+    if opts.model_type != "connector" and opts.connector_type == "female":
+        continue
+    fn_connector_type = (
+        f"-{opts.connector_type}" if opts.model_type == "connector" else ""
+    )
+    b.STL(
+        (
+            f"magnetic-{opts.model_type}"
+            f"-{inner_diameter}mm{fn_connector_type}.stl"
+        ),
+        magnetic_parts_model,
+        {
+            "Inner_Diameter": inner_diameter,
+            "Model_Type": opts.model_type,
+            "Connector_Type": opts.connector_type,
+            "Plate_Type": "round",
+            "Grommet_Diameter": 101.6,
+            "Magnet_Holes": 1,
+            "Screw_Holes": 0 if opts.model_type == "connector" else 1,
+            "Screw_Hole_Top": 0 if opts.model_type == "connector" else 1,
+        },
+    )
 
 
 b.Image(
@@ -140,18 +144,21 @@ b.Image(
     vacuum_attachment_model,
     {"Inner_Diameter": inner_diameter},
 )
-for model_type in {"connector", "grommet"}:
-    for plate_type in {"round", "fan"}:
-        b.Image(
-            f"part-magnetic-{model_type}-{plate_type}.png",
-            magnetic_parts_model,
-            {
-                "Inner_Diameter": inner_diameter,
-                "Model_Type": model_type,
-                "Plate_Type": plate_type,
-            },
-            camera="0,0,0,150,0,28,450" if model_type == "connector" else None,
-        )
+for opts in GenerateOptions(
+    model_type=["connector", "grommet"], plate_type=["round", "fan"]
+):
+    b.Image(
+        f"part-magnetic-{opts.model_type}-{opts.plate_type}.png",
+        magnetic_parts_model,
+        {
+            "Inner_Diameter": inner_diameter,
+            "Model_Type": opts.model_type,
+            "Plate_Type": opts.plate_type,
+        },
+        camera="0,0,0,150,0,28,450"
+        if opts.model_type == "connector"
+        else None,
+    )
 
 b.Image(
     "customization-example-render.png",
