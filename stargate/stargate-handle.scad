@@ -10,9 +10,9 @@
 include <stargate-library.scad>;
 
 /* [Rendering Options] */
-Print_Orientation = true;
+Part_Selection = "handle"; // [handle: Handle, drill-guide: Drill guide]
 
-// Enable integrated print supports base
+// Enable integrated print supports for the handle
 Print_Supports = true;
 
 /* [Handle Options] */
@@ -44,13 +44,14 @@ diameter = (
     )
 );
 
+layer_height = 0.2;
 support_top_thickness = (
     rescale(outer_ring_depth * 2 * thickness_scale_factor) * 0.8
 );
 support_body_thickness = 0.4 * 3;
-support_offset = 0.2;
+support_offset = layer_height;
 support_arc_radius = rescale(outer_ring_inner_inner_radius);
-support_arc_thickness = 0.4;
+support_arc_thickness = layer_height * 2;
 support_arc_angle = 50;
 support_body_radius = support_arc_radius - support_arc_thickness;
 support_arc_width = support_body_radius * cos(90 - support_arc_angle) * 2;
@@ -202,16 +203,42 @@ module print_supports() {
 module add_print_supports() {
     children();
     color("plum", 0.6)
-    if (Print_Supports) {
+    if ($sgh_print_supports) {
         print_supports();
     }
 }
 
 module stargate_handle() {
-    rotate(Print_Orientation ? [90, 0, 0] : 0)
+    rotate([90, 0, 0])
     add_print_supports()
     handle_holes()
     stargate_half();
 }
 
-stargate_handle();
+module stargate_handle_screw_guide() {
+    $sgh_print_supports = false;
+    color("#abb", 0.8)
+    linear_extrude(height=layer_height * 4)
+    projection(cut=true)
+    stargate_handle();
+    color("#788", 0.8)
+    linear_extrude(height=layer_height * 4)
+    square(
+        [
+            rescale(outer_ring_inner_inner_radius) * 2 + fudge,
+            rescale(outer_ring_depth) * 2
+        ],
+        center=true
+    );
+}
+
+module main() {
+    $sgh_print_supports = Print_Supports;
+    if (Part_Selection == "handle") {
+        stargate_handle();
+    } else if (Part_Selection == "drill-guide") {
+        stargate_handle_screw_guide();
+    }
+}
+
+main();
