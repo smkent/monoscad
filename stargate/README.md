@@ -48,7 +48,7 @@ directly from an SVG file within OpenSCAD.
 
 This is a remix of:
 
-* [**SG-1 Stargate with symbols** by **wtgibson**][original-model-url].
+* [**SG-1 Stargate with symbols** by **wtgibson**][original-model-url]
 * [**Stargate Handle (used on my i3 enclosure)** by **viper1619**][original-handle-model-url]
 
 The original models and this remix are licensed under
