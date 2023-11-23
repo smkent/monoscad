@@ -1,5 +1,6 @@
 # Segmented Modular Hose, Parametric and Customizable
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 A flexible and segmented modular hose to use as an air duct or with a vacuum.
@@ -146,3 +147,5 @@ Third party components have their own licenses.
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
 [parametric-momdular-hose-library-by-axford]: https://www.thingiverse.com/thing:9457
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/657275
