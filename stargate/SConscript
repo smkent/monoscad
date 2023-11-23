@@ -54,6 +54,12 @@ b.Image(
     camera="0,-5,0,33,0,0,350",
 )
 b.Image(
+    "render-stargate-ornament.png",
+    model,
+    {"Symbols_Style": "inset", "Diameter": 150, "Hanging_Loop": 1},
+    camera="0,0,0,33,0,0,375",
+)
+b.Image(
     "render-stargate-handle.png",
     "stargate-handle.scad",
     {"Symbols_Style": "inset", "Hole_Spacing": 150, "Print_Supports": 0},

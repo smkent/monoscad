@@ -2,23 +2,30 @@
 
 [![CC-BY-4.0 license][license-badge]][license]
 
-Parametric SG-1 Stargate and Stargate handle models
+Parametric SG-1 Stargate models for display, hanging, or handle/drawer pulls
 
 ![Model render](images/readme/render-stargate.png)
+![Model render](images/readme/render-stargate-ornament.png)
 ![Model render](images/readme/render-stargate-handle.png)
 
 # Description
 
+Print your own Stargate as a display model, hanging ornament, or handle/drawer
+pull!
+
 I reworked [wtgibson's SG-1 Stargate OpenSCAD model][original-model-url]
 for better use in [OpenSCAD][openscad], and further reimplemented a
-half-stargate handle like [viper1619's remix][original-handle-model-url].
-Stargates and handles of any diameters can be created using OpenSCAD.
+half-stargate handle like [viper1619's remix][original-handle-model-url]. You
+can also add a hanging loop for use as an ornament!
+
+Stargates and any diameters can be created using OpenSCAD.
 
 ## Hardware and installation
 
 Handle models install with two screws or bolts. The handles are sized by hole
-separation similar to most drawer or cabinet pulls. The hole size is
-configurable within OpenSCAD.
+separation similar to most drawer or cabinet pulls. The uploaded rendered models
+have 2.8mm holes, for use with M3 screws. The hole size is configurable within
+OpenSCAD.
 
 For easier installation, a drill guide for the handle can be created in
 OpenSCAD.
