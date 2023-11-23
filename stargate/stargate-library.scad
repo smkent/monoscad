@@ -84,13 +84,7 @@ module chevron_light_wedge_cut() {
     }
 }
 
-module chevron_highlight() {
-    linear_extrude(height=outer_ring_depth + 1 - 0.4)
-    chevron_light_wedge_cut()
-    chevron_light_wedge_shape();
-    linear_extrude(height=outer_ring_depth + fudge / 10)
-    chevron_light_wedge_shape();
-    // Lines
+module chevron_highlight_lines() {
     linear_extrude(height=outer_ring_depth + 2)
     difference() {
         polygon(points=[
@@ -115,28 +109,16 @@ module chevron_highlight() {
     }
 }
 
-module chevron() {
-    // Lower wedge
-    difference() {
-        union() {
-            points = [
-                for (y = [87.374, 102.37])
-                for (xfac = [-1, 1])
-                [xfac * (ch_sub_x(y)), y]
-            ];
-            polygon(points=[for (i = [0, 1, 3, 2]) points[i]]);
-        }
-        union() {
-            points = [
-                for (y = [92.01, 102.37])
-                for (xfac = [-1, 1])
-                [xfac * (hl_sub_x(y) + 0.2), y]
-            ];
-            polygon(points=[for (i = [0, 1, 3, 2]) points[i]]);
-        }
-    }
+module chevron_highlight() {
+    linear_extrude(height=outer_ring_depth + 1 - 0.4)
+    chevron_light_wedge_cut()
+    chevron_light_wedge_shape();
+    linear_extrude(height=outer_ring_depth + fudge / 10)
+    chevron_light_wedge_shape();
+    chevron_highlight_lines();
+}
 
-    // Upper wedge
+module chevron_upper_wedge() {
     chevron_light_wedge_cut()
     difference() {
         union() {
@@ -164,6 +146,32 @@ module chevron() {
             )
         );
     }
+}
+
+module chevron_lower_wedge() {
+    difference() {
+        union() {
+            points = [
+                for (y = [87.374, 102.37])
+                for (xfac = [-1, 1])
+                [xfac * (ch_sub_x(y)), y]
+            ];
+            polygon(points=[for (i = [0, 1, 3, 2]) points[i]]);
+        }
+        union() {
+            points = [
+                for (y = [92.01, 102.37])
+                for (xfac = [-1, 1])
+                [xfac * (hl_sub_x(y) + 0.2), y]
+            ];
+            polygon(points=[for (i = [0, 1, 3, 2]) points[i]]);
+        }
+    }
+}
+
+module chevron() {
+    chevron_lower_wedge();
+    chevron_upper_wedge();
 
     // Wings
     for (mx = [0:1:1])
@@ -221,11 +229,26 @@ module add_symbols(rotate_symbols, symbols_style="raised") {
     symbol_dividers();
 }
 
+module hanging_loop() {
+    translate([0, 102.37 + 3])
+    scale([1.5, 1.5])
+    translate([0, 102.37])
+    mirror([0, 1])
+    union() {
+        color("#788", 0.8)
+        linear_extrude(height=outer_ring_depth + 1)
+        chevron_lower_wedge();
+        color("coral", 0.8)
+        chevron_highlight_lines();
+    }
+}
+
 module stargate(
     diameter=75,
     rotate_symbols=4.5,
     symbols_style="raised",
-    double_sided=false
+    double_sided=false,
+    hanging_loop=false
 ) {
     for (mz = [0:1:(double_sided ? 1 : 0)])
     mirror([0, 0, mz])
@@ -242,6 +265,9 @@ module stargate(
             color("#788", 0.8)
             linear_extrude(height=outer_ring_depth + 1)
             chevron();
+        }
+        if (hanging_loop) {
+            hanging_loop();
         }
     }
 }

@@ -8,6 +8,10 @@
 
 ![Model render](images/readme/demo.png)
 {% if remix %}
+## Differences of the remix compared to the original
+
+
+
 ## Attribution and License
 
 This is a remix of

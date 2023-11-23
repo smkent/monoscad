@@ -24,11 +24,15 @@ Symbols_Style = "inset"; // [raised: Raised, inset: Inset]
 // Add a second Stargate face to the rear of the ring. This doubles the overall ring thickness.
 Double_Sided = false;
 
+// Add a hanging loop for use as an ornament
+Hanging_Loop = false;
+
 module __end_customizer_options__() { }
 
 stargate(
     diameter=Diameter,
     rotate_symbols=Rotate_Symbols,
     symbols_style=Symbols_Style,
-    double_sided=Double_Sided
+    double_sided=Double_Sided,
+    hanging_loop=Hanging_Loop
 );
