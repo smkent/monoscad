@@ -1,5 +1,6 @@
 # Segmented Modular Hose, Parametric and Customizable
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 A flexible and segmented modular hose to use as an air duct or with a vacuum.
@@ -57,6 +58,9 @@ sizing and options in the OpenSCAD Customizer before rendering each part.
 ![OpenSCAD customizer screenshot](images/readme/customizer-screenshot-compatibility.png)
 
 ## Printing
+
+I recommend printing with PETG for the additional flexibility it provides
+compared to PLA. The hose segments bend slightly when fitting together.
 
 Hose segments and connectors are sized to be two perimeters thick with the
 default wall thickness of 0.8mm printed using a 0.4mm nozzle. Hose segments and
@@ -146,3 +150,5 @@ Third party components have their own licenses.
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
 [parametric-momdular-hose-library-by-axford]: https://www.thingiverse.com/thing:9457
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/657275
