@@ -47,6 +47,9 @@ His web site has
 his [Thingiverse page][benjamenjohnson-thingiverse] has a variety of useful
 models for various toolbox systems.
 
+I also have [replacement latches](/bosch-custom-case/box-latch)
+for Bosch Custom Case / Pick and Click cases!
+
 ## License
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
