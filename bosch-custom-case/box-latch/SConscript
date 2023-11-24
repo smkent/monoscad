@@ -6,6 +6,14 @@ model = "custom-case-latch.scad"
 b.STL("custom-case-latch.stl", model)
 b.Image("demo.png", model)
 
+b.InsetImage(
+    "photo-inset.jpg",
+    "photo-clips-on-boxes-comparison.jpg",
+    "demo.png",
+    resize="33%",
+    gravity="southeast",
+)
+
 b.add_default_targets()
 
 # vim: ft=python

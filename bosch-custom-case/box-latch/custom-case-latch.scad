@@ -15,7 +15,7 @@ $fa = $preview ? $fa / 2 : 2;
 $fs = $preview ? $fs / 2 : 0.4;
 
 latch_width = 48;
-latch_length = 28.2;
+latch_length = 27.7;
 latch_thickness = 2.5;
 
 grip_height = 7.7;
@@ -212,7 +212,7 @@ module latch_wings() {
 }
 
 module custom_case_latch() {
-    color("orangered", 0.8) {
+    color("orange", 0.8) {
         render(convexity=2)
         latch_grip_cuts() {
             latch_base();
