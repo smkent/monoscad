@@ -1,5 +1,6 @@
-# Box latch for Bosch Custom Case / Pick and Click
+# Box latch for Bosch Custom Case / Pick and Click cases
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 Replacement latch for Bosch Custom Case / Pick and Click cases
@@ -37,3 +38,5 @@ This model is licensed under [Creative Commons (4.0 International License) Attri
 [bosch-custom-case]: https://www.boschtools.com/us/en/boschtools-ocs/custom-case-system-35868-c/
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/658419
