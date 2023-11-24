@@ -6,6 +6,8 @@ Parametric SG-1 Stargate models for display, hanging, or handle/drawer pulls
 
 ![Model render](images/readme/render-stargate.png)
 ![Model render](images/readme/render-stargate-ornament.png)
+
+![Photo of printed handle](images/readme/photo-stargate-handle.jpg)
 ![Model render](images/readme/render-stargate-handle.png)
 
 # Description
@@ -44,7 +46,9 @@ option. I printed my handles with 3 perimeters for better strength around the
 holes.
 
 ![Slicer screenshot of handle with slicer supports](images/readme/slicer-screenshot-handle-1.png)
+
 ![Slicer screenshot of handle with model supports](images/readme/slicer-screenshot-handle-2.png)
+![Photo of printed handle with model supports](images/readme/photo-stargate-handle-supports.jpg)
 
 ## Differences of the remix compared to the original
 
