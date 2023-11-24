@@ -55,10 +55,13 @@ module latch_grip_shape(inset_curve=false) {
     translate([latch_thickness / 2, grip_length])
     mirror([1, 0])
     difference() {
-        polygon(concat(
-            [[0, 0], [grip_height, 0], [grip_height, -latch_thickness]],
-            [[latch_thickness, -grip_length], [0, -grip_length]],
-        ));
+        polygon([
+            [0, 0],
+            [grip_height, 0],
+            [grip_height, -latch_thickness],
+            [latch_thickness, -grip_length],
+            [0, -grip_length]
+        ]);
         if (inset_curve) {
             translate([grip_height, -grip_length])
             scale([1, (grip_length - latch_thickness) / (grip_height - latch_thickness)])
