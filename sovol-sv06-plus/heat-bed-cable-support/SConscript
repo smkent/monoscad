@@ -13,6 +13,20 @@ b.STL(
 b.Image("bed-strain-relief-render.png", model, {"Print_Orientation": 0})
 b.Image("frame-strain-relief-render.png", "frame-strain-relief-support.scad")
 
+b.Image(
+    "renders-row.png",
+    ["frame-strain-relief-support.scad", model],
+    [None, {"Print_Orientation": 0}],
+)
+
+b.InsetImage(
+    "photo-inset.jpg",
+    "v2-photo1.jpg",
+    "renders-row.png",
+    resize="25%",
+    gravity="southeast",
+)
+
 b.Asset(
     "*.scad",
     "sovol-sv06plus-cover-repaired-notext.stl",

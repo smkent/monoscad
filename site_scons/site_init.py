@@ -4,7 +4,7 @@ import subprocess
 import sys
 import tempfile
 from contextlib import ExitStack, suppress
-from itertools import product
+from itertools import cycle, product
 from math import ceil
 from pathlib import Path
 from types import SimpleNamespace
@@ -299,7 +299,7 @@ class ModelBuilder:
     def Image(
         self,
         target: str,
-        model_file: str,
+        model_file: Union[str, Sequence[str]],
         stl_vals: Optional[Union[List[Dict[str, Any]], Dict[str, Any]]] = None,
         camera: Optional[str] = None,
         view_options: Optional[str] = None,
@@ -381,8 +381,13 @@ class ModelBuilder:
         view_options: Optional[str] = None,
         tile: str = "",
     ) -> None:
+        print("RENDER IMAGE", [s.path for s in source])
+
         def _render_single_image(
-            image_target: str, stl_vals: Dict[str, Any], size=None
+            image_target: str,
+            model_file: str,
+            stl_vals: Dict[str, Any],
+            size=None,
         ) -> None:
             render_args = self._openscad_var_args(
                 stl_vals, for_subprocess=True
@@ -394,7 +399,7 @@ class ModelBuilder:
             self._run(
                 [
                     self.env["OPENSCAD"],
-                    source[0].path,
+                    model_file,
                     f"--colorscheme={'DeepOcean'}",
                     f"--imgsize={size}",
                     "-o",
@@ -408,16 +413,21 @@ class ModelBuilder:
             tdp = Path(td)
             # Render frames
             frames: List[str] = []
-            for i, frame_stl_vals in enumerate(stl_vals_list):
+            for i, (frame_stl_vals, frame_model_file) in enumerate(
+                zip(stl_vals_list, cycle(source))
+            ):
                 fn = tdp / f"image_{i:05d}.png"
                 frames.append(fn)
                 _render_single_image(
-                    fn, frame_stl_vals, IMAGE_RENDER_SIZE.replace("x", ",")
+                    fn,
+                    frame_model_file.path,
+                    frame_stl_vals or {},
+                    IMAGE_RENDER_SIZE.replace("x", ","),
                 )
             if len(frames) > 1 and target[0].suffix != ".gif":
                 if not tile:
                     row_len = ceil(len(frames) / 2)
-                    tile = f"{row_len}x{row_len}"
+                    tile = f"x{row_len}"
                 montage_fn = str(tdp / "montage") + target[0].suffix
                 montage_cmd = [
                     "montage",
