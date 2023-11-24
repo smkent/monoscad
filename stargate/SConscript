@@ -71,6 +71,14 @@ b.Image(
     {"Part_Selection": "drill-guide", "Hole_Spacing": 150},
 )
 
+b.InsetImage(
+    "demo-inset.png",
+    "render-stargate.png",
+    "photo-stargate-handle.jpg",
+    resize="33%",
+    gravity="southeast",
+)
+
 b.Source("*.scad", "stargate-symbols.svg")
 
 b.add_default_targets()
