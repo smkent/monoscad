@@ -188,7 +188,20 @@ class ModelBuilder:
 
     @ref_filter
     def add_default_targets(self) -> None:
+        self.add_repository_tracked_images()
         self.add_printables_zip_targets()
+
+    def add_repository_tracked_images(self) -> None:
+        self.publish_images |= {
+            f"{self.src_dir}/{line}"
+            for line in self._run(
+                ["git", "ls-files", "--", "images/publish"],
+                quiet=True,
+                capture_output=True,
+                text=True,
+                cwd=self.src_dir.get_abspath(),
+            ).stdout.splitlines()
+        }
 
     def _source_glob(self, *files: str) -> None:
         return {
