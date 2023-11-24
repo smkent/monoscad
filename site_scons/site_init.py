@@ -338,7 +338,7 @@ class ModelBuilder:
         gravity: str = "southwest",
         resize: str = "33%",
     ) -> None:
-        for image_path in IMAGE_TARGETS.keys():
+        for image_path, image_size in IMAGE_TARGETS.items():
             target_path = f"{self.src_dir}/{image_path}/{target}"
             self.env.NoClean(
                 self.env.Command(
@@ -349,6 +349,7 @@ class ModelBuilder:
                     ],
                     functools.partial(
                         self.render_inset_image,
+                        image_size=image_size,
                         resize=resize,
                         gravity=gravity,
                     ),
@@ -443,13 +444,18 @@ class ModelBuilder:
         target: Sequence[SConsFile],
         source: Sequence[SConsFile],
         env: SConsEnvironment,
+        image_size: str,
         resize: str,
         gravity: str,
     ) -> None:
         background_image, foreground_image = source
         cmd = [
             "convert",
+            "(",
             background_image.path,
+            "-resize",
+            image_size,
+            ")",
             "null:",
             "(",
             foreground_image.path,

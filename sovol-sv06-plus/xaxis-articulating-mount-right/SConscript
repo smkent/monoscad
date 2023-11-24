@@ -27,6 +27,14 @@ for printer in {"sv06", "sv06plus"}:
 
 b.Image("demo.png", model, camera="30,0,0,330,310,90,200")
 
+b.InsetImage(
+    "photo-inset.jpg",
+    "photo-assembled.jpg",
+    "demo.png",
+    resize="33%",
+    gravity="southwest",
+)
+
 # Package model and input STLs together
 b.Source(
     "*.scad",

@@ -21,7 +21,7 @@ for better use in [OpenSCAD][openscad], and further reimplemented a
 half-stargate handle like [viper1619's remix][original-handle-model-url]. You
 can also add a hanging loop for use as an ornament!
 
-Stargates and any diameters can be created using OpenSCAD.
+Stargates of any diameter can be created using OpenSCAD.
 
 ## Hardware and installation
 
