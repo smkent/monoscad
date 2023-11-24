@@ -87,6 +87,7 @@ all the source files are in the same directory and then open
 ## See also
 
 I attached my Logitech C920 and new adapter to my articulated mount using
+[my tweaked version][ball-nut-remix] of
 [darkcoffee's steel ball nut remix][darkcoffee-ball-nut].
 
 Also pictured is my
@@ -100,6 +101,7 @@ This is a remix of
 Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution][license].
 
+[ball-nut-remix]: https://www.printables.com/model/656380-tweaked-ballnut-with-steel-m5-nut-insert-for-artic
 [c920-disassembly-guide]: https://www.ifixit.com/Guide/Logitech+C920+Webcam+Disassembly/115077
 [c920-disassembly-video]: https://www.youtube.com/watch?v=a39iWgSwaBk
 [darkcoffee-ball-nut]: https://www.printables.com/model/577816-steel-ballnut-for-articulating-raspberry-pi-camera
