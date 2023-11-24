@@ -24,6 +24,11 @@ Printing with a concentric bottom fill pattern makes a nice look for this print.
 
 Simply snap the latch onto the box's latch clip!
 
+## See also
+
+I also have [parametric drill/drive bit clips](/bosch-custom-case/bit-clips)
+for Bosch Custom Case / Pick and Click cases!
+
 ## License
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
