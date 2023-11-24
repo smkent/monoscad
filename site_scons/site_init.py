@@ -381,8 +381,6 @@ class ModelBuilder:
         view_options: Optional[str] = None,
         tile: str = "",
     ) -> None:
-        print("RENDER IMAGE", [s.path for s in source])
-
         def _render_single_image(
             image_target: str,
             model_file: str,

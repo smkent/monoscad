@@ -4,6 +4,8 @@
 
 Replacement latch for Bosch Custom Case / Pick and Click cases
 
+![Photo of printed and OEM clips on boxes](images/readme/photo-clips-on-boxes-comparison.jpg)
+![Photo of printed and OEM clips arranged](images/readme/photo-clips-only.jpg)
 ![Model render](images/readme/demo.png)
 
 # Description
@@ -16,11 +18,16 @@ and Click bit storage boxes.
 The latch flexes in normal use. I printed this with 3 perimeters for strength.
 Latches printed with PLA seem to work, although I prefer PETG for these.
 
-Printing with a concentric bottom fill pattern is a nice look for this print.
+Printing with a concentric bottom fill pattern makes a nice look for this print.
 
 ## Installation
 
-Simply snap the latch onto the box's retaining clip!
+Simply snap the latch onto the box's latch clip!
+
+## See also
+
+I also have [parametric drill/drive bit clips](/bosch-custom-case/bit-clips)
+for Bosch Custom Case / Pick and Click cases!
 
 ## License
 
