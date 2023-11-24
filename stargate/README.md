@@ -47,6 +47,9 @@ holes.
 
 ![Slicer screenshot of handle with slicer supports](images/readme/slicer-screenshot-handle-1.png)
 
+I printed my Stargate handle with model supports. I used a utility knife to help
+remove the support structure at the top end of the ring.
+
 ![Slicer screenshot of handle with model supports](images/readme/slicer-screenshot-handle-2.png)
 ![Photo of printed handle with model supports](images/readme/photo-stargate-handle-supports.jpg)
 
