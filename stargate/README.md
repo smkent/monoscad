@@ -1,5 +1,6 @@
 # SG-1 Stargate with symbols (remix)
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-4.0 license][license-badge]][license]
 
 Parametric SG-1 Stargate models for display, hanging, or handle/drawer pulls
@@ -74,3 +75,5 @@ The original models and this remix are licensed under
 [openscad]: https://openscad.org
 [original-handle-model-url]: https://www.thingiverse.com/thing:1875360
 [original-model-url]: https://www.thingiverse.com/thing:87691
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/657480
