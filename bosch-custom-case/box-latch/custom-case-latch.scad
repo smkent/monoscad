@@ -1,5 +1,5 @@
 /*
- * Bosch Custom Case latch
+ * Box latch for Bosch Custom Case / Pick and Click
  * By smkent (GitHub) / bulbasaur0 (Printables)
  *
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
