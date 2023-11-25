@@ -6,13 +6,13 @@ model = "spool-holder.scad"
 # build/printables-sovol-sv06-plus__spool-holder-remix.zip
 
 for file_name, part_name in {
-    "barrel-full-size": "sunlu_combined_barrel",
-    "nut-extended-size": "sunlu_nut",
+    "barrel-full-size": "barrel",
+    "nut-extended-size": "nut",
 }.items():
     b.STL(
         f"spool-holder-{file_name}.stl",
         model,
-        {"Part": part_name, "Nut_Extra_Length": 10},
+        {"Part": part_name, "Nut_Extra_Length": 15},
         zip_dir="models-for-printing",
     )
 
@@ -40,9 +40,9 @@ b.Asset(
 b.Image(
     "render-sunlu-combined-barrel.png",
     model,
-    {"Part": "sunlu_combined_barrel"},
+    {"Part": "barrel"},
 )
-b.Image("render-sunlu-nut.png", model, {"Part": "sunlu_nut"})
+b.Image("render-sunlu-nut.png", model, {"Part": "nut"})
 b.Image("render-all-parts-preview.png", model, {"Part": "preview"})
 
 b.add_default_targets()
