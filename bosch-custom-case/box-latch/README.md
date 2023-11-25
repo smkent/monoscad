@@ -5,8 +5,8 @@
 
 Replacement latch for Bosch Custom Case / Pick and Click cases
 
-![Photo of printed and OEM clips on boxes](images/readme/photo-clips-on-boxes-comparison.jpg)
-![Photo of printed and OEM clips arranged](images/readme/photo-clips-only.jpg)
+![Photo of printed and OEM latches on boxes](images/readme/photo-latches-on-boxes-comparison.jpg)
+![Photo of printed and OEM latches arranged](images/readme/photo-latches-only.jpg)
 ![Model render](images/readme/demo.png)
 
 # Description
