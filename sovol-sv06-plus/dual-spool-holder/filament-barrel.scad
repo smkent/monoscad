@@ -15,8 +15,8 @@ Image_Render = 0;
 
 // Constants //
 
-$fa = $preview ? $fa : 2;
-$fs = $preview ? $fs : 0.4;
+$fa = $preview ? $fa / 4 : 2 / 4;
+$fs = $preview ? $fs / 2 : 0.4;
 
 barrel_d = 30;
 lower_lip_z = [11.8, 16];
@@ -55,8 +55,37 @@ module chamfer_cut(z=0, h=chamfer_ht, od=upper_lip_d[3], id=barrel_d) {
     }
 }
 
+// Sovol's filament barrel model has few enough faces that the polygons are
+// visible on a print. Replacing the body length with a new cylinder allows the
+// body to be rendered with more polygons.
+module replace_barrel_body() {
+    localslop = bigslop * 10;
+    body_length = upper_lip_z[0] - lower_lip_z[1];
+    color("#eef", 0.8)
+    union() {
+        difference() {
+            children();
+            render(convexity=4)
+            translate([0, 0, lower_lip_z[1]])
+            linear_extrude(height=body_length)
+            difference() {
+                circle(d=barrel_d + 1);
+                circle(d=barrel_d - localslop);
+            }
+        }
+        render(convexity=4)
+        translate([0, 0, lower_lip_z[1]])
+        linear_extrude(height=body_length)
+        difference() {
+            circle(d=barrel_d);
+            circle(d=barrel_d - localslop * 2);
+        }
+    }
+}
+
 module filament_barrel() {
     difference() {
+        replace_barrel_body()
         original_sv06_filament_barrel();
         chamfer_cut(z=upper_lip_z[0]);
         chamfer_cut(z=lower_lip_z[0]);
