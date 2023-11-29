@@ -38,6 +38,20 @@ b.Image(
     camera="0,0,90,55,0,25,900",
 )
 
+b.Image(
+    "demo-dual-spool-holder-tilt-angle.gif",
+    dual_spool_holder_model,
+    [
+        {
+            "Render_Mode": "model_preview",
+            "Image_Render": 1,
+            "Tilt_Angle": tilt_angle,
+        }
+        for tilt_angle in [0, 5, 9.5, 15, 20, 25, 30]
+    ],
+    camera="0,0,90,90,0,80,900",
+)
+
 b.Source(
     "*.scad",
     "sovol-sv06-filament-barrel-rotated.stl",
