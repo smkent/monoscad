@@ -6,6 +6,8 @@
  */
 
 /* [Rendering Options] */
+// modify the filament barrel for printing with no supports
+Chamfer = true;
 
 module __end_customizer_options__() { }
 
@@ -83,21 +85,23 @@ module replace_barrel_body() {
     }
 }
 
-module filament_barrel() {
+module filament_barrel(chamfer=true) {
     difference() {
         replace_barrel_body()
         original_sv06_filament_barrel();
-        chamfer_cut(z=upper_lip_z[0]);
-        chamfer_cut(z=lower_lip_z[0]);
-        difference() {
-            z = channel_z[1];
-            chamfer_cut(z=z, od=channel_d[1], id=channel_d[0]) {
-                projection(cut=true)
-                translate([0, 0, -(channel_z[0] + channel_thick / 2)])
-                original_sv06_filament_barrel();
+        if (chamfer) {
+            chamfer_cut(z=upper_lip_z[0]);
+            chamfer_cut(z=lower_lip_z[0]);
+            difference() {
+                z = channel_z[1];
+                chamfer_cut(z=z, od=channel_d[1], id=channel_d[0]) {
+                    projection(cut=true)
+                    translate([0, 0, -(channel_z[0] + channel_thick / 2)])
+                    original_sv06_filament_barrel();
+                }
             }
         }
     }
 }
 
-filament_barrel();
+filament_barrel(Chamfer);
