@@ -1,33 +1,44 @@
 Import("env")
 b = ModelBuilder(env)
 
-model = "dual-spool-holder.scad"
+dual_spool_holder_model = "dual-spool-holder.scad"
+filament_barrel_model = "filament-barrel.scad"
 
 b.STL(
     "dual-spool-holder.stl",
-    model,
+    dual_spool_holder_model,
     {"Render_Mode": "print"},
     zip_dir="models-for-printing",
 )
-b.Image("render-part.png", model, {"Render_Mode": "normal", "Image_Render": 1})
+b.STL(
+    "filament-barrel-chamfered.stl",
+    filament_barrel_model,
+    zip_dir="models-for-printing",
+)
+b.Image(
+    "render-part.png",
+    dual_spool_holder_model,
+    {"Render_Mode": "normal", "Image_Render": 1},
+)
+b.Image(
+    "render-filament-barrel.png",
+    filament_barrel_model,
+    camera="0,0,50,125,0,10,300",
+)
+
 b.Image(
     "render-model-preview.png",
-    model,
+    dual_spool_holder_model,
     {"Render_Mode": "model_preview", "Image_Render": 1},
     camera="0,0,90,55,0,25,900",
 )
 
 b.Source(
     "*.scad",
+    "sovol-sv06-filament-barrel-rotated.stl",
     "sovol-sv06-JXHSV06-07003-d Barrel nut.STL",
     "sovol-sv06-JXHSV06-02005-d Gantry beam.STL",
     "sovol-sv06-JXHSV06-07002-d Filament Barrel.STL",
-)
-
-b.Asset(
-    "sovol-sv06-filament-barrel-1mm-chamfered-threads.stl",
-    "sovol-sv06-filament-barrel-2mm-chamfered-threads.stl",
-    zip_dir="printable-filament-barrel",
 )
 
 b.add_default_targets()
