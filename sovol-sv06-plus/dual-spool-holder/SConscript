@@ -10,11 +10,15 @@ b.STL(
     {"Render_Mode": "print"},
     zip_dir="models-for-printing",
 )
-b.STL(
-    "filament-barrel-chamfered.stl",
-    filament_barrel_model,
-    zip_dir="models-for-printing",
-)
+
+for opts in GenerateOptions(chamfer=[(0, "-stock"), (1, "-chamfered")]):
+    b.STL(
+        f"filament-barrel{opts.chamfer_fn}.stl",
+        filament_barrel_model,
+        {"Chamfer": opts.chamfer},
+        zip_dir="models-for-printing",
+    )
+
 b.Image(
     "render-part.png",
     dual_spool_holder_model,
@@ -23,6 +27,7 @@ b.Image(
 b.Image(
     "render-filament-barrel.png",
     filament_barrel_model,
+    {"Chamfer": 1},
     camera="0,0,50,125,0,10,300",
 )
 
