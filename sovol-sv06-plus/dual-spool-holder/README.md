@@ -30,12 +30,12 @@ which has been working great for me.
 ## Printing
 
 The dual spool holder body prints on its side with no supports. The filament
-barrel(s) print upright, with no supports if printing one of the included
-chamfered versions. You can reuse the stock spool holder for one of the two
-sides, or print two new ones.
+barrel(s) print upright, with no supports if printing the included chamfered
+version. You can reuse the stock spool holder for one of the two sides, or print
+two new ones.
 
 ![Slicer screenshot of dual spool holder](images/readme/slicer-screenshot-dual-spool-holder.png)
-![Slicer screenshot of filament barrel with 1mm chamfer](images/readme/slicer-screenshot-filament-barrel-1mm.png)
+![Slicer screenshot of filament barrel with chamfer](images/readme/slicer-screenshot-filament-barrel-chamfered.png)
 
 ## Installation
 
