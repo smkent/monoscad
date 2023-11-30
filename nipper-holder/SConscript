@@ -17,6 +17,14 @@ for opts in GenerateOptions(variant=[(1, "-plain"), (2, "-screw-hole")]):
         camera="5,0,5,45,0,-45,140",
     )
 
+b.InsetImage(
+    "photo-inset.jpg",
+    "photo1.jpg",
+    "render-variant-screw-hole.png",
+    resize="33%",
+    gravity="southeast",
+)
+
 b.Source("*.scad", "muh60-*.stl")
 
 b.add_default_targets()
