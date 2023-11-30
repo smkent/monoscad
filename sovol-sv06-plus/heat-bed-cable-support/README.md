@@ -12,7 +12,16 @@ placed near a wall
 ![Frame support model render](images/readme/frame-strain-relief-render.png)
 ![Bed support model render](images/readme/bed-strain-relief-render.png)
 
-# Version 2
+# Update! -- November 29, 2023
+
+I have recreated my remixed frame strain relief support model from
+[rogerquin's original model][original-model-url] using [OpenSCAD][openscad]! By
+default, recreated frame support is the same as before. However, the OpenSCAD
+model recreation makes the bend angle parametric.
+
+![Frame support model bend options animation](images/readme/frame-strain-relief-options.gif)
+
+# Version 2 -- November 14, 2023
 
 **Heat bed strain relief support V2 is here!**
 
@@ -99,20 +108,34 @@ Installation steps in photos:
 ## Remixing
 
 For further remixing, I've included the [OpenSCAD][openscad] source model for
-the bed strain relief support clip. The source model uses the
+the both the frame and bed strain relief support clips.
+
+The bed support source model uses the
 [original Sovol SV06 Plus strain relief part][original-part-link-sv06-plus] for
-fit and shapes of various components. With all of the source
-files in the same directory, open `bed-strain-relief-support-v2.scad` in
-OpenSCAD.
+fit and shapes of various components.
+
+The frame support source model uses [rogerquin's original
+model][original-model-url] within the remixed model code.
+
+To use either of these OpenSCAD models, place all of the source files in the
+same directory. Then, open either `frame-strain-relief-support-v2.scad` or
+`bed-strain-relief-support-v2.scad` in OpenSCAD.
+
+### Original parts note
 
 The included SV06 Plus strain relief cover STL files are repaired copies of
 Sovol's original part (also included). The original part STL produced CGAL
 errors in OpenSCAD.
 
+The included copy of [rogerquin's original model][original-model-url] has been
+recentered to the origin on all axes.
+
 ## Previous version
 
-[Heat bed strain relief support V1][bed-strain-relief-support-v1-stl]
-was created in TinkerCAD, and is still included in the model files.
+Earlier remixed versions of both the
+[frame support clip][frame-strain-relief-support-v1-stl] (created using Blender)
+and [bed support clip][bed-strain-relief-support-v1-stl] (created using
+TinkerCAD) are included in the model files.
 
 ## Attribution and License
 
@@ -124,7 +147,8 @@ This is a remix of:
 Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution-NonCommercial-ShareAlike][license].
 
-[bed-strain-relief-support-v1-stl]: bed-strain-relief-support-v1/bed-strain-relief-support-v1.stl
+[frame-strain-relief-support-v1-stl]: strain-relief-support-v1/frame-strain-relief-support-v1.stl
+[bed-strain-relief-support-v1-stl]: strain-relief-support-v1/bed-strain-relief-support-v1.stl
 [license-badge]: /_static/license-badge-cc-by-nc-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-nc-sa/4.0/
 [openscad]: https://openscad.org

@@ -1,21 +1,51 @@
 Import("env")
 b = ModelBuilder(env)
 
-model = "bed-strain-relief-support-v2.scad"
+bed_model = "bed-strain-relief-support-v2.scad"
+frame_model = "frame-strain-relief-support-v2.scad"
 
 b.STL(
     "bed-strain-relief-support-v2.stl",
-    model,
+    bed_model,
     {"Print_Orientation": 1},
     zip_dir="models-for-printing",
 )
+for opts in GenerateOptions(
+    angle=[(60, "-60-degrees"), (75, "-75-degrees"), (90, "-90-degrees")]
+):
+    b.STL(
+        f"frame-strain-relief-support-v2{opts.angle_fn}.stl",
+        frame_model,
+        {"Print_Orientation": 1, "Angle": opts.angle},
+        zip_dir="models-for-printing",
+    )
 
-b.Image("bed-strain-relief-render.png", model, {"Print_Orientation": 0})
-b.Image("frame-strain-relief-render.png", "frame-strain-relief-support.scad")
+b.Image("bed-strain-relief-render.png", bed_model, {"Print_Orientation": 0})
+b.Image("frame-strain-relief-render.png", frame_model)
+
+b.Image(
+    "frame-strain-relief-options.gif",
+    frame_model,
+    [
+        {"Angle": angle, "Radius": radius}
+        for (angle, radius) in [
+            (60, 27.5),
+            (75, 27.5),
+            (90, 27.5),
+            (90, 35),
+            (90, 40),
+            (75, 40),
+            (60, 40),
+            (60, 35),
+            (60, 27.5),
+        ]
+    ],
+    camera="0,0,40,165,290,0,250",
+)
 
 b.Image(
     "renders-row.png",
-    ["frame-strain-relief-support.scad", model],
+    [frame_model, bed_model],
     [None, {"Print_Orientation": 0}],
 )
 
@@ -27,18 +57,15 @@ b.InsetImage(
     gravity="southeast",
 )
 
-b.Asset(
+b.Source(
     "*.scad",
-    "sovol-sv06plus-cover-repaired-notext.stl",
-    "sovol-sv06plus-cover-repaired.stl",
-    "sovol-sv06plus-JXHSV06-01009-d Hot Bed Wire Fixing Cover.STL",
-    zip_dir="bed-support-source-model",
+    "rogerquin-*.stl",
+    "sovol-*.stl",
+    "sovol-*.STL",
 )
 
-b.Asset("frame-strain-relief-support.stl", zip_dir="models-for-printing")
-
 b.Asset(
-    "bed-strain-relief-support-v1/bed-strain-relief-support-v1.stl",
+    "strain-relief-support-v1/*.stl",
     zip_dir="old-version",
 )
 
