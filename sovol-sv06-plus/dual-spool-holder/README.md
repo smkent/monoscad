@@ -22,6 +22,9 @@ spool holder threads for printing without supports. While this could result in a
 looser fit, the modified filament barrels I printed fit snugly into my dual
 spool holder.
 
+These models were created using [OpenSCAD][openscad]. The source code and models
+are included.
+
 ## Prerequisites
 
 The SV06 Plus includes a filament runout sensor that mounts on the stock spool
@@ -49,6 +52,14 @@ Remove the original spool holder from the gantry, and reuse the original M4
 bolts to attach the new spool holder body. Then, insert both filament spool
 barrels into each sides of the integrated nut.
 
+## Variation
+
+The dual spool holder OpenSCAD model has a few configurable options. Most
+notably, the tilt angle is configurable if you want your spools to sit further
+forward or backward than the default 9.5° tilt.
+
+![Animated render of various dual spool holder tilt angles](images/readme/demo-dual-spool-holder-tilt-angle.gif)
+
 ## Add-on even more
 
 Also pictured is
@@ -70,12 +81,13 @@ This model is licensed under
 [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
 
 
+[andrew-gipson-sv06-spool-holder]: https://www.printables.com/model/501529-sv06-spool-holder-with-filament-guide-v1
+[braga3dprint-double-spool-holder]: https://www.printables.com/model/458130-sovol-sv06sv06-plus-double-filamentspool-holder
 [breakmate-sv06-plus-runout-mount]: https://www.printables.com/model/493623-sv06-plus-filament-runout-mount
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
+[openscad]: https://openscad.org
 [original-part-link-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source/blob/main/Molded%20Parts%20STL/JXHSV06-07003-d%20Barrel%20nut.STL
-[sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
 [rogerquin-spool-holder-for-sovol-sv06]: https://www.printables.com/model/409684-spool-holder-for-sovol-sv06-3d-printer
+[sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
 [v1-model]: https://www.printables.com/model/584632-sovol-sv06-plus-90-degree-dual-spool-holder
-[braga3dprint-double-spool-holder]: https://www.printables.com/model/458130-sovol-sv06sv06-plus-double-filamentspool-holder
-[andrew-gipson-sv06-spool-holder]: https://www.printables.com/model/501529-sv06-spool-holder-with-filament-guide-v1
