@@ -11,6 +11,11 @@ Render_Mode = "print"; // [print: Print Orientation, normal: Upright installed o
 /* [Options] */
 Runout_Sensor_Orientation = "rear"; // [rear: Connector facing rear of extruder, right: Connector facing right side of extruder, front: Connector facing front of extruder, left: Connector facing left side of extruder]
 
+// Enable if the filament runout sensor will be wired to the 3-pin JST GH header on the extruder. Leave disabled if using the stock Sovol SV06 Plus runout sensor wiring.
+Extruder_Runout_Wire_Grip = false;
+
+Chamfer_Screw_Holes = true;
+
 /* [Development Toggles] */
 // Round all edges on the finished model. This uses minkowski() and may be very slow to render.
 Round_Edges = false;
@@ -24,6 +29,7 @@ $fs = $preview ? $fs : 0.4;
 
 runout_exit_pos = [3.4972, 8.0042, 0.005936];
 runout_foot_height = 6.8;
+runout_foot_adjust = -0.18;
 runout_connector_x = 30.209;
 runout_connector_coords = [
     [5.5045, 18.688],
@@ -200,11 +206,45 @@ module screw_holes_shape_cut() {
 module screw_holes_chamfer_cut() {
     difference() {
         children();
-        color("#94c5db", 0.8)
-        for (hole_pos = [extruder_hole_1_pos, extruder_hole_2_pos])
-        translate([hole_pos[0], hole_pos[1] - adj_height])
-        translate([0, 0, mount_thick / 2])
-        cylinder(h=mount_thick / 2 + 0.1, r2=screw_hole_diameter + edge_radius, r1=screw_hole_diameter / 2 + edge_radius);
+        if (Chamfer_Screw_Holes) {
+            color("#94c5db", 0.8)
+            for (hole_pos = [extruder_hole_1_pos, extruder_hole_2_pos])
+            translate([hole_pos[0], hole_pos[1] - adj_height])
+            translate([0, 0, mount_thick / 2])
+            cylinder(h=mount_thick / 2 + 0.1, r2=screw_diameter, r1=screw_hole_diameter / 2);
+        }
+    }
+}
+
+module mount_height_intersect_grip() {
+    rr = 9;
+    ht = 10;
+    if (Extruder_Runout_Wire_Grip) {
+        difference() {
+            union() {
+                children();
+                offset(r=-2)
+                offset(r=2)
+                union() {
+                    translate([extruder_assembly_width - extruder_inlet_pos[0] * 0.35, 0])
+                    difference() {
+                        hull() {
+                            translate([0, ht])
+                            circle(d=rr);
+                            translate([0, mount_thick / 2])
+                            square([rr * 1.5, mount_thick], center=true);
+                        }
+                    }
+                    square([extruder_assembly_width, mount_thick]);
+                }
+            }
+            offset(r=rr * 0.24)
+            offset(r=-rr * 0.24)
+            translate([extruder_assembly_width - extruder_inlet_pos[0] * 0.35, ht - rr / 4])
+            square([rr / 2, ht - rr / 4], center=true);
+        }
+    } else {
+        children();
     }
 }
 
@@ -217,6 +257,7 @@ module mount_height_intersect() {
         rotate([90, 0, 0])
         linear_extrude(height=mount_height)
         offset(delta=-edge_radius)
+        mount_height_intersect_grip()
         union() {
             translate([0, -mount_base_path_height + mount_thick])
             mount_curve_shape_solid(4, custom_r = 18.5);
@@ -231,8 +272,9 @@ module sensor_foot_cut() {
         children();
         rotate([270, 0, 0])
         translate([extruder_inlet_pos[0], extruder_inlet_pos[1], 0] + [0, 0, mount_height - mount_top_thick * extra_factor - 0.1])
-        linear_extrude(height=mount_top_thick * extra_factor + 1 + 0.1 * 2, scale=1.05)
+        linear_extrude(height=mount_top_thick * extra_factor + 1 + 0.1 * 2, scale=1.00)
         offset(delta=edge_radius)
+        offset(delta=runout_foot_adjust)
         sensor_foot_shape();
     }
 }
@@ -265,10 +307,10 @@ module round_all_edges() {
 }
 
 module extruder_runout_mount() {
+    screw_holes_chamfer_cut()
     round_all_edges()
     color("#94c5db", 0.8)
     render(convexity=2)
-    screw_holes_chamfer_cut()
     sensor_foot_cut()
     mount_height_intersect()
     mount_assembled_shape();
