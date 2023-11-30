@@ -11,8 +11,9 @@ Remixed holder for your 3D printer's included nipper cutter
 This nipper cutter holder is great for storing the nippers that came with your
 3D printer!
 
-I added a closed tip onto Muh60's [nipper cutter holder][original-model-url] to
-enclose the nipper blade for better safety.
+I added a closed tip onto
+[Muh60's nipper cutter holder model][original-model-url]
+to enclose the nipper blade for better safety.
 
 ## Differences of the remix compared to the original
 
