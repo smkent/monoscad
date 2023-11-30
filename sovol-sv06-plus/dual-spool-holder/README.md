@@ -43,6 +43,9 @@ The filament barrel(s) print upright, with no supports if printing the included
 chamfered version. You can reuse the stock spool holder for one of the two
 sides, or print two new ones.
 
+For vanity reasons, I used concentric top and bottom fill patterns for the
+filament barrels.
+
 ![Slicer screenshot of filament barrel with chamfer](images/readme/slicer-screenshot-filament-barrel-chamfered.png)
 ![Slicer screenshot of filament barrel with chamfer, underside](images/readme/slicer-screenshot-filament-barrel-chamfered-2.png)
 
