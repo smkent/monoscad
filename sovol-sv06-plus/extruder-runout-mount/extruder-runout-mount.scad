@@ -27,6 +27,7 @@ $fs = $preview ? $fs : 0.4;
 
 runout_exit_pos = [3.4972, 8.0042, 0.005936];
 runout_foot_height = 6.8;
+runout_foot_adjust = -0.18;
 runout_connector_x = 30.209;
 runout_connector_coords = [
     [5.5045, 18.688],
@@ -214,27 +215,33 @@ module screw_holes_chamfer_cut() {
 module mount_height_intersect_grip() {
     rr = 9;
     ht = 10;
-    difference() {
-        offset(r=-2)
-        offset(r=2)
-        union() {
-            translate([extruder_assembly_width - extruder_inlet_pos[0] * 0.35, 0])
-            difference() {
-                hull() {
-                    translate([0, ht])
-                    circle(d=rr);
-                    translate([0, mount_thick / 2])
-                    square([rr * 1.5, mount_thick], center=true);
+    if (Extruder_Runout_Wire_Grip) {
+        difference() {
+            union() {
+                children();
+                offset(r=-2)
+                offset(r=2)
+                union() {
+                    translate([extruder_assembly_width - extruder_inlet_pos[0] * 0.35, 0])
+                    difference() {
+                        hull() {
+                            translate([0, ht])
+                            circle(d=rr);
+                            translate([0, mount_thick / 2])
+                            square([rr * 1.5, mount_thick], center=true);
+                        }
+                    }
+                    square([extruder_assembly_width, mount_thick]);
                 }
             }
-            square([extruder_assembly_width, mount_thick]);
+            offset(r=rr * 0.24)
+            offset(r=-rr * 0.24)
+            translate([extruder_assembly_width - extruder_inlet_pos[0] * 0.35, ht - rr / 4])
+            square([rr / 2, ht - rr / 4], center=true);
         }
-        offset(r=rr * 0.24)
-        offset(r=-rr * 0.24)
-        translate([extruder_assembly_width - extruder_inlet_pos[0] * 0.35, ht - rr / 4])
-        square([rr / 2, ht - rr / 4], center=true);
+    } else {
+        children();
     }
-
 }
 
 module mount_height_intersect() {
@@ -246,13 +253,11 @@ module mount_height_intersect() {
         rotate([90, 0, 0])
         linear_extrude(height=mount_height)
         offset(delta=-edge_radius)
+        mount_height_intersect_grip()
         union() {
             translate([0, -mount_base_path_height + mount_thick])
             mount_curve_shape_solid(4, custom_r = 18.5);
             square([extruder_assembly_width, mount_thick]);
-            if (Extruder_Runout_Wire_Grip) {
-                mount_height_intersect_grip();
-            }
         }
     }
 }
@@ -263,8 +268,9 @@ module sensor_foot_cut() {
         children();
         rotate([270, 0, 0])
         translate([extruder_inlet_pos[0], extruder_inlet_pos[1], 0] + [0, 0, mount_height - mount_top_thick * extra_factor - 0.1])
-        linear_extrude(height=mount_top_thick * extra_factor + 1 + 0.1 * 2, scale=1.05)
+        linear_extrude(height=mount_top_thick * extra_factor + 1 + 0.1 * 2, scale=1.00)
         offset(delta=edge_radius)
+        offset(delta=runout_foot_adjust)
         sensor_foot_shape();
     }
 }
