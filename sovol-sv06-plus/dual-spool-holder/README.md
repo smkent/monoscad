@@ -9,15 +9,18 @@ Sovol SV06 (Plus) 90-degree dual spool holder
 
 # Description
 
-I wanted both a 90-degree rotated and double spool holder for my Sovol SV06
-Plus. Using
+Use this double spool holder to place two forward facing filament spools on your
+Sovol SV06 or SV06 Plus! Using
 [the original Sovol SV06 filament barrel nut][original-part-link-sv06],
 I created a longer double-ended nut combined with a new base to create this dual
-spool holder.
+spool holder. (Credit to
+[braga3dprint's model][braga3dprint-double-spool-holder] for the double-ended
+nut idea!)
 
-Also included is a slightly tweaked stock spool holder model that increases the
-spool holder threads for printing without supports, but may result in a looser
-fit. I'm using the included looser spool holder and haven't any fit issues.
+Also included is a slightly tweaked stock spool holder model that chamfers the
+spool holder threads for printing without supports. While this could result in a
+looser fit, the modified filament barrels I printed fit snugly into my dual
+spool holder.
 
 ## Prerequisites
 
@@ -29,13 +32,16 @@ which has been working great for me.
 
 ## Printing
 
-The dual spool holder body prints on its side with no supports. The filament
-barrel(s) print upright, with no supports if printing the included chamfered
-version. You can reuse the stock spool holder for one of the two sides, or print
-two new ones.
+The dual spool holder body prints on its side with no supports.
 
 ![Slicer screenshot of dual spool holder](images/readme/slicer-screenshot-dual-spool-holder.png)
+
+The filament barrel(s) print upright, with no supports if printing the included
+chamfered version. You can reuse the stock spool holder for one of the two
+sides, or print two new ones.
+
 ![Slicer screenshot of filament barrel with chamfer](images/readme/slicer-screenshot-filament-barrel-chamfered.png)
+![Slicer screenshot of filament barrel with chamfer, underside](images/readme/slicer-screenshot-filament-barrel-chamfered-2.png)
 
 ## Installation
 
@@ -62,6 +68,7 @@ This model uses the original [Sovol SV06 barrel nut][original-part-link-sv06].
 
 This model is licensed under
 [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
+
 
 [breakmate-sv06-plus-runout-mount]: https://www.printables.com/model/493623-sv06-plus-filament-runout-mount
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
