@@ -16,8 +16,8 @@ placed near a wall
 
 I have recreated my remixed frame strain relief support model from
 [rogerquin's original model][original-model-url] using [OpenSCAD][openscad]! By
-default, recreated frame support is the same as before. However, the OpenSCAD
-model recreation makes the bend angle parametric.
+default, the recreated frame support is the same as before. However, the
+OpenSCAD model recreation makes the bend angle parametric.
 
 ![Frame support model bend options animation](images/readme/frame-strain-relief-options.gif)
 
