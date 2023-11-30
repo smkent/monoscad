@@ -7,6 +7,10 @@
  * Licensed under Creative Commons (4.0 International License) Attribution-NonCommercial-ShareAlike
  */
 
+/* [Rendering Options] */
+// Orient the model for printing
+Print_Orientation = true;
+
 /* [Channel Bend] */
 
 Angle = 60; // [0:0.1:90]
@@ -81,6 +85,7 @@ module frame_cable_support(angle=60, radius=27.5) {
 
 module main() {
     color("#94c5db", 0.8)
+    rotate(Print_Orientation ? 0 : [-90, 0, 0])
     frame_cable_support(angle=Angle, radius=Radius);
 }
 

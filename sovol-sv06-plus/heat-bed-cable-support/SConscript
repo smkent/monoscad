@@ -21,7 +21,9 @@ for opts in GenerateOptions(
     )
 
 b.Image("bed-strain-relief-render.png", bed_model, {"Print_Orientation": 0})
-b.Image("frame-strain-relief-render.png", frame_model)
+b.Image(
+    "frame-strain-relief-render.png", frame_model, {"Print_Orientation": 0}
+)
 
 b.Image(
     "frame-strain-relief-options.gif",
@@ -46,7 +48,7 @@ b.Image(
 b.Image(
     "renders-row.png",
     [frame_model, bed_model],
-    [None, {"Print_Orientation": 0}],
+    [{"Print_Orientation": 0}] * 2,
 )
 
 b.InsetImage(
