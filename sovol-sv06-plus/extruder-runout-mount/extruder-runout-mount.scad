@@ -11,6 +11,9 @@ Render_Mode = "print"; // [print: Print Orientation, normal: Upright installed o
 /* [Options] */
 Runout_Sensor_Orientation = "rear"; // [rear: Connector facing rear of extruder, right: Connector facing right side of extruder, front: Connector facing front of extruder, left: Connector facing left side of extruder]
 
+// Enable if the filament runout sensor will be wired to the 3-pin JST GH header on the extruder. Leave disabled if using the stock Sovol SV06 Plus runout sensor wiring.
+Extruder_Runout_Wire_Grip = false;
+
 /* [Development Toggles] */
 // Round all edges on the finished model. This uses minkowski() and may be very slow to render.
 Round_Edges = false;
@@ -208,6 +211,32 @@ module screw_holes_chamfer_cut() {
     }
 }
 
+module mount_height_intersect_grip() {
+    rr = 9;
+    ht = 10;
+    difference() {
+        offset(r=-2)
+        offset(r=2)
+        union() {
+            translate([extruder_assembly_width - extruder_inlet_pos[0] * 0.35, 0])
+            difference() {
+                hull() {
+                    translate([0, ht])
+                    circle(d=rr);
+                    translate([0, mount_thick / 2])
+                    square([rr * 1.5, mount_thick], center=true);
+                }
+            }
+            square([extruder_assembly_width, mount_thick]);
+        }
+        offset(r=rr * 0.24)
+        offset(r=-rr * 0.24)
+        translate([extruder_assembly_width - extruder_inlet_pos[0] * 0.35, ht - rr / 4])
+        square([rr / 2, ht - rr / 4], center=true);
+    }
+
+}
+
 module mount_height_intersect() {
     intersection() {
         children();
@@ -221,6 +250,9 @@ module mount_height_intersect() {
             translate([0, -mount_base_path_height + mount_thick])
             mount_curve_shape_solid(4, custom_r = 18.5);
             square([extruder_assembly_width, mount_thick]);
+            if (Extruder_Runout_Wire_Grip) {
+                mount_height_intersect_grip();
+            }
         }
     }
 }
