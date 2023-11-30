@@ -4,12 +4,14 @@ b = ModelBuilder(env)
 model = "extruder-runout-mount.scad"
 
 for opts in GenerateOptions(
-    orientation=["rear", "right"], runout_wire_grip=[0, (1, "-wire-grip")]
+    orientation=["rear", "right"],
+    runout_wire_grip=[0, (1, "-wire-grip")],
+    screw_hole_chamfer=[(0, "-flat"), (1, "-chamfer")],
 ):
     b.STL(
         (
-            "extruder-runout-mount-connector-facing-"
-            f"{opts.orientation}{opts.runout_wire_grip_fn}.stl"
+            f"extruder-runout-mount-connector-facing-{opts.orientation}"
+            f"{opts.runout_wire_grip_fn}{opts.screw_hole_chamfer_fn}.stl"
         ),
         model,
         {
@@ -17,6 +19,7 @@ for opts in GenerateOptions(
             "Round_Edges": 1,
             "Runout_Sensor_Orientation": opts.orientation,
             "Extruder_Runout_Wire_Grip": opts.runout_wire_grip,
+            "Chamfer_Screw_Holes": opts.screw_hole_chamfer,
         },
     )
 

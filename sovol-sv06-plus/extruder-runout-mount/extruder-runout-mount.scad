@@ -14,6 +14,8 @@ Runout_Sensor_Orientation = "rear"; // [rear: Connector facing rear of extruder,
 // Enable if the filament runout sensor will be wired to the 3-pin JST GH header on the extruder. Leave disabled if using the stock Sovol SV06 Plus runout sensor wiring.
 Extruder_Runout_Wire_Grip = false;
 
+Chamfer_Screw_Holes = true;
+
 /* [Development Toggles] */
 // Round all edges on the finished model. This uses minkowski() and may be very slow to render.
 Round_Edges = false;
@@ -204,11 +206,13 @@ module screw_holes_shape_cut() {
 module screw_holes_chamfer_cut() {
     difference() {
         children();
-        color("#94c5db", 0.8)
-        for (hole_pos = [extruder_hole_1_pos, extruder_hole_2_pos])
-        translate([hole_pos[0], hole_pos[1] - adj_height])
-        translate([0, 0, mount_thick / 2])
-        cylinder(h=mount_thick / 2 + 0.1, r2=screw_hole_diameter + edge_radius, r1=screw_hole_diameter / 2 + edge_radius);
+        if (Chamfer_Screw_Holes) {
+            color("#94c5db", 0.8)
+            for (hole_pos = [extruder_hole_1_pos, extruder_hole_2_pos])
+            translate([hole_pos[0], hole_pos[1] - adj_height])
+            translate([0, 0, mount_thick / 2])
+            cylinder(h=mount_thick / 2 + 0.1, r2=screw_diameter, r1=screw_hole_diameter / 2);
+        }
     }
 }
 
@@ -303,10 +307,10 @@ module round_all_edges() {
 }
 
 module extruder_runout_mount() {
+    screw_holes_chamfer_cut()
     round_all_edges()
     color("#94c5db", 0.8)
     render(convexity=2)
-    screw_holes_chamfer_cut()
     sensor_foot_cut()
     mount_height_intersect()
     mount_assembled_shape();
