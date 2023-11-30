@@ -15,6 +15,9 @@ I added a closed tip onto
 [Muh60's nipper cutter holder model][original-model-url]
 to enclose the nipper blade for better safety.
 
+I used [OpenSCAD][openscad] to modify the original model. The source code and
+original models are included.
+
 ## Differences of the remix compared to the original
 
 For better safety, I extended and closed the cutting end tip on the holder so
@@ -28,6 +31,8 @@ This is a remix of
 Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution-NonCommercial-ShareAlike][license].
 
-[original-model-url]: https://www.printables.com/model/575171-nipper-cutter-holder
-[license]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+
 [license-badge]: /_static/license-badge-cc-by-nc-sa-4.0.svg
+[license]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+[openscad]: https://openscad.org
+[original-model-url]: https://www.printables.com/model/575171-nipper-cutter-holder
