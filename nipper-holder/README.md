@@ -4,6 +4,7 @@
 
 Remixed holder for your 3D printer's included nipper cutter
 
+![Model photo](images/readme/photo1.jpg)
 ![Model render](images/readme/render-variant-screw-hole.png)
 
 # Description
