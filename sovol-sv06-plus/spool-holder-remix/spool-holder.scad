@@ -22,7 +22,15 @@ barrel_cone_r = 39.685 + 0.4;
 barrel_in_r = 22.9; // reduce a bit
 barrel_base_lip_z = 5.11971;
 
+nut_id = 46.4;
+nut_base_edge_radius = 1;
+nut_thread_z = [4.125, 7.675, 10.125, 13.675, 16.125, 19.675];
+nut_thread_loop_z = nut_thread_z[2] - nut_thread_z[0];
+nut_new_thread_base = Nut_Extra_Length + nut_thread_z[0] - nut_base_edge_radius;
+
 sunlu_nut_lip_z = 2.41422;
+
+slop = 0.01;
 
 // Modules //
 
@@ -59,6 +67,17 @@ module original_sunlu_nut() {
     import("rogerquin-sv06-spool-holder-sunlu-nut.stl", convexity=4);
 }
 
+module sunlu_nut_threads() {
+    intersection() {
+        original_sunlu_nut();
+        translate([0, 0, nut_thread_z[0]])
+        cylinder(
+            h=nut_thread_z[len(nut_thread_z) - 1] - nut_thread_z[0],
+            d=nut_id + slop * 2
+        );
+    }
+}
+
 module sunlu_nut() {
     extend = Nut_Extra_Length;
     // Bottom
@@ -66,6 +85,12 @@ module sunlu_nut() {
         original_sunlu_nut();
         cylinder(sunlu_nut_lip_z, 200, 200);
     }
+
+    // Extend threads
+    translate([0, 0, extend])
+    for (z = [0:-nut_thread_loop_z:-nut_new_thread_base])
+    translate([0, 0, z])
+    sunlu_nut_threads();
 
     // New extension
     slop = 0.01;
