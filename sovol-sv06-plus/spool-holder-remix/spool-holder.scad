@@ -6,17 +6,10 @@
  */
 
 /* [Options] */
-Part = "sunlu_combined_barrel"; // [preview: Preview of all model parts, sunlu_combined_barrel: Sunlu-size barrel adapter, sunlu_nut: Sunlu-size nut]
+Part = "barrel"; // [preview: Preview of all model parts, barrel: Sunlu-size barrel adapter, nut: Sunlu-size nut]
 
 /* [Nut Options] */
-Nut_Extra_Length = 10; // [0:0.1:30]
-
-/* [Size] */
-// All units in millimeters
-
-/* [Advanced Options] */
-
-/* [Development Toggles] */
+Nut_Extra_Length = 15; // [0:0.1:30]
 
 module __end_customizer_options__() { }
 
@@ -111,11 +104,11 @@ module all_parts_preview() {
 }
 
 module main() {
-    if (Part == "sunlu_combined_barrel") {
+    if (Part == "barrel") {
         color("lightblue", 0.8)
         render(convexity=2)
         sunlu_combined_barrel();
-    } else if (Part == "sunlu_nut") {
+    } else if (Part == "nut") {
         color("lightgreen", 0.8)
         sunlu_nut();
     } else if (Part == "preview") {
