@@ -18,6 +18,13 @@ to enclose the nipper blade for better safety.
 I used [OpenSCAD][openscad] to modify the original model. The source code and
 original models are included.
 
+## Printing
+
+This prints with no supports and no special instructions. I used 4 perimeters to
+avoid creating infill, but this is optional.
+
+![Slicer screenshot](images/readme/slicer-screenshot.png)
+
 ## Differences of the remix compared to the original
 
 For better safety, I extended and closed the cutting end tip on the holder so
