@@ -1,5 +1,6 @@
 # Nipper Cutter Holder (remix)
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-NC-SA-4.0 license][license-badge]][license]
 
 Remixed holder for your 3D printer's included nipper cutter
@@ -44,3 +45,5 @@ Both the original model and this remix are licensed under
 [license]: http://creativecommons.org/licenses/by-nc-sa/4.0/
 [openscad]: https://openscad.org
 [original-model-url]: https://www.printables.com/model/575171-nipper-cutter-holder
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/664520
