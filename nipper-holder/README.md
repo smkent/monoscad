@@ -20,7 +20,7 @@ original models are included.
 
 ## Printing
 
-This prints with no supports or any special instructions. I used 4 perimeters to
+This prints with no supports and no special instructions. I used 4 perimeters to
 avoid creating infill, but this is optional.
 
 ![Slicer screenshot](images/readme/slicer-screenshot.png)
