@@ -1,0 +1,26 @@
+Import("env")
+b = ModelBuilder(env)
+
+mainboard_model = "mainboard-cable-support.scad"
+extruder_model = "extruder-cable-support.scad"
+
+for opts in GenerateOptions(
+    model=[(extruder_model, "extruder"), (mainboard_model, "mainboard")]
+):
+    b.STL(
+        f"{opts.model_fn}-cable-support.stl",
+        opts.model,
+        {"Print_Orientation": 1},
+    )
+    for image_opts in GenerateOptions(
+        render_mode=[("normal", ""), ("model_preview", "-model-preview")]
+    ):
+        b.Image(
+            f"render-{opts.model_fn}-support{image_opts.render_mode_fn}.png",
+            opts.model,
+            {"Render_Mode": image_opts.render_mode},
+        )
+
+b.add_default_targets()
+
+# vim: ft=python
