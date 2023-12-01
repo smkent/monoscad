@@ -9,10 +9,10 @@
 Render_Mode = "print"; // [print: Print Orientation, normal: Upright installed orientation, model_preview: Preview of model installed on extruder]
 
 /* [Options] */
-Runout_Sensor_Orientation = "rear"; // [rear: Connector facing rear of extruder, right: Connector facing right side of extruder, front: Connector facing front of extruder, left: Connector facing left side of extruder]
+Runout_Sensor_Orientation = "rear"; // [rear: Connector facing rear of extruder for stock wiring, right: Connector facing right side of extruder for extruder port wiring]
 
-// Enable if the filament runout sensor will be wired to the 3-pin JST GH header on the extruder. Leave disabled if using the stock Sovol SV06 Plus runout sensor wiring.
-Extruder_Runout_Wire_Grip = false;
+// If Runout Sensor Orientation is facing the right side of the extruder for extruder port wiring, leave a slot open on the wire grip for wires to be inserted from the side
+Extruder_Runout_Wire_Grip_Slot = true;
 
 Chamfer_Screw_Holes = true;
 
@@ -59,6 +59,10 @@ adj_height = extruder_assembly_height - mount_base_path_height;
 
 base_y_add = 8;
 base_y = abs(extruder_inlet_pos[1]) + base_y_add;
+
+wire_grip_width = 2.5;
+wire_grip_length = 13;
+wire_grip_x_position = extruder_assembly_width - wire_grip_width * 4 * 0.8;
 
 $curve_cut_top = 0;
 
@@ -216,33 +220,67 @@ module screw_holes_chamfer_cut() {
     }
 }
 
-module mount_height_intersect_grip() {
-    rr = 9;
-    ht = 10;
-    if (Extruder_Runout_Wire_Grip) {
-        difference() {
-            union() {
-                children();
-                offset(r=-2)
-                offset(r=2)
-                union() {
-                    translate([extruder_assembly_width - extruder_inlet_pos[0] * 0.35, 0])
-                    difference() {
-                        hull() {
-                            translate([0, ht])
-                            circle(d=rr);
-                            translate([0, mount_thick / 2])
-                            square([rr * 1.5, mount_thick], center=true);
-                        }
-                    }
-                    square([extruder_assembly_width, mount_thick]);
-                }
-            }
-            offset(r=rr * 0.24)
-            offset(r=-rr * 0.24)
-            translate([extruder_assembly_width - extruder_inlet_pos[0] * 0.35, ht - rr / 4])
-            square([rr / 2, ht - rr / 4], center=true);
+module mount_height_intersect_grip_slot_cut() {
+    difference() {
+        children();
+        if (Extruder_Runout_Wire_Grip_Slot) {
+            slot_radius = wire_grip_width / 2;
+            hull()
+            for (position = [
+                [0, 0],
+                [-wire_grip_width * 2, wire_grip_width * 2]
+            ])
+            translate([
+                wire_grip_x_position,
+                wire_grip_length + wire_grip_width - slot_radius
+            ])
+            translate(position)
+            circle(r=slot_radius);
         }
+    }
+}
+
+module mount_height_intersect_grip_shape() {
+    difference() {
+        union() {
+            children();
+            // Wire grip body
+            offset(r=-2)
+            offset(r=2)
+            union() {
+                translate([wire_grip_x_position, 0])
+                hull() {
+                    translate([0, wire_grip_length])
+                    circle(d=wire_grip_width * 4);
+                    translate([0, mount_thick / 2])
+                    square(
+                        [wire_grip_width * 4 * 1.5, mount_thick],
+                        center=true
+                    );
+                }
+                square([extruder_assembly_width, mount_thick]);
+            }
+        }
+        // Wire grip hole
+        offset(r=wire_grip_width * 0.99)
+        offset(r=-wire_grip_width * 0.99)
+        translate([wire_grip_x_position, wire_grip_length - wire_grip_width])
+        square(
+            [wire_grip_width * 2, wire_grip_length - wire_grip_width],
+            center=true
+        );
+    }
+}
+
+module mount_height_intersect_grip() {
+    if (Runout_Sensor_Orientation == "right") {
+        mount_height_intersect_grip_slot_cut()
+        // Include unmodified base shape to prevent rounding of outer edges
+        for (offs = [0, 10 * 0.24])
+        offset(r=-offs)
+        offset(r=offs)
+        mount_height_intersect_grip_shape()
+        children();
     } else {
         children();
     }
@@ -291,6 +329,7 @@ module mount_assembled_shape() {
         mount_curve_shape();
         translate([0, -mount_thick])
         mount_curve_shape(cut_top=mount_top_thick - mount_thick);
+        square([extruder_assembly_width, mount_base_path_height - mount_thick]);
     }
 }
 
