@@ -1,27 +1,39 @@
+from types import SimpleNamespace
+
 Import("env")
 b = ModelBuilder(env)
 
 model = "extruder-runout-mount.scad"
 
 for opts in GenerateOptions(
-    orientation=["rear", "right"],
-    runout_wire_grip=[0, (1, "-wire-grip")],
+    orientation=[
+        ("rear", "stock-wiring"),
+        ("right", "extruder-wiring"),
+    ],
     screw_hole_chamfer=[(0, "-flat"), (1, "-chamfer")],
 ):
-    b.STL(
-        (
-            f"extruder-runout-mount-connector-facing-{opts.orientation}"
-            f"{opts.runout_wire_grip_fn}{opts.screw_hole_chamfer_fn}.stl"
-        ),
-        model,
-        {
-            "Render_Mode": "print",
-            "Round_Edges": 1,
-            "Runout_Sensor_Orientation": opts.orientation,
-            "Extruder_Runout_Wire_Grip": opts.runout_wire_grip,
-            "Chamfer_Screw_Holes": opts.screw_hole_chamfer,
-        },
-    )
+    for slot_opts in GenerateOptions(
+        grip_slot=(
+            [(0, "-noslot"), (1, "-slot")]
+            if opts.orientation == "right"
+            else [(0, "")]
+        )
+    ):
+        b.STL(
+            (
+                f"extruder-runout-mount-{opts.orientation_fn}"
+                f"{slot_opts.grip_slot_fn}{opts.screw_hole_chamfer_fn}.stl"
+            ),
+            model,
+            {
+                "Render_Mode": "print",
+                "Round_Edges": 1,
+                "Runout_Sensor_Orientation": opts.orientation,
+                "Extruder_Runout_Wire_Grip_Slot": slot_opts.grip_slot,
+                "Chamfer_Screw_Holes": opts.screw_hole_chamfer,
+            },
+            zip_dir="models-for-printing",
+        )
 
 for render_mode, file_name, camera in [
     ("normal", "part", None),
@@ -35,6 +47,7 @@ for render_mode, file_name, camera in [
             "Render_Mode": render_mode,
             "Round_Edges": 1,
             "Runout_Sensor_Orientation": "right",
+            "Chamfer_Screw_Holes": 0,
         },
         camera=camera,
     )
@@ -48,6 +61,8 @@ b.Image(
             "Render_Mode": "model_preview",
             "Round_Edges": 1,
             "Runout_Sensor_Orientation": orientation,
+            "Extruder_Runout_Wire_Grip_Slot": 0,
+            "Chamfer_Screw_Holes": 0,
         }
         for orientation in ["rear", "right"]
     ],
