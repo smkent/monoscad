@@ -85,12 +85,12 @@ module extruder_support_block_cut() {
     }
 }
 
-module extruder_cable_support_shape(extend=0) {
+module extruder_cable_support_shape(extend=0, double=0) {
     ch = chamfer + extend;
     offset(r=e_part_z_top*0.45*2)
     offset(r=-e_part_z_top*0.45*2)
     render(convexity=4)
-    for (my = [0:1:1])
+    for (my = (double ? [0, 1] : [1]))
     mirror([0, my])
     union() {
         translate([0, -e_part_z_top])
@@ -105,25 +105,45 @@ module extruder_cable_support_shape(extend=0) {
 }
 
 module extruder_cable_support_front() {
+    offy = e_part_y_pos * 4;
     render(convexity=4)
     extruder_support_block_cut()
     rotate([90, 0, 0])
     mirror([0, 0, 1])
     translate([0, 0, e_part_y_pos])
-    linear_extrude(height=e_part_y)
-    extruder_cable_support_shape();
+    union() {
+        translate([0, 0, e_y - e_part_y_pos])
+        linear_extrude(height=e_part_y - e_y + e_part_y_pos)
+        difference() {
+            extruder_cable_support_shape(double=true);
+            translate([0, e_part_z_top])
+            square([e_part_x * 4, chamfer]);
+        }
+        difference() {
+            linear_extrude(height=e_y - e_part_y_pos)
+            extruder_cable_support_shape(double=true);
+            translate([0, e_part_z_top, e_y - e_part_y_pos])
+            rotate([-45, 0, 0])
+            cube([e_part_x, chamfer * 2, chamfer * 2]);
+        }
+    }
 }
 
 module extruder_cable_support_bend() {
     translate([0, e_part_y + e_part_y_pos, 0])
     extruder_cable_support_holes(bend_ratio=0.25)
     translate([e_part_x, 0, e_part_z_top + chamfer])
-    rotate([0, -90, 180])
-    translate([bend_radius, 0, 0])
-    rotate_extrude(angle=bend_angle)
-    translate([-(chamfer + e_part_z_top) - bend_radius, 0])
-    rotate(-90)
-    extruder_cable_support_shape();
+    difference() {
+        rotate([0, -90, 180])
+        translate([bend_radius, 0, 0])
+        rotate_extrude(angle=bend_angle)
+        translate([-(chamfer + e_part_z_top) - bend_radius, 0])
+        rotate(-90)
+        extruder_cable_support_shape(double=true);
+        translate([-e_part_x, 0, -chamfer])
+        rotate([45, 0, 0])
+        cube([e_part_x, chamfer * 2, chamfer * 2]);
+    }
 }
 
 module extruder_cable_support_feet() {
@@ -138,6 +158,7 @@ module extruder_cable_support_feet() {
             translate([0, 0, -radius])
             rotate([-45, 0, 0])
             linear_extrude(height=radius * 6, center=true)
+            mirror([0, 1])
             extruder_cable_support_shape(extend=chamfer);
 
             rotate([0, 90, 0])
