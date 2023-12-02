@@ -29,46 +29,72 @@ min_thickness = Minimum_Thickness;
 
 hinge_pos = [5, 6.5];
 
+fit = 0.25;
+slop = 0.01;
+
 // Functions //
 
 function convert_z(mainboard_z) = (mainboard_z - 154.63 - zoff);
 
 // Modules //
 
+module original_mainboard_box_back() {
+    color("#ccc", 0.6)
+    import("sovol-sv06-plus-motherboard-box-back.stl", convexity=4);
+}
+
 module original_mainboard_box(open=false) {
-    color("#ccc", 0.6) {
-        import("sovol-sv06-plus-motherboard-box-back.stl", convexity=4);
-        translate(hinge_pos)
-        rotate(open ? -90 : 0)
-        translate(-hinge_pos)
-        import("sovol-sv06-plus-motherboard-box-front.stl", convexity=4);
-    }
+    original_mainboard_box_back();
+    color("#ccc", 0.6)
+    translate(hinge_pos)
+    rotate(open ? -90 : 0)
+    translate(-hinge_pos)
+    import("sovol-sv06-plus-motherboard-box-front.stl", convexity=4);
 }
 
 module original_model() {
     import("itsrouteburn-Sovol SV06 Plus Print Head Cable Support.stl", convexity=4);
 }
 
-// 165.33, 166.83
+module mainboard_box_groove_shape() {
+    offset(r=0.90)
+    offset(r=-1)
+    offset(r=1)
+    projection(cut=true)
+    intersection() {
+        rotate([90, 0, 0])
+        translate([0, -(21 - 15.5) - slop, 0])
+        translate([-68.446, -15.5, -153.518])
+        original_mainboard_box_back();
+        linear_extrude(height=1)
+        mirror([0, 1])
+        square([103.56 - 68.446, 167 - 153.518]);
+    }
+}
 
 module modified_model() {
+    render(convexity=4)
     difference() {
         original_model();
-        zb = (165.33 - 154.63 + 1*zoff);
-        for (zrange = [
-            [10.614, 12.814],
-            [convert_z(165.33) - 0.2, convert_z(166.83) + 0.2],
-        ])
-        translate([-(30) / 2 + 4, 0, zrange[0]])
-        linear_extrude(height=abs(zrange[1] - zrange[0]))
-        square([30, (3 - min_thickness) * 2], center=true);
+        rotate([-90, 0, 0])
+        translate([0, -10.614, min_thickness])
+        mirror([0, 0, 1])
+        linear_extrude(height=3)
+        mirror([1, 0])
+        intersection() {
+            overlap = 1;
+            translate([-((103.56 - 68.446) - 22) / 2, 0])
+            mainboard_box_groove_shape();
+            translate([-overlap, 0])
+            mirror([0, 1])
+            square(22 + (overlap * 2));
+        }
     }
 }
 
 module mainboard_cable_support() {
-    color("chartreuse", 0.9) {
-        modified_model();
-    }
+    color("greenyellow", 0.9)
+    modified_model();
 }
 
 module preview_placement() {
