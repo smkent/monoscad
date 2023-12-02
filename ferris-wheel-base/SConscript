@@ -1,0 +1,15 @@
+Import("env")
+b = ModelBuilder(env)
+
+basic_model = "ferris-wheel-base.scad"
+fancy_model = "ferris-wheel-base-fancy.scad"
+
+for opts in GenerateOptions(
+    model=[(basic_model, ""), (fancy_model, "-fancy")]
+):
+    b.STL(f"ferris-wheel-base{opts.model_fn}.stl", opts.model)
+    b.Image(f"demo{opts.model_fn}.png", opts.model)
+
+b.add_default_targets()
+
+# vim: ft=python
