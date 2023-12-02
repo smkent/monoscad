@@ -32,8 +32,6 @@ b.Source(
 
 b.Asset(
     "sovol-sv06-JXHSV06-07002-d Filament Barrel.STL",
-    "sovol-sv06-filament-barrel-1mm-chamfered-threads.stl",
-    "sovol-sv06-filament-barrel-2mm-chamfered-threads.stl",
     zip_dir="stock-sv06-filament-barrel",
 )
 
