@@ -359,12 +359,20 @@ class ModelBuilder:
 
     @functools.cached_property
     def library_files(self) -> Sequence[SConsFile]:
+        def _is_dir_symlink(f: str) -> bool:
+            p = Path(str(f))
+            if not p.is_symlink():
+                return False
+            if p.absolute().is_dir():
+                return True
+            return False
+
         return [
             lib_file
             for lib_glob in [
                 fn.glob("*.scad")
                 for fn in self.src_dir.glob("*")
-                if Path(str(fn)).is_symlink()
+                if _is_dir_symlink(fn)
             ]
             for lib_file in lib_glob
         ]
