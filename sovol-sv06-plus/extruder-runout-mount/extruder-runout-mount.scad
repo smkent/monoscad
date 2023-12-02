@@ -20,6 +20,9 @@ Chamfer_Screw_Holes = true;
 // Round all edges on the finished model. This uses minkowski() and may be very slow to render.
 Round_Edges = false;
 
+// Rotate the extruder side cover to preview part clearance
+Preview_Cover_Clearance = false;
+
 module __end_customizer_options__() { }
 
 // Constants //
@@ -41,9 +44,11 @@ runout_connector_coords = [
 extruder_assembly_width = 69.405;
 extruder_assembly_height = 53.794;
 extruder_corner_chamfer = 2.8;
-extruder_inlet_pos = [33.352, -11.578, 42.6502];
+extruder_inlet_pos = [33.3929, -11.6459, 42.6502];
 extruder_hole_1_pos = [3.405, 46.394];
 extruder_hole_2_pos = [65.405, 46.394];
+extruder_cover_hinge_pos = [44.874, 0 * -20.309, 13.556];
+extruder_cover_clearance_height = 16.956;
 
 screw_diameter = 3;
 screw_hole_diameter = screw_diameter + 0.4;
@@ -61,7 +66,7 @@ base_y_add = 8;
 base_y = abs(extruder_inlet_pos[1]) + base_y_add;
 
 wire_grip_width = 2.5;
-wire_grip_length = 13;
+wire_grip_length = 10;
 wire_grip_x_position = extruder_assembly_width - wire_grip_width * 4 * 0.8;
 
 $curve_cut_top = 0;
@@ -129,6 +134,14 @@ module sensor_foot_shape() {
 module extruder_assembly() {
     color("#aaa", 0.5)
     import("sovol-sv06-JXHSV06-08000-extruder-parts.stl", convexity=4);
+}
+
+module extruder_assembly_cover() {
+    translate(extruder_cover_hinge_pos)
+    rotate([0, Preview_Cover_Clearance ? 20 : 0, 0])
+    translate(-extruder_cover_hinge_pos)
+    color("#aaa", 0.5)
+    import("sovol-sv06-JXHSV06-08003-d-extruder-handle.stl", convexity=4);
 }
 
 module filament() {
@@ -220,69 +233,29 @@ module screw_holes_chamfer_cut() {
     }
 }
 
-module mount_height_intersect_grip_slot_cut() {
-    difference() {
-        children();
-        if (Extruder_Runout_Wire_Grip_Slot) {
-            slot_radius = wire_grip_width / 2;
-            hull()
-            for (position = [
-                [0, 0],
-                [-wire_grip_width * 2, wire_grip_width * 2]
-            ])
-            translate([
-                wire_grip_x_position,
-                wire_grip_length + wire_grip_width - slot_radius
-            ])
-            translate(position)
-            circle(r=slot_radius);
+module mount_height_grip_shape() {
+    rr = wire_grip_width * 2;
+    // Wire grip body
+    offset(r=-2)
+    offset(r=2)
+    union() {
+        translate([0, -mount_base_path_height + mount_thick])
+        offset(r=wire_grip_width * 0.49)
+        offset(r=-wire_grip_width * 0.49)
+        intersection() {
+            square([extruder_assembly_width, extruder_cover_clearance_height]);
+            translate([extruder_assembly_width - extruder_corner_chamfer - wire_grip_width * cos(30), 0])
+            translate([0, mount_base_path_height - wire_grip_width * tan(30)])
+            rotate(30)
+            square([wire_grip_width, wire_grip_length]);
         }
-    }
-}
-
-module mount_height_intersect_grip_shape() {
-    difference() {
-        union() {
-            children();
-            // Wire grip body
-            offset(r=-2)
-            offset(r=2)
-            union() {
-                translate([wire_grip_x_position, 0])
-                hull() {
-                    translate([0, wire_grip_length])
-                    circle(d=wire_grip_width * 4);
-                    translate([0, mount_thick / 2])
-                    square(
-                        [wire_grip_width * 4 * 1.5, mount_thick],
-                        center=true
-                    );
-                }
-                square([extruder_assembly_width, mount_thick]);
-            }
-        }
-        // Wire grip hole
-        offset(r=wire_grip_width * 0.99)
-        offset(r=-wire_grip_width * 0.99)
-        translate([wire_grip_x_position, wire_grip_length - wire_grip_width])
+        translate([wire_grip_x_position, 0])
+        translate([0, mount_thick / 2])
         square(
-            [wire_grip_width * 2, wire_grip_length - wire_grip_width],
+            [wire_grip_width * 4 * 1.5, mount_thick],
             center=true
         );
-    }
-}
-
-module mount_height_intersect_grip() {
-    if (Runout_Sensor_Orientation == "right") {
-        mount_height_intersect_grip_slot_cut()
-        // Include unmodified base shape to prevent rounding of outer edges
-        for (offs = [0, 10 * 0.24])
-        offset(r=-offs)
-        offset(r=offs)
-        mount_height_intersect_grip_shape()
-        children();
-    } else {
-        children();
+        square([extruder_assembly_width, mount_thick]);
     }
 }
 
@@ -295,11 +268,13 @@ module mount_height_intersect() {
         rotate([90, 0, 0])
         linear_extrude(height=mount_height)
         offset(delta=-edge_radius)
-        mount_height_intersect_grip()
         union() {
             translate([0, -mount_base_path_height + mount_thick])
-            mount_curve_shape_solid(4, custom_r = 18.5);
+            mount_curve_shape_solid(2, custom_r = 14.5);
             square([extruder_assembly_width, mount_thick]);
+            if (Runout_Sensor_Orientation == "right") {
+                mount_height_grip_shape();
+            }
         }
     }
 }
@@ -345,12 +320,17 @@ module round_all_edges() {
     }
 }
 
+module mount_grip_add() {
+    children();
+}
+
 module extruder_runout_mount() {
     screw_holes_chamfer_cut()
     round_all_edges()
     color("#94c5db", 0.8)
     render(convexity=2)
     sensor_foot_cut()
+    mount_grip_add()
     mount_height_intersect()
     mount_assembled_shape();
 }
@@ -375,6 +355,7 @@ module position_model() {
                 runout_sensor_wire_harness();
             }
             extruder_assembly();
+            extruder_assembly_cover();
         }
     }
 }
