@@ -2,8 +2,7 @@ Import("env")
 b = ModelBuilder(env)
 
 model = "spool-holder.scad"
-
-# build/printables-sovol-sv06-plus__spool-holder-remix.zip
+filament_barrel_model = "filament-barrel.scad"
 
 for file_name, part_name in {
     "barrel-full-size": "barrel",
@@ -13,6 +12,14 @@ for file_name, part_name in {
         f"spool-holder-{file_name}.stl",
         model,
         {"Part": part_name, "Nut_Extra_Length": 15},
+        zip_dir="models-for-printing",
+    )
+
+for opts in GenerateOptions(chamfer=[(0, "-stock"), (1, "-chamfered")]):
+    b.STL(
+        f"filament-barrel{opts.chamfer_fn}.stl",
+        filament_barrel_model,
+        {"Chamfer": opts.chamfer},
         zip_dir="models-for-printing",
     )
 
@@ -28,13 +35,6 @@ b.Source(
     "rogerquin-sv06-spool-holder-nut.stl",
     "rogerquin-sv06-spool-holder-sunlu-barrel-adapter.stl",
     "rogerquin-sv06-spool-holder-sunlu-nut.stl",
-)
-
-b.Asset(
-    "sovol-sv06-JXHSV06-07002-d Filament Barrel.STL",
-    "sovol-sv06-filament-barrel-1mm-chamfered-threads.stl",
-    "sovol-sv06-filament-barrel-2mm-chamfered-threads.stl",
-    zip_dir="stock-sv06-filament-barrel",
 )
 
 b.Image(
