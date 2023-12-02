@@ -65,9 +65,8 @@ adj_height = extruder_assembly_height - mount_base_path_height;
 base_y_add = 8;
 base_y = abs(extruder_inlet_pos[1]) + base_y_add;
 
-wire_grip_width = 2.5;
+wire_grip_width = 4;
 wire_grip_length = 10;
-wire_grip_x_position = extruder_assembly_width - wire_grip_width * 4 * 0.8;
 
 $curve_cut_top = 0;
 
@@ -243,18 +242,12 @@ module mount_height_grip_shape() {
         offset(r=wire_grip_width * 0.49)
         offset(r=-wire_grip_width * 0.49)
         intersection() {
-            square([extruder_assembly_width, extruder_cover_clearance_height]);
-            translate([extruder_assembly_width - extruder_corner_chamfer - wire_grip_width * cos(30), 0])
+            square([extruder_assembly_width - extruder_corner_chamfer, extruder_cover_clearance_height]);
+            translate([extruder_assembly_width - extruder_corner_chamfer - wire_grip_width * tan(30), 0])
             translate([0, mount_base_path_height - wire_grip_width * tan(30)])
             rotate(30)
             square([wire_grip_width, wire_grip_length]);
         }
-        translate([wire_grip_x_position, 0])
-        translate([0, mount_thick / 2])
-        square(
-            [wire_grip_width * 4 * 1.5, mount_thick],
-            center=true
-        );
         square([extruder_assembly_width, mount_thick]);
     }
 }
