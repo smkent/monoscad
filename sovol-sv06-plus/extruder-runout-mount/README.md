@@ -17,10 +17,10 @@ a [dual filament spool holder][dual-spool-holder].
 Model variants are included for two different wiring connection types:
 
 * Rear-facing filament runout sensor, to use the stock runout sensor wiring
-  (easiest installation)
+  (easiest installation, but may interfere with auto Z-align function)
 * Side-facing filament runout sensor, to use the extruder filament runout
-  sensor wiring port on the right side (cleaner installation, requires extra
-  hardware and minor soldering)
+  sensor wiring port on the right side (recommended - cleaner installation,
+  requires extra hardware and minor soldering)
 
 ## Acknowledgements
 
@@ -69,6 +69,11 @@ route the stock 3-wire filament runout sensor wiring from the mainboard box
 along the extruder cable harness to the extruder. Secure the wiring together
 with zip ties. Then, simply plug the 3-pin connector into the filament runout
 sensor.
+
+Note that the rear-facing filament runout sensor wiring may interfere with the
+auto Z-align leveling function, which raises the X-axis to the top of the gantry
+for alignment. The side-facing filament runout sensor model variant does not
+interfere with the auto Z-align leveing function.
 
 ## Side-facing filament runout sensor model variant for custom wiring
 
