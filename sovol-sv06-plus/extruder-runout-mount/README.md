@@ -44,7 +44,7 @@ For the side-facing filament runout sensor, you'll need to make a simple but
 custom wiring harness using these parts:
 
 * JST GH (1.25mm) 3-pin male connector and wires
-* JST GH (2.54mm) 3-pin male connector and wires
+* JST XH (2.54mm) 3-pin male connector and wires
 
 ## Printing
 
