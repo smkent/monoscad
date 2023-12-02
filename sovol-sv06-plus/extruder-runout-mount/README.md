@@ -98,8 +98,8 @@ Locate and unplug the stock 3-pin filament runout sensor wiring (labeled `DET`).
 Then, locate the extruder wiring harness' filament runout sensor wiring (also
 labeled `DET`) and plug that wire into the same mainboard connector:
 
-![Photo of DET cables to swap on the mainboard](images/readme/mainboard-det-cables.jpg)
-![Mainboard diagram showing port for DET cables to swap](images/readme/sovol-sv06-mainboard-diagram.png)
+[![Photo of DET cables to swap on the mainboard](images/readme/mainboard-det-cables.jpg)](images/publish/mainboard-det-cables.jpg)
+[![Mainboard diagram showing port for DET cables to swap](images/readme/sovol-sv06-mainboard-diagram.png)](images/publish/sovol-sv06-mainboard-diagram.png)
 
 (Mainboard diagram image credit: [bassamantor/everything-sovol-sv06][bassamantor-everything-sovol-sv06])
 
