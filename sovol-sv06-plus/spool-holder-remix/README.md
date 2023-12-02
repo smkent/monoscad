@@ -7,6 +7,12 @@ original Sovol SV06 spool holder
 
 ![Model render](images/readme/render-all-parts-preview.png)
 
+## Differences of the remix compared to the original
+
+The original barrel and Sunlu (72mm) barrel adapter have been combined into a
+single part. The original Sunlu (72mm) nut has been extended for easier
+gripping.
+
 ## Attribution and License
 
 This is a remix of
