@@ -1,11 +1,8 @@
 import functools
 import os
 import subprocess
-import sys
 import tempfile
 from contextlib import ExitStack
-from itertools import cycle
-from math import ceil
 from pathlib import Path
 from typing import (Any, Callable, Dict, Iterable, List, Optional, Sequence,
                     Set, Union)
@@ -15,11 +12,13 @@ from SCons.Node.FS import File as SConsFile
 from SCons.Script import BUILD_TARGETS
 from SCons.Script.SConscript import SConsEnvironment
 
+from image_builder import IMAGE_RENDER_SIZE, ImageBuilder
+from utils import openscad_var_args, run
+
 PRINTABLES_TARGETS = {"printables", "zip"}
 IMAGES_TARGETS = {"images"} | PRINTABLES_TARGETS
 DIST_PRINTABLES_ZIP = "dist-printables.zip"
 LIBRARIES_ZIP = "libraries.zip"
-IMAGE_RENDER_SIZE = "1200x900"
 IMAGE_TARGETS = {
     "images/readme": "400x300",
     "images/publish": IMAGE_RENDER_SIZE,
@@ -72,7 +71,7 @@ class ModelBuilder:
     def add_repository_tracked_images(self) -> None:
         self.publish_images |= {
             f"{self.src_dir}/{line}"
-            for line in self._run(
+            for line in run(
                 ["git", "ls-files", "--", "images/publish"],
                 quiet=True,
                 capture_output=True,
@@ -110,7 +109,7 @@ class ModelBuilder:
         self.env.openscad(
             target=stl_file,
             source=[model_file] + (model_dependencies or []),
-            OPENSCAD_ARGS=" ".join(self._openscad_var_args(stl_vals)),
+            OPENSCAD_ARGS=" ".join(openscad_var_args(stl_vals)),
         )
         if zip_dir:
             self.zip_dirs[stl_file] = zip_dir
@@ -160,7 +159,7 @@ class ModelBuilder:
                 "papersize=letter",
             ]:
                 cmd += ["--variable", pandoc_var]
-            self._run(cmd)
+            run(cmd)
 
     @ref_filter
     def Document(
@@ -189,7 +188,7 @@ class ModelBuilder:
             for image_path, size in IMAGE_TARGETS.items()
         }
         func = functools.partial(
-            self.render_image,
+            ImageBuilder.render_image,
             stl_vals_list=(
                 [stl_vals]
                 if isinstance(stl_vals, dict)
@@ -201,7 +200,7 @@ class ModelBuilder:
             delay=delay,
             tile=tile,
         )
-        func.__name__ = self.render_image.__name__
+        func.__name__ = ImageBuilder.render_image.__name__
         self.env.NoClean(
             self.env.Command(image_targets.keys(), model_file, func)
         )
@@ -226,7 +225,7 @@ class ModelBuilder:
                         f"{self.src_dir}/{image_path}/{foreground_image}",
                     ],
                     functools.partial(
-                        self.render_inset_image,
+                        ImageBuilder.render_inset_image,
                         image_size=image_size,
                         resize=resize,
                         gravity=gravity,
@@ -254,125 +253,6 @@ class ModelBuilder:
             ]
             for lib_file in lib_glob
         ]
-
-    def render_image(
-        self,
-        target: Sequence[SConsFile],
-        source: Sequence[SConsFile],
-        env: SConsEnvironment,
-        image_targets: Optional[Dict[str, str]] = None,
-        stl_vals_list: Optional[Sequence[Dict[str, Any]]] = None,
-        delay: int = 75,
-        camera: Optional[str] = None,
-        view_options: Optional[str] = None,
-        tile: str = "",
-    ) -> None:
-        def _render_single_image(
-            image_target: str,
-            model_file: str,
-            stl_vals: Dict[str, Any],
-            size=None,
-        ) -> None:
-            render_args = self._openscad_var_args(
-                stl_vals, for_subprocess=True
-            )
-            if camera:
-                render_args += [f"--camera={camera}"]
-            if view_options:
-                render_args += [f"--view={view_options}"]
-            self._run(
-                [
-                    self.env["OPENSCAD"],
-                    model_file,
-                    f"--colorscheme={'DeepOcean'}",
-                    f"--imgsize={size}",
-                    "-o",
-                    str(image_target),
-                ]
-                + self.env["OPENSCAD_FEATURES"]
-                + render_args
-            )
-
-        with tempfile.TemporaryDirectory() as td:
-            tdp = Path(td)
-            # Render frames
-            frames: List[str] = []
-            for i, (frame_stl_vals, frame_model_file) in enumerate(
-                zip(stl_vals_list, cycle(source))
-            ):
-                fn = tdp / f"image_{i:05d}.png"
-                frames.append(fn)
-                _render_single_image(
-                    fn,
-                    frame_model_file.path,
-                    frame_stl_vals or {},
-                    IMAGE_RENDER_SIZE.replace("x", ","),
-                )
-            if len(frames) > 1 and target[0].suffix != ".gif":
-                if not tile:
-                    row_len = ceil(len(frames) / 2)
-                    tile = f"x{row_len}"
-                montage_fn = str(tdp / "montage") + target[0].suffix
-                montage_cmd = [
-                    "montage",
-                    "-background",
-                    "#333",
-                    "-border",
-                    0,
-                    "-geometry",
-                    "+0+0",
-                    "-tile",
-                    tile,
-                ]
-                self._run(montage_cmd + frames + [montage_fn])
-                frames = [montage_fn]
-            for tt in target:
-                size_arg = "x" + image_targets[tt.abspath].split("x")[1]
-                cmd = ["convert", "-resize", size_arg]
-                if target[0].suffix == ".gif":
-                    cmd += ["-loop", "0", "-delay", str(delay)]
-                self._run(cmd + frames + [tt.path])
-
-    def render_inset_image(
-        self,
-        target: Sequence[SConsFile],
-        source: Sequence[SConsFile],
-        env: SConsEnvironment,
-        image_size: str,
-        resize: str,
-        gravity: str,
-    ) -> None:
-        background_image, foreground_image = source
-        cmd = [
-            "convert",
-            "(",
-            background_image.path,
-            "-resize",
-            image_size,
-            ")",
-            "null:",
-            "(",
-            foreground_image.path,
-            "-coalesce",
-            "-resize",
-            resize,
-            "+repage",
-            "-bordercolor",
-            "#ccc",
-            "-border",
-            "2x2",
-            ")",
-            "-gravity",
-            gravity,
-            "-geometry",
-            "+0+0",
-            "-layers",
-            "composite",
-            "-layers",
-            "optimizeplus",
-            target[0].path,
-        ]
-        self._run(cmd)
 
     @target_filter(PRINTABLES_TARGETS)
     def add_printables_zip_targets(self) -> None:
@@ -452,7 +332,7 @@ class ModelBuilder:
         try:
             dirs = {
                 str(Path(fn).parent)
-                for fn in self._run(
+                for fn in run(
                     ["git", "diff", f"{prev_ref}...@", "--name-only", "--"],
                     quiet=True,
                     capture_output=True,
@@ -472,34 +352,8 @@ class ModelBuilder:
         return True
 
     @staticmethod
-    def _run(
-        cmd: list,
-        *args: Any,
-        quiet: bool = False,
-        check: bool = True,
-        **kwargs: Any,
-    ) -> subprocess.CompletedProcess:
-        cmds = [str(c) for c in cmd]
-        if not quiet:
-            print("+", " ".join(cmds), file=sys.stderr)
-        return subprocess.run(cmds, *args, check=check, **kwargs)
-
-    @staticmethod
     def _remove_prefix(value: str, prefixes: Union[str, Sequence[str]]) -> str:
         for prefix in [prefixes] if isinstance(prefixes, str) else prefixes:
             if value.startswith(prefix):
                 return value[len(prefix) :]  # noqa: E203
         return value
-
-    @staticmethod
-    def _openscad_var_args(
-        vals: Dict[str, any] = None, for_subprocess: bool = False
-    ) -> Sequence[str]:
-        def _val_args(k, v):
-            if isinstance(v, str):
-                v = f'"{v}"' if for_subprocess else f"'\"{v}\"'"
-            return ["-D", f"{k}={v}"]
-
-        return [
-            arg for k, v in (vals or {}).items() for arg in _val_args(k, v)
-        ]
