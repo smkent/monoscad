@@ -34,6 +34,8 @@ For best results, pair this model with
 or [my resized spool holder remix with an easier grip][sv06-spool-holder-remix],
 which allow the filament spools to rotate smoothly!
 
+![Animation of spool holder rotation with add-on model](../spool-holder-remix/images/readme/spin-video.gif)
+
 ## Prerequisites
 
 The SV06 Plus includes a filament runout sensor that mounts on the stock spool
