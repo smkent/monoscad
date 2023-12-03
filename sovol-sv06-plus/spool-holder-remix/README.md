@@ -19,6 +19,9 @@ Sunlu) spools, I made two changes to rogerquin's original model. First, I
 combined the spool barrel with the Sunlu barrel adapter into a single piece.
 Then, I extended the large diameter (Sunlu) nut for an easier grip.
 
+![Photo of barrel comparison](images/readme/photo-barrel-remix.jpg)
+![Photo of nut comparison](images/readme/photo-nut-remix.jpg)
+
 ## Recommended pairing
 
 As pictured, this model pairs well with
