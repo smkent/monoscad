@@ -46,8 +46,9 @@ This is configurable in the OpenSCAD model if you prefer a different length.
 
 ## Printing
 
-All of these parts print as oriented in the model files (upright) with no
-supports and no special instructions.
+All of these parts print as oriented in the model files (upright). No supports
+are needed for any of the parts. The stock filament barrel model and the spool
+barrel fittings may need a brim, depending on your bed adhesion.
 
 Concentric top and bottom infill patterns make a nice aesthetic for these parts,
 but this is optional.
