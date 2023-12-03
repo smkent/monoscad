@@ -4,6 +4,8 @@
 
 A tiny 4x MicroSD holder you could hang to your keychain very easily
 
+![Model photo](images/readme/photo2.jpg)
+![Model photo](images/readme/photo3.jpg)
 ![Model animation of keychain loop options](images/readme/demo-keychain-loop.gif)
 ![Model animation of logo options](images/readme/demo-logo.gif)
 
@@ -15,6 +17,16 @@ allow some customization:
 * Swap the keychain loop to the other half or remove it entirely
 * Change the size of the keychain loop
 * Swap or remove the inset logos
+
+## Printing
+
+I printed this with my default 0.4mm nozzle and 0.2mm layer height. No supports
+are needed.
+
+Using concentric infill for the top and bottom infill patterns looks nice on
+this model.
+
+![Slicer screenshot](images/readme/slicer-screenshot.png)
 
 ## Differences of the remix compared to the original
 
