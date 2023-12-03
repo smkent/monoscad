@@ -52,6 +52,18 @@ SV06 filament barrel:
 ![Slicer screenshot of filament barrel with chamfer](images/readme/slicer-screenshot-filament-barrel-chamfered.png)
 ![Slicer screenshot of filament barrel with chamfer, underside](images/readme/slicer-screenshot-filament-barrel-chamfered-2.png)
 
+Barrel fitting:
+
+![Slicer screenshot of barrel fitting](images/readme/slicer-screenshot-barrel-fitting.png)
+
+Barrel:
+
+![Slicer screenshot of barrel](images/readme/slicer-screenshot-barrel.png)
+
+Nut:
+
+![Slicer screenshot of nut](images/readme/slicer-screenshot-nut.png)
+
 ## Installation
 
 If you have an SV06 Plus and/or want to use a printed copy of the SV06 filament
