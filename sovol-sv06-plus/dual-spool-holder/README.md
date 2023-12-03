@@ -1,9 +1,11 @@
-# Sovol SV06 (Plus) 90-degree dual spool holder
+# Sovol SV06 (Plus) forward-facing dual spool holder
 
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
-Sovol SV06 (Plus) 90-degree dual spool holder
+Sovol SV06 (Plus) forward-facing dual spool holder
 
+![Photo of model installed with spools](images/readme/photo-spools-front.jpg)
+![Photo of model without spools](images/readme/photo1.jpg)
 ![Model render](images/readme/render-part.png)
 ![Installed model preview render](images/readme/render-model-preview.png)
 
@@ -24,6 +26,13 @@ spool holder.
 
 These models were created using [OpenSCAD][openscad]. The source code and models
 are included.
+
+## Recommended pairing
+
+For best results, pair this model with
+[rogerquin's terrific SV06 (Plus) spool holder add-on][rogerquin-spool-holder-for-sovol-sv06]
+or [my resized spool holder remix with an easier grip][sv06-spool-holder-remix],
+which allow the filament spools to rotate smoothly!
 
 ## Prerequisites
 
@@ -63,12 +72,6 @@ forward or backward than the default 9.5° tilt.
 
 ![Animated render of various dual spool holder tilt angles](images/readme/demo-dual-spool-holder-tilt-angle.gif)
 
-## Add-on even more
-
-Also pictured is
-[rogerquin's terrific SV06 (Plus) spool holder add-on][rogerquin-spool-holder-for-sovol-sv06],
-which I'm using with each filament barrel. Highly recommended!
-
 ## Previous version
 
 I created an [earlier dual spool holder model version][v1-model]
@@ -93,4 +96,5 @@ This model is licensed under
 [original-part-link-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source/blob/main/Molded%20Parts%20STL/JXHSV06-07003-d%20Barrel%20nut.STL
 [rogerquin-spool-holder-for-sovol-sv06]: https://www.printables.com/model/409684-spool-holder-for-sovol-sv06-3d-printer
 [sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
+[sv06-spool-holder-remix]: /sovol-sv06-plus/spool-holder-remix
 [v1-model]: https://www.printables.com/model/584632-sovol-sv06-plus-90-degree-dual-spool-holder

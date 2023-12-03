@@ -52,6 +52,14 @@ b.Image(
     camera="0,0,90,90,0,80,900",
 )
 
+b.InsetImage(
+    "photo-inset.jpg",
+    "photo-spools-front-offset.jpg",
+    "render-model-preview.png",
+    resize="33%",
+    gravity="southeast",
+)
+
 b.Source(
     "*.scad",
     "sovol-sv06-filament-barrel-rotated.stl",
