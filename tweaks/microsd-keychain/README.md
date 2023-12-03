@@ -12,7 +12,7 @@ A parametric remix of Guido's tiny 4-card MicroSD keychain holder
 # Description
 
 This is a small parametric rework of [Guido's model][original-model-url] to
-allow some customization:
+allow some customization using [OpenSCAD][openscad]:
 
 * Swap the keychain loop to the other half or remove it entirely
 * Change the size of the keychain loop
@@ -41,6 +41,7 @@ This is a remix of
 Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution-NonCommercial][license].
 
-[original-model-url]: https://www.printables.com/model/276691-microsd-card-holder-keychain
-[license]: http://creativecommons.org/licenses/by-nc/4.0/
 [license-badge]: /_static/license-badge-cc-by-nc-4.0.svg
+[license]: http://creativecommons.org/licenses/by-nc/4.0/
+[openscad]: https://openscad.org
+[original-model-url]: https://www.printables.com/model/276691-microsd-card-holder-keychain
