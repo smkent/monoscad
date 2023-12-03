@@ -7,6 +7,7 @@ original Sovol SV06 spool barrel
 
 ![Photo of model installed with spools](images/readme/photo-spools-right-side.jpg)
 ![Photo of model installed with spools](images/readme/photo-spools-left-side.jpg)
+![Clip of spinning spool to demonstrate fit and rotation](images/readme/spin-video.gif)
 ![Assembled model render](images/readme/render-all-parts-preview.png)
 
 # Description
