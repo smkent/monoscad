@@ -15,7 +15,7 @@ for file_name, part_name in {
         zip_dir="models-for-printing",
     )
 
-for opts in GenerateOptions(chamfer=[(0, "-stock"), (1, "-chamfered")]):
+for opts in GenerateOptions(chamfer=[(1, "-chamfered")]):
     b.STL(
         f"filament-barrel{opts.chamfer_fn}.stl",
         filament_barrel_model,
@@ -30,6 +30,7 @@ b.Asset(
 
 b.Source(
     "*.scad",
+    "sovol-*.stl",
     "rogerquin-SV06_Spool_Holder_extended_nut_med_res_V1.stl",
     "rogerquin-sv06-spool-holder-barrel.stl",
     "rogerquin-sv06-spool-holder-nut.stl",
