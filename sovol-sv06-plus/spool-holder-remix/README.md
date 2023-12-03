@@ -7,6 +7,7 @@ original Sovol SV06 spool barrel
 
 ![Photo of model installed with spools](images/readme/photo-spools-right-side.jpg)
 ![Photo of model installed with spools](images/readme/photo-spools-left-side.jpg)
+![Clip of spinning spool to demonstrate fit and rotation](images/readme/spin-video.gif)
 ![Assembled model render](images/readme/render-all-parts-preview.png)
 
 # Description
@@ -20,7 +21,10 @@ Then, I extended the large diameter (Sunlu) nut for an easier grip.
 
 ## Recommended pairing
 
-This model can be paired with [my dual spool holder][sv06-dual-spool-holder]!
+As pictured, this model pairs well with
+[my dual spool holder][sv06-dual-spool-holder]!
+
+![Render of dual spool holder model](../dual-spool-holder/images/readme/render-model-preview.png)
 
 ## Parts
 
