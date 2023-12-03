@@ -1,8 +1,8 @@
-# MicroSD card holder keychain (remix)
+# MicroSD card holder keychain (parametric remix)
 
 [![CC-BY-NC-4.0 license][license-badge]][license]
 
-A tiny 4x MicroSD holder you could hang to your keychain very easily
+A parametric remix of Guido's tiny 4-card MicroSD keychain holder
 
 ![Model photo](images/readme/photo2.jpg)
 ![Model photo](images/readme/photo3.jpg)
