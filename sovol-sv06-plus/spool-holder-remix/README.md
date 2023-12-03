@@ -34,6 +34,8 @@ The parts to print are all included:
 * Spool holder barrel
 * Spool holder nut
 
+![Parts identification screenshot](images/readme/parts-identification-screenshot.png)
+
 If you have a [dual spool holder][sv06-dual-spool-holder], you'll need two
 sets of each part.
 
