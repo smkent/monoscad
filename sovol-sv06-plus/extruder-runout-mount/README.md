@@ -4,6 +4,8 @@
 
 An extruder mount for the filament runout sensor on the Sovol SV06 Plus
 
+![Model photo](images/readme/photo1-caption.jpg)
+
 ![Model render](images/readme/render-part.png)
 ![Installed model preview animation](images/readme/demo-rotation.gif)
 
@@ -62,6 +64,9 @@ To start the installation for all model variants:
 * Insert the filament sensor foot into the hole on the top of the model. The fit
   is designed to be very snug.
 
+![Installation photo](images/readme/photo-install-1.jpg)
+![Installation photo](images/readme/photo-install-2.jpg)
+
 ## Rear-facing filament runout sensor model variant for stock wiring
 
 For the rear-facing filament runout sensor model that uses the stock wiring,
@@ -117,6 +122,8 @@ both the extruder and filament runout sensor.
 
 This model variant includes a small retaining grip for the wiring harness to
 prevent it from interfering with the extruder mount's movement along the X-axis.
+
+![Installation photo with custom wiring harness](images/readme/photo-install-3.jpg)
 
 ## License
 
