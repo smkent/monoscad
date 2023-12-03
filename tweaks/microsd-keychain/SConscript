@@ -73,6 +73,14 @@ b.Image(
     delay=150,
 )
 
+b.InsetImage(
+    "demo-inset.gif",
+    "photo1-adjusted.jpg",
+    "demo-keychain-loop.gif",
+    resize="33%",
+    gravity="southeast",
+)
+
 b.Source("*.scad", "Guido-*.stl")
 
 b.add_default_targets()
