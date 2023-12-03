@@ -1,5 +1,6 @@
 # MicroSD card holder keychain (parametric remix)
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-NC-4.0 license][license-badge]][license]
 
 A parametric remix of Guido's tiny 4-card MicroSD keychain holder
@@ -41,7 +42,10 @@ This is a remix of
 Both the original model and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution-NonCommercial][license].
 
+
 [license-badge]: /_static/license-badge-cc-by-nc-4.0.svg
 [license]: http://creativecommons.org/licenses/by-nc/4.0/
 [openscad]: https://openscad.org
 [original-model-url]: https://www.printables.com/model/276691-microsd-card-holder-keychain
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/668746
