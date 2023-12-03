@@ -101,6 +101,7 @@ module logo_cut(logo="none") {
             linear_extrude(height=0.5)
             circle(r=10);
         }
+        linear_extrude(height=0.7, center=true)
         if (logo == "microsd") {
             microsd_logo_cut();
         } else if (logo == "guido") {
@@ -131,7 +132,7 @@ module cap() {
                 linear_extrude(height=2.8 * 2, center=true)
                 difference() {
                     circle(r=14 * 3);
-                    circle(r=10.3);
+                    circle(r=10.1);
                 }
             }
             outer_edge();
@@ -144,6 +145,8 @@ module cap() {
 
 module microsd_logo_cut() {
     render(convexity=4)
+    projection(cut=true)
+    translate([0, 0, -0.1])
     difference() {
         linear_extrude(height=1)
         circle(r=9.8);
@@ -153,6 +156,8 @@ module microsd_logo_cut() {
 
 module guido_logo_cut() {
     render(convexity=4)
+    projection(cut=true)
+    translate([0, 0, -0.1])
     difference() {
         linear_extrude(height=1)
         circle(r=9.8);
