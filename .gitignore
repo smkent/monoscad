@@ -2,6 +2,7 @@
 *.json
 *.[Ss][Tt][Ll]
 *.zip
+__pycache__
 .sconsign.dblite
 build/
 !*/config.json
