@@ -62,6 +62,13 @@ b.InsetImage(
     resize="33%",
     gravity="southwest",
 )
+b.InsetImage(
+    "spin-video-inset.gif",
+    "photo-spools-right-side.jpg",
+    "spin-video.gif",
+    resize="33%",
+    gravity="southwest",
+)
 
 b.add_default_targets()
 
