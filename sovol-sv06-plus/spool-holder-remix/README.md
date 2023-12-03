@@ -52,6 +52,9 @@ supports and no special instructions.
 Concentric top and bottom infill patterns make a nice aesthetic for these parts,
 but this is optional.
 
+After printing, I suggest screwing the barrel and nut together in your hands a
+few times to work in the threads before installation onto your printer.
+
 ### Slicer screenshots
 
 SV06 filament barrel:
