@@ -1,5 +1,6 @@
 # Spool Holder remix for Sovol SV06 and SV06 Plus
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-NC-SA-4.0 license][license-badge]][license]
 
 A remix of rogerquin's excellent locking spool holder which mounts over the
@@ -148,4 +149,6 @@ Both the original model and this remix are licensed under
 [license]: http://creativecommons.org/licenses/by-nc-sa/4.0/
 [openscad]: https://openscad.org
 [original-model-url]: https://www.printables.com/model/409684-spool-holder-for-sovol-sv06-3d-printer
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/669125
 [sv06-dual-spool-holder]: /sovol-sv06-plus/dual-spool-holder/

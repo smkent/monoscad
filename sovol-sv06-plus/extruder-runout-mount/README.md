@@ -1,5 +1,6 @@
 # Filament runout sensor extruder mount for Sovol SV06 Plus
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 An extruder mount for the filament runout sensor on the Sovol SV06 Plus
@@ -129,10 +130,12 @@ prevent it from interfering with the extruder mount's movement along the X-axis.
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
 
+[bassamantor-everything-sovol-sv06]: https://github.com/bassamanator/everything-sovol-sv06
 [breakmate-sv06-plus-mount]: https://www.printables.com/model/493623-sv06-plus-filament-runout-mount
 [dual-spool-holder]: /sovol-sv06-plus/dual-spool-holder
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
 [phantomaura-sv06-plus-mount-remix]: https://www.printables.com/model/596377-sovol-sv06-plus-ultimate-filament-runout-sensor-mo
-[bassamantor-everything-sovol-sv06]: https://github.com/bassamanator/everything-sovol-sv06
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/669108
