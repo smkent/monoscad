@@ -20,7 +20,10 @@ Then, I extended the large diameter (Sunlu) nut for an easier grip.
 
 ## Recommended pairing
 
-This model can be paired with [my dual spool holder][sv06-dual-spool-holder]!
+As pictured, this model pairs well with
+[my dual spool holder][sv06-dual-spool-holder]!
+
+![Render of dual spool holder model](../dual-spool-holder/images/readme/render-model-preview.png)
 
 ## Parts
 
