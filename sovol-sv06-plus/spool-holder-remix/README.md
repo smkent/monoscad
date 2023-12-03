@@ -37,6 +37,13 @@ The parts to print are all included:
 If you have a [dual spool holder][sv06-dual-spool-holder], you'll need two
 sets of each part.
 
+## Spool holder nut configuration
+
+The spool holder nut in the published model is 15mm longer than the original.
+This is configurable in the OpenSCAD model if you prefer a different length.
+
+![Animation of nut length options](images/readme/demo-nut-extension-sizes.gif)
+
 ## Printing
 
 All of these parts print as oriented in the model files (upright) with no
@@ -45,12 +52,27 @@ supports and no special instructions.
 Concentric top and bottom infill patterns make a nice aesthetic for these parts,
 but this is optional.
 
+After printing, I suggest screwing the barrel and nut together in your hands a
+few times to work in the threads before installation onto your printer.
+
 ### Slicer screenshots
 
 SV06 filament barrel:
 
 ![Slicer screenshot of filament barrel with chamfer](images/readme/slicer-screenshot-filament-barrel-chamfered.png)
 ![Slicer screenshot of filament barrel with chamfer, underside](images/readme/slicer-screenshot-filament-barrel-chamfered-2.png)
+
+Barrel fitting:
+
+![Slicer screenshot of barrel fitting](images/readme/slicer-screenshot-barrel-fitting.png)
+
+Barrel:
+
+![Slicer screenshot of barrel](images/readme/slicer-screenshot-barrel.png)
+
+Nut:
+
+![Slicer screenshot of nut](images/readme/slicer-screenshot-nut.png)
 
 ## Installation
 
