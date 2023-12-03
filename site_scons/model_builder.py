@@ -182,6 +182,7 @@ class ModelBuilder:
         view_options: Optional[str] = None,
         delay: int = 75,
         tile: str = "",
+        zoom: float = 1,
     ) -> None:
         image_targets = {
             f"{self.src_dir}/{image_path}/{target}": size
@@ -202,6 +203,7 @@ class ModelBuilder:
                     view_options=view_options,
                     delay=delay,
                     tile=tile,
+                    zoom=zoom,
                 ),
             )
         )

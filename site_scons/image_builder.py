@@ -1,3 +1,4 @@
+import functools
 import tempfile
 from dataclasses import dataclass, field
 from itertools import cycle
@@ -21,6 +22,7 @@ class ImageBuilder:
     camera: Optional[str] = None
     view_options: Optional[str] = None
     tile: str = ""
+    zoom: float = 1
 
     frames: List[str] = field(repr=False, init=False, default_factory=list)
 
@@ -37,6 +39,24 @@ class ImageBuilder:
                 self.render_montage(tdp, target[0].suffix)
             for tt in target:
                 self.finish_image(tt)
+
+    @functools.cached_property
+    def target_size(self) -> str:
+        return [int(d) for d in IMAGE_RENDER_SIZE.split("x")]
+
+    @functools.cached_property
+    def render_size(self) -> str:
+        return [int(d * self.zoom) for d in self.target_size]
+
+    @functools.cached_property
+    def crop_values(self) -> str:
+        offset = [
+            int((self.render_size[0] - self.target_size[0]) / 2),
+            int((self.render_size[1] - self.target_size[1]) / 2),
+        ]
+        return "+".join(
+            ["x".join(map(str, self.target_size)), "+".join(map(str, offset))]
+        )
 
     def finish_image(self, target: SConsFile) -> None:
         size_arg = "x" + self.image_targets[target.abspath].split("x")[1]
@@ -79,11 +99,11 @@ class ImageBuilder:
     def render_frame(
         self,
         env: SConsEnvironment,
-        image_target: str,
+        image_target: Path,
         model_file: str,
         stl_vals: Dict[str, Any],
     ) -> None:
-        size = IMAGE_RENDER_SIZE.replace("x", ",")
+        size = ",".join(map(str, self.render_size))
         render_args = openscad_var_args(stl_vals, for_subprocess=True)
         if self.camera:
             render_args += [f"--camera={self.camera}"]
@@ -100,6 +120,25 @@ class ImageBuilder:
             ]
             + env["OPENSCAD_FEATURES"]
             + render_args
+        )
+        if self.render_size != self.target_size:
+            self.crop_frame(image_target)
+
+    def crop_frame(self, image_target: Path) -> None:
+        source_fn = (
+            Path(image_target).parent
+            / f"{image_target.stem}_source{image_target.suffix}"
+        )
+        image_target.rename(source_fn)
+        run(
+            [
+                "convert",
+                source_fn,
+                "-crop",
+                self.crop_values,
+                "+repage",
+                image_target,
+            ]
         )
 
 

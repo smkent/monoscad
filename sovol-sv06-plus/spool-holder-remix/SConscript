@@ -44,7 +44,7 @@ b.Image(
     {"Part": "barrel"},
 )
 b.Image("render-sunlu-nut.png", model, {"Part": "nut"})
-b.Image("render-all-parts-preview.png", model, {"Part": "preview"})
+b.Image("render-all-parts-preview.png", model, {"Part": "preview"}, zoom=1.2)
 
 b.Image(
     "demo-nut-extension-sizes.gif",
