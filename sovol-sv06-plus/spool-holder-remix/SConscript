@@ -55,6 +55,14 @@ b.Image(
     ],
 )
 
+b.InsetImage(
+    "photo-inset.jpg",
+    "photo-spools-right-side.jpg",
+    "render-all-parts-preview.png",
+    resize="33%",
+    gravity="southwest",
+)
+
 b.add_default_targets()
 
 # vim: ft=python

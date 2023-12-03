@@ -36,18 +36,18 @@ slop = 0.01;
 
 module combined_barrel() {
     // rogerquin's Original spool barrel holder
-    color("yellow", 0.6)
+    color("#bca0dd", 0.6)
     import("rogerquin-sv06-spool-holder-barrel.stl", convexity=4);
 
     // rogerquin's Original Sunlu spool barrel adapter
-    color("lightblue", 0.6)
+    color("lightgreen", 0.6)
     for (sc = [1, 0.9])
     scale([sc, sc])
     import("rogerquin-sv06-spool-holder-sunlu-barrel-adapter.stl", convexity=4);
 
     // Close part separation with a cone
     rr = 3;
-    color("lightgreen", 0.5)
+    color("lemonchiffon", 0.5)
     translate([0, 0, barrel_base_lip_z])
     rotate_extrude(angle=360)
     difference() {
@@ -63,7 +63,7 @@ module combined_barrel() {
 
 module original_rogerquin_sunlu_nut() {
     // rogerquin's original Sunlu-size nut
-    color("lightgreen", 0.8)
+    color("lightblue", 0.8)
     import("rogerquin-sv06-spool-holder-sunlu-nut.stl", convexity=4);
 }
 
@@ -94,7 +94,7 @@ module nut() {
 
     // New extension
     slop = 0.01;
-    color("lavender", 0.5)
+    color("lightgreen", 0.5)
     translate([0, 0, original_nut_lip_z - slop])
     linear_extrude(height=extend + slop * 2)
     projection(cut=true)
@@ -113,13 +113,13 @@ module nut() {
 module all_parts_preview() {
     rotate([90, 0, 90])
     translate([0, 0, -55]) {
-        color("lightblue", 0.8)
+        color("#bca0dd", 0.8)
         render(convexity=2)
         combined_barrel();
 
         translate([0, 0, 100 + Nut_Extra_Length])
         rotate([180, 0, 0])
-        color("lightgreen", 0.8)
+        color("lightblue", 0.8)
         nut();
 
         color("#aaa", 0.8)
@@ -130,11 +130,11 @@ module all_parts_preview() {
 
 module main() {
     if (Part == "barrel") {
-        color("lightblue", 0.8)
+        color("#bca0dd", 0.8)
         render(convexity=2)
         combined_barrel();
     } else if (Part == "nut") {
-        color("lightgreen", 0.8)
+        color("lightblue", 0.8)
         nut();
     } else if (Part == "preview") {
         all_parts_preview();

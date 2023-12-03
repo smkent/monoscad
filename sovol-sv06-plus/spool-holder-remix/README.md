@@ -5,6 +5,8 @@
 A remix of rogerquin's excellent locking spool holder which mounts over the
 original Sovol SV06 spool barrel
 
+![Photo of model installed with spools](images/readme/photo-spools-right-side.jpg)
+![Photo of model installed with spools](images/readme/photo-spools-left-side.jpg)
 ![Assembled model render](images/readme/render-all-parts-preview.png)
 
 # Description
@@ -15,6 +17,10 @@ In wanting a larger grip area for both regular spools and large diameter (e.g.
 Sunlu) spools, I made two changes to rogerquin's original model. First, I
 combined the spool barrel with the Sunlu barrel adapter into a single piece.
 Then, I extended the large diameter (Sunlu) nut for an easier grip.
+
+## Recommended pairing
+
+This model can be paired with [my dual spool holder][sv06-dual-spool-holder]!
 
 ## Parts
 
@@ -36,7 +42,7 @@ The parts to print are all included:
 
 ![Parts identification screenshot](images/readme/parts-identification-screenshot.png)
 
-If you have a [dual spool holder][sv06-dual-spool-holder], you'll need two
+If you are using [my dual spool holder][sv06-dual-spool-holder], you'll need two
 sets of each part.
 
 ## Spool holder nut configuration
@@ -84,15 +90,25 @@ barrel, remove the stock filament barrel and install the printed filament
 barrel.
 
 While holding both of the spool holder barrel fittings on the spool holder,
-slide the spool holder barrel on top of the fittings. Hold the barrel fittings
-steady on their ends while twisting the spool holder onto their threads, until
-the barrel is flush with the fittings. I use my fingers to hold the barrel
-fittings steady but you may find it easier to do with a screwdriver or other
-tool.
+slide the spool holder barrel on top of the fittings.
 
-Finally, place a spool of filament on the barrel and screw on the nut until the
-spool is held at the center by the chamfered ends of both the barrel and nut.
-The spool and spool barrel should turn freely on the SV06 filament barrel.
+![Installation photo of barrel fittings](images/readme/photo-install-1.jpg)
+![Installation photo of barrel sliding onto fittings](images/readme/photo-install-2.jpg)
+![Installation photo of barrel on fittings](images/readme/photo-install-3.jpg)
+
+Hold the barrel fittings steady on their ends while twisting the spool holder
+onto their threads, until the barrel is flush with the fittings. I use my
+fingers to hold the barrel fittings steady but you may find it easier to do with
+a screwdriver or other tool.
+
+![Installation photo of barrel screwed onto fittings](images/readme/photo-install-4.jpg)
+
+Place a spool of your favorite filament on the barrel. Screw on the nut until
+the spool is held at the center by the chamfered ends of both the barrel and
+nut. The spool and spool barrel should turn freely on the SV06 filament barrel.
+
+![Installation photo of spool on barrel](images/readme/photo-install-5.jpg)
+![Photo of completed installation with not holding spool](images/readme/photo-install-6.jpg)
 
 To change spools, simply unscrew the nut, swap out the spool, and reinstall the
 nut.
