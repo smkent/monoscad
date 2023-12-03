@@ -26,27 +26,6 @@ IMAGE_TARGETS = {
 }
 
 
-def openscad_cmd(env: SConsEnvironment) -> Sequence[str]:
-    executable = ARGUMENTS.get(
-        "openscad", os.environ.get("OPENSCAD", "openscad")
-    )
-
-    def _openscad_has_features() -> bool:
-        help_text = subprocess.run(
-            [executable, "--help"],
-            check=True,
-            capture_output=True,
-            text=True,
-            env=env["ENV"],
-        ).stderr
-        return "--enable" in help_text
-
-    cmd = [executable]
-    if _openscad_has_features():
-        cmd += ["--enable", "fast-csg", "--enable", "manifold"]
-    return cmd
-
-
 class MainBuilder:
     def __init__(self):
         # Build in parallel by default
@@ -81,12 +60,32 @@ class MainBuilder:
         self._add_openscad_builder(env)
         return env
 
+    def _openscad_cmd(self, env: SConsEnvironment) -> Sequence[str]:
+        executable = ARGUMENTS.get(
+            "openscad", os.environ.get("OPENSCAD", "openscad")
+        )
+
+        def _openscad_has_features() -> bool:
+            help_text = subprocess.run(
+                [executable, "--help"],
+                check=True,
+                capture_output=True,
+                text=True,
+                env=env["ENV"],
+            ).stderr
+            return "--enable" in help_text
+
+        cmd = [executable]
+        if _openscad_has_features():
+            cmd += ["--enable", "fast-csg", "--enable", "manifold"]
+        return cmd
+
     def _add_openscad_builder(self, env: SConsEnvironment) -> None:
         def _add_deps_target(target, source, env):
             target.append("${TARGET.name}.deps")
             return target, source
 
-        cmd = openscad_cmd(env)
+        cmd = self._openscad_cmd(env)
         env["OPENSCAD"] = cmd[0]
         env["OPENSCAD_FEATURES"] = cmd[1:]
         env["BUILDERS"]["openscad"] = Builder(
