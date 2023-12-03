@@ -1,0 +1,80 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "microsd-keychain.scad"
+
+for opts in GenerateOptions(
+    part=[("cap", "cap"), ("microsd_holder", "microsd-holder")],
+    keychain=[(True, "-keychain-loop"), False],
+):
+    for k_opts in GenerateOptions(
+        size=[2, (4, "-large")] if opts.keychain else [2]
+    ):
+        b.STL(
+            (
+                "microsd-keychain-"
+                f"{opts.part_fn}{opts.keychain_fn}{k_opts.size_fn}.stl"
+            ),
+            model,
+            {
+                "Part": opts.part,
+                "Keychain_Loop_Part": opts.part if opts.keychain else "none",
+                "Keychain_Loop_Height": k_opts.size,
+                "Keychain_Loop_Thickness": k_opts.size,
+            },
+            zip_dir="models-for-printing",
+        )
+
+b.Image("demo.png", model, {"Part": "both"}, camera="0,0,0,20,0,180,140")
+b.Image("demo-bottom.png", model, {"Part": "both"}, camera="0,0,0,205,0,0,140")
+
+b.Image(
+    "demo-keychain-loop.gif",
+    model,
+    [
+        {
+            "Part": "both",
+            "Keychain_Loop_Thickness": thick,
+            "Keychain_Loop_Height": height,
+            "Keychain_Loop_Part": keychain_part,
+        }
+        for keychain_part in ["cap", "microsd_holder"]
+        for (thick, height) in [
+            (2, 2),
+            (3, 2),
+            (4, 2),
+            (4, 4),
+            (4, 6),
+            (3, 6),
+            (2, 6),
+            (2, 4),
+            (2, 2),
+        ]
+    ],
+    camera="0,0,0,20,0,180,140",
+)
+
+b.Image(
+    "demo-logo.gif",
+    model,
+    [
+        {
+            "Part": "both",
+            "Micro_SD_Side_Logo_Inset": microsd_holder_logo,
+            "Cap_Logo_Inset": cap_logo,
+        }
+        for (microsd_holder_logo, cap_logo) in [
+            ("guido", "microsd"),
+            ("microsd", "guido"),
+            ("none", "none"),
+        ]
+    ],
+    camera="0,0,0,205,0,0,140",
+    delay=150,
+)
+
+b.Source("*.scad", "Guido-*.stl")
+
+b.add_default_targets()
+
+# vim: ft=python
