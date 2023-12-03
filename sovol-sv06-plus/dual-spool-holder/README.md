@@ -1,5 +1,6 @@
 # Sovol SV06 (Plus) forward-facing dual spool holder V2
 
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 Sovol SV06 (Plus) forward-facing dual spool holder
@@ -97,6 +98,8 @@ This model is licensed under
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
 [original-part-link-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source/blob/main/Molded%20Parts%20STL/JXHSV06-07003-d%20Barrel%20nut.STL
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/669121
 [rogerquin-spool-holder-for-sovol-sv06]: https://www.printables.com/model/409684-spool-holder-for-sovol-sv06-3d-printer
 [sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
 [sv06-plus-extruder-runout-mount]: /sovol-sv06-plus/extruder-runout-mount
