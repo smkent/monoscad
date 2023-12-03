@@ -12,7 +12,7 @@ from SCons.Node.FS import File as SConsFile
 from SCons.Script import BUILD_TARGETS
 from SCons.Script.SConscript import SConsEnvironment
 
-from image_builder import IMAGE_RENDER_SIZE, ImageBuilder
+from image_builder import IMAGE_RENDER_SIZE, ImageBuilder, InsetImageBuilder
 from utils import openscad_var_args, run
 
 PRINTABLES_TARGETS = {"printables", "zip"}
@@ -187,22 +187,23 @@ class ModelBuilder:
             f"{self.src_dir}/{image_path}/{target}": size
             for image_path, size in IMAGE_TARGETS.items()
         }
-        func = functools.partial(
-            ImageBuilder.render_image,
-            stl_vals_list=(
-                [stl_vals]
-                if isinstance(stl_vals, dict)
-                else (stl_vals or [[]])
-            ),
-            image_targets=image_targets,
-            camera=camera,
-            view_options=view_options,
-            delay=delay,
-            tile=tile,
-        )
-        func.__name__ = ImageBuilder.render_image.__name__
         self.env.NoClean(
-            self.env.Command(image_targets.keys(), model_file, func)
+            self.env.Command(
+                image_targets.keys(),
+                model_file,
+                ImageBuilder(
+                    stl_vals_list=(
+                        [stl_vals]
+                        if isinstance(stl_vals, dict)
+                        else (stl_vals or [[]])
+                    ),
+                    image_targets=image_targets,
+                    camera=camera,
+                    view_options=view_options,
+                    delay=delay,
+                    tile=tile,
+                ),
+            )
         )
         self.publish_images.add(f"{self.src_dir}/images/publish/{target}")
 
@@ -224,12 +225,7 @@ class ModelBuilder:
                         f"{self.src_dir}/{image_path}/{background_image}",
                         f"{self.src_dir}/{image_path}/{foreground_image}",
                     ],
-                    functools.partial(
-                        ImageBuilder.render_inset_image,
-                        image_size=image_size,
-                        resize=resize,
-                        gravity=gravity,
-                    ),
+                    InsetImageBuilder(image_size, resize, gravity),
                 )
             )
             self.publish_images.add(target_path)
