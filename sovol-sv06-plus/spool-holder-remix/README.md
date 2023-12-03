@@ -14,10 +14,10 @@ original Sovol SV06 spool barrel
 
 I've been using
 [rogerquin's most excellent spool holder for the Sovol SV06 (Plus)][original-model-url].
-In wanting a larger grip area for both regular spools and large diameter (e.g.
-Sunlu) spools, I made two changes to rogerquin's original model. First, I
-combined the spool barrel with the Sunlu barrel adapter into a single piece.
-Then, I extended the large diameter (Sunlu) nut for an easier grip.
+I wanted to make the grip easier and compatible with any of my spools, so  I
+made two changes to rogerquin's original model. First, I combined the spool
+barrel with the Sunlu barrel adapter into a single piece. Then, I extended the
+large diameter (Sunlu) nut for an easier grip.
 
 ![Photo of barrel comparison](images/readme/photo-barrel-remix.jpg)
 ![Photo of nut comparison](images/readme/photo-nut-remix.jpg)

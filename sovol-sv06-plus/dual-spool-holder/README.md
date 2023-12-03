@@ -1,4 +1,4 @@
-# Sovol SV06 (Plus) forward-facing dual spool holder
+# Sovol SV06 (Plus) forward-facing dual spool holder V2
 
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
@@ -27,6 +27,16 @@ spool holder.
 These models were created using [OpenSCAD][openscad]. The source code and models
 are included.
 
+This is a new version of [my similar V1 model][v1], which was created using
+TinkerCAD.
+
+## Prerequisites
+
+The SV06 Plus includes a filament runout sensor that mounts on the stock spool
+holder assembly. This model doesn't include a mounting point for the runout
+sensor, so it should be relocated. I relocated mine to the extruder using
+[my filament runout sensor extruder mount][sv06-plus-extruder-runout-mount].
+
 ## Recommended pairing
 
 For best results, pair this model with
@@ -35,14 +45,6 @@ or [my resized spool holder remix with an easier grip][sv06-spool-holder-remix],
 which allow the filament spools to rotate smoothly!
 
 ![Animation of spool holder rotation with add-on model](../spool-holder-remix/images/readme/spin-video.gif)
-
-## Prerequisites
-
-The SV06 Plus includes a filament runout sensor that mounts on the stock spool
-holder assembly. This model doesn't include a mounting point for the runout
-sensor, so it should be relocated. I relocated mine to the extruder using
-[Breakmate's SV06 Plus filament runout mount][breakmate-sv06-plus-runout-mount],
-which has been working great for me.
 
 ## Printing
 
@@ -76,7 +78,7 @@ forward or backward than the default 9.5° tilt.
 
 ## Previous version
 
-I created an [earlier dual spool holder model version][v1-model]
+I created an [earlier dual spool holder model version][v1]
 in TinkerCAD. That model is a combined remix of the double-ended nut from
 [braga3dprint's model][braga3dprint-double-spool-holder] and
 [Andrew Gipson's model][andrew-gipson-sv06-spool-holder].
@@ -91,12 +93,12 @@ This model is licensed under
 
 [andrew-gipson-sv06-spool-holder]: https://www.printables.com/model/501529-sv06-spool-holder-with-filament-guide-v1
 [braga3dprint-double-spool-holder]: https://www.printables.com/model/458130-sovol-sv06sv06-plus-double-filamentspool-holder
-[breakmate-sv06-plus-runout-mount]: https://www.printables.com/model/493623-sv06-plus-filament-runout-mount
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
 [original-part-link-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source/blob/main/Molded%20Parts%20STL/JXHSV06-07003-d%20Barrel%20nut.STL
 [rogerquin-spool-holder-for-sovol-sv06]: https://www.printables.com/model/409684-spool-holder-for-sovol-sv06-3d-printer
 [sovol-sv06]: https://github.com/Sovol3d/SV06-Fully-Open-Source
+[sv06-plus-extruder-runout-mount]: /sovol-sv06-plus/extruder-runout-mount
 [sv06-spool-holder-remix]: /sovol-sv06-plus/spool-holder-remix
-[v1-model]: https://www.printables.com/model/584632-sovol-sv06-plus-90-degree-dual-spool-holder
+[v1]: https://www.printables.com/model/584632-sovol-sv06-plus-90-degree-dual-spool-holder
