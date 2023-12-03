@@ -45,6 +45,15 @@ b.Image(
 b.Image("render-sunlu-nut.png", model, {"Part": "nut"})
 b.Image("render-all-parts-preview.png", model, {"Part": "preview"})
 
+b.Image(
+    "demo-nut-extension-sizes.gif",
+    model,
+    [
+        {"Part": "nut", "Nut_Extra_Length": nut_length}
+        for nut_length in [0, 5, 10, 15, 20, 25, 30]
+    ],
+)
+
 b.add_default_targets()
 
 # vim: ft=python
