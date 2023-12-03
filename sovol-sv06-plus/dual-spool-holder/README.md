@@ -62,7 +62,7 @@ filament barrels.
 
 ## Installation
 
-Remove the original spool holder from the gantry, and reuse the original M4
+Remove the original spool holder from the gantry, and reuse the original M5
 bolts to attach the new spool holder body. Then, insert both filament spool
 barrels into each sides of the integrated nut.
 
