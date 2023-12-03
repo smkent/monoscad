@@ -3,17 +3,18 @@ import os
 import subprocess
 import sys
 import tempfile
-from contextlib import ExitStack, suppress
-from itertools import cycle, product
+from contextlib import ExitStack
+from itertools import cycle
 from math import ceil
 from pathlib import Path
-from types import SimpleNamespace
-from typing import (Any, Callable, Dict, Iterable, Iterator, List, Optional,
-                    Sequence, Set, Union)
+from typing import (Any, Callable, Dict, Iterable, List, Optional, Sequence,
+                    Set, Union)
 from zipfile import ZipFile
 
 from SCons.Node.FS import File as SConsFile
 from SCons.Script.SConscript import SConsEnvironment
+
+from options import GenerateOptions  # noqa: F401
 
 PRINTABLES_TARGETS = {"printables", "zip"}
 IMAGES_TARGETS = {"images"} | PRINTABLES_TARGETS
@@ -108,43 +109,6 @@ class MainBuilder:
             for x in start_dir.glob("**/SConscript")
             if not str(x).startswith("_")
         }
-
-
-class GenerateOptions:
-    def __init__(
-        self,
-        **kwargs: Sequence[Union[Sequence[Union[str, int]], Union[str, int]]],
-    ):
-        self.options = kwargs
-
-    def _value(
-        self, value: Union[Union[str, int], Sequence[Union[str, int]]]
-    ) -> Union[str, int]:
-        if isinstance(value, (list, tuple)):
-            return value[0]
-        return value
-
-    def _file_name_value(
-        self, value: Union[Union[str, int], Sequence[Union[str, int]]]
-    ) -> Union[str, int]:
-        if isinstance(value, (list, tuple)):
-            with suppress(IndexError):
-                return value[1]
-        return ""
-
-    def __iter__(self) -> Iterator[SimpleNamespace]:
-        opt_keys = sorted(self.options.keys())
-        args = [self.options[key] for key in opt_keys]
-        for p in product(*args):
-            yield SimpleNamespace(
-                **{
-                    **{k: self._value(v) for k, v in zip(opt_keys, p)},
-                    **{
-                        f"{k}_fn": self._file_name_value(v)
-                        for k, v in zip(opt_keys, p)
-                    },
-                }
-            )
 
 
 class ModelBuilder:
