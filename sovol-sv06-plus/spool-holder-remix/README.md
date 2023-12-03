@@ -37,10 +37,10 @@ The parts to print are all included:
 If you have a [dual spool holder][sv06-dual-spool-holder], you'll need two
 sets of each part.
 
-## Nut length configuration
+## Spool holder nut configuration
 
-The nut in the published model is 15mm longer than the original. This is
-configurable in the OpenSCAD model if you prefer a different length.
+The spool holder nut in the published model is 15mm longer than the original.
+This is configurable in the OpenSCAD model if you prefer a different length.
 
 ![Animation of nut length options](images/readme/demo-nut-extension-sizes.gif)
 
