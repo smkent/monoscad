@@ -1,5 +1,6 @@
+import functools
 import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from itertools import cycle
 from math import ceil
 from pathlib import Path
@@ -21,6 +22,9 @@ class ImageBuilder:
     camera: Optional[str] = None
     view_options: Optional[str] = None
     tile: str = ""
+    zoom: float = 1
+
+    frames: List[str] = field(repr=False, init=False, default_factory=list)
 
     def __call__(
         self,
@@ -30,53 +34,76 @@ class ImageBuilder:
     ) -> None:
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
-            # Render frames
-            frames: List[str] = []
-            for i, (frame_stl_vals, frame_model_file) in enumerate(
-                zip(self.stl_vals_list, cycle(source))
-            ):
-                fn = tdp / f"image_{i:05d}.png"
-                frames.append(fn)
-                self.render_single_image(
-                    env,
-                    fn,
-                    frame_model_file.path,
-                    frame_stl_vals or {},
-                    IMAGE_RENDER_SIZE.replace("x", ","),
-                )
-            if len(frames) > 1 and target[0].suffix != ".gif":
-                if not self.tile:
-                    row_len = ceil(len(frames) / 2)
-                    self.tile = f"x{row_len}"
-                montage_fn = str(tdp / "montage") + target[0].suffix
-                montage_cmd = [
-                    "montage",
-                    "-background",
-                    "#333",
-                    "-border",
-                    0,
-                    "-geometry",
-                    "+0+0",
-                    "-tile",
-                    self.tile,
-                ]
-                run(montage_cmd + frames + [montage_fn])
-                frames = [montage_fn]
+            self.render_frames(tdp, source, env)
+            if len(self.frames) > 1 and target[0].suffix != ".gif":
+                self.render_montage(tdp, target[0].suffix)
             for tt in target:
-                size_arg = "x" + self.image_targets[tt.abspath].split("x")[1]
-                cmd = ["convert", "-resize", size_arg]
-                if target[0].suffix == ".gif":
-                    cmd += ["-loop", "0", "-delay", str(self.delay)]
-                run(cmd + frames + [tt.path])
+                self.finish_image(tt)
 
-    def render_single_image(
+    @functools.cached_property
+    def target_size(self) -> str:
+        return [int(d) for d in IMAGE_RENDER_SIZE.split("x")]
+
+    @functools.cached_property
+    def render_size(self) -> str:
+        return [int(d * self.zoom) for d in self.target_size]
+
+    @functools.cached_property
+    def crop_values(self) -> str:
+        offset = [
+            int((self.render_size[0] - self.target_size[0]) / 2),
+            int((self.render_size[1] - self.target_size[1]) / 2),
+        ]
+        return "+".join(
+            ["x".join(map(str, self.target_size)), "+".join(map(str, offset))]
+        )
+
+    def finish_image(self, target: SConsFile) -> None:
+        size_arg = "x" + self.image_targets[target.abspath].split("x")[1]
+        cmd = ["convert", "-resize", size_arg]
+        if target.suffix == ".gif":
+            cmd += ["-loop", "0", "-delay", str(self.delay)]
+        run(cmd + self.frames + [target.path])
+
+    def render_montage(self, tdp: Path, suffix: str) -> str:
+        if not self.tile:
+            row_len = ceil(len(self.frames) / 2)
+            self.tile = f"x{row_len}"
+        montage_fn = str(tdp / "montage") + suffix
+        montage_cmd = [
+            "montage",
+            "-background",
+            "#333",
+            "-border",
+            0,
+            "-geometry",
+            "+0+0",
+            "-tile",
+            self.tile,
+        ]
+        run(montage_cmd + self.frames + [montage_fn])
+        self.frames = [montage_fn]
+
+    def render_frames(
+        self, tdp: Path, source: Sequence[SConsFile], env: SConsEnvironment
+    ) -> None:
+        for i, (frame_stl_vals, frame_model_file) in enumerate(
+            zip(self.stl_vals_list, cycle(source))
+        ):
+            fn = tdp / f"image_{i:05d}.png"
+            self.render_frame(
+                env, fn, frame_model_file.path, frame_stl_vals or {}
+            )
+            self.frames.append(fn)
+
+    def render_frame(
         self,
         env: SConsEnvironment,
-        image_target: str,
+        image_target: Path,
         model_file: str,
         stl_vals: Dict[str, Any],
-        size=None,
     ) -> None:
+        size = ",".join(map(str, self.render_size))
         render_args = openscad_var_args(stl_vals, for_subprocess=True)
         if self.camera:
             render_args += [f"--camera={self.camera}"]
@@ -93,6 +120,25 @@ class ImageBuilder:
             ]
             + env["OPENSCAD_FEATURES"]
             + render_args
+        )
+        if self.render_size != self.target_size:
+            self.crop_frame(image_target)
+
+    def crop_frame(self, image_target: Path) -> None:
+        source_fn = (
+            Path(image_target).parent
+            / f"{image_target.stem}_source{image_target.suffix}"
+        )
+        image_target.rename(source_fn)
+        run(
+            [
+                "convert",
+                source_fn,
+                "-crop",
+                self.crop_values,
+                "+repage",
+                image_target,
+            ]
         )
 
 
