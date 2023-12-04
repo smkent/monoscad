@@ -23,7 +23,10 @@ base_outer = [10 * 2 + 34.5, 55];
 base_inner = [34.5, 55 - 6 * 2];
 base_height = 10;
 base_lip_height = 8;
-base_lip_width = 2;
+base_lip_width = 4;
+base_notch_dimensions = [5, 5];
+base_notch_gap = 3;
+base_notch_size_tolerance = 1;
 
 supports_size = [20, 6, 61 + 10 + 10];
 supports_tilt = 0.81;
@@ -34,7 +37,7 @@ axle_diameter = 10;
 
 base_outer_radius = 4;
 supports_outer_radius = 8;
-edge_radius = Round_All_Edges ? 0.75 : 0;
+edge_radius = Round_All_Edges ? 0.8 : 0;
 
 honeycomb_size = 7;
 honeycomb_separation = 2.5;
@@ -85,11 +88,20 @@ module add_ferris_wheel_base() {
             translate([0, 0, -slop])
             linear_extrude(height=base_lip_height + edge_radius + slop)
             offset(delta=edge_radius)
-            offset(delta=-base_lip_width)
-            offset(r=base_outer_radius)
-            offset(r=-base_outer_radius)
-            square(base_outer, center=true);
-
+            union() {
+                // Base interior
+                offset(delta=-base_lip_width)
+                offset(r=base_outer_radius)
+                offset(r=-base_outer_radius)
+                square(base_outer, center=true);
+                // Notch
+                translate([
+                    -base_outer[0] / 2 + base_notch_gap,
+                    -base_notch_dimensions[1] / 2
+                ])
+                offset(delta=base_notch_size_tolerance)
+                square(base_notch_dimensions);
+            }
             translate([0, 0, edge_radius])
             mirror([0, 0, 1])
             linear_extrude(height=1 + edge_radius * 4)
