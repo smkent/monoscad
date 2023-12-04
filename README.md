@@ -80,6 +80,6 @@ Attribution][license-cc-by-4.0].
 [openscad-libraries]: https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries
 [openscad]: https://openscad.org
 [printables-profile-badge]: /_static/printables-profile-badge.svg
-[printables-profile]: https://www.printables.com/@bulbasaur0_1139994/models
+[printables-profile]: https://www.printables.com/@bulbasaur0/models
 [scons]: https://scons.org/
 [smkent-openscad-libraries]: https://github.com/smkent/openscad-libraries
