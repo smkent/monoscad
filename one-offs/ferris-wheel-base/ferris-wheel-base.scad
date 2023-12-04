@@ -16,7 +16,10 @@ base_outer = [10 * 2 + 34.5, 55];
 base_inner = [34.5, 55 - 6 * 2];
 base_height = 10;
 base_lip_height = 8;
-base_lip_width = 2;
+base_lip_width = 4;
+base_notch_dimensions = [5, 5];
+base_notch_gap = 3;
+base_notch_size_tolerance = 1;
 
 supports_size = [20, 6, 61 + 10];
 supports_tilt = 0.81;
@@ -29,6 +32,10 @@ slop = 0.001;
 
 // Modules //
 
+module ferris_wheel_base_notch() {
+    square(base_notch_dimensions);
+}
+
 module ferris_wheel_base() {
     render(convexity=4)
     difference() {
@@ -39,8 +46,18 @@ module ferris_wheel_base() {
         }
         translate([0, 0, -slop])
         linear_extrude(height=base_lip_height + slop)
-        offset(delta=-base_lip_width)
-        square(base_outer, center=true);
+        union() {
+            // Base interior
+            offset(delta=-base_lip_width)
+            square(base_outer, center=true);
+            // Notch
+            translate([
+                -base_outer[0] / 2 + base_notch_gap,
+                -base_notch_dimensions[1] / 2
+            ])
+            offset(delta=base_notch_size_tolerance)
+            square(base_notch_dimensions);
+        }
     }
 }
 
