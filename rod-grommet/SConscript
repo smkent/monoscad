@@ -1,0 +1,12 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "rod-grommet.scad"
+
+for opts in GenerateOptions(part=["grommet", "insert"]):
+    b.STL(f"print-{opts.part}.stl", model, {"Part": opts.part})
+b.Image("demo.png", model, {"Part": "both"})
+
+b.add_default_targets()
+
+# vim: ft=python
