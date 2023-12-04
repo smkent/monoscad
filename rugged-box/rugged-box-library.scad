@@ -724,7 +724,7 @@ module _box_screw_hole(width, increase_screw_diameter=false) {
     screw_radius = 1/2 * (
         increase_screw_diameter
             ? screw_hole_diameter * 1.1
-            : screw_hole_diameter - screw_hole_diameter_size_tolerance
+            : screw_hole_diameter + screw_hole_diameter_size_tolerance
     );
     rotate([90, 0, 0])
     translate([0, 0, -width])
