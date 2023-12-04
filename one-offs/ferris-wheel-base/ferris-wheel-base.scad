@@ -15,6 +15,8 @@ $fs = $preview ? $fs / 4 : 0.4;
 base_outer = [10 * 2 + 34.5, 55];
 base_inner = [34.5, 55 - 6 * 2];
 base_height = 10;
+base_lip_height = 8;
+base_lip_width = 2;
 
 supports_size = [20, 6, 61 + 10];
 supports_tilt = 0.81;
@@ -23,13 +25,22 @@ supports_placement = 10;
 axle_height = 10 + 61;
 axle_diameter = 10;
 
+slop = 0.001;
+
 // Modules //
 
 module ferris_wheel_base() {
-    linear_extrude(height=base_height)
+    render(convexity=4)
     difference() {
+        linear_extrude(height=base_height)
+        difference() {
+            square(base_outer, center=true);
+            square(base_inner, center=true);
+        }
+        translate([0, 0, -slop])
+        linear_extrude(height=base_lip_height + slop)
+        offset(delta=-base_lip_width)
         square(base_outer, center=true);
-        square(base_inner, center=true);
     }
 }
 
