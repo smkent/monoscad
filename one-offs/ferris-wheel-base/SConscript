@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 Import("env")
 b = ModelBuilder(env)
 
@@ -5,10 +7,22 @@ basic_model = "ferris-wheel-base.scad"
 fancy_model = "ferris-wheel-base-fancy.scad"
 
 for opts in GenerateOptions(
-    model=[(basic_model, ""), (fancy_model, "-fancy")]
+    model=[
+        (SimpleNamespace(model=basic_model, args={}), ""),
+        (
+            SimpleNamespace(
+                model=fancy_model, args={"Honeycomb": 1, "Round_All_Edges": 1}
+            ),
+            "-fancy",
+        ),
+    ]
 ):
-    b.STL(f"ferris-wheel-base{opts.model_fn}.stl", opts.model)
-    b.Image(f"demo{opts.model_fn}.png", opts.model)
+    b.STL(
+        f"ferris-wheel-base{opts.model_fn}.stl",
+        opts.model.model,
+        opts.model.args,
+    )
+    b.Image(f"demo{opts.model_fn}.png", opts.model.model, opts.model.args)
 
 b.add_default_targets()
 

@@ -9,8 +9,8 @@ include <honeycomb-openscad/honeycomb.scad>;
 
 /* [Options] */
 
-Honeycomb = true;
-Round_All_Edges = true;
+Honeycomb = false;
+Round_All_Edges = false;
 
 module __end_customizer_options__() { }
 
@@ -22,6 +22,8 @@ $fs = $preview ? $fs / 4 : 0.4;
 base_outer = [10 * 2 + 34.5, 55];
 base_inner = [34.5, 55 - 6 * 2];
 base_height = 10;
+base_lip_height = 8;
+base_lip_width = 2;
 
 supports_size = [20, 6, 61 + 10 + 10];
 supports_tilt = 0.81;
@@ -32,10 +34,12 @@ axle_diameter = 10;
 
 base_outer_radius = 4;
 supports_outer_radius = 8;
-edge_radius = Round_All_Edges ? 1 : 0;
+edge_radius = Round_All_Edges ? 0.75 : 0;
 
 honeycomb_size = 7;
 honeycomb_separation = 2.5;
+
+slop = 0.001;
 
 // Modules //
 
@@ -60,18 +64,37 @@ module honeycomb_grid(x, y, hex_size, separation, double=true) {
     }
 }
 
-module ferris_wheel_base() {
-    translate([0, 0, edge_radius])
-    linear_extrude(height=base_height - edge_radius * 2)
+module add_ferris_wheel_base() {
+    round_all_edges()
+    render(convexity=2)
     difference() {
-        offset(delta=-edge_radius)
-        offset(r=base_outer_radius)
-        offset(r=-base_outer_radius)
-        square(base_outer, center=true);
-        offset(delta=edge_radius)
-        offset(r=base_outer_radius / 4)
-        offset(r=-base_outer_radius / 4)
-        square(base_inner, center=true);
+        union() {
+            children();
+            translate([0, 0, edge_radius])
+            linear_extrude(height=base_height - edge_radius * 2)
+            difference() {
+                offset(delta=-edge_radius)
+                offset(r=base_outer_radius)
+                offset(r=-base_outer_radius)
+                square(base_outer, center=true);
+                offset(delta=edge_radius)
+                square(base_inner, center=true);
+            }
+        }
+        union() {
+            translate([0, 0, -slop])
+            linear_extrude(height=base_lip_height + edge_radius + slop)
+            offset(delta=edge_radius)
+            offset(delta=-base_lip_width)
+            offset(r=base_outer_radius)
+            offset(r=-base_outer_radius)
+            square(base_outer, center=true);
+
+            translate([0, 0, edge_radius])
+            mirror([0, 0, 1])
+            linear_extrude(height=1 + edge_radius * 4)
+            square(200, center=true);
+        }
     }
 }
 
@@ -113,7 +136,7 @@ module ferris_wheel_supports() {
     }
 }
 
-module ferris_wheel_axle() {
+module add_ferris_wheel_axle() {
     difference() {
         children();
         translate([0, 0, axle_height])
@@ -123,10 +146,9 @@ module ferris_wheel_axle() {
 }
 
 module ferris_wheel_stand() {
-    ferris_wheel_base();
-    ferris_wheel_axle() {
-        ferris_wheel_supports();
-    }
+    add_ferris_wheel_base()
+    add_ferris_wheel_axle()
+    ferris_wheel_supports();
 }
 
 module round_all_edges() {
@@ -142,8 +164,6 @@ module round_all_edges() {
 
 module main() {
     color("gold", 0.9)
-    round_all_edges()
-    render(convexity=2)
     ferris_wheel_stand();
 }
 
