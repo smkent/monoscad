@@ -8,14 +8,11 @@
 /* [Rendering Options] */
 Part = "both"; // [both: Top and bottom, both_assembled: Assembled model preview, top: Top, bottom: Bottom]
 
+/* [Options] */
+
 Body_Style = "chamfer"; // [chamfer: Chamfer, rounded: Rounded]
 
-/* [Size] */
-// All units in millimeters
-
-/* [Advanced Options] */
-
-/* [Development Toggles] */
+Interlock_Style = "default"; // [default: Default, opposite: Opposite]
 
 module __end_customizer_options__() { }
 
@@ -37,6 +34,8 @@ grip_length = board_size[0] / 3;
 thick = 2;
 pattern_thick = 2;
 font_size = 5.0;
+
+interlock_len = board_size[0] / 2 + thick * 2;
 
 slop = 0.01;
 
@@ -149,22 +148,30 @@ module grips(inset=false) {
         if (inset) {
             hull()
             for (oz = [0, board_size[2]])
-            translate([0, grip_radius, oz])
+            translate([0, grip_radius * 1.75, oz])
             grip(inset=inset);
         }
     }
 }
 
 module add_grips(inset=false) {
+    raw_inset = inset ? 1 : 0;
+    is_inset = (Interlock_Style == "opposite" ? 1 - raw_inset : raw_inset);
     difference() {
         children();
-        if (inset) {
-            grips(inset=inset);
+        if (is_inset) {
+            grips(inset=is_inset);
         }
     }
-    if (!inset) {
-        grips(inset=inset);
+    if (!is_inset) {
+        grips(inset=is_inset);
     }
+}
+
+module interlock_intersect(subtract=false, overlap=0) {
+    if (Interlock_Style == "opposite")
+    translate([0, 0, subtract ? slop / 2 : 0])
+    cube([interlock_len + overlap * 2, board_size[1] * 2, board_size[2] + slop], center=true);
 }
 
 module polarity_text() {
@@ -234,13 +241,26 @@ module bottom_pattern() {
 module top() {
     color("plum", 0.6)
     render(convexity=2)
-    add_grips()
+    add_grips(inset=false)
     cut_wire_holes(single=true)
     cut_z(raise = board_size[2] / 2)
     mirror([0, 1])
     difference() {
-        base_cube(add_thick(board_size, thick * 2));
-        cube(add_thick(board_size, thick + fit), center=true);
+        union() {
+            difference() {
+                base_cube(add_thick(board_size, thick * 2 + fit));
+                interlock_intersect(subtract=true, overlap=fit);
+                cube(add_thick(board_size, thick + fit), center=true);
+            }
+            scale([1, 1, 2])
+            intersection() {
+                difference() {
+                    base_cube(add_thick(board_size, thick + fit));
+                    cube(board_size, center=true);
+                }
+                interlock_intersect(subtract=false, overlap=-thick - fit);
+            }
+        }
         linear_extrude(height=board_size[2] * 4, center=true)
         top_pattern();
     }
@@ -255,8 +275,18 @@ module bottom() {
         union() {
             cut_z(raise=-board_size[2] / 2)
             base_cube(add_thick(board_size, thick * 2));
-            cut_z(raise=board_size[2] / 2)
-            base_cube(add_thick(board_size, thick));
+            difference() {
+                cut_z(raise=board_size[2] / 2)
+                base_cube(add_thick(board_size, thick));
+                interlock_intersect(subtract=true, overlap=-thick);
+            }
+            intersection() {
+                difference() {
+                    base_cube(add_thick(board_size, thick * 2));
+                    base_cube(add_thick(board_size, thick));
+                }
+                interlock_intersect(subtract=false);
+            }
         }
         cube([board_size[0], board_size[1], board_size[2]], center=true);
         linear_extrude(height=board_size[2] * 4, center=true)
