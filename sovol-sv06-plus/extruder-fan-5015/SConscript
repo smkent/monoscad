@@ -3,8 +3,26 @@ b = ModelBuilder(env)
 
 model = "extruder-fan-5015.scad"
 
-b.STL("extruder-fan-5015.stl", model, {"Render_Mode": "print"})
-b.Image("demo.png", model, {"Render_Mode": "normal"})
+b.STL(
+    "sovol-sv06-extruder-fan-duct-5015.stl",
+    model,
+    {"Render_Mode": "print"},
+    zip_dir="models-for-printing",
+)
+for opts in GenerateOptions(mode=["normal", ("preview", "-preview")]):
+    b.Image(
+        f"demo{opts.mode_fn}.png",
+        model,
+        {"Render_Mode": opts.mode},
+        camera="20,-15,0,70,0,10,200",
+    )
+
+b.Source(
+    "*.scad",
+    "leander-perez-blanco-*.stl",
+    "FarmerKGBOfficer-*.stl",
+    "sovol-*.STL",
+)
 
 b.add_default_targets()
 

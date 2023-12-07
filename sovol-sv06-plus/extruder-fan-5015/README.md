@@ -6,6 +6,7 @@
 Fan duct to use a 5015 fan for coldend cooling on the Sovol SV06 and SV06 Plus
 
 ![Model render](images/readme/demo.png)
+![Model render with fan](images/readme/demo-preview.png)
 
 ## Differences of the remix compared to the original
 

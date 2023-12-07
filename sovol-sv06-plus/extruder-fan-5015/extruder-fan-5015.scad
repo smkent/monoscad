@@ -19,7 +19,7 @@ module __end_customizer_options__() { }
 
 // Constants //
 
-$fa = $preview ? $fa : 2;
+$fa = $preview ? $fa / 4 : 2;
 $fs = $preview ? $fs : 0.4;
 
 slop = 0.01;
