@@ -17,6 +17,10 @@ which allows creation of swatches with arbitrary text.
 Material Swatches also happen to be the perfect size to [store in Gridfinity
 bins!][gridfinity-bins-material-swatches]
 
+## Differences of the remix compared to the original
+
+This is a version of Material Swatches created from scratch in OpenSCAD
+
 ## Attribution and License
 
 This is a remix of

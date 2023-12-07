@@ -57,6 +57,13 @@ I used
 with steel M5x20 bolts, and
 [darkcoffee's steel ball nut remix][darkcoffee-ball-nut].
 
+## Differences of the remix compared to the original
+
+This is a press-fit attachment for the Sovol SV06 and SV06 Plus right-side
+X-axis linear rod mount. The press-fit piece was created by subtracting the
+original Sovol parts from a block. I then added links from Sneaks' articulating
+camera mount.
+
 ## Attribution and License
 
 This is a remix of:

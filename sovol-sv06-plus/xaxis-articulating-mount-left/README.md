@@ -50,6 +50,12 @@ I used
 [areyouferretti's articulated mount tripod bolt][areyouferretti-tripod-bolt]
 to mount a Logitech C920 webcam to my articulated mount.
 
+## Differences of the remix compared to the original
+
+I modeled a new X-axis stepper motor attachment blank based on Sovol's original
+stepper motor parts for the SV06 and SV06 Plus. I then added links from Sneaks'
+articulating camera mount.
+
 ## Attribution and License
 
 This is a remix of:
