@@ -22,6 +22,11 @@ using TinkerCAD.
 
 See [the top-level README.md](/README.md) for libraries installation.
 
+## Differences of the remix compared to the original
+
+This uses [Gridfinity Rebuilt in OpenSCAD][gridfinity-rebuilt-openscad]
+to create bins with slots to hold [Material Swatches][material-swatches].
+
 ## Attribution and License
 
 This is a remix of

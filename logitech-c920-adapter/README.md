@@ -93,6 +93,12 @@ I attached my Logitech C920 and new adapter to my articulated mount using
 Also pictured is my
 [Sovol SV06 / SV06 Plus x-axis articulating mount base!](/sovol-sv06-plus/xaxis-articulating-mount-right/)
 
+## Differences of the remix compared to the original
+
+This is a new adapter base for the Logitech C920 which connects to Sneaks'
+articulating camera mount system. Attachment links from Sneaks' original model
+are used with this adapter.
+
 ## Attribution and License
 
 This is a remix of

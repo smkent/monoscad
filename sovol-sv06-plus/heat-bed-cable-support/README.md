@@ -137,6 +137,15 @@ Earlier remixed versions of both the
 and [bed support clip][bed-strain-relief-support-v1-stl] (created using
 TinkerCAD) are included in the model files.
 
+## Differences of the remix compared to the original
+
+The cable support clip on the printer body (near the CPU) has been modified with
+a longer curved end.
+
+The cable support clip that fits over the stock strain relief cover at the heat
+bed end is my own original creation (using the original Sovol strain relief
+cover for sizing).
+
 ## Attribution and License
 
 This is a remix of:
