@@ -6,7 +6,7 @@
  */
 
 /* [Rendering Options] */
-Part = "both"; // [both: Top and bottom, both_assembled: Assembled model preview, top: top, bottom: Bottom]
+Part = "both"; // [both: Top and bottom, both_assembled: Assembled model preview, top: Top, bottom: Bottom]
 
 Body_Style = "chamfer"; // [chamfer: Chamfer, rounded: Rounded]
 
@@ -25,7 +25,7 @@ $fa = $preview ? $fa / 2 : 2 / 4;
 $fs = $preview ? $fs / 4 : 0.4 / 4;
 
 edge_radius = 1;
-fit = 0.1;
+fit = 0.2;
 
 board_size = vec_add([22.2, 17.2, 4], fit);
 inductor_pos = [-board_size[0] / 2 + 7, -board_size[1] / 2 + 7, 0];
@@ -35,11 +35,16 @@ grip_radius = 0.5;
 grip_length = board_size[0] / 3;
 
 thick = 2;
-font_size = 4;
+pattern_thick = 2;
+font_size = 5.0;
 
 slop = 0.01;
 
 // Functions //
+
+function add_thick(dimensions, add) = [
+    dimensions[0] + add * 2, dimensions[1] + add * 2, dimensions[2] + add
+];
 
 function vec_add(vector, add) = [for (v = vector) v + add];
 
@@ -83,7 +88,7 @@ module chamfer_cube(dimensions, edge_radius=1) {
     }
 }
 
-module base_cube(dimensions, edge_radius=1) {
+module base_cube(dimensions, edge_radius=1, center=true) {
     if (Body_Style == "rounded") {
         round_cube(dimensions, edge_radius=edge_radius);
     } else if (Body_Style == "chamfer") {
@@ -128,7 +133,7 @@ module grips(inset=false) {
     iadd = inset ? fit : 0;
     for (my = [0:1:1])
     mirror([0, my, 0])
-    translate([0, (board_size[1] + thick) / 2, 0])
+    translate([0, (board_size[1] + thick * 2) / 2, 0])
     rotate([0, -90, 0])
     rotate_extrude(angle=360)
     translate([0, -grip_length / 2 - iadd]) {
@@ -155,13 +160,13 @@ module polarity_text() {
     for (mx = [0:1:1])
     mirror([mx, 0])
     rotate(90)
-    translate([0, (board_size[0] - font_size) / 2])
-    text("–       +", font=":style=Bold", size=font_size, halign="center", valign="center");
+    translate([0, (board_size[0] - font_size * 0.7) / 2])
+    text("–     +", font=":style=Bold", size=font_size, halign="center", valign="center");
 }
 
 module make_outline() {
     difference() {
-        offset(delta=thick)
+        offset(delta=pattern_thick)
         children();
         children();
     }
@@ -177,31 +182,31 @@ module outline_shape_base() {
 module base_pattern(potentiometer_hole=false) {
     polarity_text();
     difference() {
-        offset(r=thick)
-        offset(r=-thick)
+        offset(r=pattern_thick)
+        offset(r=-pattern_thick)
         difference() {
             square([board_size[0], board_size[1]], center=true);
             for (mx = [0:1:1], my = [0:1:1])
             mirror([0, my])
             mirror([mx, 0])
             translate([board_size[0] / 2, board_size[1] / 2])
-            circle(r=font_size + thick / 2);
+            circle(r=font_size * 0.80 + pattern_thick / 2);
         }
         if (potentiometer_hole) {
             make_outline() {
                 translate([-board_size[0] / 2 + 6.8, board_size[1] / 2 - 2.5])
-                circle(d = 3 + thick);
+                circle(d = 3 + pattern_thick);
             }
         }
         difference() {
             for (i = [0, 1, 2, 3, 4])
             make_outline()
             translate([board_size[0] / 2, -board_size[1] / 2])
-            circle(d=13 + thick * 3.5 * i);
+            circle(d=13 + pattern_thick * 3.5 * i);
             if (potentiometer_hole) {
                 translate([-board_size[0] / 2 + 6.8, board_size[1] / 2 - 2.5])
                 offset(delta=0.5)
-                circle(d = 3 + thick);
+                circle(d = 3 + pattern_thick);
             }
         }
     }
@@ -220,12 +225,11 @@ module top() {
     render(convexity=2)
     add_grips()
     cut_wire_holes(single=true)
-    cut_z(raise = board_size[2] - thick)
+    cut_z(raise = board_size[2] / 2)
     mirror([0, 1])
     difference() {
-        base_cube(vec_add(board_size, thick * 2 + fit));
-        translate([0, 0, thick])
-        base_cube(vec_add([board_size[0], board_size[1], board_size[2] * 2], thick + fit));
+        base_cube(add_thick(board_size, thick * 2));
+        cube(add_thick(board_size, thick + fit), center=true);
         linear_extrude(height=board_size[2] * 4, center=true)
         top_pattern();
     }
@@ -238,13 +242,12 @@ module bottom() {
     cut_wire_holes()
     difference() {
         union() {
-            cut_z(raise=-(board_size[2] - thick))
-            base_cube(vec_add(board_size, thick * 2));
-            cut_z(raise=board_size[2] - thick)
-            base_cube(vec_add(board_size, thick));
+            cut_z(raise=-board_size[2] / 2)
+            base_cube(add_thick(board_size, thick * 2));
+            cut_z(raise=board_size[2] / 2)
+            base_cube(add_thick(board_size, thick));
         }
-        translate([0, 0, thick])
-        base_cube([board_size[0], board_size[1], board_size[2] * 2]);
+        cube([board_size[0], board_size[1], board_size[2]], center=true);
         linear_extrude(height=board_size[2] * 4, center=true)
         bottom_pattern();
     }
