@@ -14,6 +14,8 @@ Body_Style = "chamfer"; // [chamfer: Chamfer, rounded: Rounded]
 
 Interlock_Style = "default"; // [default: Default, opposite: Opposite]
 
+Hole_Style = "separate"; // [separate: Separate holes for each wire polarity, combined: Single hole on each side]
+
 module __end_customizer_options__() { }
 
 // Constants //
@@ -270,7 +272,7 @@ module bottom() {
     color("greenyellow", 0.6)
     render(convexity=2)
     add_grips(inset=true)
-    cut_wire_holes()
+    cut_wire_holes(single=(Hole_Style == "combined"))
     difference() {
         union() {
             cut_z(raise=-board_size[2] / 2)
