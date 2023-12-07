@@ -1,0 +1,12 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "mp1584-case.scad"
+
+for opts in GenerateOptions(part=["top", "bottom"]):
+    b.STL(f"mp1584-case-{opts.part}.stl", model, {"Part": opts.part})
+b.Image("demo.png", model, {"Part": "both_assembled"})
+
+b.add_default_targets()
+
+# vim: ft=python
