@@ -16,6 +16,8 @@ Interlock_Style = "default"; // [default: Default, opposite: Opposite]
 
 Hole_Style = "separate"; // [separate: Separate holes for each wire polarity, combined: Single hole on each side]
 
+Potentiometer_Hole = true;
+
 module __end_customizer_options__() { }
 
 // Constants //
@@ -28,7 +30,7 @@ fit = 0.2;
 
 board_size = vec_add([22.2, 17.2, 4], fit);
 inductor_pos = [-board_size[0] / 2 + 7, -board_size[1] / 2 + 7, 0];
-potentiometer_pos = [-board_size[0] / 2 + 6.8, board_size[1] / 2 - 2.5];
+potentiometer_pos = [-board_size[0] / 2 + 6.9, board_size[1] / 2 - 2.7];
 
 grip_radius = 0.5;
 grip_length = board_size[0] / 3;
@@ -214,7 +216,7 @@ module base_pattern(potentiometer_hole=false) {
         }
         if (potentiometer_hole) {
             make_outline() {
-                translate([-board_size[0] / 2 + 6.8, board_size[1] / 2 - 2.5])
+                translate(potentiometer_pos)
                 circle(d = 3 + pattern_thick);
             }
         }
@@ -224,7 +226,7 @@ module base_pattern(potentiometer_hole=false) {
             translate([board_size[0] / 2, -board_size[1] / 2])
             circle(d=13 + pattern_thick * 3.5 * i);
             if (potentiometer_hole) {
-                translate([-board_size[0] / 2 + 6.8, board_size[1] / 2 - 2.5])
+                translate(potentiometer_pos)
                 offset(delta=0.5)
                 circle(d = 3 + pattern_thick);
             }
@@ -233,7 +235,7 @@ module base_pattern(potentiometer_hole=false) {
 }
 
 module top_pattern() {
-    base_pattern(potentiometer_hole=true);
+    base_pattern(potentiometer_hole=Potentiometer_Hole);
 }
 
 module bottom_pattern() {
