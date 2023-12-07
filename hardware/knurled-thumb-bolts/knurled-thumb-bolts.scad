@@ -19,7 +19,7 @@ Part = "both"; // [both: Both, head: Thumb bolt head, plug: Bolt plug insert]
 Bolt_Diameter = 6; // [1:0.01:10]
 Bolt_Shaft_Overlap = 4; // [2:0.1:30]
 
-Height = 25.4; // [5:0.1:50]
+Height = 29.4; // [5:0.1:50]
 Diameter = 18.6; // [5:0.1:50]
 
 Inset_Depth = 10.0; // [0:0.1:50]
@@ -53,7 +53,7 @@ slop = 0.01;
 plug_face_thick = 2;
 plug_thick = 0.8;
 plug_base_thick = 0.8;
-plug_base_height = head_depth + fit + 0 * plug_face_thick;
+plug_base_height = head_depth + fit + 2 * plug_face_thick;
 
 layer_height = 0.2;
 
@@ -106,12 +106,6 @@ module bolt_plug_body_base_shape() {
 }
 
 module bolt_plug_body() {
-    translate([0, 0, plug_base_height])
-    rounded_cylinder(
-        h=head_depth + fit + plug_face_thick - plug_base_height,
-        d=head_d / cos(30) + plug_thick * 2,
-        round_bottom=false
-    );
     linear_extrude(height=plug_base_height)
     bolt_plug_body_base_shape();
 }
@@ -129,7 +123,7 @@ module bolt_plug() {
             square([Diameter, bolt_d], center=true);
         }
         translate([0, 0, -slop])
-        linear_extrude(height = head_depth + fit + plug_face_thick + slop * 2)
+        linear_extrude(height=plug_base_height + slop * 2)
         circle(d=bolt_d + fit);
     }
 }
@@ -144,7 +138,7 @@ module thumb_bolt() {
             translate([0, 0, Height])
             mirror([0, 0, 1])
             linear_extrude(height=plug_base_height)
-            offset(delta=fit)
+            offset(delta=fit * 2)
             bolt_plug_body_base_shape();
         }
         kcyl(h=Inset_Depth, d=Inset_Diameter);
