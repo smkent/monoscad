@@ -1,0 +1,11 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "extruder-fan-5015.scad"
+
+b.STL("extruder-fan-5015.stl", model, {"Render_Mode": "print"})
+b.Image("demo.png", model, {"Render_Mode": "normal"})
+
+b.add_default_targets()
+
+# vim: ft=python
