@@ -1,5 +1,6 @@
 # Knurled Thumb Bolts
 
+![This model is a work in progress][work-in-progress-badge]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 Knurled thumb bolts for metric bolts
@@ -28,3 +29,4 @@ Third party components have their own licenses.
 [knurled-openscad]: https://github.com/smkent/knurled-openscad
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
+[work-in-progress-badge]: /_static/work-in-progress-badge.svg

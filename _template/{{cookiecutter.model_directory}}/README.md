@@ -2,6 +2,7 @@
 {%- block content -%}
 # {{ cookiecutter.title }}{% if remix %} (remix){% endif %}
 
+![This model is a work in progress][work-in-progress-badge]
 [![{{ cookiecutter.original_model_license }} license][license-badge]][license]
 
 {{ cookiecutter.description }}
@@ -29,4 +30,5 @@ This model is licensed under [{{ license_title}}][license].
 {%- endif %}
 [license]: {{ license_url }}
 [license-badge]: /_static/license-badge-{{ cookiecutter.original_model_license.lower() }}.svg
+[work-in-progress-badge]: /_static/work-in-progress-badge.svg
 {% endblock -%}

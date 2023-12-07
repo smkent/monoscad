@@ -1,5 +1,6 @@
 # Sovol SV06 Plus extruder cable support
 
+![This model is a work in progress][work-in-progress-badge]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 Extruder cable support bundle for the Sovol SV06 and SV06 Plus
@@ -30,3 +31,4 @@ Both the original model and this remix are licensed under
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [original-model-url]: https://www.printables.com/model/427286-sovol-sv06-plus-print-head-cable-support
 [sovol-sv06-plus]: https://github.com/Sovol3d/SV06-PLUS
+[work-in-progress-badge]: /_static/work-in-progress-badge.svg
