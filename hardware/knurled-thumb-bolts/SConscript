@@ -1,0 +1,12 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "knurled-thumb-bolts.scad"
+
+for opts in GenerateOptions(part=["head", "plug"]):
+    b.STL(f"knurled-thumb-bolt-{opts.part}.stl", model, {"Part": opts.part})
+b.Image("demo.png", model, {"Part": "both"})
+
+b.add_default_targets()
+
+# vim: ft=python
