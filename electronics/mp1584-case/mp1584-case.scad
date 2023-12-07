@@ -45,8 +45,8 @@ slop = 0.01;
 
 // Functions //
 
-function add_thick(dimensions, add) = [
-    dimensions[0] + add * 2, dimensions[1] + add * 2, dimensions[2] + add
+function add_thick(dimensions, add, thick_factor=1) = [
+    dimensions[0] + add * 2, dimensions[1] + add * 2, dimensions[2] + add * thick_factor
 ];
 
 function vec_add(vector, add) = [for (v = vector) v + add];
@@ -254,7 +254,7 @@ module top() {
             difference() {
                 base_cube(add_thick(board_size, thick * 2 + fit));
                 interlock_intersect(subtract=true, overlap=fit);
-                cube(add_thick(board_size, thick + fit), center=true);
+                cube(add_thick(board_size, thick + fit, thick_factor=0), center=true);
             }
             scale([1, 1, 2])
             intersection() {
