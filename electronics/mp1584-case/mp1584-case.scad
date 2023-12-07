@@ -129,11 +129,8 @@ module cut_wire_holes(single=false) {
     }
 }
 
-module grips(inset=false) {
-    iadd = inset ? fit : 0;
-    for (my = [0:1:1])
-    mirror([0, my, 0])
-    translate([0, (board_size[1] + thick * 2) / 2, 0])
+module grip(inset=false) {
+    iadd = inset ? fit * 3 : 0;
     rotate([0, -90, 0])
     rotate_extrude(angle=360)
     translate([0, -grip_length / 2 - iadd]) {
@@ -141,6 +138,20 @@ module grips(inset=false) {
         offset(r=-grip_radius * 0.49)
         square([grip_radius + iadd, grip_length + iadd * 2]);
         square([grip_radius / 2, grip_length + iadd * 2]);
+    }
+}
+
+module grips(inset=false) {
+    for (my = [0:1:1])
+    mirror([0, my, 0])
+    translate([0, (board_size[1] + thick * 2) / 2, 0]) {
+        grip(inset=inset);
+        if (inset) {
+            hull()
+            for (oz = [0, board_size[2]])
+            translate([0, grip_radius, oz])
+            grip(inset=inset);
+        }
     }
 }
 
