@@ -139,7 +139,7 @@ module grip(inset=false) {
     translate([0, -grip_length / 2 - iadd]) {
         offset(r=grip_radius * 0.49)
         offset(r=-grip_radius * 0.49)
-        square([grip_radius + iadd, grip_length + iadd * 2]);
+        square([grip_radius + iadd / 2, grip_length + iadd * 2]);
         square([grip_radius / 2, grip_length + iadd * 2]);
     }
 }
@@ -152,7 +152,7 @@ module grips(inset=false) {
         if (inset) {
             hull()
             for (oz = [0, board_size[2]])
-            translate([0, grip_radius * 1.25, oz])
+            translate([0, grip_radius * 1.0, oz])
             grip(inset=inset);
         }
     }
