@@ -33,7 +33,7 @@ module original_model() {
     color("lightblue", 0.8)
     translate([0, 0, 0.026181])
     rotate(-90)
-    import("leander-perez-blanco-extruder_cooling_fan_5015_V2.stl", convexity=4);
+    import("leander-perez-blanco-extruder_cooling_fan_5015_V2-modified-duct.stl", convexity=4);
 }
 
 module original_model_with_patched_arm() {
@@ -144,10 +144,11 @@ module original_model_duct_assembly() {
         original_model_plate_patch()
         original_model_with_patched_arm();
         union() {
-            translate([8, -20 + 1.58, -29])
+            translate([8, -20 + 1.58, -28.5])
             difference() {
                 cube([60, 20, 30]);
                 translate([1.6, 0, 14.6])
+                translate([0, 0, -0.3])
                 cube([10, 30, 40]);
             }
             translate([53.2, 0, -14.8])
@@ -231,7 +232,7 @@ module extended_duct_assembly(length=0) {
         rotate(-20)
         translate(origin_pos)
         rotate([0, 90, 0])
-        linear_extrude(height=length)
+        linear_extrude(height=length + slop)
         duct_profile_shape();
     }
 }
