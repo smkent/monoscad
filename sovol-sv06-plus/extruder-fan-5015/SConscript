@@ -2,6 +2,7 @@ Import("env")
 b = ModelBuilder(env)
 
 model = "extruder-fan-5015.scad"
+backpack_model = "5015-mp1584-backpack.scad"
 
 for opts in GenerateOptions(
     eyelet=[("bolt", "m4-bolts"), ("insert", "hot-melt-inserts")]
@@ -12,6 +13,7 @@ for opts in GenerateOptions(
         {"Render_Mode": "print", "Eyelet_Type": opts.eyelet},
         zip_dir="models-for-printing",
     )
+
 for opts in GenerateOptions(mode=["normal", ("preview", "-preview")]):
     b.Image(
         f"demo{opts.mode_fn}.png",
@@ -19,6 +21,18 @@ for opts in GenerateOptions(mode=["normal", ("preview", "-preview")]):
         {"Render_Mode": opts.mode},
         camera="20,-15,0,70,0,10,200",
     )
+
+for opts in GenerateOptions(thick=[0, (1, "-thicker")]):
+    b.STL(
+        f"5015-mp1584-backpack.stl{opts.thick_fn}.stl",
+        backpack_model,
+        {"Render_Mode": "print", "Increase_Body_Thickness": opts.thick},
+    )
+b.Image(
+    "demo-5015-mp1584-backpack.png",
+    backpack_model,
+    {"Render_Mode": "preview", "Increase_Body_Thickness": 0},
+)
 
 b.Source(
     "*.scad",
