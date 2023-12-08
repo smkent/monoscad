@@ -24,7 +24,7 @@ for opts in GenerateOptions(mode=["normal", ("preview", "-preview")]):
 
 for opts in GenerateOptions(thick=[0, (1, "-thicker")]):
     b.STL(
-        f"5015-mp1584-backpack.stl{opts.thick_fn}.stl",
+        f"5015-mp1584-backpack{opts.thick_fn}.stl",
         backpack_model,
         {"Render_Mode": "print", "Increase_Body_Thickness": opts.thick},
     )
