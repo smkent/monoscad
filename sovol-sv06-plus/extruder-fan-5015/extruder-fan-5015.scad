@@ -226,14 +226,25 @@ module duct_profile_shape() {
 }
 
 module extended_duct_assembly(length=0) {
-    move20([length, 0, 0])
-    original_model_duct_assembly();
-    if (length > 0) {
+    difference() {
+        union() {
+            move20([length, 0, 0])
+            original_model_duct_assembly();
+            if (length > 0) {
+                rotate(-20)
+                translate(origin_pos)
+                rotate([0, 90, 0])
+                linear_extrude(height=length + slop)
+                duct_profile_shape();
+            }
+        }
+        // Widen fan exhaust insert fitting
         rotate(-20)
-        translate(origin_pos)
-        rotate([0, 90, 0])
-        linear_extrude(height=length + slop)
-        duct_profile_shape();
+        translate([9, -0.42494 * 1.2, 0])
+        rotate([-90, 0, -90])
+        translate([15, 20] / 2)
+        linear_extrude(height=3.1, scale=[(15 + 0.2) / 15, (20 + 0.2) / 20])
+        square([15, 20], center=true);
     }
 }
 
