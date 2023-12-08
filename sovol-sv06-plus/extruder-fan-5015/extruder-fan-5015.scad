@@ -390,7 +390,7 @@ module extruder_fan_duct() {
 module fan_5015_placed() {
     if ($preview)
     rotate(-20)
-    translate([7.75, -15, 0])
+    translate([10.15, -15, 0])
     translate([2.4, 15, 20.5])
     rotate([180, 0, 0])
     fan_model_5015();
