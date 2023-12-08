@@ -11,7 +11,9 @@ Render_Mode = "print"; // [print: Print orientation, preview: Installed preview]
 
 /* [Options] */
 
-Increase_Body_Thickness = false;
+Thickness = 0.8; // [0.8:0.1:2]
+
+Raised_Body = true;
 
 module __end_customizer_options__() { }
 
@@ -20,22 +22,22 @@ module __end_customizer_options__() { }
 $fa = $preview ? $fa / 2 : 2 / 4;
 $fs = $preview ? $fs / 4 : 0.4 / 4;
 
-fit = 0.2;
+fit = 0.1;
 slop = 0.01;
 edge_radius = 2;
 
 board_size = vec_add([22.2, 17.2, 4], fit);
 
 thick = 2;
-backpack_thick = 0.8;
 backpack_center_d = 50 - 5;
 backpack_center_offset = [-1, -2];
 board_thick = 1.2 + 0.8;
 board_lip_overlap = 0.8;
 holder_offset = [-7, 0, 0];
 
-fan_hole_offset = 2;
+fan_hole_offset = 2.8;
 fan_holes_pos = [[18, 20.5], [-20, -23.5]];
+fan_hole_d = 4.3 + 0.8;
 
 // Functions //
 
@@ -56,21 +58,22 @@ module fan_model_5015() {
 module fan_5015_holes_shape() {
     for (p = fan_holes_pos)
     translate(p)
-    circle(d=4.3);
+    circle(d=fan_hole_d);
 }
 
 module backpack_body() {
     difference() {
         hull() {
-            linear_extrude(height=backpack_thick + board_thick + thick)
+            linear_extrude(height=$bp_thickness + board_thick + thick)
             translate(holder_offset)
             offset(r=edge_radius)
             backpack_base_shape();
-            linear_extrude(height=backpack_thick)
+            linear_extrude(height=$bp_thickness)
             translate(backpack_center_offset)
+            scale([1, 0.8])
             circle(d=backpack_center_d);
         }
-        translate(holder_offset + [0, 0, backpack_thick])
+        translate(holder_offset + [0, 0, $bp_thickness])
         linear_extrude(height=board_thick + thick + slop)
         offset(r=-edge_radius / 1)
         scale([1, 3])
@@ -79,7 +82,7 @@ module backpack_body() {
 }
 
 module backpack_base() {
-    linear_extrude(height=backpack_thick)
+    linear_extrude(height=$bp_thickness)
     difference() {
         offset(r=-edge_radius)
         offset(r=edge_radius * 2)
@@ -96,7 +99,7 @@ module backpack_base() {
         }
         fan_5015_holes_shape();
     }
-    if (Increase_Body_Thickness) {
+    if ($bp_raised_body) {
         backpack_body();
     }
 }
@@ -105,11 +108,11 @@ module holder_shape() {
     for (mx = [0:1:1])
     mirror([mx, 0])
     translate([-board_size[1] / 2 - thick, 0])
-    offset(r=min(backpack_thick * 0.9, 0.8))
-    offset(r=-min(backpack_thick * 0.9, 0.8))
+    offset(r=min($bp_thickness * 0.9, 0.8))
+    offset(r=-min($bp_thickness * 0.9, 0.8))
     polygon(points=[
-        [0, -backpack_thick],
-        [thick, -backpack_thick],
+        [0, -$bp_thickness],
+        [thick, -$bp_thickness],
         [thick, board_thick],
         [thick + board_lip_overlap, board_thick + thick / 2],
         [thick + board_lip_overlap, board_thick + thick],
@@ -125,13 +128,13 @@ module backpack_base_shape() {
 
 module mp1584_holder() {
     render(convexity=4)
-    translate([0, 0, backpack_thick])
+    translate([0, 0, $bp_thickness])
     rotate([90, 0, 90])
     translate([0, 0, thick / 2])
     linear_extrude(height=board_size[0] + thick * 2 + thick, center=true)
     holder_shape();
     // Retaining lip
-    translate([0, 0, backpack_thick])
+    translate([0, 0, $bp_thickness])
     hull() {
         linear_extrude(height=slop)
         translate([(board_size[0] + thick * 2) / 2 + thick / 2 + thick / 4, 0])
@@ -141,11 +144,13 @@ module mp1584_holder() {
         cylinder(h=board_size[1] / 3, d=thick, center=true);
     }
     rotate(90)
-    linear_extrude(height=backpack_thick)
+    linear_extrude(height=$bp_thickness)
     backpack_base_shape();
 }
 
-module mp1584_5015_backpack() {
+module mp1584_5015_backpack(thickness=0.8, raised_body=false) {
+    $bp_thickness = thickness;
+    $bp_raised_body = raised_body;
     rotate([180, 0, 0]) {
         color("lightgreen", 0.6) {
             render(convexity=4)
@@ -162,4 +167,7 @@ module mp1584_5015_backpack() {
     }
 }
 
-mp1584_5015_backpack();
+mp1584_5015_backpack(
+    thickness=Thickness,
+    raised_body=Raised_Body
+);
