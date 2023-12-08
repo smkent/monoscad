@@ -284,6 +284,16 @@ module second_5015_fan_eyelet_base() {
     }
 }
 
+module plate_y_cut() {
+    difference() {
+        children();
+        union() {
+            translate([-100, 0, -100])
+            cube(200);
+        }
+    }
+}
+
 module second_5015_fan_eyelet_support() {
     fold_x = 2 / tan(20);
     mv = 9;
@@ -370,6 +380,7 @@ module extruder_fan_duct_construction() {
         original_model();
         extended_duct_assembly(length=2.4);
         if (Second_Screw_Eyelet) {
+            plate_y_cut()
             second_5015_fan_eyelet_support();
         }
     }
