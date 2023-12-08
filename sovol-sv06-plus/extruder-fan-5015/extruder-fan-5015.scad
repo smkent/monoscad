@@ -337,7 +337,12 @@ module extruder_fan_duct() {
     render(convexity=4)
     plate_holes_cut()
     mirror([0, 0, 1])
-    extruder_fan_duct_construction();
+    difference() {
+        extruder_fan_duct_construction();
+        // Remove slight bend overhang from Blender edit
+        translate([-100 - 9 + slop, 0, 0])
+        cube(200, center=true);
+    }
 }
 
 module fan_5015_placed() {
