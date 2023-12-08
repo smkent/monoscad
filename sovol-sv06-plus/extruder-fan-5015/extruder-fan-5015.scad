@@ -5,9 +5,11 @@
  * Licensed under Creative Commons (4.0 International License) Attribution-NonCommercial
  */
 
+use <5015-mp1584-backpack.scad>;
+
 /* [Rendering Options] */
 
-Render_Mode = "print"; // [print: Print orientation, normal: Installation orientation, preview: Installed preview]
+Render_Mode = "print"; // [print: Print orientation, normal: Installation orientation, preview: Installed preview, preview_with_backpack: Installed preview with MP1584 backpack]
 
 /* [Options] */
 
@@ -402,8 +404,17 @@ module main() {
         extruder_fan_duct();
     } else {
         extruder_fan_duct();
-        if (Render_Mode == "preview") {
+        if ($preview)
+        rotate(Render_Mode == "preview_with_backpack" ? [-1*0, 0, -1] : 0)
+        if (Render_Mode == "preview" || Render_Mode == "preview_with_backpack") {
             fan_5015_placed();
+            if (Render_Mode == "preview_with_backpack") {
+                rotate(-20)
+                translate([38, 0, -8])
+                rotate([90, 0, 180])
+                rotate(0.5)
+                mp1584_5015_backpack();
+            }
         }
     }
 }

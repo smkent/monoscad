@@ -146,23 +146,20 @@ module mp1584_holder() {
 }
 
 module mp1584_5015_backpack() {
-    color("lightgreen", 0.6) {
-        render(convexity=4)
-        mirror([0, 0, 1]) {
-            backpack_base();
-            translate(holder_offset)
-            rotate(90)
-            mp1584_holder();
+    rotate([180, 0, 0]) {
+        color("lightgreen", 0.6) {
+            render(convexity=4)
+            mirror([0, 0, 1]) {
+                backpack_base();
+                translate(holder_offset)
+                rotate(90)
+                mp1584_holder();
+            }
         }
+        if (Render_Mode == "preview")
+        if ($preview)
+        fan_model_5015();
     }
-    if (Render_Mode == "preview")
-    if ($preview)
-    fan_model_5015();
 }
 
-module main() {
-    rotate([180, 0, 0])
-    mp1584_5015_backpack();
-}
-
-main();
+mp1584_5015_backpack();
