@@ -344,7 +344,6 @@ module eyelet_support_base_hole() {
 
 module bolt_eyelet_holes() {
     if (Eyelet_Type == "insert") {
-        move20([2.4, 0, 0])
         difference() {
             union() {
                 children();
