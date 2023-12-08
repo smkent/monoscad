@@ -239,12 +239,13 @@ module extended_duct_assembly(length=0) {
             }
         }
         // Widen fan exhaust insert fitting
+        inlet_dimensions = [15 + 0.2, 20];
         rotate(-20)
         translate([9, -0.42494 * 1.2, 0])
         rotate([-90, 0, -90])
-        translate([15, 20] / 2)
+        translate(inlet_dimensions / 2)
         linear_extrude(height=3.1, scale=[(15 + 0.2) / 15, (20 + 0.2) / 20])
-        square([15, 20], center=true);
+        square(inlet_dimensions, center=true);
     }
 }
 
