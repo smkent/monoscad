@@ -3,12 +3,15 @@ b = ModelBuilder(env)
 
 model = "extruder-fan-5015.scad"
 
-b.STL(
-    "sovol-sv06-extruder-fan-duct-5015.stl",
-    model,
-    {"Render_Mode": "print"},
-    zip_dir="models-for-printing",
-)
+for opts in GenerateOptions(
+    eyelet=[("bolt", "m4-bolts"), ("insert", "hot-melt-inserts")]
+):
+    b.STL(
+        f"sovol-sv06-extruder-fan-duct-5015-{opts.eyelet_fn}.stl",
+        model,
+        {"Render_Mode": "print", "Eyelet_Type": opts.eyelet},
+        zip_dir="models-for-printing",
+    )
 for opts in GenerateOptions(mode=["normal", ("preview", "-preview")]):
     b.Image(
         f"demo{opts.mode_fn}.png",

@@ -11,6 +11,8 @@ Render_Mode = "print"; // [print: Print orientation, normal: Installation orient
 
 /* [Options] */
 
+Eyelet_Type = "bolt"; // [bolt: M4 bolts, insert: M4 hot-melt threaded inserts w/ 5.2mm OD]
+
 Eyelet_Support_Hole = true;
 
 Second_Screw_Eyelet = true;
@@ -186,6 +188,17 @@ module original_model_fan_eyelet() {
     original_model_fan_eyelet_shape();
 }
 
+module scaled_eyelet() {
+    rotate(-20)
+    translate(eyelet_origin_pos)
+    translate([0, -0.42, 0])
+    scale([1, 1.5])
+    translate([0, 0.42, 0])
+    translate(-eyelet_origin_pos)
+    rotate(20)
+    original_model_fan_eyelet();
+}
+
 module original_model_fan_eyelet_hole(resize=1) {
     rotate(-20)
     translate(eyelet_origin_pos)
@@ -252,7 +265,11 @@ module extended_duct_assembly(length=0) {
 module second_5015_fan_eyelet() {
     move20([-38, 0, 43])
     move20([2.4, 0, 0])
-    original_model_fan_eyelet();
+    if (Eyelet_Type == "insert") {
+        scaled_eyelet();
+    } else {
+        original_model_fan_eyelet();
+    }
 }
 
 module second_5015_fan_eyelet_base() {
@@ -295,16 +312,6 @@ module second_5015_fan_eyelet_support() {
                 cube([15, 2, 1]);
             }
         }
-        if(0)
-        difference() {
-            rotate(-20)
-            mirror([0, 1, 0])
-            translate([12, 2 - 1.5751, 0])
-            cube(100);
-            translate([0, -3, 0])
-            cube(100);
-        }
-        cube(100);
         move20([-38, 0, 43])
         move20([2.4, 0, 0])
         original_model_fan_eyelet_hole(resize=1.1);
@@ -333,14 +340,37 @@ module eyelet_support_base_hole() {
     }
 }
 
+module bolt_eyelet_holes() {
+    if (Eyelet_Type == "insert") {
+        move20([2.4, 0, 0])
+        difference() {
+            union() {
+                children();
+                move20([2.4, 0, 0])
+                scaled_eyelet();
+            }
+            for (mv = [[2.4, 0, 0], [-38 + 2.4, 0, 43]])
+            move20(mv)
+            rotate(-20)
+            translate(eyelet_origin_pos)
+            rotate([90, 0, 0])
+            cylinder(h=20, d=5.2, center=true);
+        }
+    } else {
+        children();
+    }
+}
+
 module extruder_fan_duct_construction() {
-    eyelet_support_base_hole()
-    original_model_plate_patch()
-    original_model_duct_cut()
-    original_model();
-    extended_duct_assembly(length=2.4);
-    if (Second_Screw_Eyelet) {
-        second_5015_fan_eyelet_support();
+    bolt_eyelet_holes() {
+        eyelet_support_base_hole()
+        original_model_plate_patch()
+        original_model_duct_cut()
+        original_model();
+        extended_duct_assembly(length=2.4);
+        if (Second_Screw_Eyelet) {
+            second_5015_fan_eyelet_support();
+        }
     }
 }
 
