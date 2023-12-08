@@ -139,7 +139,7 @@ module grip(inset=false) {
     translate([0, -grip_length / 2 - iadd]) {
         offset(r=grip_radius * 0.49)
         offset(r=-grip_radius * 0.49)
-        square([grip_radius + iadd, grip_length + iadd * 2]);
+        square([grip_radius + iadd / 2, grip_length + iadd * 2]);
         square([grip_radius / 2, grip_length + iadd * 2]);
     }
 }
@@ -152,7 +152,7 @@ module grips(inset=false) {
         if (inset) {
             hull()
             for (oz = [0, board_size[2]])
-            translate([0, grip_radius * 1.75, oz])
+            translate([0, grip_radius * 1.0, oz])
             grip(inset=inset);
         }
     }
@@ -243,7 +243,7 @@ module bottom_pattern() {
 }
 
 module top() {
-    color("plum", 0.6)
+    color("greenyellow", 0.6)
     render(convexity=2)
     add_grips(inset=false)
     cut_wire_holes(single=true)
@@ -259,11 +259,15 @@ module top() {
             scale([1, 1, 2])
             intersection() {
                 difference() {
-                    base_cube(add_thick(board_size, thick + fit));
+                    base_cube(add_thick(board_size, thick));
                     cube(board_size, center=true);
                 }
                 interlock_intersect(subtract=false, overlap=-thick - fit);
             }
+        }
+        if (Interlock_Style == "opposite") {
+            linear_extrude(height=board_size[2], scale=[1, 1.2])
+            square([board_size[0], board_size[1]], center=true);
         }
         linear_extrude(height=board_size[2] * 4, center=true)
         top_pattern();
@@ -271,14 +275,15 @@ module top() {
 }
 
 module bottom() {
-    color("greenyellow", 0.6)
+    color("#aaa", 0.6)
     render(convexity=2)
     add_grips(inset=true)
     cut_wire_holes(single=(Hole_Style == "combined"))
     difference() {
+        cut_z(raise=board_size[2] / 2)
         union() {
             cut_z(raise=-board_size[2] / 2)
-            base_cube(add_thick(board_size, thick * 2));
+            base_cube(add_thick(board_size, thick * 2 + fit));
             difference() {
                 cut_z(raise=board_size[2] / 2)
                 base_cube(add_thick(board_size, thick));
@@ -286,11 +291,22 @@ module bottom() {
             }
             intersection() {
                 difference() {
-                    base_cube(add_thick(board_size, thick * 2));
-                    base_cube(add_thick(board_size, thick));
+                    base_cube(add_thick(board_size, thick * 2 + fit));
+                    base_cube(add_thick(board_size, thick + fit));
                 }
                 interlock_intersect(subtract=false);
             }
+            intersection() {
+                difference() {
+                    base_cube(add_thick(board_size, thick * 2 + fit));
+                    base_cube(add_thick(board_size, thick));
+                }
+                difference() {
+                    interlock_intersect(subtract=false);
+                    interlock_intersect(subtract=false, overlap=-thick);
+                }
+            }
+
         }
         cube([board_size[0], board_size[1], board_size[2]], center=true);
         linear_extrude(height=board_size[2] * 4, center=true)
@@ -300,16 +316,18 @@ module bottom() {
 
 module board() {
     if ($preview)
-    translate([0, 0, -board_size[2] / 2])
-    color("seagreen", 0.4) {
+    translate([0, 0, -board_size[2] / 2]) {
+        color("seagreen", 0.4)
         linear_extrude(height=1.2)
         square([board_size[0], board_size[1]], center=true);
-        linear_extrude(height=board_size[2])
-        translate(inductor_pos)
-        square([6.7, 6.7], center=true);
-        linear_extrude(height=board_size[2] / 2 + 1.2)
-        translate(potentiometer_pos)
-        circle(d=3);
+        color("#666", 0.4) {
+            linear_extrude(height=board_size[2])
+            translate(inductor_pos)
+            square([6.7, 6.7], center=true);
+            linear_extrude(height=board_size[2] / 2 + 1.2)
+            translate(potentiometer_pos)
+            circle(d=3);
+        }
     }
 }
 
