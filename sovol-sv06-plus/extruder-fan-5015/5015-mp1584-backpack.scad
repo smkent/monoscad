@@ -22,7 +22,7 @@ module __end_customizer_options__() { }
 $fa = $preview ? $fa / 2 : 2 / 4;
 $fs = $preview ? $fs / 4 : 0.4 / 4;
 
-fit = 0.1;
+fit = 0.05;
 slop = 0.01;
 edge_radius = 2;
 
