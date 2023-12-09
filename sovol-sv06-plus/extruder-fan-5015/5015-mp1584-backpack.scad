@@ -13,8 +13,6 @@ Render_Mode = "print"; // [print: Print orientation, preview: Installed preview]
 
 Thickness = 0.8; // [0.8:0.1:2]
 
-Raised_Body = true;
-
 module __end_customizer_options__() { }
 
 // Constants //
@@ -22,7 +20,7 @@ module __end_customizer_options__() { }
 $fa = $preview ? $fa / 2 : 2 / 4;
 $fs = $preview ? $fs / 4 : 0.4 / 4;
 
-fit = 0.05;
+fit = -0.10;
 slop = 0.01;
 edge_radius = 2;
 
@@ -99,9 +97,7 @@ module backpack_base() {
         }
         fan_5015_holes_shape();
     }
-    if ($bp_raised_body) {
-        backpack_body();
-    }
+    backpack_body();
 }
 
 module holder_shape() {
@@ -148,9 +144,8 @@ module mp1584_holder() {
     backpack_base_shape();
 }
 
-module mp1584_5015_backpack(thickness=0.8, raised_body=false) {
+module mp1584_5015_backpack(thickness=0.8) {
     $bp_thickness = thickness;
-    $bp_raised_body = raised_body;
     rotate([180, 0, 0]) {
         color("lightgreen", 0.6) {
             render(convexity=4)
@@ -167,7 +162,4 @@ module mp1584_5015_backpack(thickness=0.8, raised_body=false) {
     }
 }
 
-mp1584_5015_backpack(
-    thickness=Thickness,
-    raised_body=Raised_Body
-);
+mp1584_5015_backpack(thickness=Thickness);
