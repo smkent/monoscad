@@ -11,7 +11,7 @@ b.STL(
     zip_dir="models-for-printing",
 )
 for opts in GenerateOptions(
-    angle=[(60, "-60-degrees"), (75, "-75-degrees"), (90, "-90-degrees")]
+    angle=[(d, f"-{d}-degrees") for d in [45, 60, 75, 90]]
 ):
     b.STL(
         f"frame-strain-relief-support-v2{opts.angle_fn}.stl",

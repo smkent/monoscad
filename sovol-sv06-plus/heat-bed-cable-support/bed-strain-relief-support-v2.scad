@@ -16,12 +16,18 @@ Cut_Y = 1; // [0:0.1:4]
 // Bend the curved cable guide upward this many millimeters. Modifying this value may affect print stability.
 Curve_Bend = 4; // [0:0.1:10]
 
-// Add extra cable tie holes at 45 degrees
+// Add extra cable tie holes at 45 degrees (only if Curve Angle is 90 degrees)
 Extra_Cable_Tie_Holes = true;
 
 /* [Advanced Options] */
 // Diameter in millimeters of the heat bed cable bundle
 Bed_Cable_Diameter = 8.5; // [5:0.1:11]
+
+// Experimental: Support curve angle (default: 90 degrees)
+Curve_Angle = 90; // [45:1:90]
+
+// Experimental: Support curve radius (default: 5)
+Curve_Radius = 5; // [0:1:10]
 
 module __end_customizer_options__() { }
 
@@ -47,7 +53,7 @@ cut_y = sr_wingtip_y + Cut_Y;
 cut_z = 0.5;
 
 squash = Curve_Bend;
-outset = 5 + squash;
+outset = Curve_Radius + squash;
 minoutset = 5 + max(3, squash);
 extend = 9;
 
@@ -60,11 +66,11 @@ guide_attach_z_adjust = -(
 base_interior_z = sr_lid_z2 - cut_z + thick;
 
 groove_radius = 1;
+slop = 0.001;
 
 // Modules //
 
 module hull_stack(h) {
-    slop = 0.001;
     hull() {
         linear_extrude(height=slop)
         children(0);
@@ -218,10 +224,15 @@ module cable_guide_foot_angled_cut() {
 
 module cable_guide_foot() {
     difference() {
+        angled_outset = outset * sin(Curve_Angle);
         // Square foot
         union() {
-            translate([0, sr_y + outset + guide_y, 0])
-            linear_extrude(height=outset + extend)
+            translate([0, sr_y, guide_y + outset - slop])
+            rotate([Curve_Angle, 0, 0])
+            translate([0, 0, -guide_y - outset])
+            rotate([-90, 0, 0])
+            translate([0, 0, -angled_outset])
+            linear_extrude(height=extend + angled_outset)
             cable_guide_shape_edges();
 
             translate([0, sr_y, 0])
@@ -234,6 +245,15 @@ module cable_guide_foot() {
         cube([sr_x * 2,  sr_y * 4, outset * sqrt(2) - squash], center=true);
 
         cable_guide_foot_angled_cut();
+
+        translate([0, sr_y, guide_y + outset - slop])
+        rotate([Curve_Angle, 0, 0])
+        translate([0, 0, -guide_y - outset])
+        rotate([-90, 0, 0])
+        translate([0, 0, -angled_outset])
+        linear_extrude(height=extend + angled_outset)
+        translate([0, guide_y / 2])
+        square([guide_x + thick * 2, guide_y], center=true);
     }
 }
 
@@ -249,6 +269,7 @@ module cable_guide_cable_tie_holes_smoothed() {
     // Basic holes
     cable_guide_cable_tie_holes();
     // Smooth cable guide tie hole overhangs for easier printing
+    if (Curve_Angle == 90)
     difference() {
         hull()
         cable_guide_cable_tie_holes();
@@ -275,14 +296,17 @@ module cable_guide_channel() {
     // Curved channel
     translate([0, sr_y, base_interior_z + outset])
     rotate([0, 90, 0])
-    rotate_extrude(angle=90)
+    rotate_extrude(angle=Curve_Angle)
     translate([base_interior_z + outset, 0])
     mirror([1, 0])
     rotate(90)
     cable_guide_shape();
 
     // Extended top
-    translate([0, sr_y + base_interior_z + outset, base_interior_z + outset])
+    translate([0, sr_y, guide_y + outset - slop])
+    rotate([Curve_Angle, 0, 0])
+    translate([0, 0, -guide_y - outset])
+    rotate([-90, 0, 0])
     cable_guide_channel_top();
 }
 
@@ -290,27 +314,27 @@ module cable_guide_cable_tie_holes_cut() {
     difference() {
         children();
 
-        // Cable tie holes at 90 degrees
+        // Cable tie holes at top end
         translate([
             0,
-            sr_y + outset,
+            sr_y + outset - outset * (cos(Curve_Angle) * 2),
             (
                 base_interior_z + guide_attach_z_adjust
                 + outset + extend / (2 * sqrt(2))
             )
         ])
-        rotate([90, 0, 0])
+        rotate([Curve_Angle, 0, 0])
         translate([0, 0, squash])
         cable_guide_cable_tie_holes_smoothed();
 
-        if (Extra_Cable_Tie_Holes) {
+        if (Extra_Cable_Tie_Holes && Curve_Angle == 90) {
             // Cable tie holes at 45 degrees
             translate([
                 0,
                 sr_y + minoutset / sqrt(2),
                 base_interior_z + guide_attach_z_adjust - cut_z * 2
             ])
-            rotate([45, 0, 0])
+            rotate([Curve_Angle / 2, 0, 0])
             translate([0, 0, thick * sqrt(2) + squash / sqrt(2)])
             cable_guide_cable_tie_holes();
         }
@@ -359,9 +383,9 @@ module new_part() {
 
 module orient_part() {
     if (Print_Orientation) {
-        ht = (sr_y - cut_y) + outset + guide_y - squash;
-        translate([0, 0, ht])
-        rotate([-90, 0, 0])
+        ht = (sr_y - cut_y) + outset - squash + guide_y;
+        translate([0, 0, ht * cos(90 - Curve_Angle) - guide_y * sin(Curve_Angle * 2)])
+        rotate([-Curve_Angle, 0, 0])
         children();
     } else {
         children();
