@@ -22,16 +22,10 @@ for opts in GenerateOptions(mode=["normal", ("preview", "-preview")]):
         camera="20,-15,0,70,0,10,200",
     )
 
-for opts in GenerateOptions(thick=[0, (1, "-thicker")]):
-    b.STL(
-        f"5015-mp1584-backpack{opts.thick_fn}.stl",
-        backpack_model,
-        {"Render_Mode": "print", "Increase_Body_Thickness": opts.thick},
-    )
+b.STL(f"5015-mp1584-backpack.stl", backpack_model, {"Render_Mode": "print"})
+
 b.Image(
-    "demo-5015-mp1584-backpack.png",
-    backpack_model,
-    {"Render_Mode": "preview", "Increase_Body_Thickness": 0},
+    "demo-5015-mp1584-backpack.png", backpack_model, {"Render_Mode": "preview"}
 )
 
 b.Source(
