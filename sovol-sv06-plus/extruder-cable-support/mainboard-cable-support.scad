@@ -11,7 +11,7 @@ Render_Mode = "print"; // [print: Print Orientation, normal: Installed orientati
 
 /* [Mainboard support options] */
 
-Minimum_Thickness = 1.2; // [0.4:0.1:3]
+Minimum_Thickness = 2.0; // [0.4:0.1:3]
 
 /* [Development Toggles] */
 
