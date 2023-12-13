@@ -11,7 +11,7 @@ Render_Mode = "print"; // [print: Print Orientation, normal: Installed orientati
 
 /* [Mainboard support options] */
 
-Minimum_Thickness = 1.2; // [0.4:0.1:3]
+Minimum_Thickness = 2.0; // [0.4:0.1:3]
 
 /* [Development Toggles] */
 
@@ -31,6 +31,8 @@ hinge_pos = [5, 6.5];
 
 fit = 0.25;
 slop = 0.01;
+
+bottom_cut = 6;
 
 // Functions //
 
@@ -73,6 +75,7 @@ module mainboard_box_groove_shape() {
 }
 
 module modified_model() {
+    translate([0, 0, -bottom_cut])
     render(convexity=4)
     difference() {
         original_model();
@@ -89,6 +92,9 @@ module modified_model() {
             mirror([0, 1])
             square(22 + (overlap * 2));
         }
+        translate([0, 0, -slop])
+        linear_extrude(height=bottom_cut + slop)
+        square(100, center=true);
     }
 }
 
@@ -103,6 +109,7 @@ module preview_placement() {
     translate([0, 21 - 16, 0]) // 5
     translate([22, 0, 0])
     translate([73.931, 16, 154.63])
+    translate([0, 0, bottom_cut])
     children();
 }
 
