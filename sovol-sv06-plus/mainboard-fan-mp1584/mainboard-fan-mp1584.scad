@@ -31,9 +31,16 @@ fan_screws_pos = vec_add([
     [61, 67.5],
 ], -fan_center);
 
+fan_size = 40;
+fan_bracket_thickness = 2.1;
+fan_bracket_inner_thickness = 1.2;
+fan_screw_post_attach_d = 10;
+fan_bracket_size = fan_size + 12;
+fan_bracket_inner_size = fan_size + 2;
+mp1584_case_pos = (fan_bracket_size / 2 + 12);
+
 board_size = vec_add([22.2, 16.9, 4], fit);
 potentiometer_hole = Potentiometer_Hole;
-mp1584_case_pos = (59 / 2 + 10.5);
 
 // Functions //
 
@@ -73,17 +80,13 @@ module rounded_square(dimensions, r, center=false) {
 }
 
 module fan_bracket() {
-    fan_sz = 40;
-    hh = 1.2;
-    htop = 2.1;
-    dd = 10;
-    od = fan_sz + 16;
-    linear_extrude(height=hh)
+    dd = fan_screw_post_attach_d;
+    linear_extrude(height=fan_bracket_inner_thickness)
     offset(r=-dd / 2)
     offset(r=dd / 2)
     union() {
         intersection() {
-            rounded_square(od, center=true, dd);
+            rounded_square(fan_bracket_size, center=true, dd);
             for (rot = [0:90:360 - slop])
             rotate(rot)
             translate(fan_screws_pos[1]) {
@@ -95,14 +98,14 @@ module fan_bracket() {
             }
         }
         difference() {
-            rounded_square(od, center=true, dd);
-            rounded_square(40, center=true, dd / 2);
+            rounded_square(fan_bracket_size, center=true, dd);
+            rounded_square(fan_size, center=true, dd / 2);
         }
     }
-    linear_extrude(height=htop)
+    linear_extrude(height=fan_bracket_thickness)
     difference() {
-        rounded_square(od, center=true, dd);
-        rounded_square(42, center=true, dd / 2);
+        rounded_square(fan_bracket_size, center=true, dd);
+        rounded_square(fan_bracket_inner_size, center=true, dd / 2);
     }
 }
 
