@@ -1,6 +1,6 @@
 # MP1584 buck converter case
 
-![This model is a work in progress][work-in-progress-badge]
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 Case for an MP1584 or MP1584EN buck converter
@@ -46,7 +46,8 @@ mp1584_case(part="bottom");
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
 
 
-[license]: http://creativecommons.org/licenses/by-sa/4.0/
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
-[work-in-progress-badge]: /_static/work-in-progress-badge.svg
+[license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/681024
