@@ -33,6 +33,7 @@ fan_screws_pos = vec_add([
 
 board_size = vec_add([22.2, 16.9, 4], fit);
 potentiometer_hole = Potentiometer_Hole;
+mp1584_case_pos = (59 / 2 + 10.5);
 
 // Functions //
 
@@ -115,7 +116,7 @@ module bracket() {
         screw_posts_cut()
         fan_bracket();
 
-        translate([0, -(59 / 2 + 10.5), 0])
+        translate([0, -mp1584_case_pos, 0])
         mp1584_case(part="bottom", potentiometer_hole=potentiometer_hole);
     }
 }
@@ -124,9 +125,13 @@ module main() {
     if (Render_Mode == "print" || Render_Mode == "preview") {
         bracket();
         if ($preview)
-        if (Render_Mode == "preview")
-        translate([fan_center[0], -fan_center[1], -5])
-        box_front();
+        if (Render_Mode == "preview") {
+            translate([0, -mp1584_case_pos, 6.30 + 2])
+            rotate([180, 0, 0])
+            mp1584_case(part="top", potentiometer_hole=potentiometer_hole);
+            translate([fan_center[0], -fan_center[1], -5])
+            box_front();
+        }
     } else if (Render_Mode == "top") {
         mp1584_case(part="top", potentiometer_hole=potentiometer_hole);
     }
