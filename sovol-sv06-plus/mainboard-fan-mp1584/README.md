@@ -9,8 +9,12 @@ Sovol SV06 (Plus) MP1584 buck converter mount for mainboard fan
 
 ## Attribution and License
 
-This model uses the original
-[Sovol SV06 mainboard cover][original-part-link-sv06] for preview rendering.
+This model uses:
+
+* My [MP1584 buck converter case](../../electronics/mp1584-case)
+  (included with this model)
+* The original [Sovol SV06 mainboard cover][original-part-link-sv06]
+  for preview rendering.
 
 This model is licensed under [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
 

@@ -25,7 +25,9 @@ interlock visual style, and end cap hole(s) style.
 ## Usage within other models
 
 The [OpenSCAD][openscad] source model can be used by itself or as a library
-within another model.
+within another model. My
+[Sovol SV06 (Plus) MP1584 buck converter mount for mainboard fan](../../sovol-sv06-plus/mainboard-fan-mp1584)
+model is an example.
 
 To use as a library, place `mp1584-case.scad` in the same directory as the other
 model. At the top of your OpenSCAD model file, add:
