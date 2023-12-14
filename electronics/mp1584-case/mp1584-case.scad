@@ -16,7 +16,7 @@ Interlock_Style = "default"; // [default: Default, opposite: Opposite]
 
 Hole_Style = "separate"; // [separate: Separate holes for each wire polarity, combined: Single hole on each side]
 
-Potentiometer_Hole = true;
+Potentiometer_Hole = "top"; // [top: Top, bottom: Bottom, none: No potentiometer hole]
 
 module __end_customizer_options__() { }
 
@@ -92,9 +92,9 @@ module chamfer_cube(dimensions, edge_radius=1) {
 }
 
 module base_cube(dimensions, edge_radius=1, center=true) {
-    if (Body_Style == "rounded") {
+    if ($mp_body_style == "rounded") {
         round_cube(dimensions, edge_radius=edge_radius);
-    } else if (Body_Style == "chamfer") {
+    } else if ($mp_body_style == "chamfer") {
         chamfer_cube(dimensions, edge_radius=edge_radius);
     }
 }
@@ -160,7 +160,7 @@ module grips(inset=false) {
 
 module add_grips(inset=false) {
     raw_inset = inset ? 1 : 0;
-    is_inset = (Interlock_Style == "opposite" ? 1 - raw_inset : raw_inset);
+    is_inset = ($mp_interlock_style == "opposite" ? 1 - raw_inset : raw_inset);
     difference() {
         children();
         if (is_inset) {
@@ -173,7 +173,7 @@ module add_grips(inset=false) {
 }
 
 module interlock_intersect(subtract=false, overlap=0) {
-    if (Interlock_Style == "opposite")
+    if ($mp_interlock_style == "opposite")
     translate([0, 0, subtract ? slop / 2 : 0])
     cube([interlock_len + overlap * 2, board_size[1] * 2, board_size[2] + slop], center=true);
 }
@@ -235,11 +235,11 @@ module base_pattern(potentiometer_hole=false) {
 }
 
 module top_pattern() {
-    base_pattern(potentiometer_hole=Potentiometer_Hole);
+    base_pattern(potentiometer_hole=($mp_potentiometer_hole == "top"));
 }
 
 module bottom_pattern() {
-    base_pattern();
+    base_pattern(potentiometer_hole=($mp_potentiometer_hole == "bottom"));
 }
 
 module top() {
@@ -265,7 +265,7 @@ module top() {
                 interlock_intersect(subtract=false, overlap=-thick - fit);
             }
         }
-        if (Interlock_Style == "opposite") {
+        if ($mp_interlock_style == "opposite") {
             linear_extrude(height=board_size[2], scale=[1, 1.2])
             square([board_size[0], board_size[1]], center=true);
         }
@@ -278,7 +278,7 @@ module bottom() {
     color("#aaa", 0.6)
     render(convexity=2)
     add_grips(inset=true)
-    cut_wire_holes(single=(Hole_Style == "combined"))
+    cut_wire_holes(single=($mp_hole_style == "combined"))
     difference() {
         cut_z(raise=board_size[2] / 2)
         union() {
@@ -331,28 +331,42 @@ module board() {
     }
 }
 
-module mp1584_case() {
-    if (Part == "both") {
+module mp1584_case(
+    part="both",
+    body_style="chamfer",
+    interlock_style="default",
+    hole_style="separate",
+    potentiometer_hole="top"
+) {
+    $mp_part = part;
+    $mp_body_style = body_style;
+    $mp_interlock_style = interlock_style;
+    $mp_hole_style = hole_style;
+    $mp_potentiometer_hole = potentiometer_hole;
+    translate([0, 0, board_size[2] / 2 + thick + fit / 2])
+    if ($mp_part == "both") {
         translate([0, -board_size[1], 0])
         top();
         translate([0, board_size[1], 0]) {
             bottom();
             board();
         }
-    } else if (Part == "both_assembled") {
+    } else if ($mp_part == "both_assembled") {
         rotate([180, 0, 0])
         top();
         bottom();
         board();
-    } else if (Part == "top") {
+    } else if ($mp_part == "top") {
         top();
-    } else if (Part == "bottom") {
+    } else if ($mp_part == "bottom") {
         bottom();
     }
 }
 
-module main() {
-    mp1584_case();
-}
-
-main();
+mp1584_case(
+    part=Part,
+    body_style=Body_Style,
+    interlock_style=Interlock_Style,
+    hole_style=Hole_Style,
+    potentiometer_hole=Potentiometer_Hole
+);
