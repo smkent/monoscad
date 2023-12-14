@@ -18,6 +18,11 @@ Hole_Style = "separate"; // [separate: Separate holes for each wire polarity, co
 
 Potentiometer_Hole = "top"; // [top: Top, bottom: Bottom, none: No potentiometer hole]
 
+/* [Advanced Options] */
+
+// Increase this value for a tighter grip, and vice versa
+Grip_Tightness_Factor = 0.75; // [0.5:0.05:1]
+
 module __end_customizer_options__() { }
 
 // Constants //
@@ -152,7 +157,7 @@ module grips(inset=false) {
         if (inset) {
             hull()
             for (oz = [0, board_size[2]])
-            translate([0, grip_radius * 1.0, oz])
+            translate([0, grip_radius * $mp_grip_tightness_factor, oz])
             grip(inset=inset);
         }
     }
@@ -348,13 +353,15 @@ module mp1584_case(
     body_style="chamfer",
     interlock_style="default",
     hole_style="separate",
-    potentiometer_hole="top"
+    potentiometer_hole="top",
+    grip_tightness_factor=0.75
 ) {
     $mp_part = part;
     $mp_body_style = body_style;
     $mp_interlock_style = interlock_style;
     $mp_hole_style = hole_style;
     $mp_potentiometer_hole = potentiometer_hole;
+    $mp_grip_tightness_factor = grip_tightness_factor;
     translate([0, 0, board_size[2] / 2 + thick + fit / 2])
     if ($mp_part == "both") {
         translate([0, -board_size[1], 0]) {
@@ -389,5 +396,6 @@ mp1584_case(
     body_style=Body_Style,
     interlock_style=Interlock_Style,
     hole_style=Hole_Style,
-    potentiometer_hole=Potentiometer_Hole
+    potentiometer_hole=Potentiometer_Hole,
+    grip_tightness_factor=Grip_Tightness_Factor
 );
