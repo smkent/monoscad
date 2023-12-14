@@ -2,6 +2,7 @@ Import("env")
 b = ModelBuilder(env)
 
 model = "mainboard-fan-mp1584.scad"
+mp1584_model = "mp1584-case.scad"
 
 b.STL(
     "mainboard-fan-mp1584.stl",
@@ -9,6 +10,13 @@ b.STL(
     {"Render_Mode": "print"},
     zip_dir="models-for-printing",
 )
+b.STL(
+    "mp1584-lid.stl",
+    mp1584_model,
+    {"Part": "top"},
+    zip_dir="models-for-printing",
+)
+
 b.Image("demo.png", model, {"Render_Mode": "preview"})
 
 b.Source("*.scad", "sovol-*.stl")

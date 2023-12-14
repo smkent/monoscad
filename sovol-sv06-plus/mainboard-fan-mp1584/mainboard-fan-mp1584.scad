@@ -8,7 +8,10 @@
 use <mp1584-case.scad>;
 
 /* [Rendering Options] */
-Render_Mode = "print"; // [print: Print orientation, preview: Installed model preview]
+Render_Mode = "print"; // [print: Print orientation, top: MP1584 case top, preview: Installed model preview]
+
+/* [Options] */
+Potentiometer_Hole = "top"; // [top: MP1584 facing upright, bottom: MP1584 facing mainboard box cover]
 
 module __end_customizer_options__() { }
 
@@ -29,6 +32,7 @@ fan_screws_pos = vec_add([
 ], -fan_center);
 
 board_size = vec_add([22.2, 16.9, 4], fit);
+potentiometer_hole = Potentiometer_Hole;
 
 // Functions //
 
@@ -112,16 +116,20 @@ module bracket() {
         fan_bracket();
 
         translate([0, -(59 / 2 + 10.5), 0])
-        mp1584_case(part="bottom");
+        mp1584_case(part="bottom", potentiometer_hole=potentiometer_hole);
     }
 }
 
 module main() {
-    bracket();
-    if ($preview)
-    if (Render_Mode == "preview")
-    translate([fan_center[0], -fan_center[1], -5])
-    box_front();
+    if (Render_Mode == "print" || Render_Mode == "preview") {
+        bracket();
+        if ($preview)
+        if (Render_Mode == "preview")
+        translate([fan_center[0], -fan_center[1], -5])
+        box_front();
+    } else if (Render_Mode == "top") {
+        mp1584_case(part="top", potentiometer_hole=potentiometer_hole);
+    }
 }
 
 main();
