@@ -25,6 +25,7 @@ slop = 0.01;
 edge_radius = 2;
 
 board_size = vec_add([22.2, 17.2, 4], fit);
+potentiometer_pos = [-board_size[0] / 2 + 6.9, board_size[1] / 2 - 2.7];
 
 thick = 2;
 backpack_center_d = 50 - 5;
@@ -124,11 +125,18 @@ module backpack_base_shape() {
 
 module mp1584_holder() {
     render(convexity=4)
-    translate([0, 0, $bp_thickness])
-    rotate([90, 0, 90])
-    translate([0, 0, thick / 2])
-    linear_extrude(height=board_size[0] + thick * 2 + thick, center=true)
-    holder_shape();
+    difference() {
+        translate([0, 0, $bp_thickness])
+        rotate([90, 0, 90])
+        translate([0, 0, thick / 2])
+        linear_extrude(height=board_size[0] + thick * 2 + thick, center=true)
+        holder_shape();
+        // Potentiometer cutout
+        linear_extrude(height=10)
+        mirror([1, 0])
+        translate(potentiometer_pos - [thick, 0])
+        circle(d=3 * 3);
+    }
     // Retaining lip
     translate([0, 0, $bp_thickness])
     hull() {
