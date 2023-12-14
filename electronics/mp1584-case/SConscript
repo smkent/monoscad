@@ -11,7 +11,27 @@ for opts in GenerateOptions(
         model,
         {"Part": opts.part, "Interlock_Style": opts.interlock},
     )
+
 b.Image("demo.png", model, {"Part": "both_assembled"})
+
+b.Image(
+    "demo-row.png",
+    model,
+    [
+        {"Part": "top"},
+        {"Part": "bottom"},
+        {"Part": "both_assembled"},
+    ],
+    tile="3x1",
+)
+
+b.InsetImage(
+    "photo-demo-inset.jpg",
+    "photo-offset.jpg",
+    "demo-row.png",
+    resize="25%",
+    gravity="south",
+)
 
 b.add_default_targets()
 
