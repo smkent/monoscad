@@ -5,6 +5,7 @@ b = ModelBuilder(env)
 
 basic_model = "ferris-wheel-base.scad"
 fancy_model = "ferris-wheel-base-fancy.scad"
+axle_model = "ferris-wheel-axle.scad"
 
 for opts in GenerateOptions(
     model=[
@@ -23,6 +24,15 @@ for opts in GenerateOptions(
         opts.model.args,
     )
     b.Image(f"demo{opts.model_fn}.png", opts.model.model, opts.model.args)
+
+for opts in GenerateOptions(
+    axle_part=[1, 2], insert=[(1, "insert"), (0, "no-insert")]
+):
+    b.STL(
+        f"ferris-wheel-axle-{opts.insert_fn}-{opts.axle_part}.stl",
+        axle_model,
+        {"Part": opts.axle_part, "Insert": opts.insert},
+    )
 
 b.add_default_targets()
 
