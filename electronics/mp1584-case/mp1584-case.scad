@@ -201,6 +201,16 @@ module outline_shape_base() {
     circle(r=rr, $fn=6);
 }
 
+module base_pattern_orientation(part="top") {
+    if ($mp_potentiometer_hole == "bottom") {
+        mirror([1, 0, 0])
+        rotate(part == "top" ? 180 : 0)
+        children();
+    } else {
+        children();
+    }
+}
+
 module base_pattern(potentiometer_hole=false) {
     polarity_text();
     difference() {
@@ -235,10 +245,12 @@ module base_pattern(potentiometer_hole=false) {
 }
 
 module top_pattern() {
+    base_pattern_orientation(part="top")
     base_pattern(potentiometer_hole=($mp_potentiometer_hole == "top"));
 }
 
 module bottom_pattern() {
+    base_pattern_orientation(part="bottom")
     base_pattern(potentiometer_hole=($mp_potentiometer_hole == "bottom"));
 }
 
@@ -248,7 +260,7 @@ module top() {
     add_grips(inset=false)
     cut_wire_holes(single=true)
     cut_z(raise = board_size[2] / 2)
-    mirror([0, 1])
+    mirror($mp_potentiometer_hole == "bottom" ? [1, 0] : [0, 1])
     difference() {
         union() {
             difference() {
@@ -345,17 +357,26 @@ module mp1584_case(
     $mp_potentiometer_hole = potentiometer_hole;
     translate([0, 0, board_size[2] / 2 + thick + fit / 2])
     if ($mp_part == "both") {
-        translate([0, -board_size[1], 0])
-        top();
+        translate([0, -board_size[1], 0]) {
+            top();
+            if ($mp_potentiometer_hole == "bottom")
+            board();
+        }
         translate([0, board_size[1], 0]) {
             bottom();
+            if ($mp_potentiometer_hole != "bottom")
             board();
         }
     } else if ($mp_part == "both_assembled") {
         rotate([180, 0, 0])
         top();
         bottom();
-        board();
+        if ($mp_potentiometer_hole == "bottom") {
+            rotate([0, 180, 0])
+            board();
+        } else {
+            board();
+        }
     } else if ($mp_part == "top") {
         top();
     } else if ($mp_part == "bottom") {
