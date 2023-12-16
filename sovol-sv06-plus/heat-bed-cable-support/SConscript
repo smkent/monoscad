@@ -4,12 +4,16 @@ b = ModelBuilder(env)
 bed_model = "bed-strain-relief-support-v2.scad"
 frame_model = "frame-strain-relief-support-v2.scad"
 
-b.STL(
-    "bed-strain-relief-support-v2.stl",
-    bed_model,
-    {"Print_Orientation": 1},
-    zip_dir="models-for-printing",
-)
+for opts in GenerateOptions(
+    angle=[(d, f"-{d}-degrees") for d in [45, 60, 75, 90]]
+):
+    b.STL(
+        f"bed-strain-relief-support-v2{opts.angle_fn}.stl",
+        bed_model,
+        {"Print_Orientation": 1, "Curve_Angle": opts.angle},
+        zip_dir="models-for-printing",
+    )
+
 for opts in GenerateOptions(
     angle=[(d, f"-{d}-degrees") for d in [45, 60, 75, 90]]
 ):
