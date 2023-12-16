@@ -324,7 +324,7 @@ module cable_guide_cable_tie_holes_cut() {
             )
         ])
         rotate([Curve_Angle, 0, 0])
-        translate([0, 0, squash])
+        translate([0, 0, squash - outset * cos(Curve_Angle) * 2])
         cable_guide_cable_tie_holes_smoothed();
 
         if (Extra_Cable_Tie_Holes && Curve_Angle == 90) {
