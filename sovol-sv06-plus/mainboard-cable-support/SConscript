@@ -7,6 +7,7 @@ b.STL(
     f"mainboard-cable-support.stl",
     mainboard_model,
     {"Print_Orientation": 1},
+    zip_dir="model-for-printing",
 )
 for opts in GenerateOptions(
     render_mode=[("normal", ""), ("model_preview", "-model-preview")]
@@ -24,6 +25,8 @@ b.InsetImage(
     gravity="southeast",
     resize="33%",
 )
+
+b.Source("*.scad", "itsrouteburn-*.stl", "sovol-*.stl")
 
 b.add_default_targets()
 
