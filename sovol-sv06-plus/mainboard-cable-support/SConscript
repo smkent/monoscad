@@ -1,19 +1,19 @@
 Import("env")
 b = ModelBuilder(env)
 
-extruder_model = "extruder-cable-support.scad"
+mainboard_model = "mainboard-cable-support.scad"
 
 b.STL(
-    f"extruder-cable-support.stl",
-    extruder_model,
+    f"mainboard-cable-support.stl",
+    mainboard_model,
     {"Print_Orientation": 1},
 )
 for opts in GenerateOptions(
     render_mode=[("normal", ""), ("model_preview", "-model-preview")]
 ):
     b.Image(
-        f"render-extruder-support{opts.render_mode_fn}.png",
-        extruder_model,
+        f"render-mainboard-support{opts.render_mode_fn}.png",
+        mainboard_model,
         {"Render_Mode": opts.render_mode},
     )
 
