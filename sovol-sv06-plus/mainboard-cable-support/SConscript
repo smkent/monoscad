@@ -17,6 +17,14 @@ for opts in GenerateOptions(
         {"Render_Mode": opts.render_mode},
     )
 
+b.InsetImage(
+    "photo-inset.jpg",
+    "photo-installed.jpg",
+    "render-mainboard-support-model-preview.png",
+    gravity="southeast",
+    resize="33%",
+)
+
 b.add_default_targets()
 
 # vim: ft=python
