@@ -45,7 +45,7 @@ Then, continue the installation with these instructions:
 ## Differences of the remix compared to the original
 
 I added grooves to and reduced the length of itsrouteburn's mainboard
-box-mounted cable support model for a better fit.
+box-mounted cable support model for better stability with a more snug fit.
 
 ## Attribution and License
 
