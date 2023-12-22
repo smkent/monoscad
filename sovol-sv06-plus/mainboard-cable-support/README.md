@@ -9,8 +9,8 @@ Mainboard extruder cable support for the Sovol SV06 and SV06 Plus
 
 ## Differences of the remix compared to the original
 
-I added grooves to the itsrouteburn's mainboard box-mounted cable support model
-for a better fit.
+I added grooves to and reduced the length of itsrouteburn's mainboard
+box-mounted cable support model for a better fit.
 
 ## Attribution and License
 
