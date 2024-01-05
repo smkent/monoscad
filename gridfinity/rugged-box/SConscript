@@ -1,0 +1,49 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "rugged-box-gridfinity.scad"
+model_dependencies = ["rugged-box-library.scad"]
+
+gridfinity_boxes = {
+    "4x2x6": [4, 2, 2, 4],
+    "1x1x3": [1, 1, 1, 2],
+}
+
+for box_name, (
+    width,
+    length,
+    top_height,
+    bottom_height,
+    *params,
+) in gridfinity_boxes.items():
+    for opts in GenerateOptions(
+        part=["top", "bottom", "latch"],
+        stackable=[(1, "-stackable"), (0, "")],
+        base_style=[
+            ("enabled", "-magnets-skeletonized"),
+            ("enabled_full", "-magnets-full"),
+            ("minimal", ""),
+        ],
+    ):
+        part_params = {
+            **{
+                "Part": opts.part,
+                "Width": width,
+                "Length": length,
+                "Top_Height": top_height,
+                "Bottom_Height": bottom_height,
+                "Gridfinity_Base_Style": opts.base_style,
+                "Gridfinity_Stackable": opts.stackable,
+            },
+            **(params[0] if params else {}),
+        }
+        b.STL(
+            f"gridfinity-box-{box_name}{opts.base_style_fn}{opts.stackable_fn}-{opts.part}.stl",
+            model,
+            part_params,
+            model_dependencies,
+        )
+
+b.add_default_targets()
+
+# vim: ft=python

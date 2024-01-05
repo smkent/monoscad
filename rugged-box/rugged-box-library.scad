@@ -196,12 +196,12 @@ module rbox_part(part) {
     }
 
     if (part == "side-by-side") {
-        _place_apart(Width / 2 + $b_wall_thickness * 8) {
-            rbox_bottom();
-            rbox_top();
+        _place_apart($b_inner_width / 2 + $b_wall_thickness * 8) {
+            if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
+            if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
         }
     } else if (part == "assembled_open") {
-        rbox_bottom();
+        if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
         translate([
             0,
             $b_inner_length / 2 + $b_hinge_screw_offset,
@@ -213,38 +213,40 @@ module rbox_part(part) {
             -($b_inner_length / 2 + $b_hinge_screw_offset),
             $b_top_outer_height
         ])
-        mirror([0, 0, 1])
-        rbox_for_top() {
-            rbox_body();
-            translate([
-                0,
-                -$b_latch_screw_offset,
-                $b_outer_height - $b_latch_amount_on_top
-            ])
-            mirror([0, 1, 0])
-            _box_attachment_placement()
-            rotate([-135, 0, 0])
-            rbox_latch(placement="box-preview");
+        mirror([0, 0, 1]) {
+            if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
+            rbox_for_top() {
+                translate([
+                    0,
+                    -$b_latch_screw_offset,
+                    $b_outer_height - $b_latch_amount_on_top
+                ])
+                mirror([0, 1, 0])
+                _box_attachment_placement()
+                rotate([-135, 0, 0])
+                rbox_latch(placement="box-preview");
+            }
         }
     } else if (part == "assembled_closed") {
-        rbox_bottom();
+        if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
         translate([0, 0, $b_top_outer_height + $b_bottom_outer_height])
-        mirror([0, 0, 1])
-        rbox_for_top() {
-            rbox_body();
-            translate([
-                0,
-                -$b_latch_screw_offset,
-                $b_outer_height - $b_latch_amount_on_top
-            ])
-            mirror([0, 1, 0])
-            _box_attachment_placement()
-            rbox_latch(placement="box-preview");
+        mirror([0, 0, 1]) {
+            if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
+            rbox_for_top() {
+                translate([
+                    0,
+                    -$b_latch_screw_offset,
+                    $b_outer_height - $b_latch_amount_on_top
+                ])
+                mirror([0, 1, 0])
+                _box_attachment_placement()
+                rbox_latch(placement="box-preview");
+            }
         }
     } else if (part == "bottom") {
-        rbox_bottom();
+        if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
     } else if (part == "top") {
-        rbox_top();
+        if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
     } else if (part == "latch") {
         rbox_latch(placement="print");
     }
