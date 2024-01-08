@@ -3,8 +3,24 @@ b = ModelBuilder(env)
 
 model = "kirby-fume-extractor.scad"
 
-b.STL("kirby-fume-extractor.stl", model)
-b.Image("demo.png", model)
+for opts in GenerateOptions(
+    part=[
+        "back",
+        "face",
+        "grill",
+        "inner-spacer",
+        "feet-connector",
+        "left-foot",
+        "right-foot",
+        "eye",
+        "pin",
+        "left-arm",
+        "right-arm",
+    ]
+):
+    b.STL(f"kirby-fume-extractor-{opts.part}.stl", model, {"Part": opts.part})
+
+b.Image("demo.png", model, {"Part": "preview"})
 
 b.add_default_targets()
 
