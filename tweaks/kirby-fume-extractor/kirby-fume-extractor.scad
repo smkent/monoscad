@@ -8,10 +8,14 @@
 /* [Rendering Options] */
 Part = "preview"; // [preview: Assembled model preview, face: Face, back: Back, grill: Grill, inner-spacer: Inner spacer, feet-connector: Feet connector, left-foot: Left foot, right-foot: Right foot, eye: Eye, pin: Pin, left-arm: Left arm, right-arm: Right arm]
 
-/* [Size] */
+/* [Fan size] */
 Fan_Size = 120;
-Fan_Thickness = 27.25;
+Fan_Thickness = 27;
 Fan_Screw_Hole_Inset = 7.5;
+
+/* [Fan attachment] */
+Hole_Diameter = 4;
+Fan_Attachment = "screws"; // [screws: Screws, inserts: Heat-set inserts]
 
 /* [Advanced Options] */
 Fit = 1;
@@ -33,6 +37,8 @@ fan_d = Fan_Size + Fit;
 fan_thick = Fan_Thickness + Fit;
 fan_screw_pos = Fan_Screw_Hole_Inset;
 scale_factor = Scale_Factor == 0 ? Fan_Size / 40 : Scale_Factor;
+fan_attach = Fan_Attachment;
+fan_attach_hole_d = Hole_Diameter;
 
 // Modules //
 
@@ -181,9 +187,9 @@ module back_120mm() {
             mirror([mx, 0])
             mirror([0, my])
             mirror([0, 0, 1])
-            linear_extrude(height=21.9 * 3)
+            linear_extrude(height=((fan_attach == "screws" ? 21.9 : (19 - fan_attach_hole_d)) * scale_factor))
             translate([fan_d / 2 - fan_screw_pos, fan_d / 2 - fan_screw_pos])
-            circle(d=4);
+            circle(d=fan_attach_hole_d);
         }
     }
 }
