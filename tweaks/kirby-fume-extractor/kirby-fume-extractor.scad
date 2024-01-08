@@ -6,7 +6,7 @@
  */
 
 /* [Rendering Options] */
-Part = "preview"; // [preview: Assembled model preview, face: Face, back: Back, grill: Grill, inner-spacer: Inner spacer, feet-connector: Feet connector, left-foot: Left foot, right-foot: Right foot, eye: Eye, pin: Pin, left-arm: Left arm, right-arm: Right arm]
+Part = "preview"; // [preview: Assembled model preview, face: Face, back: Back, grill: Grill, inner-spacer: Inner spacer, feet-connector: Feet connector, left-foot: Left foot, right-foot: Right foot, pin: Pin, left-arm: Left arm, right-arm: Right arm, eye: Eye, eye-insert-white: White eye insert, eye-insert-blue: Blue eye insert]
 
 /* [Fan size] */
 Fan_Size = 120;
@@ -107,12 +107,6 @@ module right_foot() {
     import("chrisborge-right-foot.stl", convexity=4);
 }
 
-module eye() {
-    color("#333", 0.8)
-    translate([0, 0, 28])
-    import("chrisborge-eye.stl", convexity=4);
-}
-
 module pin() {
     color("#ccc", 0.8)
     import("chrisborge-pin.stl", convexity=4);
@@ -130,6 +124,23 @@ module right_arm() {
     import("chrisborge-right-arm.stl", convexity=4);
 }
 
+module eye() {
+    color("#333", 0.8)
+    translate([0, 0, 28])
+    import("chrisborge-eye.stl", convexity=4);
+}
+
+module eye_insert_white() {
+    color("white", 0.8)
+    translate([-122.56, -101.62, 0])
+    import("josteing-eye-white-part.stl", convexity=4);
+}
+
+module eye_insert_blue() {
+    color("skyblue", 0.8)
+    translate([-122.56, -101.62, 0])
+    import("josteing-eye-blue-part.stl", convexity=4);
+}
 
 module back_patched() {
     kirby_pink(r=true)
@@ -226,11 +237,6 @@ module right_foot_120mm() {
     right_foot();
 }
 
-module eye_120mm() {
-    scale(scale_factor)
-    eye();
-}
-
 module pin_120mm() {
     scale(scale_factor)
     pin();
@@ -244,6 +250,21 @@ module left_arm_120mm() {
 module right_arm_120mm() {
     scale(scale_factor)
     right_arm();
+}
+
+module eye_120mm() {
+    scale(scale_factor)
+    eye();
+}
+
+module eye_insert_white_120mm() {
+    scale(scale_factor)
+    eye_insert_white();
+}
+
+module eye_insert_blue_120mm() {
+    scale(scale_factor)
+    eye_insert_blue();
 }
 
 module main() {
@@ -277,6 +298,17 @@ module main() {
             rotate([0, 0, 22])
             translate([-5, -48, 0] * scale_factor)
             eye_120mm();
+
+            rotate([90, 0, 0])
+            for (mx = [0, 1])
+            mirror([mx, 0])
+            translate([6, 13, 25.5] * scale_factor)
+            rotate([-24, 15, -3])
+            union() {
+                eye_insert_blue_120mm();
+                translate([-1, -25, 0])
+                eye_insert_white_120mm();
+            }
 
             for (mx = [0, 1])
             mirror([mx, 0])
@@ -315,9 +347,6 @@ module main() {
         left_foot_120mm();
     } else if (Part == "right-foot") {
         right_foot_120mm();
-    } else if (Part == "eye") {
-        color("#ccc", 0.8)
-        eye_120mm();
     } else if (Part == "pin") {
         translate([0, 0, 12] * scale_factor)
         rotate([90, 0, 0])
@@ -326,6 +355,13 @@ module main() {
         left_arm_120mm();
     } else if (Part == "right-arm") {
         right_arm_120mm();
+    } else if (Part == "eye") {
+        color("#ccc", 0.8)
+        eye_120mm();
+    } else if (Part == "eye-insert-white") {
+        eye_insert_white_120mm();
+    } else if (Part == "eye-insert-blue") {
+        eye_insert_blue_120mm();
     }
 }
 

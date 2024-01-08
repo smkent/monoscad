@@ -12,10 +12,12 @@ for opts in GenerateOptions(
         "feet-connector",
         "left-foot",
         "right-foot",
-        "eye",
         "pin",
         "left-arm",
         "right-arm",
+        "eye",
+        "eye-insert-white",
+        "eye-insert-blue",
     ]
 ):
     b.STL(f"kirby-fume-extractor-{opts.part}.stl", model, {"Part": opts.part})
