@@ -1,0 +1,29 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "kirby-fume-extractor.scad"
+
+for opts in GenerateOptions(
+    part=[
+        "back",
+        "face",
+        "grill",
+        "inner-spacer",
+        "feet-connector",
+        "left-foot",
+        "right-foot",
+        "pin",
+        "left-arm",
+        "right-arm",
+        "eye",
+        "eye-insert-white",
+        "eye-insert-blue",
+    ]
+):
+    b.STL(f"kirby-fume-extractor-{opts.part}.stl", model, {"Part": opts.part})
+
+b.Image("demo.png", model, {"Part": "preview"})
+
+b.add_default_targets()
+
+# vim: ft=python
