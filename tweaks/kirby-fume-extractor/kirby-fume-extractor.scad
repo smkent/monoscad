@@ -18,10 +18,17 @@ Hole_Diameter = 4;
 Fan_Attachment = "screws"; // [screws: Screws, inserts: Heat-set inserts]
 
 /* [Advanced Options] */
+Fan_Corner_Radius = 3;
+
 Fit = 1;
 
 // 0 means determine automatically
 Scale_Factor = 0;
+
+Widen_Fan_Bay = false;
+Widen_Cable_Area = true;
+
+USB_C_Decoy_Board_Slot = true;
 
 /* [Development Toggles] */
 Half_View = false;
@@ -39,6 +46,11 @@ fan_screw_pos = Fan_Screw_Hole_Inset;
 scale_factor = Scale_Factor == 0 ? Fan_Size / 40 : Scale_Factor;
 fan_attach = Fan_Attachment;
 fan_attach_hole_d = Hole_Diameter;
+fan_corner_radius = Fan_Corner_Radius;
+widen_fan_bay = Widen_Fan_Bay;
+widen_cable_area = Widen_Cable_Area;
+usb_decoy_board_enabled = USB_C_Decoy_Board_Slot;
+usb_decoy_board_size = [31, 20, 5] * 1.2;
 
 // Modules //
 
@@ -189,9 +201,49 @@ module back_120mm() {
         // Fan bay
         mirror([0, 0, 1])
         linear_extrude(height=fan_thick)
-        offset(r=1)
-        offset(r=-1)
-        square([fan_d, fan_d], center=true);
+        union() {
+            offset(r=fan_corner_radius)
+            offset(r=-fan_corner_radius)
+            square([fan_d, fan_d], center=true);
+            scale(scale_factor)
+            translate([-32 / 2, 20])
+            square([32, 2.20]);
+        }
+
+        // Below fan bay
+        if (usb_decoy_board_enabled) {
+            mirror([0, 0, 1])
+            translate([0, 0, fan_thick * 0.8])
+            linear_extrude(height=usb_decoy_board_size[0])
+            translate([0, 22.2] * scale_factor - [0, usb_decoy_board_size[2]])
+            translate([-usb_decoy_board_size[1] / 2, 0])
+            square([usb_decoy_board_size[1], usb_decoy_board_size[2]]);
+        }
+
+        // Below fan
+        if (widen_cable_area) {
+            intersection() {
+                scale(scale_factor)
+                sphere(r=26);
+                translate([0, 0, -fan_thick])
+                linear_extrude(height=fan_thick)
+                scale(scale_factor)
+                translate([-15, 20])
+                square([30, 30]);
+            }
+        }
+
+        // Widen cavity behind fan bay
+        if (widen_fan_bay) {
+            intersection() {
+                sphere(r=(30 - 5.5) * scale_factor);
+                mirror([0, 0, 1])
+                linear_extrude(height=21.9 * scale_factor)
+                offset(r=fan_corner_radius)
+                offset(r=-fan_corner_radius)
+                square([fan_d, fan_d], center=true);
+            }
+        }
 
         // Screw holes
         for (mx = [0, 1], my = [0, 1]) {
