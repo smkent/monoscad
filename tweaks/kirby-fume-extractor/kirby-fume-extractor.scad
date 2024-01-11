@@ -14,7 +14,7 @@ Fan_Thickness = 27;
 Fan_Screw_Hole_Inset = 7.5;
 
 /* [Fan attachment] */
-Hole_Diameter = 4;
+Hole_Diameter = 4.0; // [4:0.1:8]
 Fan_Attachment = "screws"; // [screws: Screws, inserts: Heat-set inserts]
 
 /* [Advanced Options] */
