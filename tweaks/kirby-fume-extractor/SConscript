@@ -20,7 +20,11 @@ for opts in GenerateOptions(
         "eye-insert-blue",
     ]
 ):
-    b.STL(f"kirby-fume-extractor-{opts.part}.stl", model, {"Part": opts.part})
+    b.STL(
+        f"kirby-fume-extractor-{opts.part}.stl",
+        model,
+        {"Part": opts.part, "Fan_Attachment": "inserts", "Hole_Diameter": 5.5},
+    )
 
 b.Image("demo.png", model, {"Part": "preview"})
 
