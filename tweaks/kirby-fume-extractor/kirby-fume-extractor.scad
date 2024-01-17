@@ -119,11 +119,6 @@ module right_foot() {
     import("chrisborge-right-foot.stl", convexity=4);
 }
 
-module pin() {
-    color("#ccc", 0.8)
-    import("chrisborge-pin.stl", convexity=4);
-}
-
 module left_arm() {
     kirby_pink()
     translate([0, 0, -94.79])
@@ -290,8 +285,18 @@ module right_foot_120mm() {
 }
 
 module pin_120mm() {
+    radius = 3;
+    length = 10.4 - 0.1 / scale_factor;
+    chamfer = 1;
+    color("#ccc", 0.8)
     scale(scale_factor)
-    pin();
+    translate([0, -2.75, 20])
+    rotate([90, 0, 0])
+    rotate_extrude(angle=360)
+    polygon([
+        [0, 0], [radius - chamfer / 2, 0], [radius, chamfer],
+        [radius, length - chamfer], [radius - chamfer / 2, length], [0, length]
+    ]);
 }
 
 module left_arm_120mm() {
@@ -366,6 +371,7 @@ module main() {
             mirror([mx, 0])
             translate([16, -7.75, -25] * scale_factor)
             rotate([20, 0, 64])
+            translate([0, 2.8 * scale_factor, 0])
             pin_120mm();
 
             for (arm = [-1, 1])
