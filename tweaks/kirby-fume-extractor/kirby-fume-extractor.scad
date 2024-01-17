@@ -285,8 +285,8 @@ module right_foot_120mm() {
 }
 
 module pin_120mm() {
-    radius = 3;
-    length = 10.4 - 0.1 / scale_factor;
+    radius = 3 - 0.075;
+    length = 10.0 - 0.1 / scale_factor;
     chamfer = 1;
     color("#ccc", 0.8)
     scale(scale_factor)
