@@ -20,11 +20,24 @@ for opts in GenerateOptions(
         "eye-insert-blue",
     ]
 ):
-    b.STL(
-        f"kirby-fume-extractor-{opts.part}.stl",
-        model,
-        {"Part": opts.part, "Fan_Attachment": "inserts", "Hole_Diameter": 5.5},
-    )
+    for attach_opts in GenerateOptions(
+        attach=(
+            [("screws", "-screws"), ("inserts", "-heat-set-inserts")]
+            if opts.part == "back"
+            else ["screws"]
+        )
+    ):
+        b.STL(
+            f"kirby-fume-extractor-{opts.part}{attach_opts.attach_fn}.stl",
+            model,
+            {
+                "Part": opts.part,
+                "Fan_Attachment": attach_opts.attach,
+                "Hole_Diameter": (
+                    4.0 if attach_opts.attach == "screws" else 5.5
+                ),
+            },
+        )
 
 b.Image("demo.png", model, {"Part": "preview"})
 
