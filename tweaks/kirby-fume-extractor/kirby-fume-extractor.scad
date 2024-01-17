@@ -14,7 +14,7 @@ Fan_Thickness = 27;
 Fan_Screw_Hole_Inset = 7.5;
 
 /* [Fan attachment] */
-Hole_Diameter = 4;
+Hole_Diameter = 4.0; // [4:0.1:8]
 Fan_Attachment = "screws"; // [screws: Screws, inserts: Heat-set inserts]
 
 /* [Advanced Options] */
@@ -50,7 +50,7 @@ fan_corner_radius = Fan_Corner_Radius;
 widen_fan_bay = Widen_Fan_Bay;
 widen_cable_area = Widen_Cable_Area;
 usb_decoy_board_enabled = USB_C_Decoy_Board_Slot;
-usb_decoy_board_size = [31, 20, 5] * 1.2;
+usb_decoy_board_size = [31, 21, 5] * 1.05;
 
 // Modules //
 
