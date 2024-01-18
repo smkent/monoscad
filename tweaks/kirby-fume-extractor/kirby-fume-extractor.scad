@@ -6,7 +6,7 @@
  */
 
 /* [Rendering Options] */
-Part = "preview"; // [preview: Assembled model preview, face: Face, back: Back, grill: Grill, inner-spacer: Inner spacer, feet-connector: Feet connector, left-foot: Left foot, right-foot: Right foot, pin: Pin, left-arm: Left arm, right-arm: Right arm, eye: Eye, eye-insert-white: White eye insert, eye-insert-blue: Blue eye insert]
+Part = "preview"; // [preview: Assembled model preview, face: Face, back: Back, grill: Grill, inner-spacer: Inner spacer, feet-connector: Feet connector, left-foot: Left foot, right-foot: Right foot, pin: Pin, left-arm: Left arm, right-arm: Right arm, eye: Eye, eye-insert-white: White eye insert, eye-insert-blue: Blue eye insert, wire-shield: Wire shield]
 
 /* [Fan size] */
 Fan_Size = 120;
@@ -119,11 +119,6 @@ module right_foot() {
     import("chrisborge-right-foot.stl", convexity=4);
 }
 
-module pin() {
-    color("#ccc", 0.8)
-    import("chrisborge-pin.stl", convexity=4);
-}
-
 module left_arm() {
     kirby_pink()
     translate([0, 0, -94.79])
@@ -152,6 +147,38 @@ module eye_insert_blue() {
     color("skyblue", 0.8)
     translate([-122.56, -101.62, 0])
     import("josteing-eye-blue-part.stl", convexity=4);
+}
+
+module fan_shape() {
+    offset(r=fan_corner_radius)
+    offset(r=-fan_corner_radius)
+    square([fan_d, fan_d], center=true);
+}
+
+module fan_bay_shape() {
+    fan_shape();
+    scale(scale_factor)
+    translate([-32 / 2, 20])
+    square([32, 2.20]);
+}
+
+module cut_screw_holes(down=false) {
+    difference() {
+        children();
+        mirror([0, 0, down ? 1 : 0])
+        for (mx = [0, 1], my = [0, 1]) {
+            mirror([mx, 0])
+            mirror([0, my])
+            linear_extrude(height=(
+                (fan_attach == "screws"
+                    ? 21.9
+                    : (19 - fan_attach_hole_d))
+                * scale_factor
+            ))
+            translate([fan_d / 2 - fan_screw_pos, fan_d / 2 - fan_screw_pos])
+            circle(d=fan_attach_hole_d);
+        }
+    }
 }
 
 module back_patched() {
@@ -194,6 +221,7 @@ module back_patched() {
 
 module back_120mm() {
     kirby_pink(r=true)
+    cut_screw_holes(down=true)
     difference() {
         scale(scale_factor)
         back_patched();
@@ -201,14 +229,7 @@ module back_120mm() {
         // Fan bay
         mirror([0, 0, 1])
         linear_extrude(height=fan_thick)
-        union() {
-            offset(r=fan_corner_radius)
-            offset(r=-fan_corner_radius)
-            square([fan_d, fan_d], center=true);
-            scale(scale_factor)
-            translate([-32 / 2, 20])
-            square([32, 2.20]);
-        }
+        fan_bay_shape();
 
         // Below fan bay
         if (usb_decoy_board_enabled) {
@@ -243,16 +264,6 @@ module back_120mm() {
                 offset(r=-fan_corner_radius)
                 square([fan_d, fan_d], center=true);
             }
-        }
-
-        // Screw holes
-        for (mx = [0, 1], my = [0, 1]) {
-            mirror([mx, 0])
-            mirror([0, my])
-            mirror([0, 0, 1])
-            linear_extrude(height=((fan_attach == "screws" ? 21.9 : (19 - fan_attach_hole_d)) * scale_factor))
-            translate([fan_d / 2 - fan_screw_pos, fan_d / 2 - fan_screw_pos])
-            circle(d=fan_attach_hole_d);
         }
     }
 }
@@ -290,8 +301,18 @@ module right_foot_120mm() {
 }
 
 module pin_120mm() {
+    radius = 3 - 0.075;
+    length = 10.0 - 0.1 / scale_factor;
+    chamfer = 1;
+    color("#ccc", 0.8)
     scale(scale_factor)
-    pin();
+    translate([0, -2.75, 20])
+    rotate([90, 0, 0])
+    rotate_extrude(angle=360)
+    polygon([
+        [0, 0], [radius - chamfer / 2, 0], [radius, chamfer],
+        [radius, length - chamfer], [radius - chamfer / 2, length], [0, length]
+    ]);
 }
 
 module left_arm_120mm() {
@@ -319,6 +340,35 @@ module eye_insert_blue_120mm() {
     eye_insert_blue();
 }
 
+module wire_shield_shape() {
+    difference() {
+        offset(r=-0.4)
+        fan_bay_shape();
+
+        translate([0, 22.2] * scale_factor - [0, usb_decoy_board_size[2]])
+        for (mx = [0, 1])
+        mirror([mx, 0])
+        translate([-usb_decoy_board_size[1] / 2, usb_decoy_board_size[2] * (2 / 3)])
+        square([usb_decoy_board_size[1] / 3, usb_decoy_board_size[2] / 3]);
+
+        circle(d = 36.526 * scale_factor);
+    }
+}
+
+module wire_shield_120mm() {
+    kirby_pink(r=true)
+    cut_screw_holes() {
+        linear_extrude(height=1)
+        wire_shield_shape();
+        linear_extrude(height=4)
+        difference() {
+            wire_shield_shape();
+            offset(r=-0.4)
+            square([fan_d, fan_d], center=true);
+        }
+    }
+}
+
 module main() {
     if (Part == "preview") {
         rotate([10, 0, 0])
@@ -326,6 +376,10 @@ module main() {
         rotate([-90, 0, 0]) {
             face_120mm();
             back_120mm();
+            if (usb_decoy_board_enabled) {
+                translate([0, 0, -fan_thick])
+                wire_shield_120mm();
+            }
             translate([0, 0, -19 * scale_factor])
             grill_120mm();
             translate([0, 0, -10 * scale_factor])
@@ -366,6 +420,7 @@ module main() {
             mirror([mx, 0])
             translate([16, -7.75, -25] * scale_factor)
             rotate([20, 0, 64])
+            translate([0, 2.8 * scale_factor, 0])
             pin_120mm();
 
             for (arm = [-1, 1])
@@ -414,6 +469,8 @@ module main() {
         eye_insert_white_120mm();
     } else if (Part == "eye-insert-blue") {
         eye_insert_blue_120mm();
+    } else if (Part == "wire-shield") {
+        wire_shield_120mm();
     }
 }
 

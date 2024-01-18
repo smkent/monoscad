@@ -18,12 +18,13 @@ for opts in GenerateOptions(
         "eye",
         "eye-insert-white",
         "eye-insert-blue",
+        "wire-shield",
     ]
 ):
     for attach_opts in GenerateOptions(
         attach=(
             [("screws", "-screws"), ("inserts", "-heat-set-inserts")]
-            if opts.part == "back"
+            if opts.part in {"back", "wire-shield"}
             else ["screws"]
         )
     ):
