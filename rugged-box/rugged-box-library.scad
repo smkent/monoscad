@@ -532,7 +532,7 @@ module _box_corners_extrude(
                                     : 0
                             )
                         );
-                    } else if (len(rb_side_rib_positions()) >= 2 && ((i % 2) == rz)) {
+                    } else if (_compute_latch_count() == 2 && len(rb_side_rib_positions()) >= 2 && ((i % 2) == rz)) {
                         // Side extensions to ribs
                         idx = ((i == 0 || i == 1) ? 0 : len(rb_side_rib_positions()) - 1);
                         // idx is 0 for front-side, or last rib index for rear-side
@@ -543,6 +543,18 @@ module _box_corners_extrude(
                             ) / 2
                             + rb_side_rib_positions()[idx] * (idx == 0 ? 1 : -1)
                         );
+                    } else {
+                        difference() {
+                            scale([
+                                (tan(15) * $b_corner_radius) / $b_corner_radius,
+                                1
+                            ])
+                            rotate_extrude(angle=90)
+                            children();
+                            translate([0, 0, $b_wall_thickness])
+                            linear_extrude(height=$b_outer_height)
+                            square($b_corner_radius + $b_wall_thickness / 2);
+                        }
                     }
                 }
             }
