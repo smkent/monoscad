@@ -1153,6 +1153,8 @@ module _latch(placement="default") {
     }
 }
 
+// Handle
+
 module _handle_part() {
     width = (
         rb_latch_hinge_position() * 2
