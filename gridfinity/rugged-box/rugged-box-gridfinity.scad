@@ -39,10 +39,10 @@ Gridfinity_Stackable = false;
 Lip_Seal_Type = "wedge"; // [none: None, wedge: Wedge ▽, square: Square □, "filament-1.75mm": 1.75mm Filament ○]
 
 // Make the corners as thick as the box lip
-Reinforced_Corners = false;
+Reinforced_Corners = true;
 
 // Add a front grip to the box top (for boxes with two latches)
-Top_Grip = false;
+Top_Grip = true;
 
 /* [Advanced Size Adjustments] */
 // Base wall thickness in millimeters for most of the box
