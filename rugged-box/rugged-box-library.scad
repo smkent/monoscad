@@ -33,6 +33,12 @@ screw_eyelet_size_proportion = 2.5; // [1.5:0.1:5]
 top_grip_depth = 6;
 top_grip_width = 100;
 
+// Handle size
+handle_thickness = 10;
+handle_min_height = 20;
+handle_max_height = 35;
+handle_radius = 5;
+
 // Public modules
 
 /*
@@ -176,6 +182,8 @@ module rbox_for_interior() { translate([0, 0, $b_wall_thickness]) children(); }
 
 module rbox_latch(placement="print") { _latch(placement); }
 
+module rbox_handle(placement="print") { _handle(placement); }
+
 module rbox_body() {
     _box_color()
     _box_body();
@@ -207,6 +215,9 @@ module rbox_part(part) {
         }
     } else if (part == "assembled_open") {
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
+        rbox_for_bottom() {
+            rbox_handle(placement="box-preview-open");
+        }
         translate([
             0,
             $b_inner_length / 2 + $b_hinge_screw_offset,
@@ -234,6 +245,9 @@ module rbox_part(part) {
         }
     } else if (part == "assembled_closed") {
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
+        rbox_for_bottom() {
+            rbox_handle(placement="box-preview");
+        }
         translate([0, 0, $b_top_outer_height + $b_bottom_outer_height])
         mirror([0, 0, 1]) {
             if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
@@ -254,6 +268,8 @@ module rbox_part(part) {
         if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
     } else if (part == "latch") {
         rbox_latch(placement="print");
+    } else if (part == "handle") {
+        rbox_handle(placement="print");
     }
 }
 
@@ -333,7 +349,7 @@ function _init_latch_amount_on_top(latch_amount_on_top) = (
         )
 );
 
-function _latch_offset_from_base(part) = (
+function _latch_offset_from_base() = (
     $b_outer_height - (
         $b_part == "top"
             ? $b_latch_amount_on_top
@@ -350,14 +366,15 @@ module _round_shape(radius) {
     children();
 }
 
-module _rounded_square(dimensions, radius) {
+module _rounded_square(dimensions, radius, center=false) {
     offset(radius)
     offset(-radius)
-    square(dimensions);
+    square(dimensions, center=center);
 }
 
-module _rounded_cylinder(h, r1, r2=0, angle=360) {
+module _rounded_cylinder(h, r1, r2=0, angle=360, center=false) {
     r = $b_edge_radius;
+    translate([0, 0, center ? -h / 2 : 0])
     rotate_extrude(angle=angle)
     difference() {
         _round_shape(r)
@@ -1081,5 +1098,75 @@ module _latch(placement="default") {
         _latch_part();
     } else {
         _latch_part();
+    }
+}
+
+module _handle_part() {
+    width = (
+        rb_latch_hinge_position() * 2
+        - ($b_latch_width + ($b_rib_width + $b_size_tolerance) * 2)
+    );
+    height = min(
+        handle_max_height,
+        _latch_offset_from_base() - handle_thickness - 2
+    );
+    thick = handle_thickness;
+    radius = handle_radius;
+    // Ensure minimum size
+    if (_compute_latch_count() == 2 && width > ((thick + radius) * 2 * 1.75))
+    if (height >= handle_min_height)
+    color("mintcream", 0.8)
+    render(convexity=2)
+    difference() {
+        union() {
+            // Sides
+            for (mx = [0:1:1])
+            mirror([mx, 0, 0])
+            translate([(width - thick) / 2, 0, 0])
+            union() {
+                rotate([90, 0, 0])
+                linear_extrude(height=height - radius)
+                _rounded_square([thick, thick], $b_edge_radius, center=true);
+                rotate([0, 90, 0])
+                _rounded_cylinder(h=thick, r1=thick / 2, center=true);
+            }
+            // Grip
+            translate([0, -(thick / 2 + height), 0])
+            union() {
+                rotate([0, 90, 0])
+                linear_extrude(height=width - (thick + radius) * 2, center=true)
+                _rounded_square([thick, thick], $b_edge_radius, center=true);
+            }
+            // Corners
+            union() {
+                for (mx = [0:1:1])
+                mirror([mx, 0, 0])
+                translate([width / 2 - thick - radius, -height + radius, 0])
+                rotate(270)
+                rotate_extrude(angle=90)
+                translate([radius, -thick / 2])
+                _rounded_square([thick, thick], $b_edge_radius);
+            }
+        }
+        // Screw holes
+        for (mx = [0:1:1])
+        mirror([mx, 0, 0])
+        translate([width / 2, 0, 0])
+        rotate([0, 0, 90])
+        _box_screw_hole(thick * 4 , increase_screw_diameter=true);
+    }
+}
+
+module _handle(placement="default") {
+    if (placement == "print") {
+        _handle_part();
+    } else if (placement == "box-preview" || placement == "box-preview-open") {
+        translate([0, -$b_outer_length / 2, 0])
+        translate([0, -$b_latch_screw_offset / 2, 0])
+        translate([0, 0, _latch_offset_from_base()])
+        rotate([(placement == "box-preview") ? 90 : 0, 0, 0])
+        _handle_part();
+    } else {
+        _handle_part();
     }
 }

@@ -13,7 +13,7 @@ use <gridfinity-rebuilt-openscad/gridfinity-rebuilt-baseplate.scad>;
 use <gridfinity-rebuilt-openscad/gridfinity-rebuilt-utility.scad>;
 
 /* [Rendering] */
-Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "side-by-side": Top and Bottom side-by-side, "assembled_open": Top and Bottom assembled open, "assembled_closed": Top and Bottom assembled closed]
+Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "handle": Handle, "side-by-side": Top and Bottom side-by-side, "assembled_open": Top and Bottom assembled open, "assembled_closed": Top and Bottom assembled closed]
 
 /* [Dimensions] */
 // Interior side-to-side size in 42mm Gridfinity units

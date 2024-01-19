@@ -10,7 +10,7 @@
 include <rugged-box-library.scad>;
 
 /* [Rendering] */
-Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "side-by-side": Top and Bottom side-by-side, "assembled_open": Top and Bottom assembled open, "assembled_closed": Top and Bottom assembled closed]
+Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "handle": Handle, "side-by-side": Top and Bottom side-by-side, "assembled_open": Top and Bottom assembled open, "assembled_closed": Top and Bottom assembled closed]
 
 /* [Dimensions] */
 // All units in millimeters
