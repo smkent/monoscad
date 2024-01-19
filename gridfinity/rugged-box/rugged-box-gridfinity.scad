@@ -103,6 +103,16 @@ function rb_rear_rib_positions() = [
 
 function rb_latch_hinge_position() = (l_grid * (Width / 2 - 0.5));
 
+function rb_stacking_latch_positions() = [
+    let (points = [
+        each for (j = [
+            for (i = [0:2:Length / 2 - 1]) i
+        ]) (j == Length - 2 - j) ? [j] : [j, Length - 2 - j]
+    ])
+    for (j = [for (i = points) (i + 0.5) * l_grid])
+    j - (l_grid * (Length / 2 - 0.5))
+];
+
 // Functions
 
 function gridfinity_base_plate_magnets_enabled() = (

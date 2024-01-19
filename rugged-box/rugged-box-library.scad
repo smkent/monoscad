@@ -298,6 +298,8 @@ function rb_latch_hinge_position() = (
     ($b_inner_width - $b_corner_radius + $b_wall_thickness) / 2 - $b_latch_width
 );
 
+function rb_stacking_latch_positions() = [];
+
 // Internal constants
 
 screw_hole_diameter = screw_diameter;
@@ -447,6 +449,7 @@ module _box_body() {
         _box_ribs();
         _box_latch_ribs();
         _box_hinge_ribs();
+        _box_stacking_latch_ribs();
         _box_top_grip();
     }
 }
@@ -784,7 +787,7 @@ module _box_attachment_rib_pair(inner=false) {
     }
 }
 
-module _box_attachment_placement(pair=true) {
+module _box_attachment_placement() {
     latch_count = _compute_latch_count();
     latch_offset = rb_latch_hinge_position();
     translate([0, $b_inner_length / 2, 0])
@@ -818,8 +821,10 @@ module _box_screw_hole(width, increase_screw_diameter=false) {
 
 // Box latch attachments
 
-module _box_latch_rib_base(width=$b_rib_width) {
-    latch_position = _latch_offset_from_base();
+module _box_latch_rib_base(
+    width=$b_rib_width,
+    latch_position=_latch_offset_from_base()
+) {
     _box_rib();
     difference() {
         intersection() {
@@ -873,6 +878,53 @@ module _box_latch_ribs() {
     _box_attachment_placement()
     _box_attachment_rib_pair()
     _box_latch_rib();
+}
+
+// Box stacking latch attachments
+
+module _box_stacking_latch_rib() {
+    sep_positions = [
+        for (ratio = (
+            ($b_outer_height > $b_latch_screw_separation * 2)
+                ? [0.5, 1.5]
+                : [0.5]
+        ))
+        $b_latch_screw_separation * ratio
+    ];
+    rotate([0, 0, 90])
+    difference() {
+        union() {
+            for (sep = sep_positions)
+            _box_latch_rib_base(latch_position=sep);
+            hull()
+            for (sep = sep_positions)
+            translate([0, 0, sep])
+            translate([$b_latch_screw_offset, 0, 0])
+            _box_screw_eyelet_body($b_rib_width);
+        }
+        // Screw hole
+        for (sep = sep_positions)
+        translate([$b_latch_screw_offset, 0, 0])
+        translate([0, 0, sep])
+        _box_screw_hole(width=$b_rib_width);
+    }
+}
+
+module _box_stacking_latch_ribs_placement() {
+    for (mx = [0:1:1])
+    mirror([mx, 0, 0])
+    for (py = rb_stacking_latch_positions()) {
+        translate([$b_inner_width / 2, py, 0])
+        rotate([0, 0, 90])
+        children();
+    }
+}
+
+module _box_stacking_latch_ribs() {
+    _box_stacking_latch_ribs_placement()
+    mirror([0, 1, 0])
+    _box_attachment_rib_pair()
+    _box_stacking_latch_rib();
 }
 
 // Box hinge attachments
