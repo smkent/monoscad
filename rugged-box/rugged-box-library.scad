@@ -20,8 +20,8 @@ screw_diameter = 3; // M3
 // Decrease screw hole diameter just slightly for better thread-forming fit
 screw_hole_diameter_size_tolerance = -0.1;
 
-// Widen angle of box side ribs
-side_ribs_angle = 8;
+// Widen angle of box plain ribs
+plain_ribs_angle = 8;
 
 // Extra space between box body and hinge for clearance
 hinge_extra_setback = 0.2; // [0:0.1:2]
@@ -130,7 +130,6 @@ module rbox(
  *          }
  *      }
  */
-
 module rbox_size_adjustments(
     wall_thickness=2.4,
     lip_thickness=2.0,
@@ -258,6 +257,31 @@ module rbox_part(part) {
     }
 }
 
+// Overrideable functions and modules
+
+/*
+ * Part colors
+ *
+ * Override this function to control the box colors in the preview render
+ *
+ * Arguments:
+ *  - part: Part being rendered. Possible values: "top", "bottom"
+ *
+ * Example:
+ *
+ *      function rb_color(part) = (part == "top" ? "yellow" : "orange");
+ */
+
+function rb_color(part) = (part == "top" ? "YellowGreen" : "OliveDrab");
+
+function rb_side_rib_positions() = [for (i = [-1/4, 1/4]) i * $b_inner_length];
+
+function rb_rear_rib_positions() = [];
+
+function rb_latch_hinge_position() = (
+    ($b_inner_width - $b_corner_radius + $b_wall_thickness) / 2 - $b_latch_width
+);
+
 // Internal constants
 
 screw_hole_diameter = screw_diameter;
@@ -382,7 +406,7 @@ module _hull_stack(heights=[]) {
 // Box body modules
 
 module _box_color() {
-    color(($b_part == "top" ? "YellowGreen" : "OliveDrab"), 0.8)
+    color(rb_color($b_part), 0.8)
     children();
 }
 
@@ -403,7 +427,7 @@ module _box_body() {
             _box_sides();
             _box_center_base(min($b_outer_height, $b_wall_thickness));
         }
-        _box_side_ribs();
+        _box_ribs();
         _box_latch_ribs();
         _box_hinge_ribs();
         _box_top_grip();
@@ -665,13 +689,23 @@ module _box_rib(width=$b_rib_width) {
     }
 }
 
-module _box_side_ribs() {
-    for (mx = [0:1:1], my = [0:1:1]) {
+module _box_plain_rib() {
+    _box_rib_angle(plain_ribs_angle)
+    _box_rib($b_rib_width * 2);
+}
+
+module _box_ribs() {
+    // Side ribs
+    for (mx = [0:1:1], py = rb_side_rib_positions()) {
         mirror([mx, 0, 0])
-        mirror([0, my, 0])
-        translate([$b_inner_width / 2, $b_inner_length / 4, 0])
-        _box_rib_angle(side_ribs_angle)
-        _box_rib($b_rib_width * 2);
+        translate([$b_inner_width / 2, py, 0])
+        _box_plain_rib();
+    }
+    // Rear ribs
+    for (px = rb_rear_rib_positions()) {
+        translate([px, $b_inner_length / 2, 0])
+        rotate([0, 0, 90])
+        _box_plain_rib();
     }
 }
 
@@ -707,10 +741,7 @@ module _box_attachment_rib_pair(inner=false) {
 
 module _box_attachment_placement(pair=true) {
     latch_count = _compute_latch_count();
-    latch_offset = (
-        ($b_inner_width - $b_corner_radius + $b_wall_thickness) / 2
-        - $b_latch_width
-    );
+    latch_offset = rb_latch_hinge_position();
     translate([0, $b_inner_length / 2, 0])
     if (latch_count == 2) {
         for (mx = [0:1:1]) {
@@ -900,10 +931,7 @@ module _box_top_grip_shape() {
 module _box_top_grip() {
     if ($b_top_grip && $b_part == "top" && _compute_latch_count() == 2) {
         lip_position = $b_corner_radius + $b_total_lip_thickness - $b_lip_thickness - $b_edge_radius;
-        latch_offset = (
-            ($b_inner_width - $b_corner_radius + $b_wall_thickness) / 2
-            - $b_latch_width
-        );
+        latch_offset = rb_latch_hinge_position();
         grip_half_length = min(
             top_grip_width / 2, latch_offset - ($b_latch_width / 2) - $b_rib_width
         );

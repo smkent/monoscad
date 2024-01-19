@@ -87,6 +87,22 @@ stackable_top_plate_offset = -0.8;
 stackable_bottom_base_offset = -0.6;
 top_base_offset = -(h_base - h_lip);
 
+// Library overrides
+
+function rb_color(part) = (part == "top" ? "LightSteelBlue" : "SteelBlue");
+
+function rb_side_rib_positions() = [
+    for (j = [for (i = [0:1:Length - 1]) i * l_grid])
+    j - (l_grid * (Length / 2 - 0.5))
+];
+
+function rb_rear_rib_positions() = [
+    for (j = [for (i = [1:1:Width - 2]) i * l_grid])
+    j - (l_grid * (Width / 2 - 0.5))
+];
+
+function rb_latch_hinge_position() = (l_grid * (Width / 2 - 0.5));
+
 // Functions
 
 function gridfinity_base_plate_magnets_enabled() = (
@@ -254,6 +270,7 @@ module main() {
         edge_chamfer_proportion=edge_chamfer_proportion,
         lip_seal_type=Lip_Seal_Type,
         reinforced_corners=Reinforced_Corners,
+        latch_count=(Width <= 1 ? 1 : 2),
         top_grip=Top_Grip
     )
     rbox_size_adjustments(
