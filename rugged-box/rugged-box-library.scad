@@ -33,6 +33,10 @@ screw_eyelet_size_proportion = 2.5; // [1.5:0.1:5]
 top_grip_depth = 6;
 top_grip_width = 100;
 
+// Stacking latch size
+stacking_latch_catch_offset = 6;
+stacking_latch_grip_length = 8;
+
 // Handle size
 handle_thickness = 10;
 handle_min_height = 16;
@@ -182,6 +186,8 @@ module rbox_for_interior() { translate([0, 0, $b_wall_thickness]) children(); }
 
 module rbox_latch(placement="print") { _latch(placement); }
 
+module rbox_stacking_latch(placement="print") { _stacking_latch(placement); }
+
 module rbox_handle(placement="print") { _handle(placement); }
 
 module rbox_body() {
@@ -217,6 +223,11 @@ module rbox_part(part) {
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
         rbox_for_bottom() {
             rbox_handle(placement="box-preview-open");
+            _box_stacking_latch_ribs_placement()
+            translate([0, 0, $b_latch_screw_separation * 0.5])
+            translate([0, -$b_latch_screw_offset, 0])
+            rotate([180, 0, 0])
+            rbox_stacking_latch(placement="box-preview");
         }
         translate([
             0,
@@ -247,6 +258,10 @@ module rbox_part(part) {
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
         rbox_for_bottom() {
             rbox_handle(placement="box-preview");
+            _box_stacking_latch_ribs_placement()
+            translate([0, 0, $b_latch_screw_separation * 0.5])
+            translate([0, -$b_latch_screw_offset, 0])
+            rbox_stacking_latch(placement="box-preview");
         }
         translate([0, 0, $b_top_outer_height + $b_bottom_outer_height])
         mirror([0, 0, 1]) {
@@ -268,6 +283,8 @@ module rbox_part(part) {
         if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
     } else if (part == "latch") {
         rbox_latch(placement="print");
+    } else if (part == "stacking-latch") {
+        rbox_stacking_latch(placement="print");
     } else if (part == "handle") {
         rbox_handle(placement="print");
     }
@@ -388,6 +405,24 @@ module _rounded_cylinder(h, r1, r2=0, angle=360, center=false) {
         ]);
         translate([-r * 4, -h / 2])
         square([r * 4, h * 2]);
+    }
+}
+
+module _chamfer_edges(r) {
+    minkowski() {
+        children();
+        if (r > 0)
+        for (mz = [0:1:1])
+        mirror([0, 0, mz])
+        cylinder(d1=r, d2=0, h=r/2, $fn=4);
+    }
+}
+
+module _hull_in_order() {
+    for (ch = [0:1:$children - 2])
+    hull() {
+        children(ch);
+        children(ch + 1);
     }
 }
 
@@ -884,12 +919,16 @@ module _box_latch_ribs() {
 
 module _box_stacking_latch_rib() {
     sep_positions = [
-        for (ratio = (
+        for(seps=[
+            [$b_latch_screw_separation * 0.5],
             ($b_outer_height > $b_latch_screw_separation * 2)
-                ? [0.5, 1.5]
-                : [0.5]
-        ))
-        $b_latch_screw_separation * ratio
+                ? [
+                    $b_latch_screw_separation * 1.5
+                    + stacking_latch_catch_offset
+                ]
+                : []
+
+        ], pos=seps) pos
     ];
     rotate([0, 0, 90])
     difference() {
@@ -1150,6 +1189,88 @@ module _latch(placement="default") {
         _latch_part();
     } else {
         _latch_part();
+    }
+}
+
+// Stacking latches
+
+module _stacking_latch_shape() {
+    bw = screw_eyelet_radius - screw_hole_diameter / 2;
+    slcatch = $b_latch_screw_separation + stacking_latch_catch_offset;
+    shd = screw_hole_diameter + screw_hole_diameter_size_tolerance;
+    _round_shape($b_edge_radius)
+    difference() {
+        union() {
+            // Catch eyelets
+            _hull_in_order() {
+                translate([0, $b_latch_screw_separation])
+                circle(r=screw_eyelet_radius);
+                translate([0, slcatch])
+                circle(r=screw_eyelet_radius);
+                translate([
+                    0,
+                    slcatch + stacking_latch_grip_length + bw / 2
+                ])
+                circle(d=bw);
+            }
+            // Hinge eyelet and main body
+            hull() {
+                circle(r=screw_eyelet_radius);
+                translate([-screw_eyelet_radius, 0])
+                square([bw, $b_latch_screw_separation]);
+            }
+        }
+        // Hinge hole
+        circle(d=shd);
+        // Catch hole
+        translate([0, $b_latch_screw_separation])
+        hull()
+        union() {
+            circle(d=shd);
+            translate([
+                screw_eyelet_radius + bw / 1.6,
+                -$b_latch_screw_separation
+            ])
+            circle(d=shd);
+            translate([(shd + bw) * 2, -(shd + bw)])
+            circle(d=shd);
+        }
+        // Stacking catch
+        translate([0, slcatch])
+        hull()
+        union() {
+            circle(d=shd);
+            translate([-(shd + bw) * 2, -(shd + bw) * 0.75])
+            circle(d=shd);
+            translate([-(shd + bw) * 2, -(shd + bw)])
+            circle(d=shd);
+        }
+    }
+}
+
+module _stacking_latch_part() {
+    color("mintcream", 0.8)
+    union() {
+        rr = 0.8;
+        _chamfer_edges(r=rr)
+        union() {
+            rotate([90, 0, 0])
+            linear_extrude(height=$b_latch_width, center=true)
+            offset(r=-rr / 2)
+            _stacking_latch_shape();
+        }
+    }
+}
+
+module _stacking_latch(placement="default") {
+    if (placement == "print") {
+        rotate([90, 0, 0])
+        _stacking_latch_part();
+    } else if (placement == "box-preview") {
+        rotate([180, 0, 90])
+        _stacking_latch_part();
+    } else {
+        _stacking_latch_part();
     }
 }
 
