@@ -1101,91 +1101,62 @@ module _box_top_grip() {
 
 // Latches
 
-module _latch_body(width) {
-    rotate([-90, 270, 0])
-    translate([$b_latch_screw_separation / 2, -width, -$b_latch_width / 2])
-    intersection() {
-        linear_extrude(height=$b_latch_width)
-        translate([-$b_latch_screw_separation / 2, 0])
-        square([$b_latch_screw_separation, $b_latch_screw_separation]);
-        scale([$b_latch_screw_separation / (width * 3), 1, 1])
-        rotate([0, 0, 45])
-        rotate_extrude(angle=90)
-        translate([width * 2, 0])
-        _rounded_square([width, $b_latch_width], $b_edge_radius);
-    }
-}
-
-module _latch_catch() {
-    angle_subtraction = 10;
-    angle_down = 15;
+module _latch_shape() {
+    bw = screw_eyelet_radius - screw_hole_diameter / 2;
+    shd = screw_hole_diameter + screw_hole_diameter_size_tolerance;
+    _round_shape($b_edge_radius)
     difference() {
-        rotate([0, 90 + angle_down - angle_subtraction, 0])
-        _box_screw_eyelet_body($b_latch_width, angle=270 - angle_subtraction);
-        tr = tan(angle_down) * screw_eyelet_radius;
-        rotate([90, 180, 0])
-        translate([tr, -tr, -$b_latch_width / 2])
-        linear_extrude(height=$b_latch_width)
-        square(screw_eyelet_radius * 2);
-    }
-}
-
-module _latch_catch_handle(width) {
-    r = $b_edge_radius * 2;
-    z = screw_eyelet_radius * (1 + 1.5);
-    mirror([0, 0, 1])
-    intersection() {
-        translate([0, 0, z / 2])
-        hull()
-        for (mx = [0:1:1], my = [0:1:1], mz = [0:1:1]) {
-            mirror([0, 0, mz])
-            mirror([0, my, 0])
-            mirror([mx, 0, 0])
-            translate([(width - r) / 2, ($b_latch_width - r) / 2, (z - r) / 2])
-            sphere(r / 2);
+        union() {
+            // Catch eyelets
+            translate([0, $b_latch_screw_separation])
+            circle(r=screw_eyelet_radius);
+            // Hinge eyelet and main body
+            hull() {
+                circle(r=screw_eyelet_radius);
+                translate([-screw_eyelet_radius, 0])
+                square([bw, $b_latch_screw_separation]);
+            }
+            translate([-screw_eyelet_radius, 0])
+            square([bw, $b_latch_screw_separation + screw_eyelet_radius * 2.5]);
         }
-        rotate([-90, 0, 0])
-        translate([-width / 2, -z, -$b_latch_width / 2])
-        linear_extrude(height=$b_latch_width)
-        hull() {
-            translate([width / 2, width / 2])
-            circle(width / 2);
-            translate([0, z - width])
-            square([width, width]);
+        // Hinge hole
+        circle(d=shd);
+        // Catch hole
+        translate([0, $b_latch_screw_separation])
+        hull()
+        union() {
+            circle(d=shd);
+            translate([
+                screw_eyelet_radius + bw / 1.6,
+                -$b_latch_screw_separation
+            ])
+            circle(d=shd);
+            translate([(shd + bw) * 2, -(shd + bw)])
+            circle(d=shd);
         }
     }
 }
 
 module _latch_part() {
-    bw = screw_eyelet_radius - screw_hole_diameter / 2;
-    mirror([0, 0, 1])
     color("mintcream", 0.8)
-    difference() {
+    union() {
+        rr = 0.8;
+        _chamfer_edges(r=rr)
         union() {
-            // Hinge
-            _box_screw_eyelet_body($b_latch_width);
-            _latch_body(bw);
-            translate([0, 0, $b_latch_screw_separation]) {
-                _latch_catch();
-                rotate([0, 180 + 15, 0])
-                _latch_catch_handle(bw);
-            }
+            rotate([90, 0, 0])
+            linear_extrude(height=$b_latch_width, center=true)
+            offset(r=-rr / 2)
+            _latch_shape();
         }
-        // Hinge screw hole
-        _box_screw_hole($b_latch_width, increase_screw_diameter=true);
-        // Catch screw hole
-        translate([0, 0, $b_latch_screw_separation])
-        _box_screw_hole($b_latch_width, increase_screw_diameter=false);
     }
 }
 
 module _latch(placement="default") {
     if (placement == "print") {
-        translate([0, $b_latch_screw_separation / 2, $b_latch_width / 2])
-        rotate([-90, 0, 0])
+        rotate([90, 0, 0])
         _latch_part();
     } else if (placement == "box-preview") {
-        rotate([180, 0, 90])
+        rotate([0, 0, 270])
         _latch_part();
     } else {
         _latch_part();
