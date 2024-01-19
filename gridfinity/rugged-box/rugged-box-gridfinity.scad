@@ -26,7 +26,7 @@ Length = 2; // [1:1:10]
 Bottom_Height = 3; // [1:1:10]
 
 // Interior top height in 7mm Gridfinity units
-Top_Height = 3; // [0:1:10]
+Top_Height = 3; // [1:1:10]
 
 /* [Gridfinity Features] */
 Gridfinity_Base_Style = "minimal"; // [minimal: No magnet holes with minimal thickness, thick: No magnet holes but with magnet hole base thickness, enabled: Magnet holes with skeletonized baseplate, enabled_full: Magnet holes with filled baseplate]

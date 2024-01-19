@@ -35,7 +35,7 @@ top_grip_width = 100;
 
 // Handle size
 handle_thickness = 10;
-handle_min_height = 20;
+handle_min_height = 16;
 handle_max_height = 35;
 handle_radius = 5;
 
