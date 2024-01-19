@@ -29,6 +29,10 @@ hinge_extra_setback = 0.2; // [0:0.1:2]
 // Screw eyelet diameter as a proportion of screw diameter
 screw_eyelet_size_proportion = 2.5; // [1.5:0.1:5]
 
+// Depth and maximum width of lip grip
+top_grip_depth = 6;
+top_grip_width = 100;
+
 // Public modules
 
 /*
@@ -74,7 +78,8 @@ module rbox(
     edge_chamfer_proportion=0.4,
     lip_seal_type="wedge",
     reinforced_corners=false,
-    latch_count=0
+    latch_count=0,
+    top_grip=false
 ) {
     // Set base dimensions
     $b_inner_width = width;
@@ -86,6 +91,7 @@ module rbox(
     $b_lip_seal_type = lip_seal_type;
     $b_reinforced_corners = reinforced_corners;
     $b_latch_count = latch_count;
+    $b_top_grip = top_grip;
     // Set defaults
     rbox_size_adjustments()
     _box_rib_angle(0)
@@ -400,6 +406,7 @@ module _box_body() {
         _box_side_ribs();
         _box_latch_ribs();
         _box_hinge_ribs();
+        _box_top_grip();
     }
 }
 
@@ -876,6 +883,58 @@ module _box_hinge_ribs() {
             $b_latch_width,
             increase_screw_diameter = ($b_part == "top" ? true : false)
         );
+    }
+}
+
+module _box_top_grip_shape() {
+    outset = (
+        $b_lip_thickness - $b_wall_thickness - $b_edge_radius + top_grip_depth
+    );
+    polygon(points=[
+        [
+            -$b_edge_radius,
+            max($b_outer_height - outset * 3.5, $b_outer_chamfer_vertical)
+        ],
+        [$b_wall_thickness + outset, $b_outer_height],
+        [-$b_edge_radius, $b_outer_height],
+    ]);
+}
+
+module _box_top_grip() {
+    if ($b_top_grip && $b_part == "top" && _compute_latch_count() == 2) {
+        lip_position = $b_corner_radius + $b_total_lip_thickness - $b_lip_thickness - $b_edge_radius;
+        latch_offset = (
+            ($b_inner_width - $b_corner_radius + $b_wall_thickness) / 2
+            - $b_latch_width
+        );
+        grip_half_length = min(
+            top_grip_width / 2, latch_offset - ($b_latch_width / 2) - $b_rib_width
+        );
+        end_caps_visible = (
+            latch_offset - ($b_latch_width + $b_rib_width) / 2
+            > top_grip_width / 2 + 2 * $b_lip_thickness
+        );
+        render(convexity=2)
+        mirror([0, 1, 0])
+        translate([0, $b_inner_length / 2 - $b_corner_radius, 0])
+        rotate([90, 0, 90])
+        for (mz = [0:1:1])
+        mirror([0, 0, mz])
+        translate([lip_position, 0]) {
+            // Grip
+            linear_extrude(height=grip_half_length)
+            _round_shape($b_edge_radius)
+            _box_top_grip_shape();
+            // End caps
+            translate([0, 0, grip_half_length])
+            translate([-$b_edge_radius, 0, 0])
+            scale([1, 1, end_caps_visible ? 1 : ($b_rib_width / top_grip_depth / 2)])
+            rotate([270, 270, 0])
+            rotate_extrude(angle=90)
+            translate([$b_edge_radius, 0])
+            _round_shape($b_edge_radius)
+            _box_top_grip_shape();
+        }
     }
 }
 

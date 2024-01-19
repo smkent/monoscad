@@ -34,6 +34,7 @@ for box_name, (
                 "Bottom_Height": bottom_height,
                 "Gridfinity_Base_Style": opts.base_style,
                 "Gridfinity_Stackable": opts.stackable,
+                "Top_Grip": 1,
             },
             **(params[0] if params else {}),
         }
