@@ -434,6 +434,12 @@ module _box_body() {
     }
 }
 
+module _box_corners_extrude_linear_extension(length) {
+    rotate([90, 0, 90])
+    linear_extrude(height=length)
+    _box_wall_shape(reinforced=true);
+}
+
 module _box_corners_extrude(
     width=$b_inner_width,
     length=$b_inner_length,
@@ -454,16 +460,34 @@ module _box_corners_extrude(
                 for (rz = [0:1:1]) {
                     mirror([rz, 0, 0])
                     rotate([0, 0, rz ? 0 : -90])
-                    difference() {
-                        scale([
-                            (tan(15) * $b_corner_radius) / $b_corner_radius,
-                            1
-                        ])
-                        rotate_extrude(angle=90)
-                        children();
-                        translate([0, 0, $b_wall_thickness])
-                        linear_extrude(height=$b_outer_height)
-                        square($b_corner_radius + $b_wall_thickness / 2);
+                    if (_compute_latch_count() == 2 && ((i % 2) != rz)) {
+                        // Front/rear extensions to attachments
+                        is_rear = (i == 2 || i == 3);
+                        _box_corners_extrude_linear_extension(
+                            (
+                                ($b_inner_width - $b_corner_radius * 2)
+                                - ($b_latch_width + $b_rib_width)
+                            ) / 2
+                            - rb_latch_hinge_position()
+                            // On the box top hinge, extension needs to rear
+                            // the inner hinge position
+                            + (
+                                $b_part == "top" && is_rear
+                                    ? $b_rib_width * 2
+                                    : 0
+                            )
+                        );
+                    } else if (len(rb_side_rib_positions()) >= 2 && ((i % 2) == rz)) {
+                        // Side extensions to ribs
+                        idx = ((i == 0 || i == 1) ? 0 : len(rb_side_rib_positions()) - 1);
+                        // idx is 0 for front-side, or last rib index for rear-side
+                        _box_corners_extrude_linear_extension(
+                            (
+                                ($b_inner_length - $b_corner_radius * 2)
+                                - ($b_rib_width * (2 - 1))
+                            ) / 2
+                            + rb_side_rib_positions()[idx] * (idx == 0 ? 1 : -1)
+                        );
                     }
                 }
             }
@@ -523,6 +547,16 @@ module _box_wall_outer_chamfer_shape() {
     ]);
 }
 
+module _box_wall_interior_shape() {
+    translate([-$b_wall_thickness, 0])
+    difference() {
+        translate([0, $b_wall_thickness])
+        square([$b_corner_radius + $b_wall_thickness, $b_outer_height]);
+        translate([0, $b_wall_thickness * 0.1])
+        _box_wall_outer_chamfer_shape();
+    }
+}
+
 module _box_wall_shape(reinforced=false) {
     _round_shape($b_edge_radius)
     difference() {
@@ -537,13 +571,7 @@ module _box_wall_shape(reinforced=false) {
             ]);
             _box_wall_outer_chamfer_shape();
         }
-        translate([-$b_wall_thickness, 0])
-        difference() {
-            translate([0, $b_wall_thickness])
-            square([$b_corner_radius + $b_wall_thickness, $b_outer_height]);
-            translate([0, $b_wall_thickness * 0.1])
-            _box_wall_outer_chamfer_shape();
-        }
+        _box_wall_interior_shape();
     }
     // Square inner floor edge
     square([$b_wall_thickness * 2/3, min($b_outer_height, $b_wall_thickness)]);
