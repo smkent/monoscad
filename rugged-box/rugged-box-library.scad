@@ -862,9 +862,6 @@ module _box_hinge_rib_bottom(width=0) {
     }
 }
 
-module _box_hinge_ribs_bottom() {
-}
-
 module _box_hinge_ribs() {
     _box_attachment_placement()
     difference() {
