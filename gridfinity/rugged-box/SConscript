@@ -5,8 +5,8 @@ model = "rugged-box-gridfinity.scad"
 model_dependencies = ["rugged-box-library.scad"]
 
 gridfinity_boxes = {
-    "4x2x6": [4, 2, 2, 4],
-    "1x1x3": [1, 1, 1, 2],
+    "4x2x6": [4, 2, 2, 4, False],
+    "1x1x3": [1, 1, 1, 2, False],
 }
 
 for box_name, (
@@ -14,10 +14,11 @@ for box_name, (
     length,
     top_height,
     bottom_height,
+    enable_handle,
     *params,
 ) in gridfinity_boxes.items():
     for opts in GenerateOptions(
-        part=["top", "bottom", "latch"],
+        part=["top", "bottom", "latch", "stacking-latch", "handle"],
         stackable=[(1, "-stackable"), (0, "")],
         base_style=[
             ("enabled", "-magnets-skeletonized"),
@@ -25,6 +26,8 @@ for box_name, (
             ("minimal", ""),
         ],
     ):
+        if not enable_handle and opts.part == "handle":
+            continue
         part_params = {
             **{
                 "Part": opts.part,

@@ -10,6 +10,7 @@ boxes = {
         20,
         5,
         6,
+        False,
         {
             "Latch_Amount_On_Top": 4,
             "Latch_Width": 12,
@@ -17,9 +18,9 @@ boxes = {
             "Rib_Width": 3,
         },
     ],
-    "mini": [30, 30, 7, 22],
-    "60x30": [60, 30, 7, 25],
-    "120x60": [120, 60, 7, 25],
+    "mini": [30, 30, 7, 22, False],
+    "60x30": [60, 30, 7, 25, False],
+    "120x60": [120, 60, 7, 25, False],
 }
 
 for box_name, (
@@ -27,9 +28,12 @@ for box_name, (
     length,
     top_height,
     bottom_height,
+    enable_handle,
     *params,
 ) in boxes.items():
-    for part in {"top", "bottom", "latch"}:
+    for part in ["top", "bottom", "latch", "handle"]:
+        if not enable_handle and part == "handle":
+            continue
         part_params = {
             **{
                 "Part": part,

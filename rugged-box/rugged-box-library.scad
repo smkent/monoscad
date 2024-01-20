@@ -1316,6 +1316,7 @@ module _handle_part() {
 }
 
 module _handle(placement="default") {
+    rbox_for_bottom()
     if (placement == "print") {
         _handle_part();
     } else if (placement == "box-preview" || placement == "box-preview-open") {
