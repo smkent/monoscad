@@ -363,12 +363,16 @@ latch_base_size = screw_diameter * (latch_body_size_proportion / 2);
 draw_latch_thickness = latch_base_size / 2;
 draw_latch_handle_length = latch_base_size * 3.25;
 draw_latch_screw_eyelet_radius = screw_hole_diameter * 1.1;
-draw_latch_pin_handle_radius = screw_hole_diameter * 1.5;
+draw_latch_pin_handle_radius = screw_hole_diameter * 1.6;
 draw_latch_pin_radius = draw_latch_pin_handle_radius - 2.2;
 draw_latch_sep = 0.4;
 draw_latch_body_width = latch_base_size - screw_hole_diameter / 2;
 draw_latch_pin_offset = [
-    draw_latch_screw_eyelet_radius - draw_latch_pin_handle_radius,
+    (
+        draw_latch_screw_eyelet_radius
+        - draw_latch_pin_handle_radius
+        - screw_hole_diameter * 0.1
+    ),
     -draw_latch_handle_length,
     0
 ];
@@ -418,7 +422,7 @@ function _init_latch_amount_on_top(latch_amount_on_top) = (
         : min(
             ($b_top_inner_height + $b_wall_thickness) / 2,
             ($b_latch_type == "draw"
-                ? $b_latch_screw_separation - screw_eyelet_radius * 1.5
+                ? $b_latch_screw_separation - screw_eyelet_radius * 1.25
                 : min(
                     screw_eyelet_radius * 2.0,
                     $b_latch_screw_separation / 2
@@ -1298,9 +1302,8 @@ module _draw_latch_handle_body_shape() {
             _draw_latch_handle_curve_shape();
         }
         // Pin hole
-        translate([0, -draw_latch_handle_length, 0])
-        translate([-draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius, 0, 0])
-        circle(r=draw_latch_pin_radius + draw_latch_sep / 2);
+        translate(draw_latch_pin_offset)
+        circle(r=draw_latch_pin_radius + draw_latch_sep);
         // Screw hole
         circle(d=(
             screw_hole_diameter
@@ -1425,7 +1428,7 @@ module _draw_latch_handle() {
             translate([0, -draw_latch_handle_length, 0])
             translate([-draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius, 0])
             hull() {
-                circle(r=draw_latch_pin_radius + draw_latch_sep / 2);
+                circle(r=draw_latch_pin_radius + draw_latch_sep);
                 translate([latch_base_size * 1.5 + draw_latch_sep, draw_latch_sep])
                 circle(draw_latch_screw_eyelet_radius);
             }
@@ -1439,10 +1442,7 @@ module _draw_latch_attach_shape_base(sep=0.4) {
     pin_latch_size_delta = pin_diameter - draw_latch_thickness;
 
     _draw_latch_catch_shape_body();
-    translate([
-        -draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius,
-        -draw_latch_handle_length
-    ])
+    translate(draw_latch_pin_offset)
     hull() {
         circle(r=draw_latch_pin_radius);
         for (i = [-1, 1])
@@ -1486,15 +1486,15 @@ module _draw_latch_catch_shape_body() {
     hull() {
         translate([0, -draw_latch_handle_length + latch_offset_from_pin - pin_latch_size_delta])
         circle(draw_latch_thickness);
-        translate([0, -latch_base_size + screw_diameter / 2 - draw_latch_sep])
+        translate([0, -latch_base_size + screw_diameter / 2])
         translate([0, $b_latch_screw_separation])
         circle(draw_latch_thickness);
     }
 }
 
 module _draw_latch_catch_shape_hook() {
-    compress_ratio = 0.55;
-    catchsep = draw_latch_sep * 1.5;
+    compress_ratio = 0.65;
+    catchsep = 0;
     outr = draw_latch_screw_eyelet_radius + draw_latch_thickness * 2;
 
     translate([draw_latch_sep, $b_latch_screw_separation])
@@ -1515,10 +1515,13 @@ module _draw_latch_catch_shape_hook() {
                 }
             }
         }
+        cr = compress_ratio * 0.8;
+        translate([-draw_latch_screw_eyelet_radius * cr, 0])
         for (mx = [0:1:1])
         mirror([mx, 0])
-        scale([mx ? 1 - (1 - compress_ratio) / 2 : 1, 1])
+        scale([mx ? 1 - (1 - cr) / 1.00 : 1 + cr, 1])
         intersection() {
+            color(mx ? "lightblue" : "lightgreen", 0.6)
             circle(r=draw_latch_screw_eyelet_radius);
             square(draw_latch_screw_eyelet_radius);
         }
