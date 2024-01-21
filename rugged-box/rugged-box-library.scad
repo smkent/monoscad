@@ -35,6 +35,7 @@ top_grip_width = 100;
 
 // Latch size
 latch_edge_radius = 0.8;
+latch_body_size_proportion = 2.5; // [1.5:0.1:5]
 
 // Stacking latch size
 stacking_latch_catch_offset = 6;
@@ -353,13 +354,14 @@ function rb_stacking_latch_positions() = [];
 screw_hole_diameter = screw_diameter;
 screw_eyelet_radius = screw_hole_diameter * screw_eyelet_size_proportion / 2;
 
-draw_latch_thickness = screw_eyelet_radius / 2;
-draw_latch_handle_length = screw_eyelet_radius * 3.25;
+latch_base_size = screw_diameter * (latch_body_size_proportion / 2);
+draw_latch_thickness = latch_base_size / 2;
+draw_latch_handle_length = latch_base_size * 3.25;
 draw_latch_screw_eyelet_radius = screw_hole_diameter * 1.1;
 draw_latch_pin_handle_radius = screw_hole_diameter * 1.5;
 draw_latch_pin_radius = draw_latch_pin_handle_radius - 2.2;
 draw_latch_sep = 0.4;
-draw_latch_body_width = screw_eyelet_radius - screw_hole_diameter / 2;
+draw_latch_body_width = latch_base_size - screw_hole_diameter / 2;
 draw_latch_pin_offset = [
     draw_latch_screw_eyelet_radius - draw_latch_pin_handle_radius,
     -draw_latch_handle_length,
@@ -1178,22 +1180,22 @@ module _box_top_grip() {
 // Clip latches
 
 module _clip_latch_shape() {
-    bw = screw_eyelet_radius - screw_hole_diameter / 2;
+    bw = latch_base_size - screw_hole_diameter / 2;
     shd = screw_hole_diameter + screw_hole_diameter_size_tolerance;
     _round_shape($b_edge_radius)
     difference() {
         union() {
             // Catch eyelets
             translate([0, $b_latch_screw_separation])
-            circle(r=screw_eyelet_radius);
+            circle(r=latch_base_size);
             // Hinge eyelet and main body
             hull() {
-                circle(r=screw_eyelet_radius);
-                translate([-screw_eyelet_radius, 0])
+                circle(r=latch_base_size);
+                translate([-latch_base_size, 0])
                 square([bw, $b_latch_screw_separation]);
             }
-            translate([-screw_eyelet_radius, 0])
-            square([bw, $b_latch_screw_separation + screw_eyelet_radius * 2.5]);
+            translate([-latch_base_size, 0])
+            square([bw, $b_latch_screw_separation + latch_base_size * 2.5]);
         }
         // Hinge hole
         circle(d=shd);
@@ -1203,7 +1205,7 @@ module _clip_latch_shape() {
         union() {
             circle(d=shd);
             translate([
-                screw_eyelet_radius + bw / 1.6,
+                latch_base_size + bw / 1.6,
                 -$b_latch_screw_separation
             ])
             circle(d=shd);
@@ -1391,7 +1393,7 @@ module _draw_latch_handle() {
             translate([-draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius, 0])
             hull() {
                 circle(r=draw_latch_pin_radius + draw_latch_sep / 2);
-                translate([screw_eyelet_radius * 1.5 + draw_latch_sep, draw_latch_sep])
+                translate([latch_base_size * 1.5 + draw_latch_sep, draw_latch_sep])
                 circle(draw_latch_screw_eyelet_radius);
             }
         }
@@ -1432,7 +1434,7 @@ module _draw_latch_attach_shape(sep=0.4) {
                 }
                 _round_shape(round_factor)
                 for (dx = [0:1:round_factor], dy = [0:1:round_factor])
-                translate([dx * screw_eyelet_radius / 2, dy * -screw_eyelet_radius / 2])
+                translate([dx * latch_base_size / 2, dy * -latch_base_size / 2])
                 _draw_latch_attach_shape_base(sep=sep);
             }
         }
@@ -1451,7 +1453,7 @@ module _draw_latch_catch_shape_body() {
     hull() {
         translate([0, -draw_latch_handle_length + latch_offset_from_pin - pin_latch_size_delta])
         circle(draw_latch_thickness);
-        translate([0, -screw_eyelet_radius + screw_diameter / 2 - draw_latch_sep])
+        translate([0, -latch_base_size + screw_diameter / 2 - draw_latch_sep])
         translate([0, $b_latch_screw_separation])
         circle(draw_latch_thickness);
     }
@@ -1463,7 +1465,7 @@ module _draw_latch_catch_shape_hook() {
     outr = draw_latch_screw_eyelet_radius + draw_latch_thickness * 2;
 
     translate([draw_latch_sep, $b_latch_screw_separation])
-    translate([0, -screw_eyelet_radius + screw_diameter / 2 - catchsep])
+    translate([0, -latch_base_size + screw_diameter / 2 - catchsep])
     difference() {
         union() {
             intersection() {
@@ -1556,7 +1558,7 @@ module _latch(placement="default") {
 // Stacking latches
 
 module _stacking_latch_shape() {
-    bw = screw_eyelet_radius - screw_hole_diameter / 2;
+    bw = latch_base_size - screw_hole_diameter / 2;
     slcatch = $b_latch_screw_separation + stacking_latch_catch_offset;
     shd = screw_hole_diameter + screw_hole_diameter_size_tolerance;
     _round_shape($b_edge_radius)
@@ -1565,9 +1567,9 @@ module _stacking_latch_shape() {
             // Catch eyelets
             _hull_in_order() {
                 translate([0, $b_latch_screw_separation])
-                circle(r=screw_eyelet_radius);
+                circle(r=latch_base_size);
                 translate([0, slcatch])
-                circle(r=screw_eyelet_radius);
+                circle(r=latch_base_size);
                 translate([
                     0,
                     slcatch + stacking_latch_grip_length + bw / 2
@@ -1576,8 +1578,8 @@ module _stacking_latch_shape() {
             }
             // Hinge eyelet and main body
             hull() {
-                circle(r=screw_eyelet_radius);
-                translate([-screw_eyelet_radius, 0])
+                circle(r=latch_base_size);
+                translate([-latch_base_size, 0])
                 square([bw, $b_latch_screw_separation]);
             }
         }
@@ -1589,7 +1591,7 @@ module _stacking_latch_shape() {
         union() {
             circle(d=shd);
             translate([
-                screw_eyelet_radius + bw / 1.6,
+                latch_base_size + bw / 1.6,
                 -$b_latch_screw_separation
             ])
             circle(d=shd);
