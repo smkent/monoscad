@@ -1011,8 +1011,9 @@ module _box_stacking_latch_rib() {
             for (sep = sep_positions)
             _box_latch_rib_base(latch_position=sep);
             hull()
+            for (ox = [0, -$b_wall_thickness])
             for (sep = sep_positions)
-            translate([0, 0, sep])
+            translate([ox, 0, sep])
             translate([$b_latch_screw_offset, 0, 0])
             _box_screw_eyelet_body($b_rib_width);
         }
