@@ -1233,7 +1233,7 @@ module _clip_latch_shape() {
                 -$b_latch_screw_separation
             ])
             circle(d=shd);
-            translate([(shd + bw) * 2, -(shd + bw)])
+            translate([(shd + bw) * 2, -shd])
             circle(d=shd);
         }
     }
@@ -1619,7 +1619,7 @@ module _stacking_latch_shape() {
                 -$b_latch_screw_separation
             ])
             circle(d=shd);
-            translate([(shd + bw) * 2, -(shd + bw)])
+            translate([(shd + bw) * 2, -shd])
             circle(d=shd);
         }
         // Stacking catch
@@ -1627,7 +1627,7 @@ module _stacking_latch_shape() {
         hull()
         union() {
             circle(d=shd);
-            translate([-(shd + bw) * 2, -(shd + bw) * 0.75])
+            translate([-(shd + bw) * 2, -shd * 0.75])
             circle(d=shd);
             translate([-(shd + bw) * 2, -(shd + bw)])
             circle(d=shd);
