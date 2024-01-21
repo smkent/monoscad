@@ -355,6 +355,7 @@ function rb_stacking_latch_positions() = [];
 
 screw_hole_diameter = screw_diameter;
 screw_eyelet_radius = screw_hole_diameter * screw_eyelet_size_proportion / 2;
+screw_hole_diameter_fit = screw_hole_diameter * 0.1;
 
 latch_base_size = screw_diameter * (latch_body_size_proportion / 2);
 draw_latch_thickness = latch_base_size / 2;
@@ -925,10 +926,12 @@ module _box_screw_eyelet_body(width=0, angle=360) {
 
 module _box_screw_hole(width, increase_screw_diameter=false) {
     screw_radius = 1/2 * (
-        increase_screw_diameter
-            ? screw_hole_diameter * 1.1
-            : screw_hole_diameter + screw_hole_diameter_size_tolerance
-    );
+        screw_hole_diameter + (
+            increase_screw_diameter
+                ? screw_hole_diameter_fit
+                : screw_hole_diameter_size_tolerance
+            )
+        );
     rotate([90, 0, 0])
     translate([0, 0, -width])
     cylinder(width * 2, screw_radius, screw_radius);
@@ -1222,7 +1225,7 @@ module _clip_latch_shape() {
             square([bw, $b_latch_screw_separation + latch_base_size * 2.5]);
         }
         // Hinge hole
-        circle(d=shd);
+        circle(d=shd + screw_hole_diameter_fit);
         // Catch hole
         translate([0, $b_latch_screw_separation])
         hull()
@@ -1297,7 +1300,11 @@ module _draw_latch_handle_body_shape() {
         translate([-draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius, 0, 0])
         circle(r=draw_latch_pin_radius + draw_latch_sep / 2);
         // Screw hole
-        circle(d=screw_hole_diameter + screw_hole_diameter_size_tolerance);
+        circle(d=(
+            screw_hole_diameter
+            + screw_hole_diameter_size_tolerance
+            + screw_hole_diameter_fit
+        ));
     }
 }
 
@@ -1608,7 +1615,7 @@ module _stacking_latch_shape() {
             }
         }
         // Hinge hole
-        circle(d=shd);
+        circle(d=shd + screw_hole_diameter_fit);
         // Catch hole
         translate([0, $b_latch_screw_separation])
         hull()
