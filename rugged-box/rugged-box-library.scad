@@ -156,6 +156,7 @@ module rbox_size_adjustments(
     latch_width=22,
     latch_screw_separation=20,
     latch_amount_on_top=0,
+    stacking_latch_screw_separation=20,
     size_tolerance=0.05
 ) {
     $b_wall_thickness = wall_thickness;
@@ -165,6 +166,7 @@ module rbox_size_adjustments(
     $b_latch_width = latch_width;
     $b_latch_screw_separation = latch_screw_separation;
     $b_latch_amount_on_top = _init_latch_amount_on_top(latch_amount_on_top);
+    $b_stacking_latch_screw_separation = stacking_latch_screw_separation;
     // Set computed values
     $b_total_lip_thickness = wall_thickness + lip_thickness;
     $b_lip_height = lip_thickness * 2;
@@ -234,7 +236,7 @@ module rbox_part(part) {
         rbox_for_bottom() {
             rbox_handle(placement="box-preview-open");
             _box_stacking_latch_ribs_placement()
-            translate([0, 0, $b_latch_screw_separation * 0.5])
+            translate([0, 0, $b_stacking_latch_screw_separation * 0.5])
             translate([0, -$b_latch_screw_offset, 0])
             rotate([180, 0, 0])
             rbox_stacking_latch(placement="box-preview");
@@ -281,7 +283,7 @@ module rbox_part(part) {
         rbox_for_bottom() {
             rbox_handle(placement="box-preview");
             _box_stacking_latch_ribs_placement()
-            translate([0, 0, $b_latch_screw_separation * 0.5])
+            translate([0, 0, $b_stacking_latch_screw_separation * 0.5])
             translate([0, -$b_latch_screw_offset, 0])
             rbox_stacking_latch(placement="box-preview");
             if ($b_latch_type == "draw") {
@@ -1003,10 +1005,10 @@ module _box_latch_ribs() {
 module _box_stacking_latch_rib() {
     sep_positions = [
         for(seps=[
-            [$b_latch_screw_separation * 0.5],
-            ($b_outer_height > $b_latch_screw_separation * 2)
+            [$b_stacking_latch_screw_separation * 0.5],
+            ($b_outer_height > $b_stacking_latch_screw_separation * 2.0)
                 ? [
-                    $b_latch_screw_separation * 1.5
+                    $b_stacking_latch_screw_separation * 1.5
                     + stacking_latch_catch_offset
                 ]
                 : []
@@ -1590,8 +1592,8 @@ module _latch(placement="default") {
 
 module _stacking_latch_shape() {
     catch_heights = [
-        $b_latch_screw_separation,
-        $b_latch_screw_separation + stacking_latch_catch_offset
+        $b_stacking_latch_screw_separation,
+        $b_stacking_latch_screw_separation + stacking_latch_catch_offset
     ];
 
     bw = latch_base_size - screw_hole_diameter / 2;
