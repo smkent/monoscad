@@ -23,7 +23,7 @@ Width = 4; // [1:1:10]
 Length = 2; // [1:1:10]
 
 // Interior bottom height in 7mm Gridfinity units
-Bottom_Height = 7; // [1:1:10]
+Bottom_Height = 7; // [1:1:30]
 
 // Interior top height in 7mm Gridfinity units
 Top_Height = 2; // [1:1:10]
@@ -55,7 +55,7 @@ Latch_Type = "draw"; // [clip: Clip, draw: Draw]
 Wall_Thickness = 3.0; // [2.4:0.1:10]
 
 // Thickness in millimeters to add to the wall thickness for the box lip
-Lip_Thickness = 2.0; // [0.4:0.1:10]
+Lip_Thickness = 3.0; // [0.4:0.1:10]
 
 // Base thickness in millimeters of the support ribs. The latch ribs are this thick, while the hinge and side ribs are twice this thick.
 Rib_Width = 4; // [1:0.1:20]
@@ -92,6 +92,11 @@ stackable_plate_offset = 3.4;
 stackable_top_plate_offset = -0.8;
 stackable_bottom_base_offset = -0.6;
 top_base_offset = -(h_base - h_lip);
+
+// Library constant overrides
+
+screw_eyelet_size_proportion = 3.0; // [1.5:0.1:5]
+latch_body_size_proportion = 3.0; // [1.5:0.1:5]
 
 // Library overrides
 
