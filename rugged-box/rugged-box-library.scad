@@ -464,12 +464,13 @@ module _rounded_cylinder(h, r1, r2=0, angle=360, center=false) {
     }
 }
 
-module _chamfer_edges(r) {
+module _chamfer_edges(r, rotation=[0, 0, 0]) {
     minkowski() {
         children();
         union() {
             $fs = $preview ? $fs : $fs / 5;
             if (r > 0)
+            rotate(rotation)
             for (mz = [0:1:1])
             mirror([0, 0, mz])
             cylinder(d1=r, d2=0, h=r/2);
@@ -1240,7 +1241,7 @@ module _clip_latch_shape() {
 
 module _clip_latch_part() {
     color("mintcream", 0.8)
-    _chamfer_edges(r=latch_edge_radius)
+    _chamfer_edges(r=latch_edge_radius, rotation=[90, 0, 0])
     rotate([90, 0, 0])
     linear_extrude(height=$b_latch_width, center=true)
     offset(r=-latch_edge_radius / 2)
@@ -1637,7 +1638,7 @@ module _stacking_latch_shape() {
 module _stacking_latch_part() {
     color("mintcream", 0.8)
     union() {
-        _chamfer_edges(r=latch_edge_radius)
+        _chamfer_edges(r=latch_edge_radius, rotation=[90, 0, 0])
         union() {
             rotate([90, 0, 0])
             linear_extrude(height=$b_latch_width, center=true)
