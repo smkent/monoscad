@@ -94,7 +94,8 @@ module rbox(
     reinforced_corners=false,
     latch_type="draw",
     latch_count=0,
-    top_grip=false
+    top_grip=false,
+    hinge_end_stops=false
 ) {
     // Set base dimensions
     $b_inner_width = width;
@@ -108,6 +109,7 @@ module rbox(
     $b_latch_type = latch_type;
     $b_latch_count = latch_count;
     $b_top_grip = top_grip;
+    $b_hinge_end_stops = hinge_end_stops;
     // Set defaults
     $b_preview_box_open = false;
     rbox_size_adjustments()
@@ -1107,13 +1109,34 @@ module _box_hinge_rib_bottom(width=0) {
     }
 }
 
+module _box_hinge_rib_bottom_end_stop(width=0) {
+    ww = $b_hinge_screw_offset * 2 + screw_eyelet_radius * 2;
+    translate([-$b_rib_width / 2, 0, 0])
+    rotate([0, 0, 90]) {
+        _box_rib(width);
+        intersection() {
+            _box_hinge_rib_body(width);
+            translate([-0.125, 0, $b_outer_height - 0.5])
+            rotate([90, 0, 0])
+            linear_extrude(height=width * 2, center=true)
+            translate([0, -ww - screw_eyelet_radius, 0])
+            _round_shape($b_edge_radius)
+            square([ww, ww * 2], center=true);
+        }
+    }
+}
+
 module _box_hinge_ribs() {
     _box_attachment_placement()
     difference() {
         union() {
             if ($b_part == "bottom") {
+                hinge_rib_width = $b_rib_width * 2;
                 _box_attachment_rib_pair()
                 _box_hinge_rib_bottom(width=$b_rib_width * 2);
+                if ($b_hinge_end_stops) {
+                    _box_hinge_rib_bottom_end_stop(width=$b_latch_width);
+                }
             } else if ($b_part == "top") {
                 _box_hinge_ribs_top();
             }

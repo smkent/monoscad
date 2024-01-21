@@ -44,6 +44,9 @@ Reinforced_Corners = true;
 // Add a front grip to the box top (for boxes with two latches)
 Top_Grip = true;
 
+// Add end stops to the hinges on the box bottom
+Hinge_End_Stops = false;
+
 // Add stacking latches and attachment points to the sides of the box
 Stacking_Latches = true;
 
@@ -297,7 +300,8 @@ module main() {
         reinforced_corners=Reinforced_Corners,
         latch_type=Latch_Type,
         latch_count=(Width <= 1 ? 1 : 2),
-        top_grip=Top_Grip
+        top_grip=Top_Grip,
+        hinge_end_stops=Hinge_End_Stops
     )
     rbox_size_adjustments(
         wall_thickness=Wall_Thickness,

@@ -43,6 +43,9 @@ Reinforced_Corners = false;
 // Add a front grip to the box top (for boxes with two latches)
 Top_Grip = false;
 
+// Add end stops to the hinges on the box bottom
+Hinge_End_Stops = false;
+
 // Latch style
 Latch_Type = "clip"; // [clip: Clip, draw: Draw]
 
@@ -79,7 +82,8 @@ rbox(
     lip_seal_type=Lip_Seal_Type,
     reinforced_corners=Reinforced_Corners,
     latch_type=Latch_Type,
-    top_grip=Top_Grip
+    top_grip=Top_Grip,
+    hinge_end_stops=Hinge_End_Stops
 )
 rbox_size_adjustments(
     wall_thickness=Wall_Thickness,
