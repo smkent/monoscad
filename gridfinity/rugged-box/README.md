@@ -85,6 +85,7 @@ use the [MIT License][gridfinity-license].
 [gridfinity-rebuilt-openscad]: https://github.com/kennetek/gridfinity-rebuilt-openscad
 [gridfinity]: https://www.youtube.com/watch?v=ra_9zU-mnl8
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
+[license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
 [printables-badge]: /_static/printables-badge.png
 [printables-model]: https://www.printables.com/model/637028
