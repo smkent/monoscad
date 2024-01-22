@@ -238,6 +238,7 @@ module rbox_part(part) {
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
         rbox_for_bottom() {
             rbox_handle(placement="box-preview-open");
+            if (_stacking_latches_enabled())
             _box_stacking_latch_ribs_placement()
             translate([0, 0, $b_stacking_latch_screw_separation * 0.5])
             translate([0, -$b_latch_screw_offset, 0])
@@ -287,6 +288,7 @@ module rbox_part(part) {
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
         rbox_for_bottom() {
             rbox_handle(placement="box-preview");
+            if (_stacking_latches_enabled())
             _box_stacking_latch_ribs_placement()
             translate([0, 0, $b_stacking_latch_screw_separation * 0.5])
             translate([0, -$b_latch_screw_offset, 0])
@@ -340,28 +342,36 @@ module rbox_bom() {
         str(count, " M", screw_diameter, "x", length)
     );
 
-    screw_length_base = $b_latch_width + $b_rib_width * 2;
-    screw_count_base = (
-        // 2 for each latch, 1 for each hinge
-        _compute_latch_count() * (2 + 1)
-        // 3 for each stacking latch hinge/attachment points, 2 sides
-        + len(rb_stacking_latch_positions()) * 3 * 2
-    );
-
-    rbox_for_bottom()
-    echo(str(
-        "Box total screws needed: ",
-        _sstr(screw_count_base, screw_length_base),
-        _handle_enabled() ? (
-            str(
-                " without handle, or ",
-                _sstr(screw_count_base - 2, screw_length_base),
-                " + ",
-                _sstr(2, screw_length_base + $b_rib_width + handle_thickness),
-                " with handle"
+    rbox_for_bottom() {
+        screw_length_base = $b_latch_width + $b_rib_width * 2;
+        screw_count_base = (
+            // 2 for each latch, 1 for each hinge
+            _compute_latch_count() * (2 + 1)
+            // stacking latches, 2 sides
+            + len(rb_stacking_latch_positions()) * 2 * (
+                // 2 attachment points
+                2
+                // Stow point if box is tall enough for a stacking latch
+                + (_stacking_latches_enabled() ? 1 : 0)
             )
-        ) : ""
-    ));
+        );
+        echo(str(
+            "Box total screws needed: ",
+            _sstr(screw_count_base, screw_length_base),
+            _handle_enabled() ? (
+                str(
+                    " without handle, or ",
+                    _sstr(screw_count_base - 2, screw_length_base),
+                    " + ",
+                    _sstr(
+                        2,
+                        screw_length_base + $b_rib_width + handle_thickness
+                    ),
+                    " with handle"
+                )
+            ) : ""
+        ));
+    }
 };
 
 // Overridable functions and modules
@@ -478,6 +488,10 @@ function _latch_offset_from_base() = (
             ? $b_latch_amount_on_top
             : $b_latch_screw_separation - $b_latch_amount_on_top
     )
+);
+
+function _stacking_latches_enabled() = (
+    $b_outer_height > $b_stacking_latch_screw_separation * 2.0
 );
 
 function _handle_dimensions() = [
@@ -1095,7 +1109,7 @@ module _box_stacking_latch_rib() {
     sep_positions = [
         for(seps=[
             [$b_stacking_latch_screw_separation * 0.5],
-            ($b_outer_height > $b_stacking_latch_screw_separation * 2.0)
+            _stacking_latches_enabled()
                 ? [
                     $b_stacking_latch_screw_separation * 1.5
                     + stacking_latch_catch_offset
