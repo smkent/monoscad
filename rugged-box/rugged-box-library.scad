@@ -1024,12 +1024,16 @@ module _box_stacking_latch_rib() {
         union() {
             for (sep = sep_positions)
             _box_latch_rib_base(latch_position=sep);
-            hull()
-            for (ox = [0, -$b_wall_thickness])
-            for (sep = sep_positions)
-            translate([ox, 0, sep])
-            translate([$b_latch_screw_offset, 0, 0])
-            _box_screw_eyelet_body($b_rib_width);
+            intersection() {
+                linear_extrude(height=$b_outer_height)
+                square(($b_outer_height + $b_wall_thickness) * 10, center=true);
+                hull()
+                for (ox = [0, -$b_wall_thickness])
+                for (sep = sep_positions)
+                translate([ox, 0, sep])
+                translate([$b_latch_screw_offset, 0, 0])
+                _box_screw_eyelet_body($b_rib_width);
+            }
         }
         // Screw hole
         for (sep = sep_positions)
