@@ -32,7 +32,6 @@ chose [OpenSCAD][openscad] so the software and model would be fully open source.
 * Optional reinforced (thicker) corners
 * All parts print without supports
 * Model code organized as a library -- make your own custom boxes!
-* No [`minkowski`][openscad-minkowski] usages!
 
 ## Hardware
 
@@ -89,7 +88,6 @@ This model is licensed under [Creative Commons (4.0 International License) Attri
 [frog-box-2.0-by-nibb31]: https://www.thingiverse.com/thing:4094861
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
-[openscad-minkowski]: https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Transformations#minkowski
 [openscad]: https://openscad.org
 [parametrizable-rugged-box-openscad-by-dochni]: https://www.printables.com/model/168664-parametrizable-rugged-box-openscad
 [printables-badge]: /_static/printables-badge.png
