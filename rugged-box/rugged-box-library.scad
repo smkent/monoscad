@@ -1514,6 +1514,9 @@ module _draw_latch_catch_shape_hook() {
                     square(outr);
                 }
             }
+            // Grip
+            translate([outr / 1.5, outr / 1.5])
+            circle(d=draw_latch_thickness * 1.5);
         }
         cr = compress_ratio * 0.8;
         translate([-draw_latch_screw_eyelet_radius * cr, 0])
