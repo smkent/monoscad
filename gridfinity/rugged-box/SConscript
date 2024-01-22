@@ -68,4 +68,63 @@ for box_name, (
 
 b.add_default_targets()
 
+b.Image(
+    "demo-dimensions.gif",
+    model,
+    [
+        {
+            **{
+                "Part": part,
+                "Width": width,
+                "Length": length,
+                "Top_Height": top_height,
+                "Bottom_Height": bottom_height,
+            },
+            **(params[0] if params else {}),
+        }
+        for part, width, length, top_height, bottom_height, *params in [
+            ("assembled_open", 4, 2, 2, 4, {"Latch_Type": "clip"}),
+            ("assembled_open", 4, 2, 2, 5, {"Latch_Type": "clip"}),
+            ("assembled_open", 4, 2, 2, 6, {"Latch_Type": "draw"}),
+            ("assembled_open", 4, 2, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_open", 5, 2, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_open", 6, 2, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_open", 6, 3, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_open", 6, 4, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_closed", 6, 4, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_closed", 6, 4, 2, 6, {"Latch_Type": "draw"}),
+            ("assembled_closed", 6, 4, 2, 5, {"Latch_Type": "clip"}),
+            ("assembled_closed", 6, 4, 2, 4, {"Latch_Type": "clip"}),
+            ("assembled_closed", 5, 4, 2, 4, {"Latch_Type": "clip"}),
+            ("assembled_closed", 4, 4, 2, 4, {"Latch_Type": "clip"}),
+            ("assembled_closed", 4, 3, 2, 4, {"Latch_Type": "clip"}),
+            ("assembled_closed", 4, 2, 2, 4, {"Latch_Type": "clip"}),
+        ]
+    ],
+)
+
+for camera_opts in GenerateOptions(
+    camera=[("0,0,0,55,0,25,800", "top"), ("0,0,40,135,0,25,800", "bottom")],
+):
+    b.Image(
+        f"demo-stacking-{camera_opts.camera_fn}.png",
+        model,
+        [
+            {
+                **{
+                    "Part": "assembled_closed",
+                    "Width": 6,
+                    "Length": 4,
+                    "Top_Height": 2,
+                    "Bottom_Height": 7,
+                    "Gridfinity_Stackable": opts.stackable,
+                },
+                **(params[0] if params else {}),
+            }
+            for opts in GenerateOptions(stackable=[0, 1])
+        ],
+        tile="2x1",
+        camera=camera_opts.camera,
+    )
+
 # vim: ft=python
