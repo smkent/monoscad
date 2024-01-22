@@ -10,7 +10,8 @@
 include <rugged-box-library.scad>;
 
 /* [Rendering] */
-Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "side-by-side": Top and Bottom side-by-side, "assembled_open": Top and Bottom assembled open, "assembled_closed": Top and Bottom assembled closed]
+// Part selection. Note: Assembled box previews show latches without chamfers for performance reasons.
+Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking-latch": Stacking latch, "handle": Handle, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed]
 
 /* [Dimensions] */
 // All units in millimeters
@@ -40,12 +41,21 @@ Lip_Seal_Type = "wedge"; // [none: None, wedge: Wedge ▽, square: Square □, "
 // Make the corners as thick as the box lip
 Reinforced_Corners = false;
 
+// Add a front grip to the box top (for boxes with two latches)
+Top_Grip = false;
+
+// Add end stops to the hinges on the box bottom
+Hinge_End_Stops = false;
+
+// Latch style
+Latch_Type = "clip"; // [clip: Clip, draw: Draw]
+
 /* [Advanced Size Adjustments] */
 // Base wall thickness in millimeters for most of the box
-Wall_Thickness = 2.4; // [0.4:0.1:10]
+Wall_Thickness = 3.0; // [0.4:0.1:10]
 
 // Thickness in millimeters to add to the wall thickness for the box lip
-Lip_Thickness = 2.0; // [0.4:0.1:10]
+Lip_Thickness = 3.0; // [0.4:0.1:10]
 
 // Base thickness in millimeters of the support ribs. The latch ribs are this thick, while the hinge and side ribs are twice this thick.
 Rib_Width = 4; // [1:0.1:20]
@@ -71,7 +81,10 @@ rbox(
     corner_radius=Corner_Radius,
     edge_chamfer_proportion=Edge_Chamfer_Proportion,
     lip_seal_type=Lip_Seal_Type,
-    reinforced_corners=Reinforced_Corners
+    reinforced_corners=Reinforced_Corners,
+    latch_type=Latch_Type,
+    top_grip=Top_Grip,
+    hinge_end_stops=Hinge_End_Stops
 )
 rbox_size_adjustments(
     wall_thickness=Wall_Thickness,

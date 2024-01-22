@@ -1,0 +1,130 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "rugged-box-gridfinity.scad"
+model_dependencies = ["rugged-box-library.scad"]
+
+gridfinity_boxes = {
+    "6x4x9-mine": [
+        6,
+        4,
+        2,
+        7,
+        True,
+        {
+            "Latch_Type": "draw",
+            "Hinge_End_Stops": 1,
+            "Gridfinity_Stackable": 1,
+            # Requires M3x40 screws for assembly (28 + 2 * 6)
+            "Latch_Width": 28,
+            "Rib_Width": 6,
+        },
+    ],
+    "4x2x6-stackable": [
+        4,
+        2,
+        2,
+        4,
+        False,
+        {
+            "Latch_Type": "clip",
+            "Gridfinity_Stackable": 1,
+        },
+    ],
+    "4x2x6-plain": [4, 2, 2, 4, False, {"Latch_Type": "clip"}],
+    "1x1x3-plain": [1, 1, 1, 2, False, {"Latch_Type": "clip"}],
+}
+
+for box_name, (
+    width,
+    length,
+    top_height,
+    bottom_height,
+    enable_handle,
+    *params,
+) in gridfinity_boxes.items():
+    for opts in GenerateOptions(
+        part=["top", "bottom", "latch", "stacking-latch", "handle"]
+    ):
+        if not enable_handle and opts.part == "handle":
+            continue
+        part_params = {
+            **{
+                "Part": opts.part,
+                "Width": width,
+                "Length": length,
+                "Top_Height": top_height,
+                "Bottom_Height": bottom_height,
+                "Top_Grip": 1,
+            },
+            **(params[0] if params else {}),
+        }
+        b.STL(
+            f"gridfinity-box-{box_name}-{opts.part}.stl",
+            model,
+            part_params,
+            model_dependencies,
+        )
+
+b.add_default_targets()
+
+b.Image(
+    "demo-dimensions.gif",
+    model,
+    [
+        {
+            **{
+                "Part": part,
+                "Width": width,
+                "Length": length,
+                "Top_Height": top_height,
+                "Bottom_Height": bottom_height,
+            },
+            **(params[0] if params else {}),
+        }
+        for part, width, length, top_height, bottom_height, *params in [
+            ("assembled_open", 4, 2, 2, 4, {"Latch_Type": "clip"}),
+            ("assembled_open", 4, 2, 2, 5, {"Latch_Type": "clip"}),
+            ("assembled_open", 4, 2, 2, 6, {"Latch_Type": "draw"}),
+            ("assembled_open", 4, 2, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_open", 5, 2, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_open", 6, 2, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_open", 6, 3, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_open", 6, 4, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_closed", 6, 4, 2, 7, {"Latch_Type": "draw"}),
+            ("assembled_closed", 6, 4, 2, 6, {"Latch_Type": "draw"}),
+            ("assembled_closed", 6, 4, 2, 5, {"Latch_Type": "clip"}),
+            ("assembled_closed", 6, 4, 2, 4, {"Latch_Type": "clip"}),
+            ("assembled_closed", 5, 4, 2, 4, {"Latch_Type": "clip"}),
+            ("assembled_closed", 4, 4, 2, 4, {"Latch_Type": "clip"}),
+            ("assembled_closed", 4, 3, 2, 4, {"Latch_Type": "clip"}),
+            ("assembled_closed", 4, 2, 2, 4, {"Latch_Type": "clip"}),
+        ]
+    ],
+)
+
+for camera_opts in GenerateOptions(
+    camera=[("0,0,0,55,0,25,800", "top"), ("0,0,40,135,0,25,800", "bottom")],
+):
+    b.Image(
+        f"demo-stacking-{camera_opts.camera_fn}.png",
+        model,
+        [
+            {
+                **{
+                    "Part": "assembled_closed",
+                    "Width": 6,
+                    "Length": 4,
+                    "Top_Height": 2,
+                    "Bottom_Height": 7,
+                    "Gridfinity_Stackable": opts.stackable,
+                },
+                **(params[0] if params else {}),
+            }
+            for opts in GenerateOptions(stackable=[0, 1])
+        ],
+        tile="2x1",
+        camera=camera_opts.camera,
+    )
+
+# vim: ft=python
