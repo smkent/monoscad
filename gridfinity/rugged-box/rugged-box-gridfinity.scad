@@ -13,6 +13,7 @@ use <gridfinity-rebuilt-openscad/gridfinity-rebuilt-baseplate.scad>;
 use <gridfinity-rebuilt-openscad/gridfinity-rebuilt-utility.scad>;
 
 /* [Rendering] */
+// Part selection. Note: Assembled box previews show latches without chamfers for performance reasons.
 Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking-latch": Stacking latch, "handle": Handle, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed]
 
 /* [Dimensions] */

@@ -111,6 +111,7 @@ module rbox(
     $b_top_grip = top_grip;
     $b_hinge_end_stops = hinge_end_stops;
     // Set defaults
+    $b_preview_assembled = false;
     $b_preview_box_open = false;
     rbox_size_adjustments()
     _box_rib_angle(0)
@@ -231,6 +232,7 @@ module rbox_part(part) {
             if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
         }
     } else if (part == "assembled_open") {
+        $b_preview_assembled = true;
         $b_preview_box_open = true;
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
         rbox_for_bottom() {
@@ -279,6 +281,7 @@ module rbox_part(part) {
             }
         }
     } else if (part == "assembled_closed") {
+        $b_preview_assembled = true;
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
         rbox_for_bottom() {
             rbox_handle(placement="box-preview");
@@ -472,25 +475,34 @@ module _rounded_cylinder(h, r1, r2=0, angle=360, center=false) {
 }
 
 module _chamfer_edges(r, rotation=[0, 0, 0]) {
-    minkowski() {
+    if ($preview && $b_preview_assembled) {
         children();
-        union() {
-            $fs = $preview ? $fs : $fs / 5;
-            if (r > 0)
-            rotate(rotation)
-            for (mz = [0:1:1])
-            mirror([0, 0, mz])
-            cylinder(d1=r, d2=0, h=r/2);
+    } else {
+        minkowski() {
+            children();
+            union() {
+                $fs = $preview ? $fs : $fs / 5;
+                if (r > 0)
+                rotate(rotation)
+                for (mz = [0:1:1])
+                mirror([0, 0, mz])
+                cylinder(d1=r, d2=0, h=r/2);
+            }
         }
     }
 }
 
 module _linear_extrude_with_chamfer(height, r, center=false) {
-    _chamfer_edges(r)
-    translate([0, 0, center ? 0 : (r / 2)])
-    linear_extrude(height=height - r, center=center)
-    offset(r=-r / 2)
-    children();
+    if ($preview && $b_preview_assembled) {
+        linear_extrude(height=height, center=center)
+        children();
+    } else {
+        _chamfer_edges(r)
+        translate([0, 0, center ? 0 : (r / 2)])
+        linear_extrude(height=height - r, center=center)
+        offset(r=-r / 2)
+        children();
+    }
 }
 
 module _hull_in_order() {
