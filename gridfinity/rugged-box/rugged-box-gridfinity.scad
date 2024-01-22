@@ -67,7 +67,7 @@ Rib_Width = 4; // [1:0.1:20]
 Latch_Width = 22; // [5:1:50]
 
 // Distance in millimeters between the latch hinge and catch screws which determines the latch vertical size
-Latch_Screw_Separation = 20; // [5:1:40]
+Latch_Screw_Separation = 16; // [5:1:40]
 
 // Size in millimeters added between hinges and latches for fit
 Size_Tolerance = 0.05; // [0:0.01:1]
