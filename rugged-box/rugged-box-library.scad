@@ -231,6 +231,7 @@ module rbox_part(part) {
             if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
             if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
         }
+        rbox_bom();
     } else if (part == "assembled_open") {
         $b_preview_assembled = true;
         $b_preview_box_open = true;
@@ -280,6 +281,7 @@ module rbox_part(part) {
                 }
             }
         }
+        rbox_bom();
     } else if (part == "assembled_closed") {
         $b_preview_assembled = true;
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
@@ -316,10 +318,13 @@ module rbox_part(part) {
                 }
             }
         }
+        rbox_bom();
     } else if (part == "bottom") {
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
+        rbox_bom();
     } else if (part == "top") {
         if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
+        rbox_bom();
     } else if (part == "latch") {
         rbox_latch(placement="print");
     } else if (part == "stacking-latch") {
@@ -328,6 +333,36 @@ module rbox_part(part) {
         rbox_handle(placement="print");
     }
 }
+
+// Echo non-printable bill of materials needed for the configured box
+module rbox_bom() {
+    function _sstr(count, length) = (
+        str(count, " M", screw_diameter, "x", length)
+    );
+
+    screw_length_base = $b_latch_width + $b_rib_width * 2;
+    screw_count_base = (
+        // 2 for each latch, 1 for each hinge
+        _compute_latch_count() * (2 + 1)
+        // 3 for each stacking latch hinge/attachment points, 2 sides
+        + len(rb_stacking_latch_positions()) * 3 * 2
+    );
+
+    rbox_for_bottom()
+    echo(str(
+        "Box total screws needed: ",
+        _sstr(screw_count_base, screw_length_base),
+        _handle_enabled() ? (
+            str(
+                " without handle, or ",
+                _sstr(screw_count_base - 2, screw_length_base),
+                " + ",
+                _sstr(2, screw_length_base + $b_rib_width + handle_thickness),
+                " with handle"
+            )
+        ) : ""
+    ));
+};
 
 // Overridable functions and modules
 
