@@ -329,12 +329,12 @@ module rbox_part(part) {
     }
 }
 
-// Overrideable functions and modules
+// Overridable functions and modules
 
 /*
  * Part colors
  *
- * Override this function to control the box colors in the preview render
+ * Box colors used in the preview render
  *
  * Arguments:
  *  - part: Part being rendered. Possible values: "top", "bottom"
@@ -343,17 +343,20 @@ module rbox_part(part) {
  *
  *      function rb_color(part) = (part == "top" ? "yellow" : "orange");
  */
-
 function rb_color(part) = (part == "top" ? "YellowGreen" : "OliveDrab");
 
+// Side rib positions, by offset from center in millimeters
 function rb_side_rib_positions() = [for (i = [-1/4, 1/4]) i * $b_inner_length];
 
+// Rear rib positions, by offset from center in millimeters
 function rb_rear_rib_positions() = [];
 
+// Latch and hinge positions, by offset from center in millimeters
 function rb_latch_hinge_position() = (
     ($b_inner_width - $b_corner_radius + $b_wall_thickness) / 2 - $b_latch_width
 );
 
+// Side stacking latch positions, by offset from center in millimeters
 function rb_stacking_latch_positions() = [];
 
 // Internal constants
