@@ -27,7 +27,7 @@ plain_ribs_angle = 8;
 hinge_extra_setback = 0.2; // [0:0.1:2]
 
 // Screw eyelet diameter as a proportion of screw diameter
-screw_eyelet_size_proportion = 2.5; // [1.5:0.1:5]
+screw_eyelet_size_proportion = 3.0; // [1.5:0.1:5]
 
 // Depth and maximum width of lip grip
 top_grip_depth = 6;
@@ -35,7 +35,7 @@ top_grip_width = 100;
 
 // Latch size
 latch_edge_radius = 0.8;
-latch_body_size_proportion = 2.5; // [1.5:0.1:5]
+latch_body_size_proportion = 3.0; // [1.5:0.1:5]
 
 // Stacking latch size
 stacking_latch_catch_offset = -10;

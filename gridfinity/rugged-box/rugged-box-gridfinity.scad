@@ -97,11 +97,6 @@ stackable_top_plate_offset = -0.8;
 stackable_bottom_base_offset = -0.6;
 top_base_offset = -(h_base - h_lip);
 
-// Library constant overrides
-
-screw_eyelet_size_proportion = 3.0; // [1.5:0.1:5]
-latch_body_size_proportion = 3.0; // [1.5:0.1:5]
-
 // Library overrides
 
 function rb_color(part) = (part == "top" ? "LightSteelBlue" : "SteelBlue");
