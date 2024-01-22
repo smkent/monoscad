@@ -1254,10 +1254,10 @@ module _clip_latch_shape() {
 
 module _clip_latch_part() {
     color("mintcream", 0.8)
-    _chamfer_edges(r=latch_edge_radius, rotation=[90, 0, 0])
     rotate([90, 0, 0])
-    linear_extrude(height=$b_latch_width, center=true)
-    offset(r=-latch_edge_radius / 2)
+    _linear_extrude_with_chamfer(
+        height=$b_latch_width, r=latch_edge_radius, center=true
+    )
     _clip_latch_shape();
 }
 
@@ -1660,15 +1660,11 @@ module _stacking_latch_shape() {
 
 module _stacking_latch_part() {
     color("mintcream", 0.8)
-    union() {
-        _chamfer_edges(r=latch_edge_radius, rotation=[90, 0, 0])
-        union() {
-            rotate([90, 0, 0])
-            linear_extrude(height=$b_latch_width, center=true)
-            offset(r=-latch_edge_radius / 2)
-            _stacking_latch_shape();
-        }
-    }
+    rotate([90, 0, 0])
+    _linear_extrude_with_chamfer(
+        height=$b_latch_width, r=latch_edge_radius, center=true
+    )
+    _stacking_latch_shape();
 }
 
 module _stacking_latch(placement="default") {
