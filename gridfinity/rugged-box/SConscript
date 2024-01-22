@@ -5,7 +5,7 @@ model = "rugged-box-gridfinity.scad"
 model_dependencies = ["rugged-box-library.scad"]
 
 gridfinity_boxes = {
-    "6x4x9-stackable": [
+    "6x4x9-mine": [
         6,
         4,
         2,
@@ -13,8 +13,11 @@ gridfinity_boxes = {
         True,
         {
             "Latch_Style": "draw",
-            "Gridfinity_Base_Style": "thick",
+            "Hinge_End_Stops": 1,
             "Gridfinity_Stackable": 1,
+            # Requires M3x40 screws for assembly (28 + 2 * 6)
+            "Latch_Width": 28,
+            "Rib_Width": 6,
         },
     ],
     "4x2x6-stackable": [
@@ -25,7 +28,6 @@ gridfinity_boxes = {
         False,
         {
             "Latch_Style": "clip",
-            "Gridfinity_Base_Style": "thick",
             "Gridfinity_Stackable": 1,
         },
     ],
