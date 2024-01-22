@@ -1,4 +1,4 @@
-# Gridfintiy models
+# Gridfinity models
 
 Models within this directory are for use with [Gridfinity][gridfinity].
 
