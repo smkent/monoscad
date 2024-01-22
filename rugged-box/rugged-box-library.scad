@@ -445,6 +445,28 @@ function _latch_offset_from_base() = (
     )
 );
 
+function _handle_dimensions() = [
+    // Width
+    (
+        rb_latch_hinge_position() * 2
+        - ($b_latch_width + ($b_rib_width + $b_size_tolerance * 2) * 2)
+    ),
+    // Height
+    min(
+        handle_max_height,
+        _latch_offset_from_base() - handle_thickness - 2
+    )
+];
+
+function _handle_enabled() = (
+    let (dimensions = _handle_dimensions())
+    (
+        _compute_latch_count() == 2
+        && dimensions[0] > ((handle_thickness + handle_radius) * 2 * 1.75)
+        && dimensions[1] >= handle_min_height
+    )
+);
+
 // Basic shape modules
 
 module _round_shape(radius) {
@@ -1014,9 +1036,22 @@ module _box_latch_rib() {
 
 module _box_latch_ribs() {
     mirror([0, 1, 0])
-    _box_attachment_placement()
-    _box_attachment_rib_pair()
-    _box_latch_rib();
+    _box_attachment_placement() {
+        // Latch ribs
+        _box_attachment_rib_pair()
+        _box_latch_rib();
+        // Handle rib
+        if ($b_part == "bottom" && _handle_enabled()) {
+            position = (
+                ($b_latch_width + $b_rib_width) / 2
+                + handle_thickness
+                + $b_rib_width
+                + $b_size_tolerance * 3
+            );
+            translate(-[position, 0, 0])
+            _box_latch_rib();
+        }
+    }
 }
 
 // Box stacking latch attachments
@@ -1697,19 +1732,12 @@ module _stacking_latch(placement="default") {
 // Handle
 
 module _handle_part() {
-    width = (
-        rb_latch_hinge_position() * 2
-        - ($b_latch_width + ($b_rib_width + $b_size_tolerance) * 2)
-    );
-    height = min(
-        handle_max_height,
-        _latch_offset_from_base() - handle_thickness - 2
-    );
+    width = _handle_dimensions()[0];
+    height = _handle_dimensions()[1];
     thick = handle_thickness;
     radius = handle_radius;
     // Ensure minimum size
-    if (_compute_latch_count() == 2 && width > ((thick + radius) * 2 * 1.75))
-    if (height >= handle_min_height)
+    if (_handle_enabled())
     color("mintcream", 0.8)
     render(convexity=2)
     difference() {
