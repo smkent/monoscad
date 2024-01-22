@@ -11,6 +11,23 @@ and customize your own boxes!
 ![Photo of closed box](images/readme/photo1.jpg)
 ![Photo of open box with multimeter inside](images/readme/photo2.jpg)
 
+# Revision -- January 21, 2024
+
+While creating my
+[Gridfinity Rugged Storage Box][gridfinity-rugged-box-model],
+I've made some updates to this model.
+
+New features:
+
+* New draw latch option
+* New top opening grip and hinge end stop options
+
+Changes:
+
+* The clip latch has been redesigned
+* Default sizing for the wall, lip, and screw attachment points have been
+  increased.
+
 # Description
 
 Inspired by
@@ -28,6 +45,9 @@ chose [OpenSCAD][openscad] so the software and model would be fully open source.
 
 * Configurable sizing, including basic dimensions (width, length, height),
   corner radius, and top/bottom edge chamfer
+* Choice of latch style (clip or draw)
+* Optional handle
+* Optional top opening grip and/or hinge end stops
 * Optional lip seal, integrated or for 1.75mm filament
 * Optional reinforced (thicker) corners
 * All parts print without supports
@@ -42,6 +62,11 @@ total, while a box with two latches needs 6 screws total.
 The screw length is dependent on the `Latch Width` (default 22mm) and
 `Rib Width` (default 4mm) options. If you change these values, the length of
 screws your box will need is `Latch Width` + 2x`Rib Width`.
+
+If a handle is desired, two of the screws need to be an *extra* `Rib Width`
+(default 4mm) plus the handle thickness (10mm) long. For example, if the base
+screw length used is the default M3 x 30mm with the default 4mm Rib Width, then
+the two handle screws need to be M3 x 44mm (~M3x45).
 
 ## Rendering
 
@@ -92,6 +117,7 @@ This model is licensed under [Creative Commons (4.0 International License) Attri
 [parametrizable-rugged-box-openscad-by-dochni]: https://www.printables.com/model/168664-parametrizable-rugged-box-openscad
 [printables-badge]: /_static/printables-badge.png
 [printables-model]: https://www.printables.com/model/637028
+[gridfinity-rugged-box-model]: ../gridfinity/rugged-box/
 [rugged-box-parametric-by-whity]: https://www.printables.com/model/258431-rugged-box-parametric
 [sbox-by-michael-fanta]: https://www.printables.com/model/262716-sbox-for-mk234-stackable-toolbox-system
 [waterproof-box-v2-by-zx82net]: https://www.thingiverse.com/thing:4838803

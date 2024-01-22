@@ -6,6 +6,8 @@
 A Gridfinity compatible parametric and customizable rugged storage box or
 toolbox for OpenSCAD. Make and customize your own boxes!
 
+![Renders animation showing various box sizes](images/readme/demo-dimensions.gif)
+
 # Description
 
 My [Rugged Storage Box][rugged-box-base-model], now for [Gridfinity][gridfinity]
@@ -13,19 +15,34 @@ bins!
 
 ## Features
 
+Gridfinity:
+
 * Configurable sizing in Gridfinity grid units
-* Optional lip seal, integrated or for 1.75mm filament
-* Optional reinforced (thicker) corners
+* Optional exterior stacking grid on top/bottom of box
+
+Box options:
+
+* Choice of latch style (clip or draw)
+* Side stacking latches
+* Optional handle
+* Top opening grip and hinge end stops
+* Lip seal, integrated or for 1.75mm filament
+* Reinforced (thicker) corners
 
 ## Hardware
 
-The hinges and latches are attached using M3 screws, M3x30 by default. Each
-hinge needs 1 screw and each latch needs 2. A box with one latch needs 3 screws
-total, while a box with two latches needs 6 screws total.
+The hinges and latches are attached using M3 screws. Depending on whether a
+handle or stacking latches are desired, a box may take between 6 and 18 screws
+to assemble.
 
 The screw length is dependent on the `Latch Width` (default 22mm) and
 `Rib Width` (default 4mm) options. If you change these values, the length of
 screws your box will need is `Latch Width` + 2x`Rib Width`.
+
+If a handle is desired, two of the screws need to be an *extra* `Rib Width`
+(default 4mm) plus the handle thickness (10mm) long. For example, if the base
+screw length used is the default M3 x 30mm with the default 4mm Rib Width, then
+the two handle screws need to be M3 x 44mm (~M3x45).
 
 ## Rendering
 
@@ -46,8 +63,6 @@ Recommended print settings:
 * 3 perimeters (instead of the usual default of 2)
 * 30% infill
 * For the latches, a brim may be helpful for bed adhesion
-
-![Slicer screenshot](images/readme/slicer-screenshot.png)
 
 ## Differences of the remix compared to the original
 

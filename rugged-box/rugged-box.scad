@@ -52,10 +52,10 @@ Latch_Type = "clip"; // [clip: Clip, draw: Draw]
 
 /* [Advanced Size Adjustments] */
 // Base wall thickness in millimeters for most of the box
-Wall_Thickness = 2.4; // [0.4:0.1:10]
+Wall_Thickness = 3.0; // [0.4:0.1:10]
 
 // Thickness in millimeters to add to the wall thickness for the box lip
-Lip_Thickness = 2.0; // [0.4:0.1:10]
+Lip_Thickness = 3.0; // [0.4:0.1:10]
 
 // Base thickness in millimeters of the support ribs. The latch ribs are this thick, while the hinge and side ribs are twice this thick.
 Rib_Width = 4; // [1:0.1:20]
