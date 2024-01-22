@@ -12,7 +12,7 @@ gridfinity_boxes = {
         7,
         True,
         {
-            "Latch_Style": "draw",
+            "Latch_Type": "draw",
             "Hinge_End_Stops": 1,
             "Gridfinity_Stackable": 1,
             # Requires M3x40 screws for assembly (28 + 2 * 6)
@@ -27,12 +27,12 @@ gridfinity_boxes = {
         4,
         False,
         {
-            "Latch_Style": "clip",
+            "Latch_Type": "clip",
             "Gridfinity_Stackable": 1,
         },
     ],
-    "4x2x6-plain": [4, 2, 2, 4, False, {"Latch_Style": "clip"}],
-    "1x1x3-plain": [1, 1, 1, 2, False, {"Latch_Style": "clip"}],
+    "4x2x6-plain": [4, 2, 2, 4, False, {"Latch_Type": "clip"}],
+    "1x1x3-plain": [1, 1, 1, 2, False, {"Latch_Type": "clip"}],
 }
 
 for box_name, (
