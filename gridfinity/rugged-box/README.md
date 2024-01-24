@@ -28,21 +28,27 @@ Box options:
 * Top opening grip and hinge end stops
 * Lip seal, integrated or for 1.75mm filament
 * Reinforced (thicker) corners
+* Optional third hinge for large boxes
 
 ## Hardware
 
+**Note:** By default, this Gridfinity box requires **M3x40** screws compared to
+my base [Rugged Storage Box][rugged-box-base-model] which by default requires
+**M3x30** screws.
+
 The hinges and latches are attached using M3 screws. Depending on whether a
-handle or stacking latches are desired, a box may take between 6 and 18 screws
+handle or stacking latches are desired, a box may take between 6 and 24 screws
 to assemble.
 
-The screw length is dependent on the `Latch Width` (default 22mm) and
-`Rib Width` (default 4mm) options. If you change these values, the length of
-screws your box will need is `Latch Width` + 2x`Rib Width`.
+The screw length is dependent on the `Latch Width` (default 28mm) and
+`Rib Width` (default 6mm) options. If you change these values, the length of
+screws your box will need is `Latch Width` + 2x`Rib Width`. With the default
+values, **M3x40** screws are required.
 
 If a handle is desired, two of the screws need to be an *extra* `Rib Width`
-(default 4mm) plus the handle thickness (10mm) long. For example, if the base
-screw length used is the default M3 x 30mm with the default 4mm Rib Width, then
-the two handle screws need to be M3 x 44mm (~M3x45).
+(default 6mm) plus the handle thickness (10mm) long. For example, if the base
+screw length used is the default M3 x 60mm with the default 6mm Rib Width, then
+the two handle screws need to be M3 x 56mm (~M3x55).
 
 ## Rendering
 
@@ -58,11 +64,7 @@ each part, perform a render (F6) and export to STL (F7).
 Print the box top and bottom parts on their outer faces. Latches print on their
 side.
 
-Recommended print settings:
-
-* 3 perimeters (instead of the usual default of 2)
-* 30% infill
-* For the latches, a brim may be helpful for bed adhesion
+For the latches, a brim may be helpful for bed adhesion
 
 ## Differences of the remix compared to the original
 

@@ -46,13 +46,16 @@ Reinforced_Corners = true;
 Top_Grip = true;
 
 // Add end stops to the hinges on the box bottom
-Hinge_End_Stops = false;
+Hinge_End_Stops = true;
 
 // Add stacking latches and attachment points to the sides of the box
 Stacking_Latches = true;
 
 // Latch style
 Latch_Type = "draw"; // [clip: Clip, draw: Draw]
+
+// Add a third hinge for boxes 5U or wider
+Third_Hinge = false;
 
 /* [Advanced Size Adjustments] */
 // Base wall thickness in millimeters for most of the box
@@ -62,10 +65,10 @@ Wall_Thickness = 3.0; // [2.4:0.1:10]
 Lip_Thickness = 3.0; // [0.4:0.1:10]
 
 // Base thickness in millimeters of the support ribs. The latch ribs are this thick, while the hinge and side ribs are twice this thick.
-Rib_Width = 4; // [1:0.1:20]
+Rib_Width = 6; // [1:0.1:20]
 
 // Latch width in millimeters
-Latch_Width = 22; // [5:1:50]
+Latch_Width = 28; // [5:1:50]
 
 // Distance in millimeters between the latch hinge and catch screws which determines the latch vertical size
 Latch_Screw_Separation = 16; // [5:1:40]
@@ -305,6 +308,7 @@ module main() {
         rib_width=Rib_Width,
         latch_width=Latch_Width,
         latch_screw_separation=Latch_Screw_Separation,
+        third_hinge_width=Third_Hinge ? (l_grid * 5) : 0,
         size_tolerance=Size_Tolerance
     ) {
         rbox_part(Part) {

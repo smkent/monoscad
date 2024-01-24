@@ -61,7 +61,8 @@ total, while a box with two latches needs 6 screws total.
 
 The screw length is dependent on the `Latch Width` (default 22mm) and
 `Rib Width` (default 4mm) options. If you change these values, the length of
-screws your box will need is `Latch Width` + 2x`Rib Width`.
+screws your box will need is `Latch Width` + 2x`Rib Width`. With the default
+values, **M3x30** screws are required.
 
 If a handle is desired, two of the screws need to be an *extra* `Rib Width`
 (default 4mm) plus the handle thickness (10mm) long. For example, if the base
