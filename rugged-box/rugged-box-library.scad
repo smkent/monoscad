@@ -354,6 +354,12 @@ module rbox_bom() {
         screw_count_base = (
             // 2 for each latch, 1 for each hinge
             _compute_latch_count() * (2 + 1)
+            + (
+                (
+                    $b_third_hinge_width > 0
+                    && $b_inner_width >= $b_third_hinge_width
+                ) ? 1 : 0
+            )
             // stacking latches, 2 sides
             + len(rb_stacking_latch_positions()) * 2 * (
                 // 2 attachment points
