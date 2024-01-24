@@ -54,6 +54,9 @@ Stacking_Latches = true;
 // Latch style
 Latch_Type = "draw"; // [clip: Clip, draw: Draw]
 
+// Add a third hinge for boxes 5U or wider
+Third_Hinge = false;
+
 /* [Advanced Size Adjustments] */
 // Base wall thickness in millimeters for most of the box
 Wall_Thickness = 3.0; // [2.4:0.1:10]
@@ -305,6 +308,7 @@ module main() {
         rib_width=Rib_Width,
         latch_width=Latch_Width,
         latch_screw_separation=Latch_Screw_Separation,
+        third_hinge_width=Third_Hinge ? (l_grid * 5) : 0,
         size_tolerance=Size_Tolerance
     ) {
         rbox_part(Part) {

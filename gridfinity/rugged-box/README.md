@@ -28,6 +28,7 @@ Box options:
 * Top opening grip and hinge end stops
 * Lip seal, integrated or for 1.75mm filament
 * Reinforced (thicker) corners
+* Optional third hinge for large boxes
 
 ## Hardware
 

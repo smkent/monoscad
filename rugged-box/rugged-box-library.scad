@@ -138,6 +138,8 @@ module rbox(
  *  - stacking_latch_screw_separation: Distance between the latch hinge and
  *    catch screws for side stacking latches, which determines the stacking
  *    latch vertical size
+ *  - third_hinge_width: Add a third, center hinge if the box's interior is at
+ *    least as wide as this value. Set to 0 to disable (default).
  *  - size_tolerance: Size added between hinges and latches for fit
  *
  * Example:
@@ -161,6 +163,7 @@ module rbox_size_adjustments(
     latch_screw_separation=20,
     latch_amount_on_top=0,
     stacking_latch_screw_separation=20,
+    third_hinge_width=0,
     size_tolerance=0.05
 ) {
     $b_wall_thickness = wall_thickness;
@@ -171,6 +174,7 @@ module rbox_size_adjustments(
     $b_latch_screw_separation = latch_screw_separation;
     $b_latch_amount_on_top = _init_latch_amount_on_top(latch_amount_on_top);
     $b_stacking_latch_screw_separation = stacking_latch_screw_separation;
+    $b_third_hinge_width = third_hinge_width;
     // Set computed values
     $b_total_lip_thickness = wall_thickness + lip_thickness;
     $b_lip_height = lip_thickness * 2;
@@ -998,11 +1002,18 @@ module _box_attachment_rib_pair(inner=false) {
     }
 }
 
-module _box_attachment_placement() {
+module _box_attachment_placement(hinge=false) {
     latch_count = _compute_latch_count();
-    latch_offset = rb_latch_hinge_position();
-    translate([0, $b_inner_length / 2, 0])
     if (latch_count == 2) {
+        translate([0, $b_inner_length / 2, 0])
+        for (latch_offset = concat(
+            [rb_latch_hinge_position()],
+            (
+                hinge
+                && $b_third_hinge_width > 0
+                && $b_inner_width >= $b_third_hinge_width
+            ) ? [0] : []
+        ))
         for (mx = [0:1:1]) {
             mirror([mx, 0, 0])
             translate([latch_offset, 0, 0])
@@ -1243,7 +1254,7 @@ module _box_hinge_rib_bottom_end_stop(width=0) {
 }
 
 module _box_hinge_ribs() {
-    _box_attachment_placement()
+    _box_attachment_placement(hinge=true)
     difference() {
         union() {
             if ($b_part == "bottom") {
