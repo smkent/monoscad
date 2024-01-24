@@ -135,6 +135,9 @@ module rbox(
  *  - latch_amount_on_top: Vertical size of the latch measured from the latch
  *    hinge screw hole overlapping the top of the box, with the remainder
  *    overlapping the bottom. Set to 0 to determine automatically.
+ *  - stacking_latch_screw_separation: Distance between the latch hinge and
+ *    catch screws for side stacking latches, which determines the stacking
+ *    latch vertical size
  *  - size_tolerance: Size added between hinges and latches for fit
  *
  * Example:
