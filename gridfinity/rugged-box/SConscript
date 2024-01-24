@@ -5,31 +5,35 @@ model = "rugged-box-gridfinity.scad"
 model_dependencies = ["rugged-box-library.scad"]
 
 gridfinity_boxes = {
-    "6x4x9-mine": [
-        6,
-        4,
-        2,
-        7,
-        True,
-        {
-            "Latch_Type": "draw",
-            "Hinge_End_Stops": 1,
-            "Gridfinity_Stackable": 1,
-        },
-    ],
-    "4x2x6-stackable": [
-        4,
-        2,
-        2,
-        4,
-        False,
-        {
-            "Latch_Type": "clip",
-            "Gridfinity_Stackable": 1,
-        },
-    ],
-    "4x2x6-plain": [4, 2, 2, 4, False, {"Latch_Type": "clip"}],
-    "1x1x3-plain": [1, 1, 1, 2, False, {"Latch_Type": "clip"}],
+    (
+        f"{opts.gridfinity_stackable_fn}"
+        f"-{opts.d[0]}x{opts.d[1]}x{opts.d[2]+opts.d[3]}"
+    ): (
+        list(opts.d)
+        + [
+            opts.d[3] >= 6,
+            {
+                "Latch_Type": "draw" if opts.d[3] >= 6 else "clip",
+                "Gridfinity_Stackable": opts.gridfinity_stackable,
+            },
+        ]
+    )
+    for opts in GenerateOptions(
+        gridfinity_stackable=[(0, "plain"), (1, "gridfinity-stackable")],
+        d=[
+            (dims,)
+            for dims in [
+                [4, 2, 2, 4],
+                [4, 4, 2, 4],
+                [4, 2, 2, 7],
+                [4, 4, 2, 7],
+                [6, 4, 2, 7],
+                [6, 6, 2, 7],
+                [6, 4, 2, 10],
+                [6, 6, 2, 10],
+            ]
+        ],
+    )
 }
 
 for box_name, (
@@ -61,6 +65,7 @@ for box_name, (
             model,
             part_params,
             model_dependencies,
+            zip_dir=box_name,
         )
 
 b.add_default_targets()
