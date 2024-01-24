@@ -15,9 +15,6 @@ gridfinity_boxes = {
             "Latch_Type": "draw",
             "Hinge_End_Stops": 1,
             "Gridfinity_Stackable": 1,
-            # Requires M3x40 screws for assembly (28 + 2 * 6)
-            "Latch_Width": 28,
-            "Rib_Width": 6,
         },
     ],
     "4x2x6-stackable": [
