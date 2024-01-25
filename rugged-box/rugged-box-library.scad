@@ -875,13 +875,14 @@ module _box_seal_shape() {
     }
 }
 
-module _box_seal() {
+module _box_seal(delta=0) {
     translate([0, 0, $b_outer_height])
     mirror([0, 0, $b_part == "top" ? 1 : 0])
     // Improve seal / lip overlap preview rendering
     translate([0, 0, $preview ? 0.01 : 0])
     scale([1, 1, $preview ? 1.01 : 1])
     _box_extrude(size_offset=$b_total_lip_thickness)
+    offset(delta=delta)
     _box_seal_shape();
 }
 
@@ -889,6 +890,7 @@ module _box_add_seal() {
     is_seal_top_inset = (
         $b_lip_seal_type == "filament-1.75mm" ? true : false
     );
+    delta = is_seal_top_inset ? 0 : 0.2;
     difference() {
         union() {
             children();
@@ -896,13 +898,15 @@ module _box_add_seal() {
                 $b_lip_seal_type != "none"
                 && ($b_part == "top" && !is_seal_top_inset)
             ) {
-                _box_seal();
+                translate([0, 0, -delta])
+                _box_seal(delta=-delta);
             }
         }
         if (
             $b_lip_seal_type != "none"
             && ($b_part == "bottom" || is_seal_top_inset)
         ) {
+            translate([0, 0, delta])
             _box_seal();
         }
     }
