@@ -1010,8 +1010,8 @@ module _box_attachment_rib_pair(inner=false) {
 
 module _box_attachment_placement(hinge=false) {
     latch_count = _compute_latch_count();
+    translate([0, $b_inner_length / 2, 0])
     if (latch_count == 2) {
-        translate([0, $b_inner_length / 2, 0])
         for (latch_offset = concat(
             [rb_latch_hinge_position()],
             (
