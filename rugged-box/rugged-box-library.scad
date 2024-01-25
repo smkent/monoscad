@@ -1251,7 +1251,7 @@ module _box_hinge_rib_bottom_end_stop(width=0) {
         _box_rib(width);
         intersection() {
             _box_hinge_rib_body(width);
-            translate([-0.125, 0, $b_outer_height - 0.5])
+            translate([-1.25, 0, $b_outer_height - 2.0])
             rotate([90, 0, 0])
             linear_extrude(height=width * 2, center=true)
             translate([0, -ww - screw_eyelet_radius, 0])
