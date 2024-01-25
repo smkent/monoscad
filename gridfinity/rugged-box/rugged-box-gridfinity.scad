@@ -183,17 +183,8 @@ module gridfinity_baseplate(expand=false) {
     }
 }
 
-module gridfinity_base(hole=false, off=0) {
-    gridfinityBase(
-        Width,
-        Length,
-        l_grid,
-        0,
-        0,
-        hole ? 1 : 0,
-        off=off,
-        only_corners=false
-    );
+module gridfinity_base(w=Width, l=Length, hole=false, off=0) {
+    gridfinityBase(w, l, l_grid, 0, 0, hole ? 1 : 0, off=off);
 }
 
 module gridfinity_bottom_base(hole=false) {
@@ -250,13 +241,34 @@ module custom_bottom() {
     }
 }
 
+module gridfinity_top_base_strip(i) {
+    module _strip() {
+        gridfinity_base(l=1, off=-0.2);
+    }
+
+    trim = (i >= (Length - 1) / 2 ? 2 : 1);
+    if (trim > 0) {
+        for (hx = [-1, 1])
+        translate([0, hx == 1 ? -trim : 0, 0])
+        intersection() {
+            _strip();
+            translate([0, hx * l_grid / 2, 0])
+            cube([l_grid * (Width + 1), l_grid, l_grid], center=true);
+        }
+    } else {
+        _strip();
+    }
+}
+
 module gridfinity_top_base() {
     rbox_for_interior()
     intersection() {
         translate([0, 0, top_base_offset])
         translate([0, 0, h_base])
         mirror([0, 0, 1])
-        gridfinity_base(off=-0.2);
+        for (i = [0:1:Length - 1])
+        translate([0, (i - Length / 2 + 0.5) * l_grid, 0])
+        gridfinity_top_base_strip(i);
         gridfinity_rectangle(adjust=1.6);
     }
 }
