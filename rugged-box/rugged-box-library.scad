@@ -142,7 +142,7 @@ module rbox(
  *    latch vertical size
  *  - third_hinge_width: Add a third, center hinge if the box's interior is at
  *    least as wide as this value. Set to 0 to disable (default).
- *  - size_tolerance: Size added between hinges and latches for fit
+ *  - size_tolerance: Size subtracted from latch and upper hinge widths for fit
  *
  * Example:
  *
@@ -505,6 +505,8 @@ function _latch_offset_from_base() = (
     )
 );
 
+function _latch_width() = ($b_latch_width - $b_size_tolerance * 2);
+
 function _stacking_latches_enabled() = (
     $b_outer_height > $b_stacking_latch_screw_separation * 2.0
 );
@@ -513,7 +515,9 @@ function _handle_dimensions() = [
     // Width
     (
         rb_latch_hinge_position() * 2
-        - ($b_latch_width + ($b_rib_width + $b_size_tolerance * 2) * 2)
+        - $b_rib_width * 2
+        - $b_latch_width
+        - $b_size_tolerance * 2
     ),
     // Height
     min(
@@ -1004,7 +1008,7 @@ module _box_attachment_rib_cut(width=0) {
 module _box_attachment_rib_pair(inner=false) {
     for (mx = [0:1:1]) {
         mirror([mx, 0, 0])
-        translate([inner ? 0 : $b_size_tolerance, 0])
+        translate([inner ? -$b_size_tolerance : 0, 0])
         translate([($b_latch_width + $b_rib_width) / 2, 0, 0])
         children();
     }
@@ -1117,7 +1121,7 @@ module _box_latch_ribs() {
                 ($b_latch_width + $b_rib_width) / 2
                 + handle_thickness
                 + $b_rib_width
-                + $b_size_tolerance * 3
+                + $b_size_tolerance * 2
             );
             translate(-[position, 0, 0])
             _box_latch_rib();
@@ -1215,7 +1219,7 @@ module _box_hinge_screw_eyelet_body(width=0, angle=360) {
 
 module _box_hinge_ribs_top() {
     hinge_rib_width = $b_rib_width * 2;
-    if ($b_latch_width - $b_rib_width * 2 - hinge_rib_width > 0) {
+    if (_latch_width() - $b_rib_width * 2 - hinge_rib_width > 0) {
         _box_attachment_rib_pair(inner=true)
         rotate([0, 0, 90])
         translate([0, hinge_rib_width, 0]) {
@@ -1224,10 +1228,10 @@ module _box_hinge_ribs_top() {
         }
         // Solid hinge middle
         rotate([0, 0, 90])
-        _box_hinge_rib_body($b_latch_width - hinge_rib_width, inner=true);
+        _box_hinge_rib_body(_latch_width() - hinge_rib_width, inner=true);
     } else {
         // Single module hinge
-        remaining_width = $b_latch_width - hinge_rib_width;
+        remaining_width = _latch_width() - hinge_rib_width;
         assert(remaining_width > 0, "No width available for top hinge");
         rotate([0, 0, 90]) {
             _box_rib(remaining_width);
@@ -1377,7 +1381,7 @@ module _clip_latch_part() {
     color("mintcream", 0.8)
     rotate([90, 0, 0])
     _linear_extrude_with_chamfer(
-        height=$b_latch_width, r=latch_edge_radius, center=true
+        height=_latch_width(), r=latch_edge_radius, center=true
     )
     _clip_latch_shape();
 }
@@ -1385,11 +1389,12 @@ module _clip_latch_part() {
 // Draw latches
 
 module _draw_latch_each_segment(handle=false) {
+    latch_width = _latch_width();
     vsep = (handle ? 0.4 : 0);
     for (segment = [0:1:5 - 1]) {
         if (segment % 2 == 1) {
-            ht = $b_latch_width / 5 + vsep * 2;
-            translate([0, 0, $b_latch_width / 5 * segment - vsep])
+            ht = latch_width / 5 + vsep * 2;
+            translate([0, 0, latch_width / 5 * segment - vsep])
             _linear_extrude_with_chamfer(height=ht, r=latch_edge_radius)
             children();
         }
@@ -1455,8 +1460,9 @@ module _draw_latch_grip_layer_polyhedron(h1=0, h2=1) {
     function _curve_offset_inverse(ht) = ((curve_radius - _curve_offset(ht)) / 2);
 
     function _curve_offset(y) = (
+        let (lw = _latch_width())
         let (precision = 1000)
-        let (deg = abs(y - $b_latch_width / 2) / $b_latch_width / 2 * 360 * 0.8)
+        let (deg = abs(y - lw / 2) / lw / 2 * 360 * 0.8)
         round((cos(deg) * (curve_radius * 0.9)) * precision) / precision
     );
 
@@ -1521,7 +1527,7 @@ module _draw_latch_grip_layer_polyhedron(h1=0, h2=1) {
 
 module _draw_latch_grip() {
     tr = latch_edge_radius / 2;
-    top = $b_latch_width - tr * 2;
+    top = _latch_width() - tr * 2; //  + ($preview ? 0.0001 : 0);
     steps = draw_latch_poly_div * 2;
 
     render(convexity=2)
@@ -1537,7 +1543,9 @@ module _draw_latch_handle() {
     render(convexity=4)
     difference() {
         union() {
-            _linear_extrude_with_chamfer(height=$b_latch_width, r=latch_edge_radius)
+            _linear_extrude_with_chamfer(
+                height=_latch_width(), r=latch_edge_radius
+            )
             _draw_latch_handle_body_shape();
 
             translate([0, -draw_latch_handle_length - (draw_latch_pin_handle_radius * 2)])
@@ -1662,7 +1670,7 @@ module _draw_latch_pin_center_hole_shape() {
 }
 
 module _draw_latch_catch() {
-    _linear_extrude_with_chamfer(height=$b_latch_width, r=latch_edge_radius)
+    _linear_extrude_with_chamfer(height=_latch_width(), r=latch_edge_radius)
     difference() {
         union() {
             _round_shape($b_edge_radius) {
@@ -1679,19 +1687,21 @@ module _draw_latch_catch() {
     difference() {
         _draw_latch_each_segment(handle=false)
         _draw_latch_attach_shape();
-        linear_extrude(height=$b_latch_width)
+        linear_extrude(height=_latch_width())
         _draw_latch_pin_center_hole_shape();
     }
 }
 
 module _draw_latch_part() {
-    color("lightgray", 0.8)
-    _draw_latch_handle();
-    color("mintcream", 0.8)
-    translate(draw_latch_pin_offset)
-    rotate([0, 0, $b_preview_box_open ? -45 : 0])
-    translate(-draw_latch_pin_offset)
-    _draw_latch_catch();
+    translate([0, 0, $b_size_tolerance]) {
+        color("lightgray", 0.8)
+        _draw_latch_handle();
+        color("mintcream", 0.8)
+        translate(draw_latch_pin_offset)
+        rotate([0, 0, $b_preview_box_open ? -45 : 0])
+        translate(-draw_latch_pin_offset)
+        _draw_latch_catch();
+    }
 }
 
 // Main latch type selection
@@ -1783,7 +1793,7 @@ module _stacking_latch_part() {
     color("mintcream", 0.8)
     rotate([90, 0, 0])
     _linear_extrude_with_chamfer(
-        height=$b_latch_width, r=latch_edge_radius, center=true
+        height=_latch_width(), r=latch_edge_radius, center=true
     )
     _stacking_latch_shape();
 }

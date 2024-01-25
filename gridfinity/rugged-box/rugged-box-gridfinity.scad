@@ -73,8 +73,8 @@ Latch_Width = 28; // [5:1:50]
 // Distance in millimeters between the latch hinge and catch screws which determines the latch vertical size
 Latch_Screw_Separation = 16; // [5:1:40]
 
-// Size in millimeters added between hinges and latches for fit
-Size_Tolerance = 0.05; // [0:0.01:1]
+// Size in millimeters subtracted from hinges and latches for fit
+Size_Tolerance = 0.10; // [0:0.01:1]
 
 module __end_customizer_options__() { }
 
