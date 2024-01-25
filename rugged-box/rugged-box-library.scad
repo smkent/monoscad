@@ -421,7 +421,7 @@ function rb_stacking_latch_positions() = [];
 
 screw_hole_diameter = screw_diameter;
 screw_eyelet_radius = screw_hole_diameter * screw_eyelet_size_proportion / 2;
-screw_hole_diameter_fit = screw_hole_diameter * 0.1;
+screw_hole_diameter_fit = screw_hole_diameter * 0.2;
 
 latch_base_size = screw_diameter * (latch_body_size_proportion / 2);
 draw_latch_thickness = latch_base_size / 2;
