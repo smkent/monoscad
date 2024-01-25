@@ -38,8 +38,9 @@ latch_edge_radius = 0.8;
 latch_body_size_proportion = 3.0; // [1.5:0.1:5]
 
 // Stacking latch size
-stacking_latch_catch_offset = -10;
+stacking_latch_catch_offset = -8;
 stacking_latch_grip_length = 8;
+stacking_latch_screw_separation = 20;
 // Vertical distance between two stacked boxes
 box_stacking_separation = 1.60;
 
@@ -137,9 +138,6 @@ module rbox(
  *  - latch_amount_on_top: Vertical size of the latch measured from the latch
  *    hinge screw hole overlapping the top of the box, with the remainder
  *    overlapping the bottom. Set to 0 to determine automatically.
- *  - stacking_latch_screw_separation: Distance between the latch hinge and
- *    catch screws for side stacking latches, which determines the stacking
- *    latch vertical size
  *  - third_hinge_width: Add a third, center hinge if the box's interior is at
  *    least as wide as this value. Set to 0 to disable (default).
  *  - size_tolerance: Size subtracted from latch and upper hinge widths for fit
@@ -164,7 +162,6 @@ module rbox_size_adjustments(
     latch_width=22,
     latch_screw_separation=20,
     latch_amount_on_top=0,
-    stacking_latch_screw_separation=20,
     third_hinge_width=0,
     size_tolerance=0.05
 ) {
@@ -175,7 +172,6 @@ module rbox_size_adjustments(
     $b_latch_width = latch_width;
     $b_latch_screw_separation = latch_screw_separation;
     $b_latch_amount_on_top = _init_latch_amount_on_top(latch_amount_on_top);
-    $b_stacking_latch_screw_separation = stacking_latch_screw_separation;
     $b_third_hinge_width = third_hinge_width;
     // Set computed values
     $b_total_lip_thickness = wall_thickness + lip_thickness;
@@ -249,7 +245,7 @@ module rbox_part(part) {
             rbox_handle(placement="box-preview-open");
             if (_stacking_latches_enabled())
             _box_stacking_latch_ribs_placement()
-            translate([0, 0, $b_stacking_latch_screw_separation * 0.5])
+            translate([0, 0, stacking_latch_screw_separation * 0.5])
             translate([0, -$b_latch_screw_offset, 0])
             rotate([180, 0, 0])
             rbox_stacking_latch(placement="box-preview");
@@ -299,7 +295,7 @@ module rbox_part(part) {
             rbox_handle(placement="box-preview");
             if (_stacking_latches_enabled())
             _box_stacking_latch_ribs_placement()
-            translate([0, 0, $b_stacking_latch_screw_separation * 0.5])
+            translate([0, 0, stacking_latch_screw_separation * 0.5])
             translate([0, -$b_latch_screw_offset, 0])
             rbox_stacking_latch(placement="box-preview");
             if ($b_latch_type == "draw") {
@@ -508,7 +504,7 @@ function _latch_offset_from_base() = (
 function _latch_width() = ($b_latch_width - $b_size_tolerance * 2);
 
 function _stacking_latches_enabled() = (
-    $b_outer_height > $b_stacking_latch_screw_separation * 2.0
+    $b_outer_height > stacking_latch_screw_separation * 2.0
 );
 
 function _handle_dimensions() = [
@@ -1136,12 +1132,14 @@ module _box_latch_ribs() {
 // Box stacking latch attachments
 
 module _box_stacking_latch_rib() {
+    base_sep = stacking_latch_screw_separation * 0.5 - box_stacking_separation / 2;
     sep_positions = [
         for(seps=[
-            [$b_stacking_latch_screw_separation * 0.5],
+            [base_sep],
             _stacking_latches_enabled()
                 ? [
-                    $b_stacking_latch_screw_separation * 1.5
+                    base_sep
+                    + stacking_latch_screw_separation
                     + stacking_latch_catch_offset
                 ]
                 : []
@@ -1737,8 +1735,8 @@ module _latch(placement="default") {
 
 module _stacking_latch_shape() {
     catch_heights = [
-        $b_stacking_latch_screw_separation + box_stacking_separation,
-        $b_stacking_latch_screw_separation + stacking_latch_catch_offset
+        stacking_latch_screw_separation + box_stacking_separation,
+        stacking_latch_screw_separation + stacking_latch_catch_offset
     ];
 
     bw = latch_base_size - screw_hole_diameter / 2;
