@@ -40,6 +40,8 @@ latch_body_size_proportion = 3.0; // [1.5:0.1:5]
 // Stacking latch size
 stacking_latch_catch_offset = -10;
 stacking_latch_grip_length = 8;
+// Vertical distance between two stacked boxes
+box_stacking_separation = 1.60;
 
 // Handle size
 handle_thickness = 10;
@@ -1721,7 +1723,7 @@ module _latch(placement="default") {
 
 module _stacking_latch_shape() {
     catch_heights = [
-        $b_stacking_latch_screw_separation,
+        $b_stacking_latch_screw_separation + box_stacking_separation,
         $b_stacking_latch_screw_separation + stacking_latch_catch_offset
     ];
 
