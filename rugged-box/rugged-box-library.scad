@@ -25,6 +25,7 @@ plain_ribs_angle = 8;
 
 // Extra space between box body and hinge for clearance
 hinge_extra_setback = 0.2; // [0:0.1:2]
+hinge_size_tolerance = 0.1;
 
 // Screw eyelet diameter as a proportion of screw diameter
 screw_eyelet_size_proportion = 3.0; // [1.5:0.1:5]
@@ -1225,23 +1226,25 @@ module _box_hinge_screw_eyelet_body(width=0, angle=360) {
 
 module _box_hinge_ribs_top() {
     hinge_rib_width = $b_rib_width * 2;
-    if (_latch_width() - $b_rib_width * 2 - hinge_rib_width > 0) {
+    top_hinge_width = (
+        _latch_width() - hinge_rib_width - hinge_size_tolerance * 2
+    );
+    if (top_hinge_width - $b_rib_width * 2 > 0) {
         _box_attachment_rib_pair(inner=true)
         rotate([0, 0, 90])
-        translate([0, hinge_rib_width, 0]) {
+        translate([0, hinge_rib_width + hinge_size_tolerance, 0]) {
             _box_hinge_rib_body($b_rib_width);
             _box_rib();
         }
         // Solid hinge middle
         rotate([0, 0, 90])
-        _box_hinge_rib_body(_latch_width() - hinge_rib_width, inner=true);
+        _box_hinge_rib_body(top_hinge_width, inner=true);
     } else {
         // Single module hinge
-        remaining_width = _latch_width() - hinge_rib_width;
-        assert(remaining_width > 0, "No width available for top hinge");
+        assert(top_hinge_width > 0, "No width available for top hinge");
         rotate([0, 0, 90]) {
-            _box_rib(remaining_width);
-            _box_hinge_rib_body(remaining_width);
+            _box_rib(top_hinge_width);
+            _box_hinge_rib_body(top_hinge_width);
         }
     }
 }
@@ -1280,7 +1283,7 @@ module _box_hinge_ribs() {
                 _box_attachment_rib_pair()
                 _box_hinge_rib_bottom(width=$b_rib_width * 2);
                 if ($b_hinge_end_stops) {
-                    _box_hinge_rib_bottom_end_stop(width=$b_latch_width);
+                    _box_hinge_rib_bottom_end_stop(width=_latch_width());
                 }
             } else if ($b_part == "top") {
                 _box_hinge_ribs_top();
