@@ -38,11 +38,9 @@ latch_edge_radius = 0.8;
 latch_body_size_proportion = 3.0; // [1.5:0.1:5]
 
 // Stacking latch size
-stacking_latch_catch_offset = -8;
+stacking_latch_catch_offset = -10;
 stacking_latch_grip_length = 8;
 stacking_latch_screw_separation = 20;
-// Vertical distance between two stacked boxes
-box_stacking_separation = 1.60;
 
 // Handle size
 handle_thickness = 10;
@@ -140,6 +138,8 @@ module rbox(
  *    overlapping the bottom. Set to 0 to determine automatically.
  *  - third_hinge_width: Add a third, center hinge if the box's interior is at
  *    least as wide as this value. Set to 0 to disable (default).
+ *  - stacking_separation: The vertical distance between two stacked boxes.
+ *    Used for stacking latch attachment placement.
  *  - size_tolerance: Size subtracted from latch and upper hinge widths for fit
  *
  * Example:
@@ -163,6 +163,7 @@ module rbox_size_adjustments(
     latch_screw_separation=20,
     latch_amount_on_top=0,
     third_hinge_width=0,
+    stacking_separation=0,
     size_tolerance=0.05
 ) {
     $b_wall_thickness = wall_thickness;
@@ -173,6 +174,7 @@ module rbox_size_adjustments(
     $b_latch_screw_separation = latch_screw_separation;
     $b_latch_amount_on_top = _init_latch_amount_on_top(latch_amount_on_top);
     $b_third_hinge_width = third_hinge_width;
+    $b_stacking_separation = stacking_separation;
     // Set computed values
     $b_total_lip_thickness = wall_thickness + lip_thickness;
     $b_lip_height = lip_thickness * 2;
@@ -1132,7 +1134,7 @@ module _box_latch_ribs() {
 // Box stacking latch attachments
 
 module _box_stacking_latch_rib() {
-    base_sep = stacking_latch_screw_separation * 0.5 - box_stacking_separation / 2;
+    base_sep = stacking_latch_screw_separation * 0.5 - ($b_part == "top" ? $b_stacking_separation : 0);
     sep_positions = [
         for(seps=[
             [base_sep],
@@ -1735,7 +1737,7 @@ module _latch(placement="default") {
 
 module _stacking_latch_shape() {
     catch_heights = [
-        stacking_latch_screw_separation + box_stacking_separation,
+        stacking_latch_screw_separation,
         stacking_latch_screw_separation + stacking_latch_catch_offset
     ];
 

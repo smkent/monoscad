@@ -321,6 +321,7 @@ module main() {
         latch_width=Latch_Width,
         latch_screw_separation=Latch_Screw_Separation,
         third_hinge_width=Third_Hinge ? (l_grid * 5) : 0,
+        stacking_separation=1.6,
         size_tolerance=Size_Tolerance
     ) {
         rbox_part(Part) {
