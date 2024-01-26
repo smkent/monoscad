@@ -11,7 +11,7 @@ gridfinity_boxes = {
     ): (
         list(opts.d)
         + [
-            opts.d[3] >= 6,
+            opts.d[0] >= 4 and opts.d[3] >= 6,
             {
                 "Latch_Type": "draw" if opts.d[3] >= 6 else "clip",
                 "Gridfinity_Stackable": opts.gridfinity_stackable,

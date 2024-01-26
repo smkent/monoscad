@@ -73,8 +73,8 @@ Latch_Width = 28; // [5:1:50]
 // Distance in millimeters between the latch hinge and catch screws which determines the latch vertical size
 Latch_Screw_Separation = 16; // [5:1:40]
 
-// Size in millimeters added between hinges and latches for fit
-Size_Tolerance = 0.05; // [0:0.01:1]
+// Width in millimeters subtracted from latches for fit
+Size_Tolerance = 0.20; // [0:0.01:1]
 
 module __end_customizer_options__() { }
 
@@ -183,17 +183,8 @@ module gridfinity_baseplate(expand=false) {
     }
 }
 
-module gridfinity_base(hole=false, off=0) {
-    gridfinityBase(
-        Width,
-        Length,
-        l_grid,
-        0,
-        0,
-        hole ? 1 : 0,
-        off=off,
-        only_corners=false
-    );
+module gridfinity_base(w=Width, l=Length, hole=false, off=0) {
+    gridfinityBase(w, l, l_grid, 0, 0, hole ? 1 : 0, off=off);
 }
 
 module gridfinity_bottom_base(hole=false) {
@@ -250,13 +241,34 @@ module custom_bottom() {
     }
 }
 
+module gridfinity_top_base_strip(i) {
+    module _strip() {
+        gridfinity_base(l=1, off=-0.2);
+    }
+
+    trim = (i >= (Length - 1) / 2 ? 2 : 1);
+    if (trim > 0) {
+        for (hx = [-1, 1])
+        translate([0, hx == 1 ? -trim : 0, 0])
+        intersection() {
+            _strip();
+            translate([0, hx * l_grid / 2, 0])
+            cube([l_grid * (Width + 1), l_grid, l_grid], center=true);
+        }
+    } else {
+        _strip();
+    }
+}
+
 module gridfinity_top_base() {
     rbox_for_interior()
     intersection() {
         translate([0, 0, top_base_offset])
         translate([0, 0, h_base])
         mirror([0, 0, 1])
-        gridfinity_base(off=-0.2);
+        for (i = [0:1:Length - 1])
+        translate([0, (i - Length / 2 + 0.5) * l_grid, 0])
+        gridfinity_top_base_strip(i);
         gridfinity_rectangle(adjust=1.6);
     }
 }
@@ -298,7 +310,7 @@ module main() {
         lip_seal_type=Lip_Seal_Type,
         reinforced_corners=Reinforced_Corners,
         latch_type=Latch_Type,
-        latch_count=(Width <= 1 ? 1 : 2),
+        latch_count=(Width <= 2 ? 1 : 2),
         top_grip=Top_Grip,
         hinge_end_stops=Hinge_End_Stops
     )
@@ -309,6 +321,7 @@ module main() {
         latch_width=Latch_Width,
         latch_screw_separation=Latch_Screw_Separation,
         third_hinge_width=Third_Hinge ? (l_grid * 5) : 0,
+        stacking_separation=1.6,
         size_tolerance=Size_Tolerance
     ) {
         rbox_part(Part) {
