@@ -11,7 +11,7 @@ and customize your own boxes!
 ![Photo of closed box](images/readme/photo1.jpg)
 ![Photo of open box with multimeter inside](images/readme/photo2.jpg)
 
-# Revision -- January 21, 2024
+# Revision -- January 25, 2024
 
 While creating my
 [Gridfinity Rugged Storage Box][gridfinity-rugged-box-model],
@@ -24,9 +24,15 @@ New features:
 
 Changes:
 
+* The default required screw size is now **M3x40** instead of M3x30
+  * Boxes can still be configured for M3x30 screws -- see screw length formula
+    below
 * The clip latch has been redesigned
 * Default sizing for the wall, lip, and screw attachment points have been
-  increased.
+  increased
+* Latch size tolerance is now subtracted from the latch width instead of added
+  to the latch ribs spacing
+* The latch edges are chamfered using `minkowski`
 
 # Description
 
@@ -55,19 +61,21 @@ chose [OpenSCAD][openscad] so the software and model would be fully open source.
 
 ## Hardware
 
-The hinges and latches are attached using M3 screws, M3x30 by default. Each
+The hinges and latches are attached using M3 screws, **M3x40** by default. Each
 hinge needs 1 screw and each latch needs 2. A box with one latch needs 3 screws
 total, while a box with two latches needs 6 screws total.
 
-The screw length is dependent on the `Latch Width` (default 22mm) and
-`Rib Width` (default 4mm) options. If you change these values, the length of
-screws your box will need is `Latch Width` + 2x`Rib Width`. With the default
-values, **M3x30** screws are required.
+### Screw length formula
 
-If a handle is desired, two of the screws need to be an *extra* `Rib Width`
-(default 4mm) plus the handle thickness (10mm) long. For example, if the base
-screw length used is the default M3 x 30mm with the default 4mm Rib Width, then
-the two handle screws need to be M3 x 44mm (~M3x45).
+* All screws except for boxes with handles:
+  * `Latch Width` (default 28mm) + 2 x `Rib Width` (default 6mm).
+    At default values, `28 + 2 * 6 = 40`, or M3x40 screws.
+  * To use M3x30 screws, set `Latch Width` to 22 and `Rib Width` to 4.
+
+* For boxes with handles, replace two of the above screws with:
+  * `Latch Width` (default 28mm) + 3 x `Rib Width` (default 6mm) + handle
+    thickness (10mm).
+    At default values, `28 + 3 * 6 + 10 = 56`, or about M3x55 screws.
 
 ## Rendering
 
@@ -75,24 +83,29 @@ Ensure both `rugged-box.scad` and `rugged-box-library.scad` are placed in the
 same directory. Open `rugged-box.scad` in OpenSCAD.
 
 Select your desired dimensions and options in the OpenSCAD Customizer. Then, one
-at a time, select each part (top, bottom, and latch) in the Part drop-down. For
-each part, perform a render (F6) and export to STL (F7).
+at a time, select each part (top, bottom, latch, and handle) in the Part
+drop-down. For each part, perform a render (F6) and export to STL (F7).
 
 ![Customizer screenshot](images/readme/customizer-screenshot.png)
 ![Customizer part selection screenshot](images/readme/customizer-screenshot-part-select.png)
 
 ## Printing
 
-Print the box top and bottom parts on their outer faces. Latches print on their
-side. No supports are needed.
+### Printer preparation
+
+These boxes are (usually) large prints. Clean your print bed and ensure it is
+reasonably level.
+
+### Print settings
 
 I have printed boxes from both PLA and PETG.
 
-Recommended print settings:
+Print the box top and bottom parts on their outer faces. Latches print on their
+side. No supports are needed. For the latches, a brim may be helpful for bed
+adhesion.
 
-* 3 perimeters (instead of the usual default of 2)
-* 30% infill
-* For the latches, a brim may be helpful for bed adhesion
+For stronger boxes, latches, and handle, increase to 3 perimeters and 30%
+infill.
 
 ![Slicer screenshot](images/readme/slicer-screenshot.png)
 
