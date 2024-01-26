@@ -310,7 +310,7 @@ module main() {
         lip_seal_type=Lip_Seal_Type,
         reinforced_corners=Reinforced_Corners,
         latch_type=Latch_Type,
-        latch_count=(Width <= 1 ? 1 : 2),
+        latch_count=(Width <= 2 ? 1 : 2),
         top_grip=Top_Grip,
         hinge_end_stops=Hinge_End_Stops
     )
