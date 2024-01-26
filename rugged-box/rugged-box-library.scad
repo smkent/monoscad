@@ -35,7 +35,7 @@ top_grip_depth = 6;
 top_grip_width = 100;
 
 // Latch size
-latch_edge_radius = 1.0;
+latch_edge_radius = 0.8;
 latch_body_size_proportion = 3.0; // [1.5:0.1:5]
 
 // Stacking latch size
