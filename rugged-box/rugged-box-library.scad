@@ -424,6 +424,8 @@ screw_eyelet_radius = screw_hole_diameter * screw_eyelet_size_proportion / 2;
 screw_hole_diameter_fit = screw_hole_diameter * 0.2;
 
 latch_base_size = screw_diameter * (latch_body_size_proportion / 2);
+draw_latch_body_angle = 25;
+draw_latch_body_curve_radius = 10;
 draw_latch_thickness = latch_base_size / 2;
 draw_latch_handle_length = latch_base_size * 3.25;
 draw_latch_screw_eyelet_radius = screw_hole_diameter * 1.1;
@@ -1407,19 +1409,35 @@ module _draw_latch_each_segment(handle=false) {
 
 module _draw_latch_handle_curve_shape() {
     thick = draw_latch_thickness;
-    roff = draw_latch_pin_handle_radius- draw_latch_screw_eyelet_radius;
+    roff = draw_latch_pin_handle_radius - draw_latch_screw_eyelet_radius;
     rr = draw_latch_pin_handle_radius;
     offset(-rr * 1.25)
     offset(rr * 1.25)
     union() {
         translate([-draw_latch_pin_handle_radius + draw_latch_screw_eyelet_radius, 0])
         circle(draw_latch_pin_handle_radius);
-        translate([-roff + rr - thick, 0])
-        hull() {
+        translate([-roff + rr - thick, 0]) {
             translate([0, -thick])
             square(thick);
-            translate([0, -(draw_latch_pin_handle_radius * 2 + thick / 2)])
-            square(thick);
+
+            translate([draw_latch_body_curve_radius + thick, -thick])
+            rotate(draw_latch_body_angle)
+            translate([-draw_latch_body_curve_radius, 0])
+            rotate(180)
+            square([thick, latch_edge_radius*1.5]);
+
+            translate([thick, draw_latch_body_curve_radius - thick])
+            translate(draw_latch_body_curve_radius * [1, -1])
+            intersection() {
+                difference() {
+                    circle(r=draw_latch_body_curve_radius + thick);
+                    circle(r=draw_latch_body_curve_radius);
+                }
+                rotate(180)
+                square(draw_latch_body_curve_radius * 2);
+                rotate(180 - (90 - draw_latch_body_angle))
+                square(draw_latch_body_curve_radius * 2);
+            }
         }
     }
 }
@@ -1552,8 +1570,13 @@ module _draw_latch_handle() {
             )
             _draw_latch_handle_body_shape();
 
-            translate([0, -draw_latch_handle_length - (draw_latch_pin_handle_radius * 2)])
-            translate([draw_latch_screw_eyelet_radius, 0, 0])
+            translate([
+                draw_latch_screw_eyelet_radius,
+                -draw_latch_handle_length - draw_latch_thickness
+            ])
+            translate([draw_latch_body_curve_radius, 0, 0])
+            rotate(draw_latch_body_angle)
+            translate([-draw_latch_body_curve_radius, 0, 0])
             mirror([1, 0, 0])
             _draw_latch_grip();
         }
