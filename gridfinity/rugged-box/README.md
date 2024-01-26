@@ -90,6 +90,9 @@ Select your desired dimensions and options in the OpenSCAD Customizer. Then, one
 at a time, select each part (top, bottom, latch, stacking latch, handle) in the
 Part drop-down. For each part, perform a render (F6) and export to STL (F7).
 
+![Customizer screenshot](images/readme/customizer-screenshot.png)
+![Customizer part selection screenshot](images/readme/customizer-screenshot-part-select.png)
+
 ### Recommended model configuration
 
 *tl;dr:*
@@ -148,6 +151,8 @@ side. For the latches, a brim may be helpful for bed adhesion.
 For boxes without exterior Gridfinity stacking (**Gridfinity Stackable** model
 option), the box tops and bottoms print without supports.
 
+![Slicer screenshot with plain box](images/readme/slicer-screenshot-plain.png)
+
 For boxes with exterior Gridfinity stacking, see the next section.
 
 ### Additional print settings for Gridfinity Stackable boxes
@@ -160,6 +165,8 @@ additional settings to print for both the box top and bottom.
 The box top prints upside down. Supports are needed for each grid of the
 integrated Gridfinity baseplate.
 
+![Slicer screenshot of stackable box top](images/readme/slicer-screenshot-stackable-top-1.png)
+
 OpenSCAD renders the exterior stacking grid on the box top with some errant
 zero-thickness polygons that make manually painting supports difficult. (These
 don't affect the printed box.)
@@ -170,6 +177,8 @@ With the support painting tool (hotkey **L**):
   enter **1**.
 * Click **Enforce** to automatically paint supports.
 
+![Slicer screenshot of stackable box top, support application](images/readme/slicer-screenshot-stackable-top-2.png)
+
 This method paints the integrated Gridfinity baseplate, and additionally the
 very top overhang on all the screw holes with supports. The screw hole overhangs
 do not need supports, so these should be removed. With the support painting tool
@@ -179,6 +188,9 @@ still selected:
   speed up the manual (un-)painting process
 * **Shift+Left-click** on each of the inner screw hole overhang polygons to
   remove the painted supports from the screw holes
+
+![Slicer screenshot of stackable box top, supports applied](images/readme/slicer-screenshot-stackable-top-3.png)
+![Slicer screenshot of stackable box top, overhang supports to remove](images/readme/slicer-screenshot-stackable-top-4.png)
 
 Finally, configure these print settings for the box top:
 
@@ -197,10 +209,14 @@ Finally, configure these print settings for the box top:
   finished look. Avoid setting this to 45, as that causes the first and second
   model layers to be printed at the same angle which is undesirable.
 
+![Slicer screenshot of stackable box top, ready to print](images/readme/slicer-screenshot-stackable-top-5.png)
+
 #### Box bottom
 
 The box bottom prints upright. Supports are needed for the outer perimeter
 that overhangs the base Gridfinity grid.
+
+![Slicer screenshot of stackable box bottom](images/readme/slicer-screenshot-stackable-bottom-1.png)
 
 With the support painting tool (hotkey **L**):
 
@@ -209,6 +225,8 @@ With the support painting tool (hotkey **L**):
 * Rotate the model so the underside is visible.
 * **Left-click** to paint supports on the outer perimeter that overhangs the
   base Gridfinity grid.
+
+![Slicer screenshot of stackable box bottom, with painted supports](images/readme/slicer-screenshot-stackable-bottom-2.png)
 
 Finally, configure these print settings for the box bottom:
 
@@ -233,6 +251,8 @@ settings to their default values:
 * **Support material > XY separation between and object and its support**
   (default 60%).
 
+![Slicer screenshot of stackable box bottom, ready to print](images/readme/slicer-screenshot-stackable-bottom-3.png)
+
 ## Differences of the remix compared to the original
 
 This uses [Gridfinity Rebuilt in OpenSCAD][gridfinity-rebuilt-openscad] to add
@@ -246,7 +266,8 @@ This model is licensed under [Creative Commons (4.0 International License) Attri
 This is a remix of
 [**Gridfinity Rebuilt in OpenSCAD** by **kennetek**][gridfinity-rebuilt-openscad].
 
-Gridfinity and [Gridfinity Rebuilt in OpenSCAD][gridfinity-rebuilt-openscad]
+[Gridfinity][gridfinity] and
+[Gridfinity Rebuilt in OpenSCAD][gridfinity-rebuilt-openscad]
 use the [MIT License][gridfinity-license].
 
 [fully-printable-gridfinity-box-by-lennard-hoting]: https://www.printables.com/model/369813-fully-printable-gridfinity-box-parametric
