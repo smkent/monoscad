@@ -427,6 +427,8 @@ screw_hole_diameter_fit = screw_hole_diameter * 0.2;
 latch_base_size = screw_diameter * (latch_body_size_proportion / 2);
 draw_latch_body_angle = 25;
 draw_latch_body_curve_radius = 10;
+draw_latch_grip_angle = 45;
+draw_latch_grip_curve_radius = 16;
 draw_latch_thickness = latch_base_size / 2;
 draw_latch_handle_length = latch_base_size * 3.25;
 draw_latch_screw_eyelet_radius = screw_hole_diameter * 1.1;
@@ -1469,7 +1471,6 @@ module _draw_latch_handle_body_shape() {
 }
 
 module _draw_latch_grip_layer_polyhedron(h1=0, h2=1) {
-    curve_radius = 16;
 
     function _curve_points(angle, radius) = [
         let (steps = draw_latch_poly_div)
@@ -1482,17 +1483,24 @@ module _draw_latch_grip_layer_polyhedron(h1=0, h2=1) {
         ]
     ];
 
-    function _curve_offset_inverse(ht) = ((curve_radius - _curve_offset(ht)) / 2);
+    function _curve_offset_inverse(ht) = (
+        (draw_latch_grip_curve_radius - _curve_offset(ht)) / 2
+    );
 
     function _curve_offset(y) = (
         let (lw = _latch_width())
         let (precision = 1000)
         let (deg = abs(y - lw / 2) / lw / 2 * 360 * 0.8)
-        round((cos(deg) * (curve_radius * 0.9)) * precision) / precision
+        (
+            round(
+                (cos(deg) * (draw_latch_grip_curve_radius * 0.9)
+            )
+            * precision) / precision
+        )
     );
 
     function _surface_points(h, z) = (
-        let (angle = 45)
+        let (angle = draw_latch_grip_angle)
         let (crad = _curve_offset(h))
         let (ler = latch_edge_radius / 2)
         let (thick = draw_latch_thickness)
