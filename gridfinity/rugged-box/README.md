@@ -222,6 +222,8 @@ With the support painting tool (hotkey **L**):
 
 * Uncheck **Split triangles** near the bottom of the paint settings. This will
   speed up the manual painting process.
+* Set **Brush size** to a small value, such as **0.5**. This will make the
+  painting process easier.
 * Rotate the model so the underside is visible.
 * **Left-click** to paint supports on the outer perimeter that overhangs the
   base Gridfinity grid.
