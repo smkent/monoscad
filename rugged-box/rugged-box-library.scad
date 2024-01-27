@@ -337,7 +337,7 @@ module rbox_part(part) {
         rbox_bom();
     } else if (part == "latch") {
         rbox_latch(placement="print");
-    } else if (part == "stacking-latch") {
+    } else if (part == "stacking_latch") {
         rbox_stacking_latch(placement="print");
     } else if (part == "handle") {
         rbox_handle(placement="print");
