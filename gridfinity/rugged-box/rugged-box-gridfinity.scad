@@ -100,6 +100,8 @@ stackable_top_plate_offset = -0.8;
 stackable_bottom_base_offset = -0.6;
 top_base_offset = -(h_base - h_lip);
 
+stacking_separation = Gridfinity_Stackable ? 1.6 : 0;
+
 // Library overrides
 
 function rb_color(part) = (part == "top" ? "LightSteelBlue" : "SteelBlue");
@@ -321,7 +323,7 @@ module main() {
         latch_width=Latch_Width,
         latch_screw_separation=Latch_Screw_Separation,
         third_hinge_width=Third_Hinge ? (l_grid * 5) : 0,
-        stacking_separation=1.6,
+        stacking_separation=stacking_separation,
         size_tolerance=Size_Tolerance
     ) {
         rbox_part(Part) {
