@@ -12,10 +12,7 @@ gridfinity_boxes = {
         list(opts.d)
         + [
             opts.d[0] >= 4 and opts.d[3] >= 6,
-            {
-                "Latch_Type": "draw" if opts.d[3] >= 6 else "clip",
-                "Gridfinity_Stackable": opts.gridfinity_stackable,
-            },
+            {"Gridfinity_Stackable": opts.gridfinity_stackable},
         ]
     )
     for opts in GenerateOptions(
@@ -44,9 +41,7 @@ for box_name, (
     enable_handle,
     *params,
 ) in gridfinity_boxes.items():
-    for opts in GenerateOptions(
-        part=["top", "bottom", "latch", "stacking-latch", "handle"]
-    ):
+    for opts in GenerateOptions(part=["top", "bottom", "handle"]):
         if not enable_handle and opts.part == "handle":
             continue
         part_params = {
@@ -67,6 +62,22 @@ for box_name, (
             model_dependencies,
             zip_dir=box_name,
         )
+
+for opts in GenerateOptions(latch_type=["clip", "draw"]):
+    b.STL(
+        f"{opts.latch_type}-latch.stl",
+        model,
+        {"Part": "latch", "Latch_Type": opts.latch_type},
+        model_dependencies,
+        zip_dir="latches",
+    )
+b.STL(
+    f"stacking-latch.stl",
+    model,
+    {"Part": "stacking_latch"},
+    model_dependencies,
+    zip_dir="latches",
+)
 
 b.add_default_targets()
 

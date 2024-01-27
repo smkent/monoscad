@@ -5,20 +5,7 @@ model = "rugged-box.scad"
 model_dependencies = ["rugged-box-library.scad"]
 
 boxes = {
-    "micro": [
-        20,
-        20,
-        5,
-        6,
-        False,
-        {
-            "Latch_Amount_On_Top": 4,
-            "Latch_Width": 12,
-            "Latch_Screw_Separation": 8,
-            "Rib_Width": 3,
-        },
-    ],
-    "mini": [30, 30, 7, 22, False],
+    "mini": [40, 40, 7, 25, False],
     "60x30": [60, 30, 7, 25, False],
     "120x60": [120, 60, 7, 25, False],
 }
@@ -31,7 +18,7 @@ for box_name, (
     enable_handle,
     *params,
 ) in boxes.items():
-    for part in ["top", "bottom", "latch", "handle"]:
+    for part in ["top", "bottom", "handle"]:
         if not enable_handle and part == "handle":
             continue
         part_params = {
@@ -50,7 +37,17 @@ for box_name, (
             model,
             part_params,
             model_dependencies,
+            zip_dir=box_name,
         )
+
+for opts in GenerateOptions(latch_type=["clip", "draw"]):
+    b.STL(
+        f"{opts.latch_type}-latch.stl",
+        model,
+        {"Part": "latch", "Latch_Type": opts.latch_type},
+        model_dependencies,
+        zip_dir="latches",
+    )
 
 b.Image(
     "demo-dimensions.gif",
