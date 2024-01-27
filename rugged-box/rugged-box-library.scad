@@ -539,6 +539,8 @@ function _handle_enabled() = (
     )
 );
 
+function _edge_chamfer_enabled() = (!($preview && $b_preview_assembled));
+
 // Basic shape modules
 
 module _round_shape(radius) {
@@ -572,9 +574,7 @@ module _rounded_cylinder(h, r1, r2=0, angle=360, center=false) {
 }
 
 module _chamfer_edges(r, rotation=[0, 0, 0]) {
-    if ($preview && $b_preview_assembled) {
-        children();
-    } else {
+    if (_edge_chamfer_enabled()) {
         minkowski() {
             children();
             union() {
@@ -586,18 +586,20 @@ module _chamfer_edges(r, rotation=[0, 0, 0]) {
                 cylinder(d1=r, d2=0, h=r);
             }
         }
+    } else {
+        children();
     }
 }
 
 module _linear_extrude_with_chamfer(height, r, center=false) {
-    if ($preview && $b_preview_assembled) {
-        linear_extrude(height=height, center=center)
-        children();
-    } else {
+    if (_edge_chamfer_enabled()) {
         _chamfer_edges(r)
         translate([0, 0, center ? 0 : r])
         linear_extrude(height=height - r * 2, center=center)
         offset(r=-r / 2)
+        children();
+    } else {
+        linear_extrude(height=height, center=center)
         children();
     }
 }
@@ -1503,7 +1505,7 @@ module _draw_latch_grip_layer_polyhedron(h1=0, h2=1) {
     function _surface_points(h, z) = (
         let (angle = draw_latch_grip_angle)
         let (crad = _curve_offset(h))
-        let (ler = latch_edge_radius / 2)
+        let (ler = _edge_chamfer_enabled() ? latch_edge_radius / 2 : 0)
         let (thick = draw_latch_thickness)
         let (origin_edge_points = [
             [ler, draw_latch_thickness - ler], [ler, ler]
@@ -1560,7 +1562,7 @@ module _draw_latch_grip_layer_polyhedron(h1=0, h2=1) {
 }
 
 module _draw_latch_grip() {
-    tr = latch_edge_radius;
+    tr = _edge_chamfer_enabled() ? latch_edge_radius : 0;
     top = _latch_width() - tr * 2;
     steps = draw_latch_poly_div * 2;
 
