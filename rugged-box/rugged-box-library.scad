@@ -435,6 +435,7 @@ draw_latch_screw_eyelet_radius = screw_hole_diameter * 1.1;
 draw_latch_pin_handle_radius = screw_hole_diameter * 1.6;
 draw_latch_pin_radius = draw_latch_pin_handle_radius - 2.2;
 draw_latch_sep = 0.4;
+draw_latch_vsep = 0.6;
 draw_latch_body_width = latch_base_size - screw_hole_diameter / 2;
 draw_latch_pin_offset = [
     (
@@ -582,7 +583,7 @@ module _chamfer_edges(r, rotation=[0, 0, 0]) {
                 rotate(rotation)
                 for (mz = [0:1:1])
                 mirror([0, 0, mz])
-                cylinder(d1=r, d2=0, h=r/2);
+                cylinder(d1=r, d2=0, h=r);
             }
         }
     }
@@ -594,8 +595,8 @@ module _linear_extrude_with_chamfer(height, r, center=false) {
         children();
     } else {
         _chamfer_edges(r)
-        translate([0, 0, center ? 0 : (r / 2)])
-        linear_extrude(height=height - r, center=center)
+        translate([0, 0, center ? 0 : r])
+        linear_extrude(height=height - r * 2, center=center)
         offset(r=-r / 2)
         children();
     }
@@ -1401,7 +1402,7 @@ module _clip_latch_part() {
 
 module _draw_latch_each_segment(handle=false) {
     latch_width = _latch_width();
-    vsep = (handle ? 0.4 : 0);
+    vsep = (handle ? draw_latch_vsep : 0);
     for (segment = [0:1:5 - 1]) {
         if (segment % 2 == 1) {
             ht = latch_width / 5 + vsep * 2;
@@ -1559,8 +1560,8 @@ module _draw_latch_grip_layer_polyhedron(h1=0, h2=1) {
 }
 
 module _draw_latch_grip() {
-    tr = latch_edge_radius / 2;
-    top = _latch_width() - tr * 2; //  + ($preview ? 0.0001 : 0);
+    tr = latch_edge_radius;
+    top = _latch_width() - tr * 2;
     steps = draw_latch_poly_div * 2;
 
     render(convexity=2)
@@ -1677,7 +1678,7 @@ module _draw_latch_catch_shape_hook() {
                 square(outr);
             }
             mirror([1, 0]) {
-                translate([0, outr * 0.1])
+                translate([0, outr * 0.2])
                 square([outr * compress_ratio, outr * (1 - compress_ratio - 0.1)]);
                 translate([0, outr * (1 - compress_ratio)])
                 intersection() {
