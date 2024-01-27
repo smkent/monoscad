@@ -97,6 +97,9 @@ Part drop-down. For each part, perform a render (F6) and export to STL (F7).
 
 *tl;dr:*
 
+* Box parts with different **Gridfinity Stackable** settings are not compatible.
+  Print all your box parts with this value enabled or disabled, not a mix of
+  both.
 * Set **Top Height** to 2
 * Set **Bottom Height** to 4, 7, or 10 for a 6, 9, or 12 Gridfinity unit tall
   box, respectively
@@ -104,6 +107,13 @@ Part drop-down. For each part, perform a render (F6) and export to STL (F7).
   2 for **Length**
 * Use **draw** latches for boxes 9 or more units tall, or **clip** latches for
   shorter boxes
+
+Boxes with the **Gridfinity Stackable** option modify the placement of the
+internal Gridfinity baseplate and top bases to accomodate the exterior stacking
+base and baseplate. Therefore both the top and bottom of the box must be printed
+with the same value for this option; do not mix and match. Additionally,
+stacking latches will not reach the correct height between the two types of
+boxes.
 
 I recommend keeping most of the box height in the bottom, so Gridfinity bins
 will be more contained in the box when the lid is open. I render my box tops
