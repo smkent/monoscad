@@ -248,7 +248,7 @@ module gridfinity_top_base_strip(i) {
         gridfinity_base(l=1, off=-0.2);
     }
 
-    trim = (i >= (Length - 1) / 2 ? 2 : 1);
+    trim = (i >= (Length - 1) / 2 ? 3 : 1);
     if (trim > 0) {
         for (hx = [-1, 1])
         translate([0, hx == 1 ? -trim : 0, 0])
