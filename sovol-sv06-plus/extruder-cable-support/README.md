@@ -1,6 +1,6 @@
 # Sovol SV06 Plus extruder mounted cable support
 
-![This model is a work in progress][work-in-progress-badge]
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 Extruder mounted cable support for the Sovol SV06 and SV06 Plus
@@ -43,5 +43,6 @@ This model is licensed under
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/742643
 [sv06-mainboard-cable-support]: ../mainboard-cable-support/
-[work-in-progress-badge]: /_static/work-in-progress-badge.svg
