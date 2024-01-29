@@ -18,7 +18,7 @@ for better stability with a more snug fit.
 ## Recommended pairing
 
 This model pairs well with
-[my extruder-mounted extruder cable support (remix)][sv06-extruder-cable-support].
+[my extruder-mounted extruder cable support][sv06-extruder-cable-support].
 
 ## Printing
 
