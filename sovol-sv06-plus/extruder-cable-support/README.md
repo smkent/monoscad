@@ -16,6 +16,11 @@ support!
 This model was created in [OpenSCAD][openscad]. The default curve angle of 60°
 is customizable in the OpenSCAD model.
 
+## Recommended pairing
+
+This model pairs well with
+[my mainboard box mounted extruder cable support][sv06-mainboard-cable-support].
+
 ## Printing
 
 This prints on its side. A brim may be useful for bed adhesion.
@@ -38,4 +43,5 @@ This model is licensed under
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
+[sv06-mainboard-cable-support]: ../mainboard-cable-support/
 [work-in-progress-badge]: /_static/work-in-progress-badge.svg

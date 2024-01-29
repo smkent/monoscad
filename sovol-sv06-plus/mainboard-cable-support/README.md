@@ -15,6 +15,11 @@ support! This remixes
 [itsrouteburn's Sovol SV06 Plus Print Head Cable Support][original-model-url]
 for better stability with a more snug fit.
 
+## Recommended pairing
+
+This model pairs well with
+[my extruder-mounted extruder cable support][sv06-extruder-cable-support].
+
 ## Printing
 
 This prints with no supports and no special instructions.
@@ -61,3 +66,4 @@ Both the original model and this remix are licensed under
 [original-model-url]: https://www.printables.com/model/427286-sovol-sv06-plus-print-head-cable-support
 [printables-badge]: /_static/printables-badge.png
 [printables-model]: https://www.printables.com/model/689656
+[sv06-extruder-cable-support]: ../extruder-cable-support/
