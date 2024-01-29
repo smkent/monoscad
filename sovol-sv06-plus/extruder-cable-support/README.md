@@ -19,7 +19,7 @@ is customizable in the OpenSCAD model.
 ## Recommended pairing
 
 This model pairs well with
-[my mainboard box mounted extruder cable support][sv06-mainboard-cable-support].
+[my mainboard box-mounted extruder cable support (remix)][sv06-mainboard-cable-support].
 
 ## Printing
 
