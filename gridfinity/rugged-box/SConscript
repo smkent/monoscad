@@ -124,15 +124,12 @@ for camera_opts in GenerateOptions(
         model,
         [
             {
-                **{
-                    "Part": "assembled_closed",
-                    "Width": 6,
-                    "Length": 4,
-                    "Top_Height": 2,
-                    "Bottom_Height": 7,
-                    "Gridfinity_Stackable": opts.stackable,
-                },
-                **(params[0] if params else {}),
+                "Part": "assembled_closed",
+                "Width": 6,
+                "Length": 4,
+                "Top_Height": 2,
+                "Bottom_Height": 7,
+                "Gridfinity_Stackable": opts.stackable,
             }
             for opts in GenerateOptions(stackable=[0, 1])
         ],
