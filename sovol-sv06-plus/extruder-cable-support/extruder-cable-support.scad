@@ -11,7 +11,7 @@ Render_Mode = "print"; // [print: Print Orientation, normal: Installed orientati
 
 /* [Extruder support options] */
 
-Bend_Angle = 75; // [15:1:90]
+Bend_Angle = 60; // [15:1:90]
 Bend_Radius = 30; // [5:1:50]
 
 /* [Development Toggles] */
