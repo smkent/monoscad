@@ -33,7 +33,7 @@ Top_Height = 2; // [1:1:10]
 Gridfinity_Base_Style = "minimal"; // [minimal: No magnet holes with minimal thickness, thick: No magnet holes but with magnet hole base thickness, enabled: Magnet holes with skeletonized baseplate, enabled_full: Magnet holes with filled baseplate]
 
 // Add Gridfinity base stacking plates to outside of box top and bottom. Requires supports to print.
-Gridfinity_Stackable = false;
+Gridfinity_Stackable = true;
 
 /* [Features] */
 // Type or shape of seal to use, if desired
