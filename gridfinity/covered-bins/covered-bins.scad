@@ -30,6 +30,9 @@ divx = 6;
 // number of Y Divisions (set to zero to have solid bin)
 divy = 6;
 
+/* [Base] */
+interior_style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
+
 /* [Height] */
 // determine what the variable "gridz" applies to based on your use case
 gridz_define = 0; // [0:gridz is the height of bins in units of 7mm increments - Zack's method,1:gridz is the internal height in millimeters, 2:gridz is the overall external height of the bin in millimeters]
@@ -175,7 +178,14 @@ module gf_bin_solid() {
                     translate([0, 0, h_base + h_bot / 2 - d_wall])
                     gf_bin_rounded_rect(d_wall, add_x=-d_wall, add_y=-d_wall);
                 }
-                gf_base_grid_interior();
+                intersection() {
+                    if (interior_style == "partial_raised") {
+                        translate([0, 0, d_wall + h_base - r_c2 + 0.1])
+                        linear_extrude(height=h_base - r_c2)
+                        square([l_grid * gridx, l_grid * gridy], center=true);
+                    }
+                    gf_base_grid_interior();
+                }
             }
         }
     }
