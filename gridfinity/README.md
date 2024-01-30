@@ -8,6 +8,7 @@ Click an image to view the corresponding model, or browse subdirectories
 for all models.
 
 [![Gridfinity Rugged Storage Box, Parametric and Customizable](rugged-box/images/readme/demo-dimensions.gif)](rugged-box/)
+[![Gridfinity Bins with Covers](covered-bins/images/readme/demo.png)](covered-bins/)
 [![Gridfinity Material Swatches Holder V2](bins-material-swatches/images/readme/demo.gif)](bins-material-swatches/)
 
 [gridfinity]: https://www.youtube.com/watch?v=ra_9zU-mnl8
