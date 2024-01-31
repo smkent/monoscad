@@ -1,0 +1,11 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "battery-bins.scad"
+
+b.STL("battery-bins.stl", model)
+b.Image("demo.png", model)
+
+b.add_default_targets()
+
+# vim: ft=python
