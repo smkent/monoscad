@@ -159,11 +159,56 @@ module battery_cut(grid_x, grid_y) {
             cylinder(h=ch, d1=battery_sz[0] + ch, d2=battery_sz[0]);
             cylinder(h=bbase, d=battery_sz[0] + ch);
         } else if (battery_shape == SHAPE_RECT) {
-            linear_extrude(height=battery_len)
-            offset(r=1)
-            offset(r=-1)
-            square(battery_sz, center=true);
+            hull() {
+                mirror([0, 0, 1])
+                linear_extrude(height=h_lip)
+                square(val_add(battery_sz, -h_lip * 2), center=true);
+                linear_extrude(height=battery_len)
+                offset(r=1)
+                offset(r=-1)
+                square(battery_sz, center=true);
+            }
         }
+    }
+    // Add inter-cut trim for bin edges if needed
+    if (battery_shape == SHAPE_RECT)
+    translate([0, 0, $dh + h_base])
+    mirror([0, 0, 1])
+    render()
+    intersection() {
+        render()
+        difference() {
+            hull()
+            for (offs = [0, h_lip])
+            translate([0, 0, -offs])
+            linear_extrude(height=(gridz + 1) * 7)
+            offset(-offs * 2)
+            square([
+                ncx * (battery_sz[0] + battery_separation) - battery_separation,
+                ncy * (battery_sz[1] + battery_separation) - battery_separation
+            ], center=true);
+            for (grid = [[gridx, 0], [gridy, 90]])
+            for (i = [1:1:grid[0]-1])
+            rotate(grid[1])
+            translate([i * l_grid, 0])
+            translate([0, 0, -7])
+            linear_extrude(height=(gridz + 2) * 7)
+            translate([-(grid[0] * l_grid) / 2, 0])
+            square([grid[0] * l_grid, 5], center=true);
+        }
+        offs1 = 2.5;
+        translate([0, 0, (min_z - 2) * 7])
+        hull()
+        for (offs = [0, offs1])
+        translate([0, 0, -offs])
+        linear_extrude(height=7)
+        offset(r=r_f2)
+        offset(r=-r_f2)
+        offset(-(offs1 - offs))
+        square([
+            ncx * (battery_sz[0] + battery_separation) - battery_separation,
+            ncy * (battery_sz[1] + battery_separation) - battery_separation
+        ], center=true);
     }
 }
 
