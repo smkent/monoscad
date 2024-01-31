@@ -20,7 +20,7 @@ gridy = 4;
 gridz = 3; // [2:1:9]
 
 /* [Battery Holder Features] */
-Battery_Type = "AA"; // [AA, AAA]
+Battery_Type = "AA"; // [AA, AAA, 9V]
 
 /* [Height] */
 // determine what the variable "gridz" applies to based on your use case
@@ -52,27 +52,31 @@ module __end_customizer_options__() { }
 h_cut_extra = 0;
 d_wall = 3;
 
+SHAPE_RECT = "rect";
+SHAPE_CYLINDER = "cyl";
 battery_table = [
-    ["AA", [14.5, 50.5, 1, 4]],
-    ["AAA", [10.5, 44.5, 2.25, 4]]
+    ["AA", [SHAPE_CYLINDER, 14.5, 50.5, 1, 4, 1]],
+    ["AAA", [SHAPE_CYLINDER, 10.5, 44.5, 2.25, 4, 1]],
+    ["9V", [SHAPE_RECT, [17.5, 26.5], 48.5, 0.8, 4, 2.1]]
 ];
 
 battery_spec = vsearch(battery_table, Battery_Type);
 assert(battery_spec, str("Unknown battery size '", Battery_Type, "'"));
 
-battery_d_base = battery_spec[0];
-battery_len_base = battery_spec[1];
-battery_separation = battery_spec[2];
-min_z = (gridz - battery_spec[3]);
+battery_shape = battery_spec[0];
+battery_xy_base = battery_spec[1];
+battery_len_base = battery_spec[2];
+battery_separation = battery_spec[3];
+min_z = (gridz - battery_spec[4]);
+grid_overlap = battery_spec[5];
 
 battery_fit = 0.2;
-battery_d = battery_d_base + battery_fit;
+battery_xy = val_add(battery_xy_base, battery_fit);
 battery_len = battery_len_base + battery_fit;
 
 nozzle_thread_ht = 16;
 
 hole_chamfer = 0.6;
-grid_overlap = 1;
 slop = 0.01;
 
 // Functions //
@@ -82,9 +86,15 @@ function vsearch(vec, term) = (
     len(r) == 1 ? r[0][1] : undef
 );
 
+function val_add(v, add) = (
+    is_num(v) ? v + add : is_list(v) ? [for (i = v) i + add] : undef
+);
+
 function gf_height() = height(gridz, gridz_define, style_lip, enable_zsnap);
 
-function battery_count(grid) = floor((((l_grid + grid_overlap) * grid) - d_wall2 * 2) / (battery_d + battery_separation));
+function battery_count(grid, sz) = floor(
+    (((l_grid + grid_overlap) * grid) - d_wall2 * 2) / (sz + battery_separation)
+);
 
 // Modules //
 
@@ -124,33 +134,36 @@ module walls_cut() {
     }
 }
 
-module battery_polygon() {
-    mirror([0, 0, 1])
-    cylinder(h=nozzle_thread_ht * 2, d=battery_d, center=true);
-}
-
 module battery_cut(grid_x, grid_y) {
+    battery_sz = is_num(battery_xy) ? [battery_xy, battery_xy] : battery_xy;
     ch = hole_chamfer;
-    ncx = battery_count(grid_x);
-    ncy = battery_count(grid_y);
-    cut_sz_x = (ncx - 1) * (battery_d + battery_separation);
-    cut_sz_y = (ncy - 1) * (battery_d + battery_separation);
+    ncx = battery_count(grid_x, battery_sz[0]);
+    ncy = battery_count(grid_y, battery_sz[1]);
+    cut_sz_x = (ncx - 1) * (battery_sz[0] + battery_separation);
+    cut_sz_y = (ncy - 1) * (battery_sz[1] + battery_separation);
     translate([0, 0, $dh + h_base])
     mirror([0, 0, 1])
     for (nx = [0:1:ncx - 1], ny = [0:1:ncy - 1])
     translate([-cut_sz_x / 2, -cut_sz_y / 2, 0])
     translate([
-        (battery_d + battery_separation) * nx + 0*battery_separation,
-        (battery_d + battery_separation) * ny + 0*battery_separation,
+        (battery_sz[0] + battery_separation) * nx,
+        (battery_sz[1] + battery_separation) * ny,
         0
     ])
     render()
     union() {
-        bbase = min(battery_len - ch, (gridz - min_z) * 7);
-        cylinder(h=battery_len, d=battery_d);
-        translate([0, 0, bbase])
-        cylinder(h=ch, d1=battery_d + ch, d2=battery_d);
-        cylinder(h=bbase, d=battery_d + ch);
+        if (battery_shape == SHAPE_CYLINDER) {
+            bbase = min(battery_len - ch, (gridz - min_z) * 7);
+            cylinder(h=battery_len, d=battery_sz[0]);
+            translate([0, 0, bbase])
+            cylinder(h=ch, d1=battery_sz[0] + ch, d2=battery_sz[0]);
+            cylinder(h=bbase, d=battery_sz[0] + ch);
+        } else if (battery_shape == SHAPE_RECT) {
+            linear_extrude(height=battery_len)
+            offset(r=1)
+            offset(r=-1)
+            square(battery_sz, center=true);
+        }
     }
 }
 

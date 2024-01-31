@@ -3,7 +3,7 @@ b = ModelBuilder(env)
 
 model = "battery-bins.scad"
 
-for opts in GenerateOptions(battery_type=["AA", "AAA"]):
+for opts in GenerateOptions(battery_type=["AA", "AAA", "9V"]):
     for sz in GenerateOptions(
         gridz=[7, 9] if opts.battery_type == "AAA" else [9]
     ):
