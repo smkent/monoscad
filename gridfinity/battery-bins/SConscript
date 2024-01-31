@@ -1,0 +1,38 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "battery-bins.scad"
+
+for opts in GenerateOptions(battery_type=["AA", "AAA", "9V"]):
+    for sz in GenerateOptions(
+        gridz=[7, 9] if opts.battery_type == "AAA" else [9]
+    ):
+        b.STL(
+            f"battery-bin-{opts.battery_type.lower()}-2x2x{sz.gridz}.stl",
+            model,
+            {
+                "Battery_Type": opts.battery_type,
+                "gridx": 2,
+                "gridy": 2,
+                "gridz": sz.gridz,
+                "style_hole": 0,
+            },
+        )
+b.Image(
+    "demo.gif",
+    model,
+    [
+        {
+            "Battery_Type": opts.battery_type,
+            "gridx": 2,
+            "gridy": 2,
+            "gridz": 9,
+            "style_hole": 0,
+        }
+        for opts in GenerateOptions(battery_type=["AA", "AAA", "9V"])
+    ],
+)
+
+b.add_default_targets()
+
+# vim: ft=python
