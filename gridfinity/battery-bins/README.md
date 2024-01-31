@@ -5,11 +5,13 @@
 
 Gridfinity battery bins
 
-![Model render](images/readme/demo.png)
+![Model render](images/readme/demo.gif)
 
 ## Differences of the remix compared to the original
 
-
+This uses
+[**Gridfinity Rebuilt in OpenSCAD** by **kennetek**][original-model-url]
+to create Gridfinity bins for storing AA, AAA, and 9V batteries.
 
 ## Attribution and License
 
