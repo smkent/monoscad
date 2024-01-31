@@ -5,7 +5,7 @@
  * MIT License (see LICENSE file)
  */
 
-include <gridfinity-rebuilt-openscad/gridfinity-rebuilt-utility.scad>;
+include <gridfinity-remix-openscad/gridfinity-rebuilt-utility.scad>;
 
 /* [Setup Parameters] */
 $fa = 8;
@@ -49,6 +49,7 @@ module __end_customizer_options__() { }
 
 // Constants //
 
+h_cut_extra = 0;
 d_wall = 3;
 
 battery_table = [
