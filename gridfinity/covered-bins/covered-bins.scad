@@ -25,9 +25,8 @@ gridy = 2;
 gridz = 3;
 
 /* [Covered Bin Features] */
-Lid_Fit_Tolerance = 0.1; // [0:0.1:1]
 Interior_Style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
-Lip_Grips = "single"; // [none: None, single: Along X axis, full: Along X and Y axes]
+Lip_Grips = "full"; // [none: None, single: Along X axis, full: Along X and Y axes]
 
 /* [Linear Compartments] */
 // number of X Divisions (set to zero to have solid bin)
@@ -52,7 +51,7 @@ d_wall = 1.60;
 lid_wall_thickness = 1.2;
 lid_thickness = 0.9;
 lid_hfit_tolerance = 0.97;
-lid_vfit_tolerance = Lid_Fit_Tolerance;
+lid_vfit_tolerance = 0.1;
 lid_vpos_tolerance = 0.2;
 lid_lip_fit_tolerance = min(0.1, lid_vfit_tolerance);
 
