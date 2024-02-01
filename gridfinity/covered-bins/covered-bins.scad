@@ -109,11 +109,36 @@ module gf_bin_lid() {
             }
             gf_bin_lid_grip_mask();
         }
+
+
         difference() {
             space = 1.1;
             sz = 0.5 + lid_thickness * 2 + space;
-            translate([0, 0, $dh + h_base - lid_thickness])
-            gf_bin_rounded_rect(lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz);
+            union() {
+                translate([0, 0, $dh + h_base - lid_thickness])
+                gf_bin_rounded_rect(lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz);
+
+                intersection() {
+                    translate([0, 0, $dh + h_base - lid_thickness])
+                    gf_bin_rounded_rect(h_lip + lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz);
+
+                    block_wall(gridx, gridy, l_grid)
+                    difference() {
+                        color("yellow", 0.8)
+                        profile_wall();
+                        union() {
+                            color("lightblue", 0.8)
+                            square([r_base, $dh]);
+                            color("lightgreen", 0.8)
+                            translate([r_base - d_wall, 0])
+                            square([r_base, $dh + h_lip]);
+                        }
+                        offset(delta=0.2)
+                        gf_profile_wall_lid_lip();
+                    }
+                }
+            }
+
             gf_bin_lid_tabs(adjust=-space/2);
         }
     }
