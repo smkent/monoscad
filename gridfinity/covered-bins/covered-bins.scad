@@ -47,11 +47,15 @@ module __end_customizer_options__() { }
 
 // Constants //
 
-lid_wall_thickness = 0.9;
+d_wall = 1.60;
+
+lid_wall_thickness = 1.2;
 lid_thickness = 0.9;
 lid_hfit_tolerance = 0.97;
 lid_vfit_tolerance = Lid_Fit_Tolerance;
 lid_lip_fit_tolerance = min(0.1, lid_vfit_tolerance);
+
+bin_separator_wall_thickness = 1.2;
 
 module gf_setup_stub(gx, gy, h, h0 = 0, l = l_grid, sl = 0) {
     $gxx = gx;
@@ -166,7 +170,7 @@ module gf_bin_lid() {
 }
 
 module gf_bin_lid_tabs(adjust=false) {
-    adj = adjust ? -lid_hfit_tolerance * 1.5 + 0.9: 0;
+    adj = adjust ? -lid_hfit_tolerance * 1.5 + lid_wall_thickness: 0;
     cr = 0.6;
     // Tabs
     translate([
@@ -283,18 +287,17 @@ module gf_bin_rounded_rect(height, add_x=0, add_y=0, r=r_fo1) {
 
 module gf_cut_pockets() {
     if (divx > 0 && divy > 0) {
+        per_x = (gridx * l_grid - d_wall * 2 + bin_separator_wall_thickness) / divx;
+        per_y = (gridy * l_grid - d_wall * 2 + bin_separator_wall_thickness) / divy;
         cut_move(x=0, y=0, w=gridx, h=gridy)
-        pattern_linear(
-            x=divx,
-            y=divy,
-            sx=gridx * l_grid / divx,
-            sy=gridy * l_grid / divy
-        )
+        pattern_linear(x=divx, y=divy, sx=per_x, sy=per_y)
         translate([0, 0, -$dh - h_base])
-        linear_extrude(height=gridz * 7 - lid_thickness - lid_vfit_tolerance + 0.001)
+        linear_extrude(
+            height=gridz * 7 - lid_thickness - lid_vfit_tolerance + 0.001
+        )
         square([
-            gridx * l_grid / divx - d_wall,
-            gridy * l_grid / divy - d_wall,
+            per_x - bin_separator_wall_thickness,
+            per_y - bin_separator_wall_thickness,
         ], center=true);
     }
 }
