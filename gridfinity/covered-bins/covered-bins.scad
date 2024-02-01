@@ -100,17 +100,29 @@ module gf_bin_lid_lip_mask() {
     square([l_grid * gridx, l_grid * gridy], center=true);
 }
 
-module gf_bin_lid_grip_mask_set(num_grid) {
-    grip_w = l_grid / 2 - h_lip * 2;
+module gf_bin_lid_grip_mask_shape() {
+    grip_w = l_grid / 2 - h_lip * 2 - 2;
     radius = 3;
+    translate([-(grip_w - l_grid / 2) / 2, 0])
+    intersection() {
+        offset(r=-radius)
+        offset(r=2 * radius)
+        offset(r=-radius)
+        union() {
+            square([grip_w, h_lip * 10]);
+            translate([-grip_w * 2, h_lip * 0.75])
+            square([grip_w * 5, h_lip * 9]);
+        }
+        translate([-radius, 0])
+        square([grip_w + radius * 2, h_lip]);
+    }
+}
+
+module gf_bin_lid_grip_mask_set(num_grid) {
     rotate([90, 0, 90])
     translate([0, 0, l_grid * num_grid / 2])
     linear_extrude(height=l_grid / 2, center=true)
-    translate([-(grip_w - l_grid / 2) / 2, 0])
-    offset(r=radius)
-    offset(r=-radius)
-    square([grip_w, h_lip * 10]);
-
+    gf_bin_lid_grip_mask_shape();
 }
 
 module gf_bin_lid_grip_mask() {
@@ -127,6 +139,15 @@ module gf_bin_lid_grip_mask_alt() {
     gf_bin_lid_grip_mask_set(gridy);
 }
 
+module gf_bin_lid_grip_masks() {
+    if (Lip_Grips != "none")
+    for (rot = [0, 180])
+    rotate(rot) {
+        gf_bin_lid_grip_mask();
+        if (Lip_Grips == "full")
+        gf_bin_lid_grip_mask_alt();
+    }
+}
 
 module gf_bin_lid() {
     color("mintcream", 0.5)
@@ -138,7 +159,7 @@ module gf_bin_lid() {
                 profile_wall();
                 gf_bin_lid_lip_mask();
             }
-            gf_bin_lid_grip_mask();
+            gf_bin_lid_grip_masks();
         }
 
 
@@ -227,13 +248,7 @@ module gf_bin_solid() {
             }
             translate([-lid_lip_fit_tolerance, 0, -lid_lip_fit_tolerance])
             gf_bin_lid_lip_mask();
-            rotate(180)
-            gf_bin_lid_grip_mask();
-            if (Lip_Grips == "full") {
-                for (rot = [0, 180])
-                rotate(rot)
-                gf_bin_lid_grip_mask_alt();
-            }
+            gf_bin_lid_grip_masks();
         }
 
         render(convexity=4)
