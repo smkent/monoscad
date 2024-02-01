@@ -50,7 +50,7 @@ d_wall = 1.60;
 
 lid_wall_thickness = 1.2;
 lid_thickness = 0.9;
-lid_hfit_tolerance = 0.97;
+lid_hfit_tolerance = 1.1;
 lid_vfit_tolerance = 0.1;
 lid_vpos_tolerance = 0.2;
 lid_lip_fit_tolerance = min(0.1, lid_vfit_tolerance);
