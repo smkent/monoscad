@@ -27,7 +27,7 @@ gridz = 3;
 /* [Covered Bin Features] */
 Lid_Fit_Tolerance = 0.1; // [0:0.1:1]
 Interior_Style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
-Lip_Grips = true;
+Lip_Grips = "single"; // [none: None, single: Along X axis, full: Along X and Y axes]
 
 /* [Linear Compartments] */
 // number of X Divisions (set to zero to have solid bin)
@@ -90,20 +90,33 @@ module gf_bin_lid_lip_mask() {
     square([l_grid * gridx, l_grid * gridy], center=true);
 }
 
-module gf_bin_lid_grip_mask() {
+module gf_bin_lid_grip_mask_set(num_grid) {
     grip_w = l_grid / 2 - h_lip * 2;
     radius = 3;
-    if (Lip_Grips)
-    translate([0, 0, $dh + h_base + h_lip * 0.25])
-    pattern_linear(1, gridy, l_grid * gridx, l_grid)
     rotate([90, 0, 90])
-    translate([0, 0, l_grid * gridx / 2])
-    linear_extrude(height=l_grid * 2, center=true)
+    translate([0, 0, l_grid * num_grid / 2])
+    linear_extrude(height=l_grid / 2, center=true)
     translate([-(grip_w - l_grid / 2) / 2, 0])
     offset(r=radius)
     offset(r=-radius)
     square([grip_w, h_lip * 10]);
+
 }
+
+module gf_bin_lid_grip_mask() {
+    if (Lip_Grips != "none")
+    translate([0, 0, $dh + h_base + h_lip * 0.25])
+    pattern_linear(1, gridy, l_grid * gridx, l_grid)
+    gf_bin_lid_grip_mask_set(gridx);
+}
+
+module gf_bin_lid_grip_mask_alt() {
+    translate([0, 0, $dh + h_base + h_lip * 0.25])
+    pattern_linear(gridx, 1, l_grid, l_grid * gridy)
+    rotate(90)
+    gf_bin_lid_grip_mask_set(gridy);
+}
+
 
 module gf_bin_lid() {
     color("mintcream", 0.5)
@@ -191,6 +204,11 @@ module gf_bin_solid() {
             gf_bin_lid_lip_mask();
             rotate(180)
             gf_bin_lid_grip_mask();
+            if (Lip_Grips == "full") {
+                for (rot = [0, 180])
+                rotate(rot)
+                gf_bin_lid_grip_mask_alt();
+            }
         }
 
         render(convexity=4)
