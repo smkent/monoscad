@@ -1,5 +1,5 @@
 /*
- * Kirby 120mm Fume Extractor
+ * Kirby Fume Extractor for 120mm Fan
  * By smkent (GitHub) / bulbasaur0 (Printables)
  *
  * Licensed under Creative Commons (4.0 International License) Attribution
