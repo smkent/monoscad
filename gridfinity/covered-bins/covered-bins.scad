@@ -53,6 +53,7 @@ lid_wall_thickness = 1.2;
 lid_thickness = 0.9;
 lid_hfit_tolerance = 0.97;
 lid_vfit_tolerance = Lid_Fit_Tolerance;
+lid_vpos_tolerance = 0.2;
 lid_lip_fit_tolerance = min(0.1, lid_vfit_tolerance);
 
 bin_separator_wall_thickness = 1.2;
@@ -78,7 +79,7 @@ module gf_profile_wall_lid_lip(lid=false) {
         mirror([1,0,0])
         translate([
             lid ? lid_hfit_tolerance : lid_wall_thickness,
-            $dh - lid_thickness - lid_vfit_tolerance
+            $dh - lid_thickness - lid_vfit_tolerance - lid_vpos_tolerance
         ])
         polygon([
             [0, 0],
@@ -90,7 +91,11 @@ module gf_profile_wall_lid_lip(lid=false) {
 }
 
 module gf_bin_lid_lip_mask() {
-    translate([l_grid * gridx - 0.5 - r_base, 0, $dh + h_base - lid_thickness])
+    translate([
+        l_grid * gridx - 0.5 - r_base,
+        0,
+        $dh + h_base - lid_thickness - lid_vpos_tolerance
+    ])
     linear_extrude(height=(gridz + 10) * 7)
     square([l_grid * gridx, l_grid * gridy], center=true);
 }
@@ -140,25 +145,31 @@ module gf_bin_lid() {
         difference() {
             sz = 0.5 + lid_hfit_tolerance * 3;
             union() {
-                translate([0, 0, $dh + h_base - lid_thickness])
-                gf_bin_rounded_rect(lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz);
+                translate([
+                    0, 0, $dh + h_base - lid_thickness - lid_vpos_tolerance
+                ])
+                gf_bin_rounded_rect(
+                    lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz
+                );
 
                 intersection() {
-                    translate([0, 0, $dh + h_base - lid_thickness])
-                    gf_bin_rounded_rect(h_lip + lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz);
+                    translate([
+                        0, 0, $dh + h_base - lid_thickness - lid_vpos_tolerance
+                    ])
+                    gf_bin_rounded_rect(
+                        h_lip + lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz
+                    );
 
                     block_wall(gridx, gridy, l_grid)
                     difference() {
                         color("yellow", 0.8)
                         profile_wall();
                         union() {
-                            color("lightblue", 0.8)
-                            square([r_base, $dh]);
-                            color("lightgreen", 0.8)
-                            translate([r_base - d_wall, 0])
+                            square([r_base, $dh - lid_vpos_tolerance]);
+                            translate([r_base, 0])
                             square([r_base, $dh + h_lip]);
                         }
-                        offset(delta=0.15)
+                        offset(delta=0.30)
                         gf_profile_wall_lid_lip(lid=true);
                     }
                 }
@@ -187,7 +198,7 @@ module gf_bin_lid_tabs(adjust=false) {
             - lid_wall_thickness
             + adj
         ),
-        -lid_vfit_tolerance
+        -lid_vfit_tolerance - lid_vpos_tolerance
     ])
     linear_extrude(height=lid_lip_fit_tolerance * 2 + lid_thickness + 2)
     intersection() {
@@ -229,7 +240,12 @@ module gf_bin_solid() {
         difference() {
             union() {
                 block_bottom(
-                    ($dh0==0?$dh-0.1:$dh0) - lid_thickness - lid_vfit_tolerance,
+                    (
+                        ($dh0==0?$dh-0.1:$dh0)
+                        - lid_thickness
+                        - lid_vfit_tolerance
+                        - lid_vpos_tolerance
+                    ),
                     gridx,
                     gridy,
                     l_grid
@@ -292,9 +308,10 @@ module gf_cut_pockets() {
         cut_move(x=0, y=0, w=gridx, h=gridy)
         pattern_linear(x=divx, y=divy, sx=per_x, sy=per_y)
         translate([0, 0, -$dh - h_base])
-        linear_extrude(
-            height=gridz * 7 - lid_thickness - lid_vfit_tolerance + 0.001
-        )
+        linear_extrude(height=(
+            gridz * 7
+            - lid_thickness - lid_vfit_tolerance - lid_vpos_tolerance + 0.001
+        ))
         square([
             per_x - bin_separator_wall_thickness,
             per_y - bin_separator_wall_thickness,
