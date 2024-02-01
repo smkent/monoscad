@@ -57,7 +57,7 @@ SHAPE_CYLINDER = "cyl";
 battery_table = [
     ["AA", [SHAPE_CYLINDER, 14.5, 50.5, 1, 4, 1]],
     ["AAA", [SHAPE_CYLINDER, 10.5, 44.5, 2.25, 4, 1]],
-    ["9V", [SHAPE_RECT, [17.5, 26.5], 48.5, 0.8, 4, 2.1]]
+    ["9V", [SHAPE_RECT, [17.5, 26.5], 48.5, 1.6, 4, 0.4]]
 ];
 
 battery_spec = vsearch(battery_table, Battery_Type);
@@ -134,22 +134,8 @@ module walls_cut() {
     }
 }
 
-module battery_cut(grid_x, grid_y) {
-    battery_sz = is_num(battery_xy) ? [battery_xy, battery_xy] : battery_xy;
+module battery_cut_single(battery_sz) {
     ch = hole_chamfer;
-    ncx = battery_count(grid_x, battery_sz[0]);
-    ncy = battery_count(grid_y, battery_sz[1]);
-    cut_sz_x = (ncx - 1) * (battery_sz[0] + battery_separation);
-    cut_sz_y = (ncy - 1) * (battery_sz[1] + battery_separation);
-    translate([0, 0, $dh + h_base])
-    mirror([0, 0, 1])
-    for (nx = [0:1:ncx - 1], ny = [0:1:ncy - 1])
-    translate([-cut_sz_x / 2, -cut_sz_y / 2, 0])
-    translate([
-        (battery_sz[0] + battery_separation) * nx,
-        (battery_sz[1] + battery_separation) * ny,
-        0
-    ])
     render()
     union() {
         if (battery_shape == SHAPE_CYLINDER) {
@@ -170,46 +156,48 @@ module battery_cut(grid_x, grid_y) {
             }
         }
     }
-    // Add inter-cut trim for bin edges if needed
-    if (battery_shape == SHAPE_RECT)
+}
+
+module battery_cut(grid_x, grid_y) {
+    battery_sz = is_num(battery_xy) ? [battery_xy, battery_xy] : battery_xy;
+    ncx = battery_count(grid_x, battery_sz[0]);
+    ncy = battery_count(grid_y, battery_sz[1]);
+    cut_sz_x = (ncx - 1) * (battery_sz[0] + battery_separation);
+    cut_sz_y = (ncy - 1) * (battery_sz[1] + battery_separation);
+    extra_row_sz = (
+        ncy * (battery_sz[1] + battery_separation) + battery_sz[0] <= grid_y * l_grid
+            ? -(battery_sz[0] + battery_separation)
+            : 0
+    );
+    translate([0, extra_row_sz / 2])
     translate([0, 0, $dh + h_base])
     mirror([0, 0, 1])
-    render()
-    intersection() {
-        render()
-        difference() {
-            hull()
-            for (offs = [0, h_lip])
-            translate([0, 0, -offs])
-            linear_extrude(height=(gridz + 1) * 7)
-            offset(-offs * 2)
-            square([
-                ncx * (battery_sz[0] + battery_separation) - battery_separation,
-                ncy * (battery_sz[1] + battery_separation) - battery_separation
-            ], center=true);
-            for (grid = [[gridx, 0], [gridy, 90]])
-            for (i = [1:1:grid[0]-1])
-            rotate(grid[1])
-            translate([i * l_grid, 0])
-            translate([0, 0, -7])
-            linear_extrude(height=(gridz + 2) * 7)
-            translate([-(grid[0] * l_grid) / 2, 0])
-            square([grid[0] * l_grid, 5], center=true);
-        }
-        offs1 = 2.5;
-        translate([0, 0, (min_z - 2) * 7])
-        hull()
-        for (offs = [0, offs1])
-        translate([0, 0, -offs])
-        linear_extrude(height=7)
-        offset(r=r_f2)
-        offset(r=-r_f2)
-        offset(-(offs1 - offs))
-        square([
-            ncx * (battery_sz[0] + battery_separation) - battery_separation,
-            ncy * (battery_sz[1] + battery_separation) - battery_separation
-        ], center=true);
+    for (nx = [0:1:ncx - 1], ny = [0:1:ncy - 1])
+    translate([-cut_sz_x / 2, -cut_sz_y / 2, 0])
+    translate([
+        (battery_sz[0] + battery_separation) * nx,
+        (battery_sz[1] + battery_separation) * ny,
+        0
+    ])
+    battery_cut_single(battery_sz);
+    if (extra_row_sz != 0) {
+        battery_cut_extra_row(grid_x, grid_y, cut_sz_y, extra_row_sz);
     }
+
+}
+
+module battery_cut_extra_row(grid_x, grid_y, cut_sz_y1, extra_row_sz) {
+    battery_sz = is_num(battery_xy) ? [battery_xy, battery_xy] : battery_xy;
+    ncx1 = battery_count(grid_x, battery_sz[1]);
+    ncy1 = battery_count(grid_y, battery_sz[1]);
+    cut_sz_y = (ncx1 - 1) * (battery_sz[1] + battery_separation);
+    translate([0, 0, $dh + h_base])
+    mirror([0, 0, 1])
+    for (ny = [0:1:ncx1 - 1])
+    rotate(90)
+    translate([(battery_sz[1] + battery_separation) * ncy1 / 2, -cut_sz_y / 2, 0])
+    translate([0, (battery_sz[1] + battery_separation) * ny, 0])
+    battery_cut_single(battery_sz);
 }
 
 module text_cut() {
