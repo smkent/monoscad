@@ -42,6 +42,8 @@ for opts in GenerateOptions(
 
 b.Image("demo.png", model, {"Part": "preview"})
 
+b.Source("*.scad", "chrisborge-*.stl", "josteing-*.stl")
+
 b.add_default_targets()
 
 # vim: ft=python
