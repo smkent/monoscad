@@ -122,7 +122,7 @@ This is a remix of:
 * [**Kirby 40mm Fume Extractor** by **Chris Borge**][original-model-url]
 * [**Kirby's eye in three separate parts** by **JosteinG**][original-model-eyes-url]
 
-Both the original model and this remix are licensed under
+The original models and this remix are licensed under
 [Creative Commons (4.0 International License) Attribution][license].
 
 [carbon-filters]: https://amazon.com/dp/B0C2VN85RH/
