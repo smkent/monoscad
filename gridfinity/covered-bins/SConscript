@@ -1,21 +1,28 @@
+from itertools import chain
+
 Import("env")
 b = ModelBuilder(env)
 
 model = "covered-bins.scad"
 
 for opts in GenerateOptions(
-    s=[
-        [(1, 1, 3, 1, 1)],
-        [(1, 1, 3, 2, 2)],
-        [(1, 1, 3, 3, 3)],
-        [(1, 2, 3, 1, 1)],
-        [(1, 2, 3, 2, 3)],
-        [(1, 2, 3, 3, 6)],
-        [(2, 2, 3, 1, 1)],
-        [(2, 2, 3, 2, 2)],
-        [(2, 2, 3, 4, 4)],
-        [(2, 2, 3, 6, 6)],
-    ]
+    s=chain(
+        *[
+            [
+                [(1, 1, ht, 1, 1)],
+                [(1, 1, ht, 2, 2)],
+                [(1, 1, ht, 3, 3)],
+                [(1, 2, ht, 1, 1)],
+                [(1, 2, ht, 2, 3)],
+                [(1, 2, ht, 3, 6)],
+                [(2, 2, ht, 1, 1)],
+                [(2, 2, ht, 2, 2)],
+                [(2, 2, ht, 4, 4)],
+                [(2, 2, ht, 6, 6)],
+            ]
+            for ht in [2, 3]
+        ]
+    )
 ):
     x, y, z, divx, divy = opts.s
     b.STL(
@@ -51,7 +58,7 @@ b.Image(
     model,
     [
         {
-            "Part": "both",
+            "Part": "both_closed",
             "gridx": opts.s[0],
             "gridy": opts.s[1],
             "gridz": opts.s[2],

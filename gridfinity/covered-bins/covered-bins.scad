@@ -15,7 +15,7 @@ $fs = 0.25;
 
 /* [General Settings] */
 
-Part = "both"; // [bin: Bin, lid: Lid, both: Both, bin_slice: Bin slice for print testing]
+Part = "both_closed"; // [bin: Bin, lid: Lid, both_closed: Both - lid closed, both_open: Both - lid open, bin_slice: Bin slice for print testing]
 
 // number of bases along x-axis
 gridx = 2;
@@ -24,14 +24,15 @@ gridy = 2;
 // bin height. See bin height information and "gridz_define" below.
 gridz = 3;
 
+/* [Covered Bin Features] */
+Interior_Style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
+Lip_Grips = "full"; // [none: None, single: Along X axis, full: Along X and Y axes]
+
 /* [Linear Compartments] */
 // number of X Divisions (set to zero to have solid bin)
 divx = 6;
 // number of Y Divisions (set to zero to have solid bin)
 divy = 6;
-
-/* [Base] */
-interior_style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
 
 /* [Height] */
 // determine what the variable "gridz" applies to based on your use case
@@ -45,8 +46,16 @@ module __end_customizer_options__() { }
 
 // Constants //
 
+d_wall = 1.60;
+
+lid_wall_thickness = 1.2;
 lid_thickness = 0.9;
-lid_fit_tolerance = 0.1;
+lid_hfit_tolerance = 1.1;
+lid_vfit_tolerance = 0.1;
+lid_vpos_tolerance = 0.2;
+lid_lip_fit_tolerance = min(0.1, lid_vfit_tolerance);
+
+bin_separator_wall_thickness = 1.2;
 
 module gf_setup_stub(gx, gy, h, h0 = 0, l = l_grid, sl = 0) {
     $gxx = gx;
@@ -62,39 +71,81 @@ module gf_setup() {
     children();
 }
 
-module gf_profile_wall_lid_lip() {
+module gf_profile_wall_lid_lip(lid=false) {
     difference() {
         profile_wall();
         translate([r_base,0,0])
         mirror([1,0,0])
-        translate([lid_thickness, $dh - lid_thickness - lid_fit_tolerance / 2])
+        translate([
+            lid ? lid_hfit_tolerance : lid_wall_thickness,
+            $dh - lid_thickness - lid_vfit_tolerance - lid_vpos_tolerance
+        ])
         polygon([
             [0, 0],
-            [0, lid_thickness],
-            [d_wall2, lid_thickness + d_wall2],
+            [0, lid_thickness + lid_vfit_tolerance],
+            [d_wall2, lid_thickness + lid_vfit_tolerance + d_wall2],
             [d_wall2, 0],
         ]);
     }
 }
 
 module gf_bin_lid_lip_mask() {
-    translate([l_grid * gridx - 0.5 - r_base, 0, $dh + h_base - lid_thickness])
+    translate([
+        l_grid * gridx - 0.5 - r_base,
+        0,
+        $dh + h_base - lid_thickness - lid_vpos_tolerance
+    ])
     linear_extrude(height=(gridz + 10) * 7)
     square([l_grid * gridx, l_grid * gridy], center=true);
 }
 
-module gf_bin_lid_grip_mask() {
-    grip_w = l_grid / 2 - h_lip * 2;
+module gf_bin_lid_grip_mask_shape() {
+    grip_w = l_grid / 2 - h_lip * 2 - 2;
     radius = 3;
+    translate([-(grip_w - l_grid / 2) / 2, 0])
+    intersection() {
+        offset(r=-radius)
+        offset(r=2 * radius)
+        offset(r=-radius)
+        union() {
+            square([grip_w, h_lip * 10]);
+            translate([-grip_w * 2, h_lip * 0.75])
+            square([grip_w * 5, h_lip * 9]);
+        }
+        translate([-radius, 0])
+        square([grip_w + radius * 2, h_lip]);
+    }
+}
+
+module gf_bin_lid_grip_mask_set(num_grid) {
+    rotate([90, 0, 90])
+    translate([0, 0, l_grid * num_grid / 2])
+    linear_extrude(height=l_grid / 2, center=true)
+    gf_bin_lid_grip_mask_shape();
+}
+
+module gf_bin_lid_grip_mask() {
+    if (Lip_Grips != "none")
     translate([0, 0, $dh + h_base + h_lip * 0.25])
     pattern_linear(1, gridy, l_grid * gridx, l_grid)
-    rotate([90, 0, 90])
-    translate([0, 0, l_grid * gridx / 2])
-    linear_extrude(height=l_grid * 2, center=true)
-    translate([-(grip_w - l_grid / 2) / 2, 0])
-    offset(r=radius)
-    offset(r=-radius)
-    square([grip_w, h_lip * 10]);
+    gf_bin_lid_grip_mask_set(gridx);
+}
+
+module gf_bin_lid_grip_mask_alt() {
+    translate([0, 0, $dh + h_base + h_lip * 0.25])
+    pattern_linear(gridx, 1, l_grid, l_grid * gridy)
+    rotate(90)
+    gf_bin_lid_grip_mask_set(gridy);
+}
+
+module gf_bin_lid_grip_masks() {
+    if (Lip_Grips != "none")
+    for (rot = [0, 180])
+    rotate(rot) {
+        gf_bin_lid_grip_mask();
+        if (Lip_Grips == "full")
+        gf_bin_lid_grip_mask_alt();
+    }
 }
 
 module gf_bin_lid() {
@@ -107,34 +158,80 @@ module gf_bin_lid() {
                 profile_wall();
                 gf_bin_lid_lip_mask();
             }
-            gf_bin_lid_grip_mask();
+            gf_bin_lid_grip_masks();
         }
+
+
         difference() {
-            space = 2;
-            translate([0, 0, $dh + h_base - lid_thickness])
-            gf_bin_rounded_rect(
-                lid_thickness,
-                add_x=-lid_thickness - space,
-                add_y=-lid_thickness - space,
-                r=r_fo1 - lid_thickness - space
-            );
-            gf_bin_lid_tabs();
+            sz = 0.5 + lid_hfit_tolerance * 3;
+            union() {
+                translate([
+                    0, 0, $dh + h_base - lid_thickness - lid_vpos_tolerance
+                ])
+                gf_bin_rounded_rect(
+                    lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz
+                );
+
+                intersection() {
+                    translate([
+                        0, 0, $dh + h_base - lid_thickness - lid_vpos_tolerance
+                    ])
+                    gf_bin_rounded_rect(
+                        h_lip + lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz
+                    );
+
+                    block_wall(gridx, gridy, l_grid)
+                    difference() {
+                        color("yellow", 0.8)
+                        profile_wall();
+                        union() {
+                            square([r_base, $dh - lid_vpos_tolerance]);
+                            translate([r_base, 0])
+                            square([r_base, $dh + h_lip]);
+                        }
+                        offset(delta=0.30)
+                        gf_profile_wall_lid_lip(lid=true);
+                    }
+                }
+            }
+
+            gf_bin_lid_tabs(adjust=true);
         }
     }
 }
 
-module gf_bin_lid_tabs() {
+module gf_bin_lid_tabs(adjust=false) {
+    adj = adjust ? -lid_hfit_tolerance * 1.5 + lid_wall_thickness: 0;
     cr = 0.6;
     // Tabs
     translate([
         -(l_grid * gridx - 0.5) / 2 + r_base + cr,
         0,
-        $dh + h_base - lid_thickness - lid_fit_tolerance / 2 - 0.001
+        $dh + h_base - lid_thickness - lid_lip_fit_tolerance / 2 - 0.001
     ])
     for (ml = [0, 1])
     mirror([0, ml])
-    translate([0, gridy * l_grid / 2 - 0.5 - lid_thickness, 0])
-    cylinder(r=cr, h=(lid_fit_tolerance + lid_thickness) * 2);
+    translate([
+        0,
+        (
+            gridy * l_grid / 2 - 0.5 / 2
+            - lid_wall_thickness
+            + adj
+        ),
+        -lid_vfit_tolerance - lid_vpos_tolerance
+    ])
+    linear_extrude(height=lid_lip_fit_tolerance * 2 + lid_thickness + 2)
+    intersection() {
+        $fs = $fs / 4;
+        offset(r=-(cr * 0.5))
+        offset(r=(cr * 0.5))
+        union() {
+            circle(r=cr);
+            translate([0, cr * 4])
+            square(cr * 8, center=true);
+        }
+        square([cr * 3, cr * 2], center=true);
+    }
 }
 
 module gf_bin_solid() {
@@ -145,20 +242,24 @@ module gf_bin_solid() {
         difference() {
             union() {
                 block_wall(gridx, gridy, l_grid)
-                gf_profile_wall_lid_lip();
+                gf_profile_wall_lid_lip(lid=false);
                 gf_bin_lid_tabs();
             }
-            translate([-lid_fit_tolerance, 0, -lid_fit_tolerance])
+            translate([-lid_lip_fit_tolerance, 0, -lid_lip_fit_tolerance])
             gf_bin_lid_lip_mask();
-            rotate(180)
-            gf_bin_lid_grip_mask();
+            gf_bin_lid_grip_masks();
         }
 
         render(convexity=4)
         difference() {
             union() {
                 block_bottom(
-                    ($dh0==0?$dh-0.1:$dh0) - lid_thickness - lid_fit_tolerance,
+                    (
+                        ($dh0==0?$dh-0.1:$dh0)
+                        - lid_thickness
+                        - lid_vfit_tolerance
+                        - lid_vpos_tolerance
+                    ),
                     gridx,
                     gridy,
                     l_grid
@@ -179,7 +280,7 @@ module gf_bin_solid() {
                     gf_bin_rounded_rect(d_wall, add_x=-d_wall, add_y=-d_wall);
                 }
                 intersection() {
-                    if (interior_style == "partial_raised") {
+                    if (Interior_Style == "partial_raised") {
                         translate([0, 0, d_wall + h_base - r_c2 + 0.1])
                         linear_extrude(height=h_base - r_c2)
                         square([l_grid * gridx, l_grid * gridy], center=true);
@@ -215,20 +316,21 @@ module gf_bin_rounded_rect(height, add_x=0, add_y=0, r=r_fo1) {
 }
 
 module gf_cut_pockets() {
-    if (divx > 0 && divy > 0)
-    cut_move(x=0, y=0, w=gridx, h=gridy)
-    pattern_linear(
-        x=divx,
-        y=divy,
-        sx=gridx * l_grid / divx,
-        sy=gridy * l_grid / divy
-    )
-    translate([0, 0, -$dh - h_base])
-    linear_extrude(height=gridz * 7 - lid_thickness - lid_fit_tolerance + 0.001)
-    square([
-        gridx * l_grid / divx - d_wall,
-        gridy * l_grid / divy - d_wall,
-    ], center=true);
+    if (divx > 0 && divy > 0) {
+        per_x = (gridx * l_grid - d_wall * 2 + bin_separator_wall_thickness) / divx;
+        per_y = (gridy * l_grid - d_wall * 2 + bin_separator_wall_thickness) / divy;
+        cut_move(x=0, y=0, w=gridx, h=gridy)
+        pattern_linear(x=divx, y=divy, sx=per_x, sy=per_y)
+        translate([0, 0, -$dh - h_base])
+        linear_extrude(height=(
+            gridz * 7
+            - lid_thickness - lid_vfit_tolerance - lid_vpos_tolerance + 0.001
+        ))
+        square([
+            per_x - bin_separator_wall_thickness,
+            per_y - bin_separator_wall_thickness,
+        ], center=true);
+    }
 }
 
 module gf_bin(pockets=true) {
@@ -245,12 +347,12 @@ module main() {
             translate([0, 0, -$dh - h_base + lid_thickness])
             gf_bin_lid();
         }
-    } else if (Part == "both") {
+    } else if (Part == "both_closed" || Part == "both_open") {
         // Bin
         gf_bin();
         // Lid
         if ($preview)
-        translate([l_grid * gridx - h_lip * 2, 0, 0])
+        translate([Part == "both_open" ? l_grid * gridx - h_lip * 2 : 0, 0, 0])
         gf_setup()
         gf_bin_lid();
     } else if (Part == "bin_slice") {
