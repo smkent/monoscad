@@ -51,7 +51,7 @@ b.Image(
     model,
     [
         {
-            "Part": "both",
+            "Part": "both_closed",
             "gridx": opts.s[0],
             "gridy": opts.s[1],
             "gridz": opts.s[2],

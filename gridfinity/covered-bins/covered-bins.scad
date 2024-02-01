@@ -15,7 +15,7 @@ $fs = 0.25;
 
 /* [General Settings] */
 
-Part = "both"; // [bin: Bin, lid: Lid, both: Both, bin_slice: Bin slice for print testing]
+Part = "both_closed"; // [bin: Bin, lid: Lid, both_closed: Both - lid closed, both_open: Both - lid open, bin_slice: Bin slice for print testing]
 
 // number of bases along x-axis
 gridx = 2;
@@ -277,12 +277,12 @@ module main() {
             translate([0, 0, -$dh - h_base + lid_thickness])
             gf_bin_lid();
         }
-    } else if (Part == "both") {
+    } else if (Part == "both_closed" || Part == "both_open") {
         // Bin
         gf_bin();
         // Lid
         if ($preview)
-        translate([l_grid * gridx - h_lip * 2, 0, 0])
+        translate([Part == "both_open" ? l_grid * gridx - h_lip * 2 : 0, 0, 0])
         gf_setup()
         gf_bin_lid();
     } else if (Part == "bin_slice") {
