@@ -1,6 +1,6 @@
 # Kirby Fume Extractor for 120mm Fan (remix)
 
-![This model is a work in progress][work-in-progress-badge]
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-4.0 license][license-badge]][license]
 
 A remixed fume extractor in the shape of our favorite pink blob
@@ -131,6 +131,7 @@ The original models and this remix are licensed under
 [openscad]: https://openscad.org
 [original-model-eyes-url]: https://www.printables.com/model/437712-kirbys-eye-in-three-separate-parts
 [original-model-url]: https://www.printables.com/model/348385-kirby-40mm-fume-extractor
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/747194
 [usb-c-decoy-option-1]: https://www.aliexpress.com/item/3256805358753597.html
 [usb-c-decoy-option-2]: https://www.aliexpress.com/item/3256804809774180.html
-[work-in-progress-badge]: /_static/work-in-progress-badge.svg
