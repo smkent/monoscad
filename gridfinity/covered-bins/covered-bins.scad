@@ -27,6 +27,7 @@ gridz = 3;
 /* [Covered Bin Features] */
 Lid_Fit_Tolerance = 0.1; // [0:0.1:1]
 Interior_Style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
+Lip_Grips = true;
 
 /* [Linear Compartments] */
 // number of X Divisions (set to zero to have solid bin)
@@ -92,6 +93,7 @@ module gf_bin_lid_lip_mask() {
 module gf_bin_lid_grip_mask() {
     grip_w = l_grid / 2 - h_lip * 2;
     radius = 3;
+    if (Lip_Grips)
     translate([0, 0, $dh + h_base + h_lip * 0.25])
     pattern_linear(1, gridy, l_grid * gridx, l_grid)
     rotate([90, 0, 90])
