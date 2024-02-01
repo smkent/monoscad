@@ -47,8 +47,9 @@ module __end_customizer_options__() { }
 
 // Constants //
 
+lid_wall_thickness = 0.9;
 lid_thickness = 0.9;
-lid_hfit_tolerance = 1.1;
+lid_hfit_tolerance = 0.97;
 lid_vfit_tolerance = Lid_Fit_Tolerance;
 lid_lip_fit_tolerance = min(0.1, lid_vfit_tolerance);
 
@@ -66,13 +67,13 @@ module gf_setup() {
     children();
 }
 
-module gf_profile_wall_lid_lip() {
+module gf_profile_wall_lid_lip(lid=false) {
     difference() {
         profile_wall();
         translate([r_base,0,0])
         mirror([1,0,0])
         translate([
-            lid_thickness,
+            lid ? lid_hfit_tolerance : lid_wall_thickness,
             $dh - lid_thickness - lid_vfit_tolerance
         ])
         polygon([
@@ -133,7 +134,7 @@ module gf_bin_lid() {
 
 
         difference() {
-            sz = 0.5 + lid_thickness * 2 + lid_hfit_tolerance;
+            sz = 0.5 + lid_hfit_tolerance * 3;
             union() {
                 translate([0, 0, $dh + h_base - lid_thickness])
                 gf_bin_rounded_rect(lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz);
@@ -153,18 +154,19 @@ module gf_bin_lid() {
                             translate([r_base - d_wall, 0])
                             square([r_base, $dh + h_lip]);
                         }
-                        offset(delta=0.2)
-                        gf_profile_wall_lid_lip();
+                        offset(delta=0.15)
+                        gf_profile_wall_lid_lip(lid=true);
                     }
                 }
             }
 
-            gf_bin_lid_tabs(adjust=-lid_hfit_tolerance/2);
+            gf_bin_lid_tabs(adjust=true);
         }
     }
 }
 
-module gf_bin_lid_tabs(adjust=0) {
+module gf_bin_lid_tabs(adjust=false) {
+    adj = adjust ? -lid_hfit_tolerance * 1.5 + 0.9: 0;
     cr = 0.6;
     // Tabs
     translate([
@@ -174,8 +176,16 @@ module gf_bin_lid_tabs(adjust=0) {
     ])
     for (ml = [0, 1])
     mirror([0, ml])
-    translate([0, gridy * l_grid / 2 - 0.5 / 2 - lid_thickness + adjust, -lid_vfit_tolerance])
-    linear_extrude(height=(lid_lip_fit_tolerance + lid_thickness) * 3)
+    translate([
+        0,
+        (
+            gridy * l_grid / 2 - 0.5 / 2
+            - lid_wall_thickness
+            + adj
+        ),
+        -lid_vfit_tolerance
+    ])
+    linear_extrude(height=lid_lip_fit_tolerance * 2 + lid_thickness + 2)
     intersection() {
         $fs = $fs / 4;
         offset(r=-(cr * 0.5))
@@ -197,7 +207,7 @@ module gf_bin_solid() {
         difference() {
             union() {
                 block_wall(gridx, gridy, l_grid)
-                gf_profile_wall_lid_lip();
+                gf_profile_wall_lid_lip(lid=false);
                 gf_bin_lid_tabs();
             }
             translate([-lid_lip_fit_tolerance, 0, -lid_lip_fit_tolerance])
