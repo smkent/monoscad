@@ -3,8 +3,77 @@ b = ModelBuilder(env)
 
 model = "covered-bins.scad"
 
-b.STL("covered-bins.stl", model)
-b.Image("demo.png", model)
+for opts in GenerateOptions(
+    s=[
+        [(1, 1, 3, 1, 1)],
+        [(1, 1, 3, 2, 2)],
+        [(1, 1, 3, 3, 3)],
+        [(1, 2, 3, 1, 1)],
+        [(1, 2, 3, 2, 3)],
+        [(1, 2, 3, 3, 6)],
+        [(2, 2, 3, 1, 1)],
+        [(2, 2, 3, 2, 2)],
+        [(2, 2, 3, 4, 4)],
+        [(2, 2, 3, 6, 6)],
+    ]
+):
+    x, y, z, divx, divy = opts.s
+    b.STL(
+        f"bin-{x}x{y}x{z}-{divx}x,{divy}y.stl",
+        model,
+        {
+            "Part": "bin",
+            "gridx": x,
+            "gridy": y,
+            "gridz": z,
+            "divx": divx,
+            "divy": divy,
+        },
+    )
+for opts in GenerateOptions(s=[[(1, 1)], [(2, 2)]]):
+    x, y = opts.s
+    b.STL(f"lid-{x}x{y}.stl", model, {"Part": "lid", "gridx": x, "gridy": y})
+    b.STL(
+        f"bin-slice-{x}x{y}.stl",
+        model,
+        {
+            "Part": "bin_slice",
+            "gridx": x,
+            "gridy": y,
+            "gridz": 3,
+            "divx": 0,
+            "divy": 0,
+        },
+    )
+
+b.Image(
+    "demo.gif",
+    model,
+    [
+        {
+            "Part": "both",
+            "gridx": opts.s[0],
+            "gridy": opts.s[1],
+            "gridz": opts.s[2],
+            "divx": opts.s[3],
+            "divy": opts.s[4],
+        }
+        for opts in GenerateOptions(
+            s=[
+                [(1, 1, 3, 1, 1)],
+                [(1, 1, 3, 2, 2)],
+                [(1, 1, 3, 3, 3)],
+                [(1, 2, 3, 1, 1)],
+                [(1, 2, 3, 2, 3)],
+                [(1, 2, 3, 3, 6)],
+                [(2, 2, 3, 1, 1)],
+                [(2, 2, 3, 2, 2)],
+                [(2, 2, 3, 4, 4)],
+                [(2, 2, 3, 6, 6)],
+            ]
+        )
+    ],
+)
 
 b.add_default_targets()
 
