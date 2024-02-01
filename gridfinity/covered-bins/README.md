@@ -1,4 +1,4 @@
-# Covered Bins with Covers (remix)
+# Gridfinity Bins with Covers (remix)
 
 ![This model is a work in progress][work-in-progress-badge]
 [![CC-BY-4.0 license][license-badge]][license]
