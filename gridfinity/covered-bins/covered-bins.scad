@@ -24,14 +24,15 @@ gridy = 2;
 // bin height. See bin height information and "gridz_define" below.
 gridz = 3;
 
+/* [Covered Bin Features] */
+Lid_Fit_Tolerance = 0.1; // [0:0.1:1]
+Interior_Style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
+
 /* [Linear Compartments] */
 // number of X Divisions (set to zero to have solid bin)
 divx = 6;
 // number of Y Divisions (set to zero to have solid bin)
 divy = 6;
-
-/* [Base] */
-interior_style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
 
 /* [Height] */
 // determine what the variable "gridz" applies to based on your use case
@@ -46,7 +47,9 @@ module __end_customizer_options__() { }
 // Constants //
 
 lid_thickness = 0.9;
-lid_fit_tolerance = 0.1;
+lid_hfit_tolerance = 1.1;
+lid_vfit_tolerance = Lid_Fit_Tolerance;
+lid_lip_fit_tolerance = min(0.1, lid_vfit_tolerance);
 
 module gf_setup_stub(gx, gy, h, h0 = 0, l = l_grid, sl = 0) {
     $gxx = gx;
@@ -67,11 +70,14 @@ module gf_profile_wall_lid_lip() {
         profile_wall();
         translate([r_base,0,0])
         mirror([1,0,0])
-        translate([lid_thickness, $dh - lid_thickness - lid_fit_tolerance / 2])
+        translate([
+            lid_thickness,
+            $dh - lid_thickness - lid_vfit_tolerance
+        ])
         polygon([
             [0, 0],
-            [0, lid_thickness],
-            [d_wall2, lid_thickness + d_wall2],
+            [0, lid_thickness + lid_vfit_tolerance],
+            [d_wall2, lid_thickness + lid_vfit_tolerance + d_wall2],
             [d_wall2, 0],
         ]);
     }
@@ -112,8 +118,7 @@ module gf_bin_lid() {
 
 
         difference() {
-            space = 1.1;
-            sz = 0.5 + lid_thickness * 2 + space;
+            sz = 0.5 + lid_thickness * 2 + lid_hfit_tolerance;
             union() {
                 translate([0, 0, $dh + h_base - lid_thickness])
                 gf_bin_rounded_rect(lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz);
@@ -139,7 +144,7 @@ module gf_bin_lid() {
                 }
             }
 
-            gf_bin_lid_tabs(adjust=-space/2);
+            gf_bin_lid_tabs(adjust=-lid_hfit_tolerance/2);
         }
     }
 }
@@ -150,12 +155,12 @@ module gf_bin_lid_tabs(adjust=0) {
     translate([
         -(l_grid * gridx - 0.5) / 2 + r_base + cr,
         0,
-        $dh + h_base - lid_thickness - lid_fit_tolerance / 2 - 0.001
+        $dh + h_base - lid_thickness - lid_lip_fit_tolerance / 2 - 0.001
     ])
     for (ml = [0, 1])
     mirror([0, ml])
-    translate([0, gridy * l_grid / 2 - 0.5 / 2 - lid_thickness + adjust, 0])
-    linear_extrude(height=(lid_fit_tolerance + lid_thickness) * 2)
+    translate([0, gridy * l_grid / 2 - 0.5 / 2 - lid_thickness + adjust, -lid_vfit_tolerance])
+    linear_extrude(height=(lid_lip_fit_tolerance + lid_thickness) * 3)
     intersection() {
         $fs = $fs / 4;
         offset(r=-(cr * 0.5))
@@ -180,7 +185,7 @@ module gf_bin_solid() {
                 gf_profile_wall_lid_lip();
                 gf_bin_lid_tabs();
             }
-            translate([-lid_fit_tolerance, 0, -lid_fit_tolerance])
+            translate([-lid_lip_fit_tolerance, 0, -lid_lip_fit_tolerance])
             gf_bin_lid_lip_mask();
             rotate(180)
             gf_bin_lid_grip_mask();
@@ -190,7 +195,7 @@ module gf_bin_solid() {
         difference() {
             union() {
                 block_bottom(
-                    ($dh0==0?$dh-0.1:$dh0) - lid_thickness - lid_fit_tolerance,
+                    ($dh0==0?$dh-0.1:$dh0) - lid_thickness - lid_vfit_tolerance,
                     gridx,
                     gridy,
                     l_grid
@@ -211,7 +216,7 @@ module gf_bin_solid() {
                     gf_bin_rounded_rect(d_wall, add_x=-d_wall, add_y=-d_wall);
                 }
                 intersection() {
-                    if (interior_style == "partial_raised") {
+                    if (Interior_Style == "partial_raised") {
                         translate([0, 0, d_wall + h_base - r_c2 + 0.1])
                         linear_extrude(height=h_base - r_c2)
                         square([l_grid * gridx, l_grid * gridy], center=true);
@@ -247,20 +252,21 @@ module gf_bin_rounded_rect(height, add_x=0, add_y=0, r=r_fo1) {
 }
 
 module gf_cut_pockets() {
-    if (divx > 0 && divy > 0)
-    cut_move(x=0, y=0, w=gridx, h=gridy)
-    pattern_linear(
-        x=divx,
-        y=divy,
-        sx=gridx * l_grid / divx,
-        sy=gridy * l_grid / divy
-    )
-    translate([0, 0, -$dh - h_base])
-    linear_extrude(height=gridz * 7 - lid_thickness - lid_fit_tolerance + 0.001)
-    square([
-        gridx * l_grid / divx - d_wall,
-        gridy * l_grid / divy - d_wall,
-    ], center=true);
+    if (divx > 0 && divy > 0) {
+        cut_move(x=0, y=0, w=gridx, h=gridy)
+        pattern_linear(
+            x=divx,
+            y=divy,
+            sx=gridx * l_grid / divx,
+            sy=gridy * l_grid / divy
+        )
+        translate([0, 0, -$dh - h_base])
+        linear_extrude(height=gridz * 7 - lid_thickness - lid_vfit_tolerance + 0.001)
+        square([
+            gridx * l_grid / divx - d_wall,
+            gridy * l_grid / divy - d_wall,
+        ], center=true);
+    }
 }
 
 module gf_bin(pockets=true) {
