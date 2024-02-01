@@ -110,20 +110,16 @@ module gf_bin_lid() {
             gf_bin_lid_grip_mask();
         }
         difference() {
-            space = 2;
+            space = 1.1;
+            sz = 0.5 + lid_thickness * 2 + space;
             translate([0, 0, $dh + h_base - lid_thickness])
-            gf_bin_rounded_rect(
-                lid_thickness,
-                add_x=-lid_thickness - space,
-                add_y=-lid_thickness - space,
-                r=r_fo1 - lid_thickness - space
-            );
-            gf_bin_lid_tabs();
+            gf_bin_rounded_rect(lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz);
+            gf_bin_lid_tabs(adjust=-space/2);
         }
     }
 }
 
-module gf_bin_lid_tabs() {
+module gf_bin_lid_tabs(adjust=0) {
     cr = 0.6;
     // Tabs
     translate([
@@ -133,8 +129,19 @@ module gf_bin_lid_tabs() {
     ])
     for (ml = [0, 1])
     mirror([0, ml])
-    translate([0, gridy * l_grid / 2 - 0.5 - lid_thickness, 0])
-    cylinder(r=cr, h=(lid_fit_tolerance + lid_thickness) * 2);
+    translate([0, gridy * l_grid / 2 - 0.5 / 2 - lid_thickness + adjust, 0])
+    linear_extrude(height=(lid_fit_tolerance + lid_thickness) * 2)
+    intersection() {
+        $fs = $fs / 4;
+        offset(r=-(cr * 0.5))
+        offset(r=(cr * 0.5))
+        union() {
+            circle(r=cr);
+            translate([0, cr * 4])
+            square(cr * 8, center=true);
+        }
+        square([cr * 3, cr * 2], center=true);
+    }
 }
 
 module gf_bin_solid() {
