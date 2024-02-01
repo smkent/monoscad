@@ -128,6 +128,7 @@ Both the original model and this remix are licensed under
 [carbon-filters]: https://amazon.com/dp/B0C2VN85RH/
 [license-badge]: /_static/license-badge-cc-by-4.0.svg
 [license]: http://creativecommons.org/licenses/by/4.0/
+[openscad]: https://openscad.org
 [original-model-eyes-url]: https://www.printables.com/model/437712-kirbys-eye-in-three-separate-parts
 [original-model-url]: https://www.printables.com/model/348385-kirby-40mm-fume-extractor
 [usb-c-decoy-option-1]: https://www.aliexpress.com/item/3256805358753597.html
