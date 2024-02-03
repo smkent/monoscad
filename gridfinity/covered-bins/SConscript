@@ -5,25 +5,17 @@ b = ModelBuilder(env)
 
 model = "covered-bins.scad"
 
-for opts in GenerateOptions(
-    s=chain(
-        *[
-            [
-                [(1, 1, ht, 1, 1)],
-                [(1, 1, ht, 2, 2)],
-                [(1, 1, ht, 3, 3)],
-                [(1, 2, ht, 1, 1)],
-                [(1, 2, ht, 2, 3)],
-                [(1, 2, ht, 3, 6)],
-                [(2, 2, ht, 1, 1)],
-                [(2, 2, ht, 2, 2)],
-                [(2, 2, ht, 4, 4)],
-                [(2, 2, ht, 6, 6)],
-            ]
-            for ht in [2, 3]
-        ]
-    )
-):
+bin_sizes = [
+    [(x, y, ht, dx * x or 1, dy * y or 1)]
+    for x, y in [(1, 1), (1, 2), (2, 2)]
+    # for dx in ([0] if (x > 1 and y > 1) else []) + [1, 2, 3]
+    for dx, dy in [(0, 0), (1, 1), (1, 2), (2, 2), (2, 3), (3, 3)]
+    for ht in [2, 3]
+    # Omit duplicate entry for 1x1 bin with no divisions
+    if (dx + dy + x + y > 2)
+]
+
+for opts in GenerateOptions(s=bin_sizes):
     x, y, z, divx, divy = opts.s
     b.STL(
         f"bin-{x}x{y}x{z}-{divx}x,{divy}y.stl",
