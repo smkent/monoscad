@@ -27,7 +27,7 @@ gridz = 3;
 /* [Covered Bin Features] */
 Interior_Style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
 Lip_Grips = "full"; // [none: None, single: Along X axis, full: Along X and Y axes]
-Lid_Orientation = "up"; // [up: Up, down: Down, left: Left, right: Right]
+Lid_Orientation = "left"; // [up: Up, down: Down, left: Left, right: Right]
 
 /* [Linear Compartments] */
 div_pattern = "default"; // [default: Use divx & divy values, multisize: Multiple sizes with div_multiple as size multiplier, custom: Custom pattern -- modify gf_custom_pockets module in the source code]
