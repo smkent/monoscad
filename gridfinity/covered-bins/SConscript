@@ -5,36 +5,33 @@ b = ModelBuilder(env)
 
 model = "covered-bins.scad"
 
-for opts in GenerateOptions(
-    s=chain(
-        *[
-            [
-                [(1, 1, ht, 1, 1)],
-                [(1, 1, ht, 2, 2)],
-                [(1, 1, ht, 3, 3)],
-                [(1, 2, ht, 1, 1)],
-                [(1, 2, ht, 2, 3)],
-                [(1, 2, ht, 3, 6)],
-                [(2, 2, ht, 1, 1)],
-                [(2, 2, ht, 2, 2)],
-                [(2, 2, ht, 4, 4)],
-                [(2, 2, ht, 6, 6)],
-            ]
-            for ht in [2, 3]
-        ]
-    )
-):
-    x, y, z, divx, divy = opts.s
+bin_sizes = [
+    [(x, y, ht, dx * x or 1, dy * y or 1, div_multiple)]
+    for x, y in [(1, 1), (1, 2), (2, 2)]
+    # for dx in ([0] if (x > 1 and y > 1) else []) + [1, 2, 3]
+    for dx, dy in [(0, 0), (1, 1), (1, 2), (2, 2), (2, 3), (3, 3)]
+    for div_multiple in [1, 2]
+    for ht in [2, 3]
+    # Omit duplicate entry for 1x1 bin with no divisions
+    if (dx + dy + x + y > 2)
+]
+
+for opts in GenerateOptions(s=bin_sizes):
+    x, y, z, divx, divy, div_multiple = opts.s
+    div_pattern = "multisize" if div_multiple > 1 else "default"
+    div_fn = f"-multi{div_multiple}" if div_multiple > 1 else ""
     b.STL(
-        f"bin-{x}x{y}x{z}-{divx}x,{divy}y.stl",
+        f"bin-{x}x{y}x{z}-{divx}x,{divy}y{div_fn}.stl",
         model,
         {
             "Part": "bin",
             "gridx": x,
             "gridy": y,
             "gridz": z,
+            "div_pattern": div_pattern,
             "divx": divx,
             "divy": divy,
+            "div_multiple": div_multiple,
         },
     )
 for opts in GenerateOptions(s=[[(1, 1)], [(2, 2)]]):
@@ -62,21 +59,27 @@ b.Image(
             "gridx": opts.s[0],
             "gridy": opts.s[1],
             "gridz": opts.s[2],
+            "div_pattern": "multisize" if opts.s[5] > 1 else "default",
             "divx": opts.s[3],
             "divy": opts.s[4],
+            "div_multiple": opts.s[5],
         }
         for opts in GenerateOptions(
             s=[
-                [(1, 1, 3, 1, 1)],
-                [(1, 1, 3, 2, 2)],
-                [(1, 1, 3, 3, 3)],
-                [(1, 2, 3, 1, 1)],
-                [(1, 2, 3, 2, 3)],
-                [(1, 2, 3, 3, 6)],
-                [(2, 2, 3, 1, 1)],
-                [(2, 2, 3, 2, 2)],
-                [(2, 2, 3, 4, 4)],
-                [(2, 2, 3, 6, 6)],
+                [(1, 1, 3, 1, 1, 1)],
+                [(1, 1, 3, 2, 2, 1)],
+                [(1, 1, 3, 3, 3, 2)],
+                [(1, 1, 3, 3, 3, 1.5)],
+                [(1, 2, 3, 1, 1, 1)],
+                [(1, 2, 3, 2, 3, 1)],
+                [(1, 2, 3, 3, 6, 2)],
+                [(1, 2, 3, 3, 6, 1.5)],
+                [(2, 2, 3, 1, 1, 1)],
+                [(2, 2, 3, 2, 2, 1)],
+                [(2, 2, 3, 4, 4, 2)],
+                [(2, 2, 3, 6, 6, 2)],
+                [(2, 2, 3, 6, 6, 1.5)],
+                [(2, 2, 3, 6, 6, 1)],
             ]
         )
     ],

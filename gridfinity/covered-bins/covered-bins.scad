@@ -29,10 +29,13 @@ Interior_Style = "minimal"; // [minimal: Minimal, partial_raised: Partially rais
 Lip_Grips = "full"; // [none: None, single: Along X axis, full: Along X and Y axes]
 
 /* [Linear Compartments] */
+div_pattern = "default"; // [default: Use divx & divy values, multisize: Multiple sizes with div_multiple as size multiplier, custom: Custom pattern -- modify gf_custom_pockets module in the source code]
 // number of X Divisions (set to zero to have solid bin)
 divx = 6;
 // number of Y Divisions (set to zero to have solid bin)
 divy = 6;
+// Secondary compartment size multiplier (for use with div_pattern set to "Multiple sizes with div_multiple as size multiplier")
+div_multiple = 1; // [1:.5:5]
 
 /* [Height] */
 // determine what the variable "gridz" applies to based on your use case
@@ -56,6 +59,63 @@ lid_vpos_tolerance = 0.2;
 lid_lip_fit_tolerance = min(0.1, lid_vfit_tolerance);
 
 bin_separator_wall_thickness = 1.2;
+interior_base_wall_adjust = 0.4;
+
+bin_storage_height = height(gridz, gridz_define, 0, enable_zsnap);
+bin_inner_height = bin_storage_height + h_base - d_wall;
+bin_outer_height = bin_storage_height + h_base + h_lip;
+
+// Functions //
+
+function vec_add(vec, add) = [for (i = vec) i + add];
+
+function pocket_size(x_units, y_units) = (
+    vec_add(
+        [
+            x_units*($gxx*l_grid+d_magic)/$gxx,
+            y_units*($gyy*l_grid+d_magic)/$gyy
+        ],
+        -bin_separator_wall_thickness
+    )
+);
+
+// Modules //
+
+module gf_custom_pockets() {
+    // Comment out or remove this module call
+    gf_custom_pockets_default_notice();
+
+    /*
+     * Add custom pocket cuts here
+     *
+     * Example:
+     *
+     *     gf_cut_pocket(0, 0, 0.5, 1);
+     *     gf_cut_pocket(0.5, 0, 0.5, 1);
+     *     gf_cut_pocket(1, 0, 1, 1);
+     *     gf_cut_pocket(0, 1, 1, 1);
+     *     gf_cut_pocket(1, 1, 1, 1);
+     */
+}
+
+module gf_custom_pockets_default_notice(font_size=3) {
+    text_lines = [
+        "For custom",
+        "pockets, modify",
+        "gf_custom_pockets",
+        "in the source code"
+    ];
+    size = font_size * min(gridx, gridy);
+    cut_move(x=0, y=0, w=gridx, h=gridy)
+    mirror([0, 0, 1])
+    translate([0, 0, lid_thickness + lid_vpos_tolerance + lid_vfit_tolerance])
+    linear_extrude(height=bin_storage_height)
+    translate([0, (size + 2) * (len(text_lines)-1) / 2])
+    for (i = [0:1:len(text_lines)]) {
+        translate([0, (size + 2) * -i])
+        text(text_lines[i], size=size, valign="center", halign="center");
+    }
+}
 
 module gf_setup_stub(gx, gy, h, h0 = 0, l = l_grid, sl = 0) {
     $gxx = gx;
@@ -67,7 +127,7 @@ module gf_setup_stub(gx, gy, h, h0 = 0, l = l_grid, sl = 0) {
 }
 
 module gf_setup() {
-    gf_setup_stub(gridx, gridy, height(gridz, gridz_define, 0, enable_zsnap), height_internal)
+    gf_setup_stub(gridx, gridy, bin_storage_height, height_internal)
     children();
 }
 
@@ -95,7 +155,7 @@ module gf_bin_lid_lip_mask() {
         0,
         $dh + h_base - lid_thickness - lid_vpos_tolerance
     ])
-    linear_extrude(height=(gridz + 10) * 7)
+    linear_extrude(height=h_lip * 10)
     square([l_grid * gridx, l_grid * gridy], center=true);
 }
 
@@ -168,16 +228,14 @@ module gf_bin_lid() {
                 translate([
                     0, 0, $dh + h_base - lid_thickness - lid_vpos_tolerance
                 ])
-                gf_bin_rounded_rect(
-                    lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz
-                );
+                gf_bin_rounded_rect(lid_thickness, add_size=-sz, r=r_fo1-sz);
 
                 intersection() {
                     translate([
                         0, 0, $dh + h_base - lid_thickness - lid_vpos_tolerance
                     ])
                     gf_bin_rounded_rect(
-                        h_lip + lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz
+                        h_lip + lid_thickness, add_size=-sz, r=r_fo1-sz
                     );
 
                     block_wall(gridx, gridy, l_grid)
@@ -266,22 +324,28 @@ module gf_bin_solid() {
                 );
                 gf_base_grid_interior();
             }
-            children();
+            intersection() {
+                aa = -(0.500 + d_wall * 1.25 + bin_separator_wall_thickness / 4);
+                color("lightblue", 0.2)
+                translate([0, 0, d_wall])
+                gf_bin_rounded_rect(bin_inner_height, add_size=aa, r_base*2);
+                children();
+            }
         }
 
         render(convexity=4)
         intersection() {
             translate([0, 0, -1])
-            gf_bin_rounded_rect(h_base + h_bot / 2 * 10, add_x=-0.5, add_y=-0.5);
+            gf_bin_rounded_rect(h_base + h_bot / 2 * 10, add_size=-0.5);
             difference() {
                 union() {
                     gf_base_grid();
-                    translate([0, 0, h_base + h_bot / 2 - d_wall])
-                    gf_bin_rounded_rect(d_wall, add_x=-d_wall, add_y=-d_wall);
+                    translate([0, 0, h_base])
+                    gf_bin_rounded_rect(h_bot / 2, add_size=-0.5);
                 }
                 intersection() {
                     if (Interior_Style == "partial_raised") {
-                        translate([0, 0, d_wall + h_base - r_c2 + 0.1])
+                        translate([0, 0, h_bot + h_base - r_c2 + 0.1])
                         linear_extrude(height=h_base - r_c2)
                         square([l_grid * gridx, l_grid * gridy], center=true);
                     }
@@ -294,42 +358,59 @@ module gf_bin_solid() {
 
 module gf_base_grid_interior() {
     translate([0, 0, d_wall])
-    gf_base_grid(-d_wall);
+    gf_base_grid(-d_wall - interior_base_wall_adjust);
 }
 
 module gf_base_grid(size_offset=0) {
     pattern_linear(gridx, gridy, l_grid, l_grid)
     intersection() {
         block_base_solid(1, 1, l_grid, size_offset);
-        linear_extrude(height=h_base + h_bot / 2 + size_offset)
+        linear_extrude(height=h_base + h_bot / 2)
         square([gridx * l_grid, gridy * l_grid], center=true);
     }
 }
 
-module gf_bin_rounded_rect(height, add_x=0, add_y=0, r=r_fo1) {
+module gf_bin_rounded_rect(height, add_size=0, r=r_fo1) {
     rounded_rectangle(
-        gridx * l_grid + add_x + 0.005,
-        gridy * l_grid + add_y + 0.005,
+        gridx * l_grid + add_size + 0.005,
+        gridy * l_grid + add_size + 0.005,
         height,
         r / 2 + 0.001
     );
 }
 
+module gf_cut_pocket_interior(dimensions) {
+    translate([0, 0, -$dh - h_base + d_wall])
+    linear_extrude(height=(
+        bin_inner_height
+        - lid_thickness - lid_vfit_tolerance - lid_vpos_tolerance + 0.001
+    ))
+    square(dimensions, center=true);
+}
+
+module gf_cut_pocket(x, y, w, h) {
+    cut_move(x=x, y=y, w=w, h=h)
+    gf_cut_pocket_interior(pocket_size(w, h));
+}
+
 module gf_cut_pockets() {
-    if (divx > 0 && divy > 0) {
-        per_x = (gridx * l_grid - d_wall * 2 + bin_separator_wall_thickness) / divx;
-        per_y = (gridy * l_grid - d_wall * 2 + bin_separator_wall_thickness) / divy;
-        cut_move(x=0, y=0, w=gridx, h=gridy)
-        pattern_linear(x=divx, y=divy, sx=per_x, sy=per_y)
-        translate([0, 0, -$dh - h_base])
-        linear_extrude(height=(
-            gridz * 7
-            - lid_thickness - lid_vfit_tolerance - lid_vpos_tolerance + 0.001
-        ))
-        square([
-            per_x - bin_separator_wall_thickness,
-            per_y - bin_separator_wall_thickness,
-        ], center=true);
+    if (div_pattern == "default" && divx > 0 && divy > 0) {
+        for (x=[1:1:divx], y=[1:1:divy])
+        gf_cut_pocket(x=(x-1)*gridx/divx, y=(y-1)*gridy/divy, w=gridx/divx, h=gridy/divy);
+    } else if (div_pattern == "multisize") {
+        w = gridx / divx;
+        h = gridy / divy;
+        off_divx = ceil(divx / 2);
+        rem_gridx = w * (divx - off_divx);
+        off_gridx = gridx - rem_gridx;
+        rem_divx = max(1, floor(rem_gridx / (w * div_multiple)));
+        rem_divy = max(1, floor(divy / div_multiple));
+        for (x=[1:1:off_divx], y=[1:1:divy])
+        gf_cut_pocket(x=(x-1)*w, y=(y-1)*h, w=w, h=h);
+        for (x=[1:1:rem_divx], y=[1:1:rem_divy])
+        gf_cut_pocket(x=off_gridx+(x-1)*rem_gridx/rem_divx, y=(y-1)*gridy/rem_divy, w=rem_gridx/rem_divx, h=gridy/rem_divy);
+    } else if (div_pattern == "custom") {
+        gf_custom_pockets();
     }
 }
 
@@ -364,7 +445,7 @@ module main() {
                 translate([0, 0, -bh])
                 gf_bin(pockets=false);
             }
-            linear_extrude(height=h_lip + 7)
+            linear_extrude(height=h_lip * 3)
             square([l_grid * gridx, l_grid * gridy], center=true);
         }
     }
