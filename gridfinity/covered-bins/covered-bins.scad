@@ -57,6 +57,10 @@ lid_lip_fit_tolerance = min(0.1, lid_vfit_tolerance);
 
 bin_separator_wall_thickness = 1.2;
 
+bin_storage_height = height(gridz, gridz_define, 0, enable_zsnap);
+bin_inner_height = bin_storage_height + h_base - d_wall;
+bin_outer_height = bin_storage_height + h_base + h_lip;
+
 module gf_setup_stub(gx, gy, h, h0 = 0, l = l_grid, sl = 0) {
     $gxx = gx;
     $gyy = gy;
@@ -67,7 +71,7 @@ module gf_setup_stub(gx, gy, h, h0 = 0, l = l_grid, sl = 0) {
 }
 
 module gf_setup() {
-    gf_setup_stub(gridx, gridy, height(gridz, gridz_define, 0, enable_zsnap), height_internal)
+    gf_setup_stub(gridx, gridy, bin_storage_height, height_internal)
     children();
 }
 
@@ -95,7 +99,7 @@ module gf_bin_lid_lip_mask() {
         0,
         $dh + h_base - lid_thickness - lid_vpos_tolerance
     ])
-    linear_extrude(height=(gridz + 10) * 7)
+    linear_extrude(height=h_lip * 10)
     square([l_grid * gridx, l_grid * gridy], center=true);
 }
 
@@ -168,16 +172,14 @@ module gf_bin_lid() {
                 translate([
                     0, 0, $dh + h_base - lid_thickness - lid_vpos_tolerance
                 ])
-                gf_bin_rounded_rect(
-                    lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz
-                );
+                gf_bin_rounded_rect(lid_thickness, add_size=-sz, r=r_fo1-sz);
 
                 intersection() {
                     translate([
                         0, 0, $dh + h_base - lid_thickness - lid_vpos_tolerance
                     ])
                     gf_bin_rounded_rect(
-                        h_lip + lid_thickness, add_x=-sz, add_y=-sz, r=r_fo1-sz
+                        h_lip + lid_thickness, add_size=-sz, r=r_fo1-sz
                     );
 
                     block_wall(gridx, gridy, l_grid)
@@ -266,18 +268,24 @@ module gf_bin_solid() {
                 );
                 gf_base_grid_interior();
             }
-            children();
+            intersection() {
+                aa = -(0.005 + 0.5 + d_wall / 4 + d_wall);
+                color("lightblue", 0.2)
+                translate([0, 0, d_wall])
+                gf_bin_rounded_rect(bin_inner_height, add_size=aa, r_base*2);
+                children();
+            }
         }
 
         render(convexity=4)
         intersection() {
             translate([0, 0, -1])
-            gf_bin_rounded_rect(h_base + h_bot / 2 * 10, add_x=-0.5, add_y=-0.5);
+            gf_bin_rounded_rect(h_base + h_bot / 2 * 10, add_size=-0.5);
             difference() {
                 union() {
                     gf_base_grid();
                     translate([0, 0, h_base + h_bot / 2 - d_wall])
-                    gf_bin_rounded_rect(d_wall, add_x=-d_wall, add_y=-d_wall);
+                    gf_bin_rounded_rect(d_wall, add_size=-d_wall);
                 }
                 intersection() {
                     if (Interior_Style == "partial_raised") {
@@ -306,10 +314,10 @@ module gf_base_grid(size_offset=0) {
     }
 }
 
-module gf_bin_rounded_rect(height, add_x=0, add_y=0, r=r_fo1) {
+module gf_bin_rounded_rect(height, add_size=0, r=r_fo1) {
     rounded_rectangle(
-        gridx * l_grid + add_x + 0.005,
-        gridy * l_grid + add_y + 0.005,
+        gridx * l_grid + add_size + 0.005,
+        gridy * l_grid + add_size + 0.005,
         height,
         r / 2 + 0.001
     );
@@ -321,9 +329,9 @@ module gf_cut_pockets() {
         per_y = (gridy * l_grid - d_wall * 2 + bin_separator_wall_thickness) / divy;
         cut_move(x=0, y=0, w=gridx, h=gridy)
         pattern_linear(x=divx, y=divy, sx=per_x, sy=per_y)
-        translate([0, 0, -$dh - h_base])
+        translate([0, 0, -$dh - h_base + d_wall])
         linear_extrude(height=(
-            gridz * 7
+            bin_inner_height
             - lid_thickness - lid_vfit_tolerance - lid_vpos_tolerance + 0.001
         ))
         square([
@@ -364,7 +372,7 @@ module main() {
                 translate([0, 0, -bh])
                 gf_bin(pockets=false);
             }
-            linear_extrude(height=h_lip + 7)
+            linear_extrude(height=h_lip * 3)
             square([l_grid * gridx, l_grid * gridy], center=true);
         }
     }
