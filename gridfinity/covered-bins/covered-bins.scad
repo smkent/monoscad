@@ -27,6 +27,7 @@ gridz = 3;
 /* [Covered Bin Features] */
 Interior_Style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
 Lip_Grips = "full"; // [none: None, single: Along X axis, full: Along X and Y axes]
+Lid_Orientation = "up"; // [up: Up, down: Down, left: Left, right: Right]
 
 /* [Linear Compartments] */
 div_pattern = "default"; // [default: Use divx & divy values, multisize: Multiple sizes with div_multiple as size multiplier, custom: Custom pattern -- modify gf_custom_pockets module in the source code]
@@ -68,6 +69,25 @@ bin_outer_height = bin_storage_height + h_base + h_lip;
 // Functions //
 
 function vec_add(vec, add) = [for (i = vec) i + add];
+
+function key_to_val(data, key) = (
+    let (matches = [for (v = data) if (v[0] == key) v])
+    len(matches) == 1 ? matches[0][1] : undef
+);
+
+function lid_pos(adjust=0) = (
+    let (orientation_data = [
+        ["right", [1, 0]],
+        ["left", [-1, 0]],
+        ["up", [0, 1]],
+        ["down", [0, -1]],
+    ])
+    let (translate_multiple = key_to_val(orientation_data, Lid_Orientation))
+    [
+        translate_multiple[0] * (l_grid * gridx + adjust),
+        translate_multiple[1] * (l_grid * gridy + adjust),
+    ]
+);
 
 function pocket_size(x_units, y_units) = (
     vec_add(
@@ -150,11 +170,10 @@ module gf_profile_wall_lid_lip(lid=false) {
 }
 
 module gf_bin_lid_lip_mask() {
-    translate([
-        l_grid * gridx - 0.5 - r_base,
-        0,
-        $dh + h_base - lid_thickness - lid_vpos_tolerance
-    ])
+    translate(concat(
+        lid_pos(-(r_base + 0.5)),
+        [$dh + h_base - lid_thickness - lid_vpos_tolerance]
+    ))
     linear_extrude(height=h_lip * 10)
     square([l_grid * gridx, l_grid * gridy], center=true);
 }
@@ -433,7 +452,7 @@ module main() {
         gf_bin();
         // Lid
         if ($preview)
-        translate([Part == "both_open" ? l_grid * gridx - h_lip * 2 : 0, 0, 0])
+        translate(Part == "both_open" ? lid_pos(-(h_lip * 2)) : [0, 0, 0])
         gf_setup()
         gf_bin_lid();
     } else if (Part == "bin_slice") {
