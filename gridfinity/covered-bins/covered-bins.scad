@@ -56,6 +56,7 @@ lid_vpos_tolerance = 0.2;
 lid_lip_fit_tolerance = min(0.1, lid_vfit_tolerance);
 
 bin_separator_wall_thickness = 1.2;
+interior_base_wall_adjust = 0.4;
 
 bin_storage_height = height(gridz, gridz_define, 0, enable_zsnap);
 bin_inner_height = bin_storage_height + h_base - d_wall;
@@ -284,8 +285,8 @@ module gf_bin_solid() {
             difference() {
                 union() {
                     gf_base_grid();
-                    translate([0, 0, h_base + h_bot / 2 - d_wall])
-                    gf_bin_rounded_rect(d_wall, add_size=-d_wall);
+                    translate([0, 0, h_base])
+                    gf_bin_rounded_rect(h_bot / 2, add_size=-0.5);
                 }
                 intersection() {
                     if (Interior_Style == "partial_raised") {
@@ -302,14 +303,14 @@ module gf_bin_solid() {
 
 module gf_base_grid_interior() {
     translate([0, 0, d_wall])
-    gf_base_grid(-d_wall);
+    gf_base_grid(-d_wall - interior_base_wall_adjust);
 }
 
 module gf_base_grid(size_offset=0) {
     pattern_linear(gridx, gridy, l_grid, l_grid)
     intersection() {
         block_base_solid(1, 1, l_grid, size_offset);
-        linear_extrude(height=h_base + h_bot / 2 + size_offset)
+        linear_extrude(height=h_base + h_bot / 2)
         square([gridx * l_grid, gridy * l_grid], center=true);
     }
 }
