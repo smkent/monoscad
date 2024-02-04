@@ -75,14 +75,18 @@ function key_to_val(data, key) = (
     len(matches) == 1 ? matches[0][1] : undef
 );
 
-function lid_pos(adjust=0) = (
+function lid_pos_multiple() = (
     let (orientation_data = [
         ["right", [1, 0]],
         ["left", [-1, 0]],
         ["up", [0, 1]],
         ["down", [0, -1]],
     ])
-    let (translate_multiple = key_to_val(orientation_data, Lid_Orientation))
+    key_to_val(orientation_data, Lid_Orientation)
+);
+
+function lid_pos(adjust=0) = (
+    let (translate_multiple = lid_pos_multiple())
     [
         translate_multiple[0] * (l_grid * gridx + adjust),
         translate_multiple[1] * (l_grid * gridy + adjust),
@@ -275,23 +279,28 @@ module gf_bin_lid() {
 module gf_bin_lid_tabs(adjust=false) {
     adj = adjust ? -lid_hfit_tolerance * 1.5 + lid_wall_thickness: 0;
     cr = 0.6;
+    multiple = lid_pos_multiple();
+    tab_pos = [
+        multiple[0] * (-(l_grid * gridx - 0.5) / 2 + r_base + cr),
+        multiple[1] * (-(l_grid * gridy - 0.5) / 2 + r_base + cr)
+    ];
+    tab_sep_pos = [
+        abs(multiple[1]) * (gridy * l_grid / 2 - 0.5 / 2 - lid_wall_thickness + adj),
+        abs(multiple[0]) * (gridx * l_grid / 2 - 0.5 / 2 - lid_wall_thickness + adj),
+    ];
     // Tabs
-    translate([
-        -(l_grid * gridx - 0.5) / 2 + r_base + cr,
-        0,
-        $dh + h_base - lid_thickness - lid_lip_fit_tolerance / 2 - 0.001
-    ])
+    translate(concat(
+        tab_pos,
+        [$dh + h_base - lid_thickness - lid_lip_fit_tolerance / 2 - 0.001]
+    ))
     for (ml = [0, 1])
-    mirror([0, ml])
+    mirror(multiple[0] != 0 ? [0, ml] : [ml, 0])
     translate([
-        0,
-        (
-            gridy * l_grid / 2 - 0.5 / 2
-            - lid_wall_thickness
-            + adj
-        ),
+        tab_sep_pos[0],
+        tab_sep_pos[1],
         -lid_vfit_tolerance - lid_vpos_tolerance
     ])
+    rotate(multiple[0] != 0 ? 0 : 270)
     linear_extrude(height=lid_lip_fit_tolerance * 2 + lid_thickness + 2)
     intersection() {
         $fs = $fs / 4;
