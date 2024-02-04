@@ -36,7 +36,7 @@ divx = 6;
 // number of Y Divisions (set to zero to have solid bin)
 divy = 6;
 // Secondary compartment size multiplier (for use with div_pattern set to "Multiple sizes with div_multiple as size multiplier")
-div_multiple = 1; // [1:.5:5]
+div_multiple = 2; // [1:.5:5]
 
 /* [Height] */
 // determine what the variable "gridz" applies to based on your use case
