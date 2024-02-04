@@ -26,7 +26,7 @@ gridz = 3;
 
 /* [Covered Bin Features] */
 Interior_Style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
-Lip_Grips = "full"; // [none: None, single: Along X axis, full: Along X and Y axes]
+Lip_Grips = "xy"; // [none: None, x: Along X axis, y: Along Y axis, xy: Along X and Y axes]
 Lid_Orientation = "left"; // [up: Up, down: Down, left: Left, right: Right]
 
 /* [Linear Compartments] */
@@ -204,27 +204,22 @@ module gf_bin_lid_grip_mask_set(num_grid) {
 }
 
 module gf_bin_lid_grip_mask() {
-    if (Lip_Grips != "none")
-    translate([0, 0, $dh + h_base + h_lip * 0.25])
-    pattern_linear(1, gridy, l_grid * gridx, l_grid)
-    gf_bin_lid_grip_mask_set(gridx);
-}
-
-module gf_bin_lid_grip_mask_alt() {
-    translate([0, 0, $dh + h_base + h_lip * 0.25])
-    pattern_linear(gridx, 1, l_grid, l_grid * gridy)
-    rotate(90)
-    gf_bin_lid_grip_mask_set(gridy);
+    translate([0, 0, $dh + h_base + h_lip * 0.25]) {
+        if (Lip_Grips == "x" || Lip_Grips == "xy")
+        pattern_linear(1, gridy, l_grid * gridx, l_grid)
+        gf_bin_lid_grip_mask_set(gridx);
+        if (Lip_Grips == "y" || Lip_Grips == "xy")
+        pattern_linear(gridx, 1, l_grid, l_grid * gridy)
+        rotate(90)
+        gf_bin_lid_grip_mask_set(gridy);
+    }
 }
 
 module gf_bin_lid_grip_masks() {
     if (Lip_Grips != "none")
     for (rot = [0, 180])
-    rotate(rot) {
-        gf_bin_lid_grip_mask();
-        if (Lip_Grips == "full")
-        gf_bin_lid_grip_mask_alt();
-    }
+    rotate(rot)
+    gf_bin_lid_grip_mask();
 }
 
 module gf_bin_lid() {
