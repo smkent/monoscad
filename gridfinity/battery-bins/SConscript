@@ -1,7 +1,7 @@
 Import("env")
 b = ModelBuilder(env)
 
-model = "battery-bins.scad"
+model = "battery-bin.scad"
 
 for opts in GenerateOptions(battery_type=["AA", "AAA", "9V"]):
     for sz in GenerateOptions(
