@@ -285,8 +285,8 @@ module gf_bin_lid_tabs(adjust=false) {
         multiple[1] * (-(l_grid * gridy - 0.5) / 2 + r_base + cr)
     ];
     tab_sep_pos = [
-        abs(multiple[1]) * (gridy * l_grid / 2 - 0.5 / 2 - lid_wall_thickness + adj),
-        abs(multiple[0]) * (gridx * l_grid / 2 - 0.5 / 2 - lid_wall_thickness + adj),
+        abs(multiple[1]) * (gridx * l_grid / 2 - 0.5 / 2 - lid_wall_thickness + adj),
+        abs(multiple[0]) * (gridy * l_grid / 2 - 0.5 / 2 - lid_wall_thickness + adj),
     ];
     // Tabs
     translate(concat(
