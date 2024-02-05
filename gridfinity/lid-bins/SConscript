@@ -3,7 +3,7 @@ from itertools import chain
 Import("env")
 b = ModelBuilder(env)
 
-model = "covered-bins.scad"
+model = "lid-bins.scad"
 
 bin_sizes = [
     [(x, y, ht, dx * x or 1, dy * y or 1, div_multiple)]
@@ -84,6 +84,8 @@ b.Image(
         )
     ],
 )
+
+b.Source(model)
 
 b.add_default_targets()
 
