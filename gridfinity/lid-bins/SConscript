@@ -3,7 +3,7 @@ from itertools import chain
 Import("env")
 b = ModelBuilder(env)
 
-model = "lid-bins.scad"
+model = "lid-bin.scad"
 
 bin_sizes = [
     [(x, y, ht, dx * x or 1, dy * y or 1, div_multiple)]
