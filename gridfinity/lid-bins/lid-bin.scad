@@ -24,7 +24,7 @@ gridy = 2;
 // bin height. See bin height information and "gridz_define" below.
 gridz = 3;
 
-/* [Covered Bin Features] */
+/* [Bin and Lid Features] */
 Interior_Style = "minimal"; // [minimal: Minimal, partial_raised: Partially raised]
 Lip_Grips = "xy"; // [none: None, x: Along X axis, y: Along Y axis, xy: Along X and Y axes]
 Lid_Orientation = "left"; // [up: Up, down: Down, left: Left, right: Right]
