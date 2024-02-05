@@ -33,21 +33,15 @@ for opts in GenerateOptions(s=bin_sizes):
             "divy": divy,
             "div_multiple": div_multiple,
         },
+        zip_dir=f"{x}x{y}x{z}",
     )
 for opts in GenerateOptions(s=[[(1, 1)], [(2, 2)]]):
     x, y = opts.s
-    b.STL(f"lid-{x}x{y}.stl", model, {"Part": "lid", "gridx": x, "gridy": y})
     b.STL(
-        f"bin-slice-{x}x{y}.stl",
+        f"lid-{x}x{y}.stl",
         model,
-        {
-            "Part": "bin_slice",
-            "gridx": x,
-            "gridy": y,
-            "gridz": 3,
-            "divx": 0,
-            "divy": 0,
-        },
+        {"Part": "lid", "gridx": x, "gridy": y},
+        zip_dir="lids",
     )
 
 b.Image(
