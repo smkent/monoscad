@@ -35,7 +35,7 @@ for opts in GenerateOptions(s=bin_sizes):
         },
         zip_dir=f"{x}x{y}x{z}",
     )
-for opts in GenerateOptions(s=[[(1, 1)], [(2, 2)]]):
+for opts in GenerateOptions(s=[[(1, 1)], [(1, 2)], [(2, 2)]]):
     x, y = opts.s
     b.STL(
         f"lid-{x}x{y}.stl",
@@ -77,6 +77,14 @@ b.Image(
             ]
         )
     ],
+)
+
+b.InsetImage(
+    "photo-demo-inset.gif",
+    "photo-open.jpg",
+    "demo.gif",
+    resize="33%",
+    gravity="southwest",
 )
 
 b.Source(model)

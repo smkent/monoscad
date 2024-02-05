@@ -1,6 +1,6 @@
 # Gridfinity Bins with Lids (parametric remix)
 
-![This model is a work in progress][work-in-progress-badge]
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-4.0 license][license-badge]][license]
 
 Gridfinity bins with lids (covers), reimplemented as a parametric model in
@@ -52,4 +52,5 @@ This is a remix of:
 [openscad]: https://openscad.org
 [original-model-license]: http://creativecommons.org/licenses/by/4.0/
 [original-model-url]: https://www.printables.com/model/665798-gridfinity-1-x-1-x-2-and-1-x-1-x-3-inserts-with-co
-[work-in-progress-badge]: /_static/work-in-progress-badge.svg
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/751715
