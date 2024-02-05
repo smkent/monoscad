@@ -1,6 +1,6 @@
 # Gridfinity Battery Bins (remix)
 
-![This model is a work in progress][work-in-progress-badge]
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 Gridfinity battery bins
@@ -50,7 +50,8 @@ is licensed under the [MIT License][gridfinity-license].
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
 [original-model-url]: https://github.com/kennetek/gridfinity-rebuilt-openscad
-[work-in-progress-badge]: /_static/work-in-progress-badge.svg
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/752699
 [xavierly-model-agx]: https://www.printables.com/model/442231-agx-button-cell-battery-holders-gridfinity-stackab
 [xavierly-model-crxx]: https://www.printables.com/model/442365-crxxxx-button-cell-battery-holders-gridfinity-stac
 [xavierly-model-lrxx]: https://www.printables.com/model/442274-lrxx-button-cell-battery-holders-gridfinity-stacka
