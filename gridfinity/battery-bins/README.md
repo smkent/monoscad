@@ -37,12 +37,15 @@ to create Gridfinity bins for storing AA, AAA, and 9V batteries.
 
 ## Attribution and License
 
-This is a remix of
-[**Gridfinity Rebuilt in OpenSCAD** by **kennetek**][original-model-url].
-
-Both the original model and this remix are licensed under
+This model is licensed under
 [Creative Commons (4.0 International License) Attribution-ShareAlike][license].
 
+This is a remix of
+[**Gridfinity Rebuilt in OpenSCAD** by **kennetek**][original-model-url], which
+is licensed under the [MIT License][gridfinity-license].
+
+[gridfinity-license]: LICENSE.gridfinity
+[gridfinity-rebuilt-openscad]: https://github.com/kennetek/gridfinity-rebuilt-openscad
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
