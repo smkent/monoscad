@@ -17,6 +17,7 @@ for opts in GenerateOptions(battery_type=["AA", "AAA", "9V"]):
                 "gridz": sz.gridz,
                 "style_hole": 0,
             },
+            zip_dir="models-for-printing",
         )
 b.Image(
     "demo.gif",
@@ -32,6 +33,16 @@ b.Image(
         for opts in GenerateOptions(battery_type=["AA", "AAA", "9V"])
     ],
 )
+
+b.InsetImage(
+    "photo-demo-inset.gif",
+    "photo-stored.jpg",
+    "demo.gif",
+    resize="33%",
+    gravity="southeast",
+)
+
+b.Source(model)
 
 b.add_default_targets()
 
