@@ -27,6 +27,9 @@ plain_ribs_angle = 8;
 hinge_extra_setback = 0.2; // [0:0.1:2]
 hinge_size_tolerance = 0.1;
 
+// Box top hinge screw eyelet position fit tolerance adjustment
+top_hinge_eyelet_position_tolerance = 0.1;
+
 // Screw eyelet diameter as a proportion of screw diameter
 screw_eyelet_size_proportion = 3.0; // [1.5:0.1:5]
 
@@ -265,7 +268,11 @@ module rbox_part(part) {
         }
         translate([
             0,
-            $b_inner_length / 2 + $b_hinge_screw_offset,
+            (
+                $b_inner_length / 2
+                + $b_hinge_screw_offset
+                + top_hinge_eyelet_position_tolerance
+            ),
             $b_bottom_outer_height
         ])
         rotate([270, 0, 0])
@@ -312,7 +319,11 @@ module rbox_part(part) {
                 rbox_latch(placement="box-preview");
             }
         }
-        translate([0, 0, $b_top_outer_height + $b_bottom_outer_height])
+        translate([0, 0, (
+            $b_top_outer_height
+            + $b_bottom_outer_height
+            + top_hinge_eyelet_position_tolerance
+        )])
         mirror([0, 0, 1]) {
             if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
             rbox_for_top() {
@@ -1218,6 +1229,13 @@ module _box_hinge_rib_body(width=0, inner=false) {
                 }
                 _box_hinge_screw_eyelet_body(width, angle=-180);
             }
+            hull()
+            for (position = (
+                ($b_part == "top")
+                    ? [0, top_hinge_eyelet_position_tolerance]
+                    : [0]
+            ))
+            translate([0, 0, position])
             _box_hinge_screw_eyelet_body(width, angle=360);
         }
         _box_attachment_rib_cut(width);
@@ -1296,6 +1314,11 @@ module _box_hinge_ribs() {
         }
         // Screw hole
         rotate([0, 0, 90])
+        translate([
+            0,
+            0,
+            ($b_part == "top") ? top_hinge_eyelet_position_tolerance : 0
+        ])
         translate([$b_hinge_screw_offset, 0, $b_outer_height])
         _box_screw_hole(
             $b_latch_width,
