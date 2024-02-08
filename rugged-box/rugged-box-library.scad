@@ -218,6 +218,14 @@ module rbox_body() {
     _box_body();
 }
 
+module rbox_top_modifier_volume() { _box_part_setup("top") { rbox_body_modifier_volume(); } }
+module rbox_bottom_modifier_volume() { _box_part_setup("bottom") { rbox_body_modifier_volume(); } }
+
+module rbox_body_modifier_volume() {
+    _box_color()
+    _box_body_modifier_volume();
+}
+
 module rbox_interior() {
     _box_color()
     render(convexity=4) {
@@ -343,9 +351,15 @@ module rbox_part(part) {
     } else if (part == "bottom") {
         if ($children > 0) { rbox_for_bottom() children(0); } else { rbox_bottom(); };
         rbox_bom();
+    } else if (part == "bottom_modifier") {
+        rbox_for_bottom()
+        rbox_body_modifier_volume();
     } else if (part == "top") {
         if ($children > 1) { rbox_for_top() children(1); } else { rbox_top(); };
         rbox_bom();
+    } else if (part == "top_modifier") {
+        rbox_for_top()
+        rbox_body_modifier_volume();
     } else if (part == "latch") {
         rbox_latch(placement="print");
     } else if (part == "stacking_latch") {
@@ -683,6 +697,27 @@ module _box_body() {
         _box_hinge_ribs();
         _box_stacking_latch_ribs();
         _box_top_grip();
+    }
+}
+
+module _box_body_modifier_volume() {
+    render(convexity=4)
+    difference() {
+        union() {
+            // _box_ribs();
+            _box_latch_ribs();
+            _box_hinge_ribs();
+            _box_stacking_latch_ribs();
+        }
+        if(1) {
+            _box_extrude()
+            intersection() {
+                offset(delta=0.1)
+                _box_wall_shape(reinforced=true);
+                square([$b_corner_radius + $b_total_lip_thickness, $b_outer_height] * 2);
+            }
+            _box_center_base(min($b_outer_height, $b_wall_thickness));
+        }
     }
 }
 
