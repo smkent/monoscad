@@ -265,6 +265,26 @@ settings to their default values:
 
 ![Slicer screenshot of stackable box bottom, ready to print](images/readme/slicer-screenshot-stackable-bottom-3.png)
 
+## Assembly
+
+**Important**: Don't overdrive the screws into the screw holes. They just need
+to be attached to fasten the hinges and latches, and for the latches to clip on
+to when the box is closed.
+
+Place the box top onto the box bottom, and install screws into the hinges.
+
+Attach the front and side stacking latches with additional screws. If attaching
+a handle to the front, use two longer screws for the front latch screw on the
+bottom in order to attach the handle.
+
+**Note**: For large boxes with a three stacking latches per side and/or the
+optional third hinge, install the center hinge/latch screws first with an allen
+key before installing the remaining hinge/latch screws.
+
+## Enjoy!
+
+I had a lot of fun creating this model. Please share your feedback and makes!
+
 ## Differences of the remix compared to the original
 
 This uses [Gridfinity Rebuilt in OpenSCAD][gridfinity-rebuilt-openscad] to add
