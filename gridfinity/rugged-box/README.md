@@ -196,6 +196,8 @@ drop-down, select and render each of:
 This will produce a model that is just the attachment ribs without the box body.
 Render and export each of these models.
 
+![OpenSCAD screenshot of modifier part selected](images/readme/openscad-screenshot-modifier-part-select.png)
+
 In PrusaSlicer, load the box model to print. Then, in the Plater view,
 right-click on the box model to open the context menu. Select **Add Modifier**
 -> **Load...**, and then select the modifier volume for the matching part
