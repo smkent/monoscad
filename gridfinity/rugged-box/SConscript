@@ -41,7 +41,16 @@ for box_name, (
     enable_handle,
     *params,
 ) in gridfinity_boxes.items():
-    for opts in GenerateOptions(part=["top", "bottom", "handle"]):
+    for opts in GenerateOptions(
+        part=[
+            "top",
+            "bottom",
+            "handle",
+            "top_modifier",
+            "top_grid_modifier",
+            "bottom_modifier",
+        ]
+    ):
         if not enable_handle and opts.part == "handle":
             continue
         part_params = {

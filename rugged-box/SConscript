@@ -18,7 +18,7 @@ for box_name, (
     enable_handle,
     *params,
 ) in boxes.items():
-    for part in ["top", "bottom", "handle"]:
+    for part in ["top", "bottom", "handle", "top_modifier", "bottom_modifier"]:
         if not enable_handle and part == "handle":
             continue
         part_params = {

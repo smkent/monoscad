@@ -14,7 +14,7 @@ use <gridfinity-rebuilt-openscad/gridfinity-rebuilt-utility.scad>;
 
 /* [Rendering] */
 // Part selection. Note: Assembled box previews show latches without chamfers for performance reasons.
-Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking_latch": Stacking latch, "handle": Handle, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed]
+Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking_latch": Stacking latch, "handle": Handle, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed, "bottom_modifier": Bottom print modifier volume for attachment ribs, "top_modifier": Top print modifier volume for attachment ribs, "top_grid_modifier": Top print modifier volume for Gridfinity lid]
 
 /* [Dimensions] */
 // Interior side-to-side size in 42mm Gridfinity units
@@ -275,19 +275,25 @@ module gridfinity_top_base() {
     }
 }
 
+module custom_top_interior_grid(interior_base=true) {
+    if (Gridfinity_Stackable) {
+        if (interior_base) {
+            rbox_interior_base(height=stackable_plate_offset);
+        }
+        translate([0, 0, stackable_plate_offset])
+        gridfinity_top_base();
+    } else {
+        gridfinity_top_base();
+    }
+}
+
 module custom_top() {
     render()
     difference () {
         union() {
             rbox_body();
             render(convexity=4)
-            if (Gridfinity_Stackable) {
-                rbox_interior_base(height=stackable_plate_offset);
-                translate([0, 0, stackable_plate_offset])
-                gridfinity_top_base();
-            } else {
-                gridfinity_top_base();
-            }
+            custom_top_interior_grid();
         }
         if (Gridfinity_Stackable) {
             extra_depth = gridfinity_base_extra_height(hole=true);
@@ -298,6 +304,15 @@ module custom_top() {
             mirror([0, 0, 1])
             gridfinity_baseplate_cut();
         }
+    }
+}
+
+module gridfinity_box_part() {
+    if (Part == "top_grid_modifier") {
+        rbox_for_top()
+        custom_top_interior_grid(interior_base=false);
+    } else {
+        children();
     }
 }
 
@@ -326,6 +341,7 @@ module main() {
         stacking_separation=stacking_separation,
         size_tolerance=Size_Tolerance
     ) {
+        gridfinity_box_part()
         rbox_part(Part) {
             _box_color()
             custom_bottom();

@@ -11,7 +11,7 @@ include <rugged-box-library.scad>;
 
 /* [Rendering] */
 // Part selection. Note: Assembled box previews show latches without chamfers for performance reasons.
-Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking_latch": Stacking latch, "handle": Handle, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed]
+Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking_latch": Stacking latch, "handle": Handle, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed, "bottom_modifier": Bottom print modifier volume for attachment ribs, "top_modifier": Top print modifier volume for attachment ribs]
 
 /* [Dimensions] */
 // All units in millimeters
