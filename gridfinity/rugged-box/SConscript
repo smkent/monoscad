@@ -61,6 +61,7 @@ for box_name, (
                 "Top_Height": top_height,
                 "Bottom_Height": bottom_height,
                 "Top_Grip": 1,
+                "Third_Hinge": 0,
             },
             **(params[0] if params else {}),
         }
