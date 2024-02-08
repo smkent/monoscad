@@ -163,7 +163,37 @@ option), the box tops and bottoms print without supports.
 
 ![Slicer screenshot with plain box](images/readme/slicer-screenshot-plain.png)
 
-For boxes with exterior Gridfinity stacking, see the next section.
+For boxes with exterior Gridfinity stacking, see
+"Additional print settings for Gridfinity Stackable boxes" below.
+
+#### Reinforcing the box attachment ribs
+
+PrusaSlicer can configure this model to use a higher infill on specific parts,
+such as the attachment ribs (where screws are installed). The model includes
+optional modifier volumes to make this simple.
+
+To render a modifier volume in the OpenSCAD model, open and configure the box
+model the same as the box model you'd like to print. Then, in the **Part**
+drop-down, select and render each of:
+
+* Top print modifier volume for attachment ribs
+* Bottom print modifier volume for attachment ribs
+
+This will produce a model that is just the attachment ribs without the box body.
+Render and export each of these models.
+
+In PrusaSlicer, load the box model to print. Then, in the Plater view,
+right-click on the box model to open the context menu. Select **Add Modifier**
+-> **Load...**, and then select the modifier volume for the matching part
+(bottom/top). The modifier volume should perfectly overlap with the existing
+model.
+
+Finally, locate the added modifier volume model in the right sidebar next to the
+Plater view. Right-click on the modifier volume, and select **Infill** to
+override the infill settings for that volume. Then, enter your desired infill
+percentage for the ribs (e.g. 100%).
+
+Now the model is configured to slice the ribs with 100% infill!
 
 ### Additional print settings for Gridfinity Stackable boxes
 
