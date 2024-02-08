@@ -283,7 +283,7 @@ module rbox_part(part) {
             ),
             $b_bottom_outer_height
         ])
-        rotate([270, 0, 0])
+        rotate([240, 0, 0])
         translate([
             0,
             -($b_inner_length / 2 + $b_hinge_screw_offset),
