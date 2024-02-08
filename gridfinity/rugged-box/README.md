@@ -50,8 +50,8 @@ between 6 and 25 screws to assemble.
 My boxes are assembled using M3x40 and M3x55 hex socket head cap screws
 (DIN 912):
 
-* M3x40 ([AliExpress][m3x40-aliexpress], [Amazon][m3x40-amazon],
-  [Trimcraft Aviation RC][m3x40-trimcraftaviationrc])
+* M3x40 ([AliExpress 1][m3x40-aliexpress-1], [AliExpress 2][m3x40-aliexpress-2],
+  [Amazon][m3x40-amazon], [Trimcraft Aviation RC][m3x40-trimcraftaviationrc])
 * M3x55 ([AliExpress][m3x55-aliexpress], [Amazon][m3x40-amazon])
   -- if attaching the optional handle
 
@@ -356,7 +356,8 @@ use the [MIT License][gridfinity-license].
 [gridfinity]: https://www.youtube.com/watch?v=ra_9zU-mnl8
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
-[m3x40-aliexpress]: https://www.aliexpress.us/item/3256805665122576.html
+[m3x40-aliexpress-1]: https://www.aliexpress.us/item/3256805665122576.html
+[m3x40-aliexpress-2]: https://www.aliexpress.us/item/2251832624557792.html
 [m3x40-amazon]: https://amazon.com/dp/B0CFQN9P7Y/
 [m3x40-trimcraftaviationrc]: https://www.trimcraftaviationrc.com/index.php?route=product/product&product_id=481
 [m3x55-aliexpress]: https://www.aliexpress.us/item/3256802885431338.html
