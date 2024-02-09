@@ -688,10 +688,8 @@ module _box_part_setup(part) {
 
 module _box_body() {
     _box_add_seal() {
-        render(convexity=4) {
-            _box_sides();
-            _box_center_base(min($b_outer_height, $b_wall_thickness));
-        }
+        _box_sides();
+        _box_center_base(min($b_outer_height, $b_wall_thickness));
         _box_ribs();
         _box_latch_ribs();
         _box_hinge_ribs();
