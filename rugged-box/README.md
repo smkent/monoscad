@@ -65,6 +65,14 @@ The hinges and latches are attached using M3 screws, **M3x40** by default. Each
 hinge needs 1 screw and each latch needs 2. A box with one latch needs 3 screws
 total, while a box with two latches needs 6 screws total.
 
+Boxes with the default sizing options can be assmbled with M3x40 and M3x55 hex
+socket head cap screws (DIN 912):
+
+* M3x40 ([AliExpress 1][m3x40-aliexpress-1], [AliExpress 2][m3x40-aliexpress-2],
+  [Amazon][m3x40-amazon], [Trimcraft Aviation RC][m3x40-trimcraftaviationrc])
+* M3x55 ([AliExpress][m3x55-aliexpress], [Amazon][m3x40-amazon])
+  -- if attaching the optional handle
+
 ### Screw length formula
 
 * All screws except for boxes with handles:
@@ -125,13 +133,19 @@ This model is licensed under [Creative Commons (4.0 International License) Attri
 
 [customizable-penguin-case-by-ctag]: https://www.thingiverse.com/thing:4852352
 [frog-box-2.0-by-nibb31]: https://www.thingiverse.com/thing:4094861
+[gridfinity-rugged-box-model]: ../gridfinity/rugged-box/
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
+[m3x40-aliexpress-1]: https://www.aliexpress.us/item/3256805665122576.html
+[m3x40-aliexpress-2]: https://www.aliexpress.us/item/2251832624557792.html
+[m3x40-amazon]: https://amazon.com/dp/B0CFQN9P7Y/
+[m3x40-trimcraftaviationrc]: https://www.trimcraftaviationrc.com/index.php?route=product/product&product_id=481
+[m3x55-aliexpress]: https://www.aliexpress.us/item/3256802885431338.html
+[m3x55-amazon]: https://amazon.com/dp/B0BGM9N73R/
 [openscad]: https://openscad.org
 [parametrizable-rugged-box-openscad-by-dochni]: https://www.printables.com/model/168664-parametrizable-rugged-box-openscad
 [printables-badge]: /_static/printables-badge.png
 [printables-model]: https://www.printables.com/model/637028
-[gridfinity-rugged-box-model]: ../gridfinity/rugged-box/
 [rugged-box-parametric-by-whity]: https://www.printables.com/model/258431-rugged-box-parametric
 [sbox-by-michael-fanta]: https://www.printables.com/model/262716-sbox-for-mk234-stackable-toolbox-system
 [waterproof-box-v2-by-zx82net]: https://www.thingiverse.com/thing:4838803
