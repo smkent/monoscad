@@ -46,12 +46,12 @@ directory.
 Click an image to view the corresponding model, or browse subdirectories for all
 models.
 
+[![Gridfinity Rugged Storage Box, Parametric and Customizable](gridfinity/rugged-box/images/readme/demo-dimensions.gif)](gridfinity/rugged-box/)
 [![Rugged Storage Box](rugged-box/images/readme/demo-dimensions.gif)](rugged-box/)
+[![Gridfinity Bins with Lids (parametric remix)](gridfinity/lid-bins/images/readme/demo.gif)](gridfinity/lid-bins/)
 [![Segmented Modular Hose](modular-hose/images/readme/demo.png)](modular-hose/)
-[![Gridfinity Material Swatches Holder V2](gridfinity/material-swatch-bins/images/readme/demo.gif)](gridfinity/material-swatch-bins/)
 [![Drill bit clips for Bosch Custom Case / Pick and Click](bosch-custom-case/bit-clips/images/readme/demo-bits-insert.gif)](bosch-custom-case/bit-clips/)
 [![SG-1 Stargate](stargate/images/readme/render-stargate.png)](stargate/)
-[![Bathtub Drain Hair Catcher](bathtub-drain-hair-catcher/images/readme/demo-winged-round.png)](bathtub-drain-hair-catcher/)
 
 ## License
 
