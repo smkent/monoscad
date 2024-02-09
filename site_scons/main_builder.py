@@ -70,7 +70,7 @@ class MainBuilder:
 
     def _add_openscad_builder(self, env: SConsEnvironment) -> None:
         def _add_deps_target(target, source, env):
-            target.append("${TARGET.name}.deps")
+            target.append(".${TARGET.name}.deps")
             return target, source
 
         cmd = self._openscad_cmd(env)
@@ -82,7 +82,7 @@ class MainBuilder:
                 " $OPENSCAD_FEATURES"
                 " -m make"
                 " -o $TARGET"
-                " -d ${TARGET}.deps"
+                " -d ${TARGET.dir.path}/.${TARGET.name}.deps"
                 " $SOURCE"
                 " $OPENSCAD_ARGS"
             ),
