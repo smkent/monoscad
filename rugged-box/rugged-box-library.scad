@@ -375,7 +375,7 @@ module rbox_bom() {
         str(count, " M", screw_diameter, "x", length)
     );
 
-    rbox_for_bottom() {
+    module rbox_bom_impl() {
         screw_length_base = $b_latch_width + $b_rib_width * 2;
         screw_count_base = (
             // 2 for each latch, 1 for each hinge
@@ -411,6 +411,9 @@ module rbox_bom() {
             ) : ""
         ));
     }
+
+    rbox_for_bottom()
+    rbox_bom_impl();
 };
 
 // Overridable functions and modules
