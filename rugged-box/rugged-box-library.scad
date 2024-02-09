@@ -375,7 +375,7 @@ module rbox_bom() {
         str(count, " M", screw_diameter, "x", length)
     );
 
-    rbox_for_bottom() {
+    module rbox_bom_impl() {
         screw_length_base = $b_latch_width + $b_rib_width * 2;
         screw_count_base = (
             // 2 for each latch, 1 for each hinge
@@ -411,6 +411,9 @@ module rbox_bom() {
             ) : ""
         ));
     }
+
+    rbox_for_bottom()
+    rbox_bom_impl();
 };
 
 // Overridable functions and modules
@@ -688,10 +691,8 @@ module _box_part_setup(part) {
 
 module _box_body() {
     _box_add_seal() {
-        render(convexity=4) {
-            _box_sides();
-            _box_center_base(min($b_outer_height, $b_wall_thickness));
-        }
+        _box_sides();
+        _box_center_base(min($b_outer_height, $b_wall_thickness));
         _box_ribs();
         _box_latch_ribs();
         _box_hinge_ribs();
@@ -709,15 +710,13 @@ module _box_body_modifier_volume() {
             _box_hinge_ribs();
             _box_stacking_latch_ribs();
         }
-        if(1) {
-            _box_extrude()
-            intersection() {
-                offset(delta=0.1)
-                _box_wall_shape(reinforced=true);
-                square([$b_corner_radius + $b_total_lip_thickness, $b_outer_height] * 2);
-            }
-            _box_center_base(min($b_outer_height, $b_wall_thickness));
+        _box_extrude()
+        intersection() {
+            offset(delta=0.1)
+            _box_wall_shape(reinforced=true);
+            square([$b_corner_radius + $b_total_lip_thickness, $b_outer_height] * 2);
         }
+        _box_center_base(min($b_outer_height, $b_wall_thickness));
     }
 }
 
