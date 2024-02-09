@@ -1,6 +1,6 @@
 # Gridfinity Rugged Storage Box, Parametric and Customizable
 
-![This model is a work in progress][work-in-progress-badge]
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 A Gridfinity compatible parametric and customizable rugged storage box or
@@ -381,9 +381,8 @@ use the [MIT License][gridfinity-license].
 [openscad-download]: https://openscad.org/downloads.html
 [openscad]: https://openscad.org
 [printables-badge]: /_static/printables-badge.png
-[printables-model]: https://www.printables.com/model/637028
+[printables-model]: https://www.printables.com/model/757297
 [rugged-box-base-model]: ../../rugged-box/
 [rugged-gridfinity-box-by-peterdesigns]: https://www.printables.com/model/495142-rugged-gridfinity-box-parametric
 [rugged-gridfinity-box-by-pjotrstrong]: https://www.printables.com/model/361829-rugged-gridfinity-box
 [rugged-gridfinity-box-lid-insert-by-zanfar]: https://www.printables.com/model/491142-rugged-gridfinity-box-lid-insert
-[work-in-progress-badge]: /_static/work-in-progress-badge.svg
