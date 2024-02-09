@@ -1,8 +1,6 @@
 /*
- * Customizable and Parametric Rugged Storage Box
+ * Gridfinity Rugged Storage Box, Parametric and Customizable
  * By smkent (GitHub) / bulbasaur0 (Printables)
- *
- * Parametric rugged storage box model
  *
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
  */
