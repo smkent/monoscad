@@ -55,7 +55,7 @@ Stacking_Latches = true;
 Latch_Type = "draw"; // [clip: Clip, draw: Draw]
 
 // Add a third hinge for boxes 5U or wider
-Third_Hinge = false;
+Third_Hinge = true;
 
 /* [Advanced Size Adjustments] */
 // Base wall thickness in millimeters for most of the box

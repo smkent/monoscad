@@ -41,11 +41,25 @@ Box options:
 * Reinforced (thicker) corners
 * Optional third hinge for large boxes
 
-## Hardware
+## Hardware and Tools
 
 The hinges and latches are attached using M3 screws, **M3x40** by default.
 Depending on whether a handle or stacking latches are desired, a box may take
 between 6 and 25 screws to assemble.
+
+My boxes are assembled using M3x40 and M3x55 hex socket head cap screws
+(DIN 912):
+
+* M3x40 ([AliExpress][m3x40-aliexpress], [Amazon][m3x40-amazon],
+  [Trimcraft Aviation RC][m3x40-trimcraftaviationrc])
+* M3x55 ([AliExpress][m3x55-aliexpress], [Amazon][m3x40-amazon])
+  -- if attaching the optional handle
+
+To assemble boxes with three stacking latches per side and/or a third hinge, a
+hex allen key matching your screws is needed since a drill/driver won't fit. M3
+hex socket head cap screws use 2.5mm drive, so a ~6" 2.5mm hex allen key is
+needed for these
+([Home Depot][2.5mm-hex-allen-key-hd], [Amazon][2.5mm-hex-allen-key-amazon]).
 
 ### Screw length formula
 
@@ -163,7 +177,37 @@ option), the box tops and bottoms print without supports.
 
 ![Slicer screenshot with plain box](images/readme/slicer-screenshot-plain.png)
 
-For boxes with exterior Gridfinity stacking, see the next section.
+For boxes with exterior Gridfinity stacking, see
+"Additional print settings for Gridfinity Stackable boxes" below.
+
+#### Reinforcing the box attachment ribs
+
+PrusaSlicer can configure this model to use a higher infill on specific parts,
+such as the attachment ribs (where screws are installed). The model includes
+optional modifier volumes to make this simple.
+
+To render a modifier volume in the OpenSCAD model, open and configure the box
+model the same as the box model you'd like to print. Then, in the **Part**
+drop-down, select and render each of:
+
+* Top print modifier volume for attachment ribs
+* Bottom print modifier volume for attachment ribs
+
+This will produce a model that is just the attachment ribs without the box body.
+Render and export each of these models.
+
+In PrusaSlicer, load the box model to print. Then, in the Plater view,
+right-click on the box model to open the context menu. Select **Add Modifier**
+-> **Load...**, and then select the modifier volume for the matching part
+(bottom/top). The modifier volume should perfectly overlap with the existing
+model.
+
+Finally, locate the added modifier volume model in the right sidebar next to the
+Plater view. Right-click on the modifier volume, and select **Infill** to
+override the infill settings for that volume. Then, enter your desired infill
+percentage for the ribs (e.g. 100%).
+
+Now the model is configured to slice the ribs with 100% infill!
 
 ### Additional print settings for Gridfinity Stackable boxes
 
@@ -265,6 +309,26 @@ settings to their default values:
 
 ![Slicer screenshot of stackable box bottom, ready to print](images/readme/slicer-screenshot-stackable-bottom-3.png)
 
+## Assembly
+
+**Important**: Don't overdrive the screws into the screw holes. They just need
+to be attached to fasten the hinges and latches, and for the latches to clip on
+to when the box is closed.
+
+Place the box top onto the box bottom, and install screws into the hinges.
+
+Attach the front and side stacking latches with additional screws. If attaching
+a handle to the front, use two longer screws for the front latch screw on the
+bottom in order to attach the handle.
+
+**Note**: For large boxes with a three stacking latches per side and/or the
+optional third hinge, install the center hinge/latch screws first with an allen
+key before installing the remaining hinge/latch screws.
+
+## Enjoy!
+
+I had a lot of fun creating this model. Please share your feedback and makes!
+
 ## Differences of the remix compared to the original
 
 This uses [Gridfinity Rebuilt in OpenSCAD][gridfinity-rebuilt-openscad] to add
@@ -282,6 +346,8 @@ This is a remix of
 [Gridfinity Rebuilt in OpenSCAD][gridfinity-rebuilt-openscad]
 use the [MIT License][gridfinity-license].
 
+[2.5mm-hex-allen-key-amazon]: https://amazon.com/dp/B005G2RMLM
+[2.5mm-hex-allen-key-hd]: https://www.homedepot.com/p/203195203
 [fully-printable-gridfinity-box-by-lennard-hoting]: https://www.printables.com/model/369813-fully-printable-gridfinity-box-parametric
 [gridbox-by-bilbodd]: https://www.printables.com/model/325677-gridbox
 [gridfinity-license]: LICENSE.gridfinity
@@ -290,6 +356,11 @@ use the [MIT License][gridfinity-license].
 [gridfinity]: https://www.youtube.com/watch?v=ra_9zU-mnl8
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
+[m3x40-aliexpress]: https://www.aliexpress.us/item/3256805665122576.html
+[m3x40-amazon]: https://amazon.com/dp/B0CFQN9P7Y/
+[m3x40-trimcraftaviationrc]: https://www.trimcraftaviationrc.com/index.php?route=product/product&product_id=481
+[m3x55-aliexpress]: https://www.aliexpress.us/item/3256802885431338.html
+[m3x55-amazon]: https://amazon.com/dp/B0BGM9N73R/
 [openscad-download]: https://openscad.org/downloads.html
 [openscad]: https://openscad.org
 [printables-badge]: /_static/printables-badge.png

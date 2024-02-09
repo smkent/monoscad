@@ -27,7 +27,8 @@ gridfinity_boxes = {
                 [6, 4, 2, 7],
                 [6, 6, 2, 7],
                 [6, 4, 2, 10],
-                [6, 6, 2, 10],
+                [6, 6, 2, 13],
+                [6, 6, 2, 16],
             ]
         ],
     )
@@ -61,6 +62,7 @@ for box_name, (
                 "Top_Height": top_height,
                 "Bottom_Height": bottom_height,
                 "Top_Grip": 1,
+                "Third_Hinge": 1,
             },
             **(params[0] if params else {}),
         }
