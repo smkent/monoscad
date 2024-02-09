@@ -49,8 +49,8 @@ jobs:
         with:
           name: "Rendered Models"
           path: |
-            build/*
-            !build/**/*.deps
+            **/build/*
+            !**/build/**/*.deps
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
