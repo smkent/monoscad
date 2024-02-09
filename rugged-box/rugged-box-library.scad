@@ -709,15 +709,13 @@ module _box_body_modifier_volume() {
             _box_hinge_ribs();
             _box_stacking_latch_ribs();
         }
-        if(1) {
-            _box_extrude()
-            intersection() {
-                offset(delta=0.1)
-                _box_wall_shape(reinforced=true);
-                square([$b_corner_radius + $b_total_lip_thickness, $b_outer_height] * 2);
-            }
-            _box_center_base(min($b_outer_height, $b_wall_thickness));
+        _box_extrude()
+        intersection() {
+            offset(delta=0.1)
+            _box_wall_shape(reinforced=true);
+            square([$b_corner_radius + $b_total_lip_thickness, $b_outer_height] * 2);
         }
+        _box_center_base(min($b_outer_height, $b_wall_thickness));
     }
 }
 
