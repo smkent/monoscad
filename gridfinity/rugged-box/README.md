@@ -26,6 +26,15 @@ and model would be fully open source.
 
 ## Features
 
+![Photo of stacked boxes](images/readme/photo-stacked-captioned.jpg)
+![Photo of open boxes](images/readme/photo-open-closer-captioned.jpg)
+
+![Photo of open box with lid plate caption](images/readme/photo-single-open-side-captioned.jpg)
+![Photo of box side with latch captions](images/readme/photo-single-side-closer-captioned.jpg)
+
+![Clip of box opening/closing](images/readme/clip-open-close.webp)
+![Clip of box stacking latches usage](images/readme/clip-stacking-latches.webp)
+
 Gridfinity:
 
 * Configurable sizing in Gridfinity grid units
