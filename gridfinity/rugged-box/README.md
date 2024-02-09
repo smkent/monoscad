@@ -327,8 +327,10 @@ a handle to the front, use two longer screws for the front latch screw on the
 bottom in order to attach the handle.
 
 **Note**: For large boxes with a three stacking latches per side and/or the
-optional third hinge, install the center hinge/latch screws first with an allen
-key before installing the remaining hinge/latch screws.
+optional third hinge, install the center hinge/latch screws first with a hex
+allen key before installing the remaining hinge/latch screws.
+
+![Photo of middle hinge/latch screw installation](images/readme/photo-middle-screw-installation.jpg)
 
 ## Enjoy!
 
