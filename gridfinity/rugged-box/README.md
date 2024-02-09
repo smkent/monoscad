@@ -211,6 +211,8 @@ percentage for the ribs (e.g. 100%).
 
 Now the model is configured to slice the ribs with 100% infill!
 
+![PrusaSlicer modifier steps animation](images/readme/slicer-modifier-configuration-example.gif)
+
 ### Additional print settings for Gridfinity Stackable boxes
 
 Boxes with the **Gridfinity Stackable** model option require supports and
