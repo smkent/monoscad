@@ -11,7 +11,7 @@ include <rugged-box-library.scad>;
 
 /* [Rendering] */
 // Part selection. Note: Assembled box previews show latches without chamfers for performance reasons.
-Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking_latch": Stacking latch, "handle": Handle, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed, "bottom_modifier": Bottom print modifier volume for attachment ribs, "top_modifier": Top print modifier volume for attachment ribs]
+Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking_latch": Stacking latch, "handle": Handle, "label": Label, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed, "bottom_modifier": Bottom print modifier volume for attachment ribs, "top_modifier": Top print modifier volume for attachment ribs]
 
 /* [Dimensions] */
 // All units in millimeters
@@ -50,6 +50,18 @@ Hinge_End_Stops = false;
 // Latch style
 Latch_Type = "clip"; // [clip: Clip, draw: Draw]
 
+// Optional handle for sufficiently wide boxes
+Handle = true;
+
+// Optional label for sufficiently wide boxes
+Label = false;
+
+// Custom text for optional label
+Label_Text = "Label";
+
+// Approximate height of text for optional label in millimeters
+Label_Text_Size = 10; // [5:0.1:25]
+
 /* [Advanced Size Adjustments] */
 // Base wall thickness in millimeters for most of the box
 Wall_Thickness = 3.0; // [0.4:0.1:10]
@@ -84,7 +96,11 @@ rbox(
     reinforced_corners=Reinforced_Corners,
     latch_type=Latch_Type,
     top_grip=Top_Grip,
-    hinge_end_stops=Hinge_End_Stops
+    hinge_end_stops=Hinge_End_Stops,
+    handle=Handle,
+    label=Label,
+    label_text=Label_Text,
+    label_text_size=Label_Text_Size
 )
 rbox_size_adjustments(
     wall_thickness=Wall_Thickness,

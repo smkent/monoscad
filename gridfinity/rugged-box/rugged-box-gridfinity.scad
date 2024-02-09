@@ -12,7 +12,7 @@ use <gridfinity-rebuilt-openscad/gridfinity-rebuilt-utility.scad>;
 
 /* [Rendering] */
 // Part selection. Note: Assembled box previews show latches without chamfers for performance reasons.
-Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking_latch": Stacking latch, "handle": Handle, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed, "bottom_modifier": Bottom print modifier volume for attachment ribs, "top_modifier": Top print modifier volume for attachment ribs, "top_grid_modifier": Top print modifier volume for Gridfinity lid]
+Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking_latch": Stacking latch, "handle": Handle, "label": Label, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed, "bottom_modifier": Bottom print modifier volume for attachment ribs, "top_modifier": Top print modifier volume for attachment ribs, "top_grid_modifier": Top print modifier volume for Gridfinity lid]
 
 /* [Dimensions] */
 // Interior side-to-side size in 42mm Gridfinity units
@@ -54,6 +54,18 @@ Latch_Type = "draw"; // [clip: Clip, draw: Draw]
 
 // Add a third hinge for boxes 5U or wider
 Third_Hinge = true;
+
+// Optional handle for sufficiently wide boxes
+Handle = true;
+
+// Optional label for sufficiently wide boxes
+Label = false;
+
+// Custom text for optional label
+Label_Text = "Label";
+
+// Approximate height of text for optional label in millimeters
+Label_Text_Size = 10; // [5:0.1:25]
 
 /* [Advanced Size Adjustments] */
 // Base wall thickness in millimeters for most of the box
@@ -327,7 +339,11 @@ module main() {
         latch_type=Latch_Type,
         latch_count=(Width <= 2 ? 1 : 2),
         top_grip=Top_Grip,
-        hinge_end_stops=Hinge_End_Stops
+        hinge_end_stops=Hinge_End_Stops,
+        handle=Handle,
+        label=Label,
+        label_text=Label_Text,
+        label_text_size=Label_Text_Size
     )
     rbox_size_adjustments(
         wall_thickness=Wall_Thickness,
