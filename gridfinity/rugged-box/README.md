@@ -178,7 +178,8 @@ option), the box tops and bottoms print without supports.
 ![Slicer screenshot with plain box](images/readme/slicer-screenshot-plain.png)
 
 For boxes with exterior Gridfinity stacking, see
-"Additional print settings for Gridfinity Stackable boxes" below.
+["Additional print settings for Gridfinity Stackable boxes"](#additional-print-settings-for-gridfinity-stackable-boxes)
+below.
 
 #### Reinforcing the box attachment ribs
 
