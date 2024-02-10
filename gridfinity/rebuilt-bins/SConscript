@@ -1,0 +1,104 @@
+from collections import namedtuple
+from types import SimpleNamespace as N
+
+Import("env")
+b = ModelBuilder(env)
+
+Params = namedtuple(
+    "Params",
+    (
+        "gridx",
+        "gridy",
+        "gridz",
+        "divx",
+        "divy",
+        "Compartment_Style",
+        "style_tab",
+        "scoop",
+        "d_wall",
+        "d_div",
+        "h_cut_extra",
+        "h_cut_extra_single",
+        "args",
+    ),
+    defaults=(2, 2, 3, 1, 1, "default", 1, 1, 0.95, 1.2, 1.6, 2.0, N()),
+)
+
+model = "bin.scad"
+
+bins = [
+    [Params(divx=1, divy=1, d_wall=1.6)],
+    [Params(divx=2, divy=1)],
+    [Params(divx=2, divy=2)],
+    [Params(divx=4, divy=1)],
+    [Params(divx=4, divy=2)],
+    [Params(divx=5, divy=1)],
+    [Params(divx=6, divy=1)],
+    [Params(divx=6, divy=1, gridz=1.5, h_cut_extra=1.8)],
+    [Params(divx=1, divy=1, gridz=6, scoop=0.5, d_wall=1.6)],
+    [Params(divx=2, divy=1, gridz=6, scoop=0.5)],
+    [Params(divx=2, divy=2, gridz=6, scoop=0.5)],
+    [Params(Compartment_Style="6p")],
+    [
+        Params(
+            4,
+            2,
+            3,
+            divx=1,
+            divy=2,
+            d_div=1.6,
+            d_wall=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+]
+
+for opts in GenerateOptions(b=bins):
+    p = opts.b
+    ns = p.args
+    div_fn = (
+        (f"-{p.divx}x,{p.divy}y" if p.divx and p.divy else "")
+        if p.Compartment_Style == "default"
+        else f"-{p.Compartment_Style}"
+    )
+    label_fn = f"-nolabel" if p.style_tab == 5 else ""
+    fn = f"bin-{p.gridx}x{p.gridy}x{p.gridz}{div_fn}{label_fn}.stl"
+    pdict = p._asdict()
+    pdict.pop("args")
+    b.STL(
+        fn,
+        model,
+        {**{"Stacking_Tabs": 1}, **pdict, **ns.__dict__},
+        zip_dir="models-for-printing",
+    )
+
+b.Image(
+    "demo.gif",
+    model,
+    [
+        {
+            "gridx": b[0],
+            "gridy": b[1],
+            "gridz": b[2],
+            "divx": b[3],
+            "divy": b[4],
+        }
+        for b in [
+            [2, 2, 3, 1, 1],
+            [2, 2, 3, 2, 1],
+            [2, 2, 3, 2, 2],
+            [2, 2, 3, 4, 2],
+            [2, 2, 6, 4, 2],
+            [2, 2, 6, 2, 2],
+            [2, 2, 6, 2, 1],
+            [2, 2, 6, 1, 1],
+        ]
+    ],
+)
+
+b.Source(model)
+
+b.add_default_targets()
+
+# vim: ft=python
