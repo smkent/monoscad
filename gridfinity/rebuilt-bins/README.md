@@ -5,7 +5,7 @@
 
 Tweaks to Gridfinity Rebuilt in OpenSCAD bins
 
-![Model render](images/readme/demo.png)
+![Model render](images/readme/demo.gif)
 
 ## Changes from upstream
 
