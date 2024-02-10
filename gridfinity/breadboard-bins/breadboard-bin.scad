@@ -102,7 +102,7 @@ bb_tabs = Breadboard_Tab_Dimensions + [Breadboard_Dimensions[0], 0];
 bb_count = Breadboard_Count;
 bb_power_width = Breadboard_Power_Rail_Width;
 bb_power_count = Breadboard_Power_Rail_Count;
-retaining_lip = 1.2;
+retaining_lip = 0.8;
 
 // Functions //
 
