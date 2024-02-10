@@ -12,5 +12,6 @@ for all models.
 [![Gridfinity Bins with Lids (parametric remix)](lid-bins/images/readme/demo.gif)](lid-bins/)
 [![Gridfinity Material Swatches Holder V2](material-swatch-bins/images/readme/demo.gif)](material-swatch-bins/)
 [![Gridfinity Battery Bins](battery-bins/images/readme/demo.gif)](battery-bins/)
+[![Gridfinity Breadboard Bins](breadboard-bins/images/readme/demo.png)](breadboard-bins/)
 
 [gridfinity]: https://www.youtube.com/watch?v=ra_9zU-mnl8
