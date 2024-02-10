@@ -30,6 +30,8 @@ bins = [
     [Params(divx=1, divy=1, d_wall=1.6)],
     [Params(divx=2, divy=1)],
     [Params(divx=2, divy=2)],
+    [Params(divx=3, divy=1)],
+    [Params(divx=3, divy=2)],
     [Params(divx=4, divy=1)],
     [Params(divx=4, divy=2)],
     [Params(divx=5, divy=1)],
