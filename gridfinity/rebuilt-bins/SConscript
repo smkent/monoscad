@@ -35,9 +35,29 @@ bins = [
     [Params(divx=5, divy=1)],
     [Params(divx=6, divy=1)],
     [Params(divx=6, divy=1, gridz=1.5, h_cut_extra=1.8)],
-    [Params(divx=1, divy=1, gridz=6, scoop=0.5, d_wall=1.6)],
-    [Params(divx=2, divy=1, gridz=6, scoop=0.5)],
-    [Params(divx=2, divy=2, gridz=6, scoop=0.5)],
+    [Params(divx=1, divy=1, gridz=6, scoop=0.5, d_wall=1.6, h_cut_extra=1.4)],
+    [
+        Params(
+            divx=2,
+            divy=1,
+            gridz=6,
+            scoop=0.5,
+            d_wall=1.6,
+            d_div=1.6,
+            h_cut_extra=1.4,
+        )
+    ],
+    [
+        Params(
+            divx=2,
+            divy=2,
+            gridz=6,
+            scoop=0.5,
+            d_wall=1.6,
+            d_div=1.6,
+            h_cut_extra=1.4,
+        )
+    ],
     [Params(Compartment_Style="6p")],
     [
         Params(
@@ -47,6 +67,19 @@ bins = [
             divx=1,
             divy=2,
             d_div=1.6,
+            d_wall=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+    [
+        Params(
+            4,
+            2,
+            6,
+            divx=1,
+            divy=1,
+            scoop=0.5,
             d_wall=2.6,
             h_cut_extra=1.4,
             style_tab=5,
