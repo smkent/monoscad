@@ -61,7 +61,7 @@ My boxes are assembled using M3x40 and M3x55 hex socket head cap screws
 
 * M3x40 ([AliExpress 1][m3x40-aliexpress-1], [AliExpress 2][m3x40-aliexpress-2],
   [Amazon][m3x40-amazon], [Trimcraft Aviation RC][m3x40-trimcraftaviationrc])
-* M3x55 ([AliExpress][m3x55-aliexpress], [Amazon][m3x40-amazon])
+* M3x55 ([AliExpress][m3x55-aliexpress], [Amazon][m3x55-amazon])
   -- if attaching the optional handle
 
 To assemble boxes with three stacking latches per side and/or a third hinge, a
