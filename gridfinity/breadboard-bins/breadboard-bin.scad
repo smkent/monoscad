@@ -11,33 +11,32 @@
 
 include <gridfinity-rebuilt-openscad/gridfinity-rebuilt-utility.scad>
 
-// [Default Value Overrides] */
-// Tab size
-d_tabh = 14.265; // [15.85: Default, 14.265: 90% -- for reduced tab angle, 12.68: 80%]
-// Tab angle
-a_tab = 20; // [36: Default, 20: Reduced]
-// Outer wall thickness
-d_wall = 0.95; // [0.95: Default, 1.2: 3 lines, 1.6: 4 lines, 2.6: Full thickness -- desk tray style]
-// Divider wall thickness
-d_div = 1.2; // [1.2: Default, 1.6: 4 lines, 2.1: 5 lines]
-
 /* [General Settings] */
 // number of bases along x-axis
 gridx = 2; // [1:1:8]
 // number of bases along y-axis
-gridy = 2; // [1:1:8]
+gridy = 4; // [2:1:6]
 // bin height. See bin height information and "gridz_define" below.
-gridz = 3; // [1:0.5:20]
+gridz = 3; // [2.5:0.5:9]
 
 /* [Remix Features] */
 // generate tabs on the lid to help align stacked bins
 Stacking_Tabs = true;
-// Interior depth
-h_cut_extra = 1.6; // [0: Default, 1.8: 2 bottom layers, 1.6: 3 bottom layers, 1.4: 4 bottom layers]
-// Additional interior depth for single-grid pockets -- best used with h_cut_extra set to 2 bottom layers
-h_cut_extra_single = 2.0; // [0: Default, 2.0: Most, 1.4: Some]
 
-Compartment_Style = "default"; // [default: Default -- use compartment settings below, "6p": half and half half/single pockets]
+/* [Breadboard Bin Features] */
+// Width without tabs or power rail, Length, Thickness. Include bottom pad in thickness if desired.
+Breadboard_Dimensions = [35.5, 165, 9.5]; // [5:0.1:300]
+// Tab size added to breadboard width, tab height
+Breadboard_Power_Rail_Width = 9.5; // [5:0.1:15]
+Breadboard_Tab_Dimensions = [1.8, 6.2]; // [0:0.1:10]
+Breadboard_Count = 1; // [0:1:5]
+Breadboard_Power_Rail_Count = 2; // [0:1:10]
+Breadboard_Double_Sided_Tabs = true;
+
+// Optional bin lip chamfer
+Lip_Chamfer = false;
+// Raised wall openings for sufficiently tall bins
+Wall_Openings = true;
 
 /* [Linear Compartments] */
 // number of X Divisions (set to zero to have solid bin)
@@ -68,8 +67,6 @@ height_internal = 0;
 enable_zsnap = false;
 
 /* [Features] */
-// the type of tabs
-style_tab = 1; //[0:Full,1:Auto,2:Left,3:Center,4:Right,5:None]
 // how should the top lip act
 style_lip = 0; //[0: Regular lip, 1:remove lip subtractively, 2: remove lip and retain height]
 // scoop weight percentage. 0 disables scoop, 1 is regular scoop. Any real number will scale the scoop.
@@ -91,11 +88,53 @@ module __end_customizer_options__() { }
 $fa = $preview ? $fa : 2;
 $fs = $preview ? $fs : 0.4;
 
-min_z = gridz;
+min_z = 2.00 + ((0.5 + 0.8) / 7);
+
+// Gridfinity constants
+d_wall = 1.6;
+style_tab = 5;
+
+// Breadboard
+
+bb_size = Breadboard_Dimensions;
+bb_tabs = Breadboard_Tab_Dimensions + [Breadboard_Dimensions[0], 0];
+bb_count = Breadboard_Count;
+bb_power_width = Breadboard_Power_Rail_Width;
+bb_power_count = Breadboard_Power_Rail_Count;
+retaining_lip = 1.2;
 
 // Functions //
 
+function vec_slice(v, n) = [for (i = [0:1:n - 1]) v[i]];
+
+function vec_reverse(v) = [for (i = [len(v) - 1:-1:0]) v[i]];
+
 function gf_height(z=gridz) = height(z, gridz_define, style_lip, enable_zsnap);
+
+function bb_points(bb_count, extra_height=0, lip_cut=false, lip_chamfer=false) = (
+    let (bb_tab_ch_ht = bb_tabs[1] + (bb_tabs[0] - bb_size[0]))
+    let (sz_x = (bb_size[0] * bb_count + bb_power_width * bb_power_count) / 2)
+    let (basepts = [
+        [sz_x, 0],
+        [sz_x + (bb_tabs[0] - bb_size[0]), 0],
+        [sz_x + (bb_tabs[0] - bb_size[0]), bb_tabs[1]],
+        [sz_x, bb_tab_ch_ht],
+        [sz_x, bb_size[2] + extra_height],
+    ])
+    let (pts = concat(
+        basepts,
+        lip_cut
+            ? [
+                [sz_x, bb_size[2] + extra_height + $bindepth],
+                [
+                    sz_x + (lip_chamfer ? h_lip : 0),
+                    bb_size[2] + extra_height + h_lip + $bindepth
+                ]
+            ]
+            : []
+    ))
+    concat(pts, [for (pt = vec_reverse(pts)) [-pt[0], pt[1]]])
+);
 
 // Modules //
 
@@ -199,153 +238,79 @@ module generate_tabs() {
     }
 }
 
-// Override block_cutter for optional deeper bins
-module block_cutter(x,y,w,h,t,s) {
-
-    v_len_tab = d_tabh;
-    v_len_lip = d_wall2-d_wall+1.2;
-    v_cut_tab = d_tabh - (2*r_f1)/tan(a_tab);
-    v_cut_lip = d_wall2-d_wall-d_clear;
-    v_ang_tab = a_tab;
-    v_ang_lip = 45;
-
-    ycutfirst = y == 0 && $style_lip == 0;
-    ycutlast = abs(y+h-$gyy)<0.001 && $style_lip == 0;
-    xcutfirst = x == 0 && $style_lip == 0;
-    xcutlast = abs(x+w-$gxx)<0.001 && $style_lip == 0;
-    zsmall = ($dh+h_base)/7 < 3;
-
-    ylen = h*($gyy*l_grid+d_magic)/$gyy-d_div;
-    xlen = w*($gxx*l_grid+d_magic)/$gxx-d_div;
-
-    cut_extra = h_cut_extra + (
-        (
-            floor(x) == floor(x + w - 0.0001)
-            && floor(y) == floor(y + h - 0.0001)
-        )
-            ? h_cut_extra_single
-            : 0
-    );
-    height = $dh + cut_extra;
-    extent_size = d_wall2 - d_wall - d_clear;
-    extent = (abs(s) > 0 && ycutfirst ? extent_size : 0);
-    tab = (zsmall || t == 5) ? (ycutlast?v_len_lip:0) : v_len_tab;
-    ang = (zsmall || t == 5) ? (ycutlast?v_ang_lip:0) : v_ang_tab;
-    cut = (zsmall || t == 5) ? (ycutlast?v_cut_lip:0) : v_cut_tab;
-    style = (t > 1 && t < 5) ? t-3 : (x == 0 ? -1 : xcutlast ? 1 : 0);
-
-    translate([0,ylen/2,h_base + h_bot - cut_extra])
-    rotate([90,0,-90]) {
-
-    if (!zsmall && xlen - d_tabw > 4*r_f2 && (t != 0 && t != 5)) {
-        fillet_cutter(3,"bisque")
-        difference() {
-            transform_tab(style, xlen, ((xcutfirst&&style==-1)||(xcutlast&&style==1))?v_cut_lip:0)
-            translate([ycutlast?v_cut_lip:0,0])
-            profile_cutter(height-h_bot, ylen/2, s);
-
-            if (xcutfirst)
-            translate([0,0,(xlen/2-r_f2)-v_cut_lip])
-            cube([ylen,height,v_cut_lip*2]);
-
-            if (xcutlast)
-            translate([0,0,-(xlen/2-r_f2)-v_cut_lip])
-            cube([ylen,height,v_cut_lip*2]);
-        }
-        if (t != 0 && t != 5)
-        fillet_cutter(2,"indigo")
-        difference() {
-            transform_tab(style, xlen, ((xcutfirst&&style==-1)||(xcutlast&&style==1))?v_cut_lip:0)
-            difference() {
-                intersection() {
-                    profile_cutter(height-h_bot, ylen-extent, s);
-                    profile_cutter_tab(height-h_bot, v_len_tab, v_ang_tab);
-                }
-                if (ycutlast) profile_cutter_tab(height-h_bot, v_len_lip, 45);
-            }
-
-            if (xcutfirst)
-            translate([ylen/2,0,xlen/2])
-            rotate([0,90,0])
-            transform_main(2*ylen)
-            profile_cutter_tab(height-h_bot, v_len_lip, v_ang_lip);
-
-            if (xcutlast)
-            translate([ylen/2,0,-xlen/2])
-            rotate([0,-90,0])
-            transform_main(2*ylen)
-            profile_cutter_tab(height-h_bot, v_len_lip, v_ang_lip);
-        }
-    }
-
-    fillet_cutter(1,"seagreen")
-    translate([0,0,xcutlast?v_cut_lip/2:0])
-    translate([0,0,xcutfirst?-v_cut_lip/2:0])
-    transform_main(xlen-(xcutfirst?v_cut_lip:0)-(xcutlast?v_cut_lip:0))
-    translate([cut,0])
-    profile_cutter(height-h_bot, ylen-extent-cut-(!s&&ycutfirst?v_cut_lip:0), s);
-
-    fillet_cutter(0,"hotpink")
-    difference() {
-        transform_main(xlen)
-        difference() {
-            profile_cutter(height-h_bot, ylen-extent, s);
-
-            if (!((zsmall || t == 5) && !ycutlast))
-            profile_cutter_tab(height-h_bot, tab, ang);
-
-            if (!(abs(s) > 0)&& y == 0)
-            translate([ylen-extent,0,0])
-            mirror([1,0,0])
-            profile_cutter_tab(height-h_bot, v_len_lip, v_ang_lip);
-        }
-
-        if (xcutfirst)
-        color("indigo")
-        translate([ylen/2+0.001,0,xlen/2+0.001])
-        rotate([0,90,0])
-        transform_main(2*ylen)
-        profile_cutter_tab(height-h_bot, v_len_lip, v_ang_lip);
-
-        if (xcutlast)
-        color("indigo")
-        translate([ylen/2+0.001,0,-xlen/2+0.001])
-        rotate([0,-90,0])
-        transform_main(2*ylen)
-        profile_cutter_tab(height-h_bot, v_len_lip, v_ang_lip);
-    }
-
+module wall_cut(num_grid) {
+    dd = l_grid * 0.15;
+    bh = min_z * 7;
+    ht = (gridz - min_z) * 7 - h_lip - r_f2;
+    radius = min(10, ht * 0.49);
+    if (ht >= 3.5)
+    translate([l_grid * (num_grid / 2 - 0.5), 0, 0])
+    for (x = [0:1:num_grid-1])
+    translate([-x * l_grid, 0, 0])
+    rotate([90, 0, 0])
+    linear_extrude(height=l_grid * (max(gridx, gridy) + 1), center=true)
+    translate([-l_grid / 2, 0])
+    translate([dd, r_f2])
+    union() {
+        offset(r=radius)
+        offset(r=-radius)
+        square([l_grid - dd * 2, ht]);
     }
 }
 
-module compartments_custom_6p() {
-    for (x = [0:1:gridx-0.1], y = [0:1:gridy/2-0.1])
-    cut(x, y, 1, 1);
-    for (x = [0:0.5:gridx-0.1], y = [gridy/2:1:gridy-0.1])
-    cut(x, y, 0.5, 1);
+module walls_cut() {
+    if (Wall_Openings)
+    translate([0, 0, min_z * 7]) {
+        rotate(90)
+        wall_cut(gridy);
+        translate([0, max(gridx, gridy) * l_grid / 2])
+        wall_cut(gridx);
+    }
 }
 
-module compartments_cut() {
-    if (Compartment_Style == "default") {
-        if (divx > 0 && divy > 0) {
-            cutEqual(
-                n_divx=divx,
-                n_divy=divy,
-                style_tab=style_tab,
-                scoop_weight=scoop
-            );
-        } else if (cdivx > 0 && cdivy > 0) {
-            cutCylinders(
-                n_divx=cdivx,
-                n_divy=cdivy,
-                cylinder_diameter=cd,
-                cylinder_height=ch,
-                coutout_depth=c_depth,
-                orientation=c_orientation
-            );
+module breadboard(lip_cut=false, add_length=0) {
+    rotate([90, 0, 180])
+    color("mintcream", 0.4)
+    render(convexity=4)
+    for (lip_cut_each = concat([false], lip_cut ? [true] : [])) {
+        extrudelen = (bb_size[1] + add_length) / (lip_cut_each ? 2 : 1);
+        translate([0, 0, -(l_grid * gridy - extrudelen) / 2])
+        linear_extrude(height=extrudelen, center=true)
+        polygon(bb_points(
+            bb_count,
+            extra_height=((lip_cut && !lip_cut_each) ? r_f2: 0),
+            lip_cut=lip_cut_each,
+            lip_chamfer=Lip_Chamfer
+        ));
+    }
+}
+
+module retaining_lip_cut() {
+    translate([0, -(gridy * l_grid - 0.5) / 2 + retaining_lip / 2])
+    rotate([0, 90, 0])
+    linear_extrude(height=(gridx * l_grid - 0.5) - r_f2 * 2, center=true)
+    circle(d=retaining_lip, $fn=50);
+}
+
+module breadboard_cut() {
+    breadboard(lip_cut=true, add_length=retaining_lip);
+    rotate([90, 0, 0]) {
+        blen = (bb_size[0] + bb_power_width * 2) / 6;
+        bfill_len = min(
+            l_grid * gridx - d_wall * 4,
+            (bb_size[0] * bb_count + bb_power_width * bb_power_count)
+        );
+        bnum = floor(bfill_len / blen / 2);
+        linear_extrude(height=l_grid * gridy, center=true)
+        translate([-(bnum - 1) * blen, bb_tabs[1] / 2])
+        for (n = [0:1:bnum-0.01])
+        translate([blen * 2 * n, 0]) {
+            offset(r=2)
+            offset(r=-2)
+            square([blen, bb_tabs[1]], center=true);
+            translate([0, -bb_tabs[1] / 4])
+            square([blen, bb_tabs[1] / 2], center=true);
         }
-    } else if (Compartment_Style == "6p") {
-        compartments_custom_6p();
     }
 }
 
@@ -353,10 +318,24 @@ module compartments_cut() {
 
 module main() {
     gf_init() {
-        color("cornflowerblue", 0.8)
+        color("cadetblue", 0.8)
         render(convexity=4)
-        gf_bin()
-        compartments_cut();
+        difference() {
+            gf_bin();
+            difference() {
+                union() {
+                    translate([0, 0, $cuttop - bb_size[2]])
+                    breadboard_cut();
+                    walls_cut();
+                }
+                translate([0, 0, $cuttop - bb_size[2]])
+                retaining_lip_cut();
+            }
+        }
+        if ($preview) {
+            translate([0, retaining_lip - 0.001, $cuttop - bb_size[2] + 0.001])
+            breadboard();
+        }
     }
 }
 

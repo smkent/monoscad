@@ -1,100 +1,67 @@
-from collections import namedtuple
-from types import SimpleNamespace as N
-
 Import("env")
 b = ModelBuilder(env)
 
-Params = namedtuple(
-    "Params",
+model = "breadboard-bin.scad"
+
+bin_params = [
     (
-        "gridx",
-        "gridy",
-        "gridz",
-        "divx",
-        "divy",
-        "Compartment_Style",
-        "style_tab",
-        "scoop",
-        "d_wall",
-        "d_div",
-        "h_cut_extra",
-        "h_cut_extra_single",
-        "args",
+        {"gridx": 2, "Breadboard_Count": 1, "Lip_Chamfer": 1},
+        "1x-board-2x-rails",
     ),
-    defaults=(2, 2, 3, 1, 1, "default", 1, 1, 0.95, 1.2, 1.6, 2.0, N()),
-)
-
-model = "bin.scad"
-
-bins = [
-    [Params(divx=1, divy=1, d_wall=1.6)],
-    [Params(divx=2, divy=1)],
-    [Params(divx=2, divy=2)],
-    [Params(divx=4, divy=1)],
-    [Params(divx=4, divy=2)],
-    [Params(divx=5, divy=1)],
-    [Params(divx=6, divy=1)],
-    [Params(divx=6, divy=1, gridz=1.5, h_cut_extra=1.8)],
-    [Params(divx=1, divy=1, gridz=6, scoop=0.5, d_wall=1.6)],
-    [Params(divx=2, divy=1, gridz=6, scoop=0.5)],
-    [Params(divx=2, divy=2, gridz=6, scoop=0.5)],
-    [Params(Compartment_Style="6p")],
-    [
-        Params(
-            4,
-            2,
-            3,
-            divx=1,
-            divy=2,
-            d_div=1.6,
-            d_wall=2.6,
-            h_cut_extra=1.4,
-            style_tab=5,
-        )
-    ],
+    (
+        {
+            "gridx": 2,
+            "Breadboard_Count": 1,
+            "Breadboard_Power_Rail_Count": 4,
+            "Lip_Chamfer": 1,
+        },
+        "1x-board-4x-rails",
+    ),
+    (
+        {"gridx": 3, "Breadboard_Count": 2, "Lip_Chamfer": 1},
+        "2x-board-4x-rails",
+    ),
+    (
+        {
+            "gridx": 4,
+            "Breadboard_Count": 3,
+            "Breadboard_Power_Rail_Count": 4,
+            "Lip_Chamfer": 1,
+            "d_wall": 2.4,
+        },
+        "3x-board-4x-rails",
+    ),
 ]
 
-for opts in GenerateOptions(b=bins):
-    p = opts.b
-    ns = p.args
-    div_fn = (
-        (f"-{p.divx}x,{p.divy}y" if p.divx and p.divy else "")
-        if p.Compartment_Style == "default"
-        else f"-{p.Compartment_Style}"
-    )
-    label_fn = f"-nolabel" if p.style_tab == 5 else ""
-    fn = f"bin-{p.gridx}x{p.gridy}x{p.gridz}{div_fn}{label_fn}.stl"
-    pdict = p._asdict()
-    pdict.pop("args")
+for opts in GenerateOptions(
+    params=bin_params, gridz=[3, 6, 9], style_hole=[(0, "-noholes"), (3, "")]
+):
     b.STL(
-        fn,
+        (
+            "breadboard-bin"
+            f"-{opts.params_fn}"
+            f"-{opts.params['gridx']}x4x{opts.gridz}"
+            f"{opts.style_hole_fn}"
+            ".stl"
+        ),
         model,
-        {**{"Stacking_Tabs": 1}, **pdict, **ns.__dict__},
+        {
+            **{
+                "Breadboard_Power_Rail_Count": opts.params.get(
+                    "Breadboard_Count", 1
+                )
+                * 2
+            },
+            **opts.params,
+            **{"gridz": opts.gridz, "style_hole": opts.style_hole},
+        },
         zip_dir="models-for-printing",
     )
 
 b.Image(
-    "demo.gif",
+    "demo.png",
     model,
-    [
-        {
-            "gridx": b[0],
-            "gridy": b[1],
-            "gridz": b[2],
-            "divx": b[3],
-            "divy": b[4],
-        }
-        for b in [
-            [2, 2, 3, 1, 1],
-            [2, 2, 3, 2, 1],
-            [2, 2, 3, 2, 2],
-            [2, 2, 3, 4, 2],
-            [2, 2, 6, 4, 2],
-            [2, 2, 6, 2, 2],
-            [2, 2, 6, 2, 1],
-            [2, 2, 6, 1, 1],
-        ]
-    ],
+    {"gridx": 2, "gridz": 3, "Breadboard_Count": 1, "Lip_Chamfer": 1},
 )
 
 b.Source(model)
