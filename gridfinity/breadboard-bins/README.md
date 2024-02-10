@@ -5,7 +5,7 @@
 
 Gridfinity bins for breadboards
 
-![Model render](images/readme/demo.png)
+![Model render](images/readme/demo.gif)
 
 ## Differences of the remix compared to the original
 

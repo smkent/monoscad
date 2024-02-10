@@ -59,9 +59,27 @@ for opts in GenerateOptions(
     )
 
 b.Image(
-    "demo.png",
+    "demo.gif",
     model,
-    {"gridx": 2, "gridz": 3, "Breadboard_Count": 1, "Lip_Chamfer": 1},
+    [
+        {
+            "gridx": x,
+            "gridz": z,
+            "Breadboard_Count": bcount,
+            "Breadboard_Power_Rail_Count": pcount,
+            "Lip_Chamfer": chamfer,
+        }
+        for x, z, bcount, pcount, chamfer in [
+            (2, 3, 1, 2, 1),
+            (3, 3, 2, 4, 1),
+            (4, 3, 3, 4, 1),
+            (4, 6, 3, 4, 1),
+            (4, 9, 3, 4, 1),
+            (3, 9, 2, 4, 1),
+            (2, 9, 1, 2, 1),
+            (2, 6, 1, 2, 1),
+        ]
+    ],
 )
 
 b.Source(model)
