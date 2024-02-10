@@ -12,6 +12,7 @@ Params = namedtuple(
         "gridz",
         "divx",
         "divy",
+        "Compartment_Style",
         "style_tab",
         "d_wall",
         "d_div",
@@ -19,7 +20,7 @@ Params = namedtuple(
         "h_cut_extra_single",
         "args",
     ),
-    defaults=(2, 2, 3, 1, 1, 1, 0.95, 1.2, 1.6, 2.0, N()),
+    defaults=(2, 2, 3, 1, 1, "default", 1, 0.95, 1.2, 1.6, 2.0, N()),
 )
 
 model = "bin.scad"
@@ -33,6 +34,7 @@ bins = [
     [Params(divx=5, divy=1)],
     [Params(divx=6, divy=1)],
     [Params(divx=6, divy=1, gridz=1.5, h_cut_extra=1.8)],
+    [Params(Compartment_Style="6p")],
     [
         Params(
             4,
@@ -51,7 +53,11 @@ bins = [
 for opts in GenerateOptions(b=bins):
     p = opts.b
     ns = p.args
-    div_fn = f"-{p.divx}x,{p.divy}y" if p.divx and p.divy else ""
+    div_fn = (
+        (f"-{p.divx}x,{p.divy}y" if p.divx and p.divy else "")
+        if p.Compartment_Style == "default"
+        else f"-{p.Compartment_Style}"
+    )
     label_fn = f"-nolabel" if p.style_tab == 5 else ""
     fn = f"bin-{p.gridx}x{p.gridy}x{p.gridz}{div_fn}{label_fn}.stl"
     pdict = p._asdict()

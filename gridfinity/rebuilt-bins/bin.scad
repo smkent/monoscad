@@ -37,6 +37,8 @@ h_cut_extra = 1.6; // [0: Default, 1.8: 2 bottom layers, 1.6: 3 bottom layers, 1
 // Additional interior depth for single-grid pockets -- best used with h_cut_extra set to 2 bottom layers
 h_cut_extra_single = 2.0; // [0: Default, 2.0: Most, 1.4: Some]
 
+Compartment_Style = "default"; // [default: Default -- use compartment settings below, "6p": half and half half/single pockets]
+
 /* [Linear Compartments] */
 // number of X Divisions (set to zero to have solid bin)
 divx = 1;
@@ -316,31 +318,45 @@ module block_cutter(x,y,w,h,t,s) {
     }
 }
 
+module compartments_custom_6p() {
+    for (x = [0:1:gridx-0.1], y = [0:1:gridy/2-0.1])
+    cut(x, y, 1, 1);
+    for (x = [0:0.5:gridx-0.1], y = [gridy/2:1:gridy-0.1])
+    cut(x, y, 0.5, 1);
+}
+
+module compartments_cut() {
+    if (Compartment_Style == "default") {
+        if (divx > 0 && divy > 0) {
+            cutEqual(
+                n_divx=divx,
+                n_divy=divy,
+                style_tab=style_tab,
+                scoop_weight=scoop
+            );
+        } else if (cdivx > 0 && cdivy > 0) {
+            cutCylinders(
+                n_divx=cdivx,
+                n_divy=cdivy,
+                cylinder_diameter=cd,
+                cylinder_height=ch,
+                coutout_depth=c_depth,
+                orientation=c_orientation
+            );
+        }
+    } else if (Compartment_Style == "6p") {
+        compartments_custom_6p();
+    }
+}
+
 // Main Module //
 
 module main() {
     gf_init() {
         color("cornflowerblue", 0.8)
         render(convexity=4)
-        gf_bin() {
-            if (divx > 0 && divy > 0) {
-                cutEqual(
-                    n_divx=divx,
-                    n_divy=divy,
-                    style_tab=style_tab,
-                    scoop_weight=scoop
-                );
-            } else if (cdivx > 0 && cdivy > 0) {
-                cutCylinders(
-                    n_divx=cdivx,
-                    n_divy=cdivy,
-                    cylinder_diameter=cd,
-                    cylinder_height=ch,
-                    coutout_depth=c_depth,
-                    orientation=c_orientation
-                );
-            }
-        }
+        gf_bin()
+        compartments_cut();
     }
 }
 
