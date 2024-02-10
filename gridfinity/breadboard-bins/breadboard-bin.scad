@@ -32,6 +32,7 @@ Breadboard_Tab_Dimensions = [1.8, 6.2]; // [0:0.1:10]
 Breadboard_Count = 1; // [0:1:5]
 Breadboard_Power_Rail_Count = 2; // [0:1:10]
 Breadboard_Double_Sided_Tabs = true;
+Retaining_Lip = true;
 
 // Optional bin lip chamfer
 Lip_Chamfer = false;
@@ -274,7 +275,7 @@ module breadboard(lip_cut=false, add_length=0) {
     render(convexity=4)
     for (lip_cut_each = concat([false], lip_cut ? [true] : [])) {
         extrudelen = (bb_size[1] + add_length) / (lip_cut_each ? 2 : 1);
-        translate([0, 0, -(l_grid * gridy - extrudelen) / 2])
+        translate([0, 0, -(l_grid * gridy - 0.5 - extrudelen) / 2 - 0.001])
         linear_extrude(height=extrudelen, center=true)
         polygon(bb_points(
             bb_count,
@@ -328,12 +329,17 @@ module main() {
                     breadboard_cut();
                     walls_cut();
                 }
+                if (Retaining_Lip)
                 translate([0, 0, $cuttop - bb_size[2]])
                 retaining_lip_cut();
             }
         }
         if ($preview) {
-            translate([0, retaining_lip - 0.001, $cuttop - bb_size[2] + 0.001])
+            translate([
+                0,
+                Retaining_Lip ? retaining_lip - 0.001 : 0,
+                $cuttop - bb_size[2] + 0.001
+            ])
             breadboard();
         }
     }
