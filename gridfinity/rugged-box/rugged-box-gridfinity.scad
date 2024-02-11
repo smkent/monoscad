@@ -198,7 +198,7 @@ module gridfinity_bottom_base(hole=false) {
 
 module rbox_interior_base(height = h_base * 2) {
     intersection() {
-        rbox_interior();
+        rbox_interior(cut_height=height);
         rbox_for_interior()
         linear_extrude(height=height)
         square([width * 2, length * 2], center=true);

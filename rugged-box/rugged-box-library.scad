@@ -226,11 +226,11 @@ module rbox_body_modifier_volume() {
     _box_body_modifier_volume();
 }
 
-module rbox_interior() {
+module rbox_interior(cut_height=0) {
     _box_color()
     render(convexity=4) {
         _box_extrude()
-        _box_interior_shape();
+        _box_interior_shape(cut_height);
         rbox_for_interior()
         _box_center_base($b_inner_height);
     }
@@ -875,7 +875,7 @@ module _box_wall_shape(reinforced=false) {
     square([$b_wall_thickness * 2/3, min($b_outer_height, $b_wall_thickness)]);
 }
 
-module _box_interior_shape() {
+module _box_interior_shape(cut_height=0) {
     intersection() {
         difference() {
             translate([$b_wall_thickness / 2, -$b_wall_thickness / 2])
@@ -885,7 +885,7 @@ module _box_interior_shape() {
         translate([0, $b_wall_thickness])
         square([
             $b_corner_radius + $b_edge_radius,
-            $b_outer_height - $b_wall_thickness
+            (cut_height > 0) ? cut_height : $b_outer_height - $b_wall_thickness
         ]);
     }
 }
