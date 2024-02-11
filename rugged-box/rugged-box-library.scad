@@ -54,7 +54,7 @@ handle_radius = 5;
 
 // Label size
 label_thickness = 2;
-label_fit_thickness = 0.4;
+label_fit_thickness = 0.1;
 label_text_thickness = 2.0;
 label_holder_inset = 5;
 label_holder_lip = 2;
