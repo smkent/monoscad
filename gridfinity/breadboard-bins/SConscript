@@ -1,0 +1,89 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "breadboard-bin.scad"
+
+bin_params = [
+    (
+        {"gridx": 2, "Breadboard_Count": 1, "Lip_Chamfer": 1},
+        "1x-board-2x-rails",
+    ),
+    (
+        {
+            "gridx": 2,
+            "Breadboard_Count": 1,
+            "Breadboard_Power_Rail_Count": 4,
+            "Lip_Chamfer": 1,
+        },
+        "1x-board-4x-rails",
+    ),
+    (
+        {"gridx": 3, "Breadboard_Count": 2, "Lip_Chamfer": 1},
+        "2x-board-4x-rails",
+    ),
+    (
+        {
+            "gridx": 4,
+            "Breadboard_Count": 3,
+            "Breadboard_Power_Rail_Count": 4,
+            "Lip_Chamfer": 1,
+            "d_wall": 2.4,
+        },
+        "3x-board-4x-rails",
+    ),
+]
+
+for opts in GenerateOptions(
+    params=bin_params, gridz=[3, 6, 9], style_hole=[(0, "-noholes"), (3, "")]
+):
+    b.STL(
+        (
+            "breadboard-bin"
+            f"-{opts.params_fn}"
+            f"-{opts.params['gridx']}x4x{opts.gridz}"
+            f"{opts.style_hole_fn}"
+            ".stl"
+        ),
+        model,
+        {
+            **{
+                "Breadboard_Power_Rail_Count": opts.params.get(
+                    "Breadboard_Count", 1
+                )
+                * 2
+            },
+            **opts.params,
+            **{"gridz": opts.gridz, "style_hole": opts.style_hole},
+        },
+        zip_dir="models-for-printing",
+    )
+
+b.Image(
+    "demo.gif",
+    model,
+    [
+        {
+            "gridx": x,
+            "gridz": z,
+            "Breadboard_Count": bcount,
+            "Breadboard_Power_Rail_Count": pcount,
+            "Lip_Chamfer": chamfer,
+        }
+        for x, z, bcount, pcount, chamfer in [
+            (2, 3, 1, 2, 1),
+            (3, 3, 2, 4, 1),
+            (4, 3, 3, 4, 1),
+            (4, 6, 3, 4, 1),
+            (4, 9, 3, 4, 1),
+            (3, 9, 2, 4, 1),
+            (2, 9, 1, 2, 1),
+            (2, 6, 1, 2, 1),
+        ]
+    ],
+)
+
+b.Source(model)
+
+b.add_default_targets()
+
+# vim: ft=python
