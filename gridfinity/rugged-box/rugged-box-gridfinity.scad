@@ -198,7 +198,7 @@ module gridfinity_bottom_base(hole=false) {
 
 module rbox_interior_base(height = h_base * 2) {
     intersection() {
-        rbox_interior();
+        rbox_interior(cut_height=height);
         rbox_for_interior()
         linear_extrude(height=height)
         square([width * 2, length * 2], center=true);
@@ -269,7 +269,8 @@ module gridfinity_top_base() {
         for (i = [0:1:Length - 1])
         translate([0, (i - Length / 2 + 0.5) * l_grid, 0])
         gridfinity_top_base_strip(i);
-        gridfinity_rectangle(adjust=1.6);
+        linear_extrude(height=h_base * 2)
+        square([width + 1.6, length + 1.6], center=true);
     }
 }
 
@@ -290,7 +291,6 @@ module custom_top() {
     difference () {
         union() {
             rbox_body();
-            render(convexity=4)
             custom_top_interior_grid();
         }
         if (Gridfinity_Stackable) {
