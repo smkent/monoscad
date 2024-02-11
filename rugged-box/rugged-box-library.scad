@@ -884,7 +884,7 @@ module _box_interior_shape() {
         }
         translate([0, $b_wall_thickness])
         square([
-            $b_corner_radius + $b_edge_radius * 2,
+            $b_corner_radius + $b_edge_radius,
             $b_outer_height - $b_wall_thickness
         ]);
     }
