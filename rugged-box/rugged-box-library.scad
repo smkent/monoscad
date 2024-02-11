@@ -53,10 +53,12 @@ handle_max_height = 35;
 handle_radius = 5;
 
 // Label size
-label_thickness = 2.0;
+label_thickness = 2;
+label_fit_thickness = 0.4;
+label_text_thickness = 2.0;
 label_holder_inset = 5;
 label_holder_lip = 2;
-label_holder_thickness = label_thickness + 2;
+label_holder_thickness = 2 + label_thickness + label_fit_thickness;
 label_max_height = 30;
 
 // Public modules
@@ -624,7 +626,10 @@ function _label_rib_separation() = (
 
 function _label_space() = [
     _label_rib_separation() - $b_size_tolerance * 4 - $b_rib_width,
-    min(label_max_height + label_holder_inset * 2, $b_inner_height)
+    min(
+        label_max_height + label_holder_inset * 2,
+        $b_inner_height - $b_outer_chamfer_vertical
+    )
 ];
 
 function _label_holder_size() = (_vec_add(_label_space(), -label_holder_inset));
@@ -1542,7 +1547,7 @@ module _box_label_holder() {
                         label_size[1] - label_holder_lip + label_holder_lip * 2
                     ], center=true);
                 }
-                linear_extrude(height=label_thickness + 0.1)
+                linear_extrude(height=label_thickness + label_fit_thickness)
                 translate([0, (label_holder_size[1] - label_size[1]) / 2])
                 _round_shape(label_holder_lip)
                 union() {
@@ -1568,7 +1573,9 @@ module _box_label_base() {
 
     module _base_shape() {
         _round_shape(label_holder_lip)
-        square(label_size, center=true);
+        square(
+            [label_size[0] - label_holder_lip / 2, label_size[1]], center=true
+        );
     }
 
     color("mintcream", 0.8)
@@ -1586,7 +1593,7 @@ module _box_label_base() {
 module _box_label_text() {
     color(rb_color($b_part), 0.8)
     translate([0, 0, label_thickness])
-    linear_extrude(height = label_thickness)
+    linear_extrude(height=label_text_thickness)
     text(
         $b_label_text, size=$b_label_text_size, halign="center", valign="center"
     );
