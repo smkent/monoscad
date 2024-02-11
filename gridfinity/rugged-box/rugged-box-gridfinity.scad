@@ -290,7 +290,6 @@ module custom_top() {
     difference () {
         union() {
             rbox_body();
-            render(convexity=4)
             custom_top_interior_grid();
         }
         if (Gridfinity_Stackable) {
