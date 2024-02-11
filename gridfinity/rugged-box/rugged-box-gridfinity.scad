@@ -59,7 +59,7 @@ Third_Hinge = true;
 Handle = true;
 
 // Optional label for sufficiently wide boxes
-Label = false;
+Label = true;
 
 // Custom text for optional label
 Label_Text = "Label";

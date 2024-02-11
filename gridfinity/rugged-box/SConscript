@@ -52,7 +52,7 @@ for box_name, (
             (("label", {"Label_Text": ""}), "label-blank"),
             "top_modifier",
             "top_grid_modifier",
-            (("bottom_modifier", {"Label": 1}),),
+            "bottom_modifier",
         ]
     ):
         part_params = {}
