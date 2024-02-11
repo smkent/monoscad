@@ -1390,20 +1390,18 @@ module _box_top_grip() {
         mirror([0, 1, 0])
         translate([0, $b_inner_length / 2 - $b_corner_radius, 0])
         rotate([90, 0, 90])
+        // hull() creates grip
+        hull()
         for (mz = [0:1:1])
         mirror([0, 0, mz])
         translate([lip_position, 0]) {
-            // Grip
-            linear_extrude(height=grip_half_length)
-            _round_shape($b_edge_radius)
-            _box_top_grip_shape();
             // End caps
             translate([0, 0, grip_half_length])
             translate([-$b_edge_radius, 0, 0])
             scale([1, 1, end_caps_visible ? 1 : ($b_rib_width / top_grip_depth / 2)])
             rotate([270, 270, 0])
             rotate_extrude(angle=90)
-            translate([$b_edge_radius, 0])
+            translate([$b_edge_radius + 0.001, 0])
             _round_shape($b_edge_radius)
             _box_top_grip_shape();
         }
