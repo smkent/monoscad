@@ -46,18 +46,25 @@ for box_name, (
     for opts in GenerateOptions(
         part=[
             "top",
-            "bottom",
+            (("bottom", {"Label": 1}), "bottom-label"),
+            (("bottom", {"Label": 0}), "bottom-nolabel"),
             "handle",
+            (("label", {"Label_Text": ""}), "label-blank"),
             "top_modifier",
             "top_grid_modifier",
-            "bottom_modifier",
+            (("bottom_modifier", {"Label": 1}),),
         ]
     ):
-        if not enable_handle and opts.part == "handle":
+        part_params = {}
+        if isinstance(opts.part, str):
+            part = opts.part
+        else:
+            part, *part_params = opts.part
+        if not enable_handle and part == "handle":
             continue
         part_params = {
             **{
-                "Part": opts.part,
+                "Part": part,
                 "Width": width,
                 "Length": length,
                 "Top_Height": top_height,
@@ -66,9 +73,10 @@ for box_name, (
                 "Third_Hinge": 1,
             },
             **(params[0] if params else {}),
+            **(part_params[0] if part_params else {}),
         }
         b.STL(
-            f"gridfinity-box-{box_name}-{opts.part}.stl",
+            f"gridfinity-box-{box_name}-{opts.part_fn or part}.stl",
             model,
             part_params,
             model_dependencies,
@@ -104,6 +112,8 @@ b.Image(
                 "Length": length,
                 "Top_Height": top_height,
                 "Bottom_Height": bottom_height,
+                "Label": 1,
+                "Label_Text": "!",
             },
             **(params[0] if params else {}),
         }
