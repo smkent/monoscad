@@ -13,9 +13,9 @@ include <gridfinity-rebuilt-openscad/gridfinity-rebuilt-utility.scad>
 
 // [Default Value Overrides] */
 // Tab size
-d_tabh = 14.265; // [15.85: Default, 14.265: 90% -- for reduced tab angle, 12.68: 80%]
+d_tabh = 14.265; // [15.85: Default, 14.265: 90% -- for bridged tab angle, 13.4725: 85% -- for reduced tab angle, 12.68: 80%]
 // Tab angle
-a_tab = 20; // [36: Default, 20: Reduced]
+a_tab = 20; // [36: Default, 30: Reduced, 20: Bridged]
 // Outer wall thickness
 d_wall = 0.95; // [0.95: Default, 1.2: 3 lines, 1.6: 4 lines, 2.6: Full thickness -- desk tray style]
 // Divider wall thickness
@@ -37,7 +37,7 @@ h_cut_extra = 1.6; // [0: Default, 1.8: 2 bottom layers, 1.6: 3 bottom layers, 1
 // Additional interior depth for single-grid pockets -- best used with h_cut_extra set to 2 bottom layers
 h_cut_extra_single = 2.0; // [0: Default, 2.0: Most, 1.4: Some]
 
-Compartment_Style = "default"; // [default: Default -- use compartment settings below, "6p": half and half half/single pockets]
+Compartment_Style = "default"; // [default: Default -- use compartment settings below, "6p": half and half half/single pockets, "3p": double and single pockets]
 
 /* [Linear Compartments] */
 // number of X Divisions (set to zero to have solid bin)
@@ -318,6 +318,13 @@ module block_cutter(x,y,w,h,t,s) {
     }
 }
 
+module compartments_custom_3p() {
+    for (x = [0:1:gridx/2-0.1], y = [0:2:gridy-0.1])
+    cut(x, y, 1, 2);
+    for (x = [gridx/2:1:gridx-0.1], y = [0:1:gridy-0.1])
+    cut(x, y, 1, 1);
+}
+
 module compartments_custom_6p() {
     for (x = [0:1:gridx-0.1], y = [0:1:gridy/2-0.1])
     cut(x, y, 1, 1);
@@ -344,6 +351,8 @@ module compartments_cut() {
                 orientation=c_orientation
             );
         }
+    } else if (Compartment_Style == "3p") {
+        compartments_custom_3p();
     } else if (Compartment_Style == "6p") {
         compartments_custom_6p();
     }
