@@ -45,6 +45,7 @@ Box options:
 * Choice of latch style (clip or draw)
 * Side stacking latches
 * Optional handle
+* Optional label
 * Top opening grip and hinge end stops
 * Lip seal, integrated or for 1.75mm filament
 * Reinforced (thicker) corners

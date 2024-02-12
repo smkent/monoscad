@@ -52,6 +52,15 @@ handle_min_height = 16;
 handle_max_height = 35;
 handle_radius = 5;
 
+// Label size
+label_thickness = 2;
+label_fit_thickness = 0.1;
+label_text_thickness = 2.0;
+label_holder_inset = 5;
+label_holder_lip = 2;
+label_holder_thickness = 2 + label_thickness + label_fit_thickness;
+label_max_height = 30;
+
 // Public modules
 
 /*
@@ -74,8 +83,15 @@ handle_radius = 5;
  *      - "filament-1.75mm": Seal cutout on both top and bottom for
  *          1.75mm filament
  *  - reinforced_corners: Make the corners as thick as the box lip
+ *  - latch_type: Style of front latches: "clip" or "draw"
  *  - latch_count: Number of latches (1 or 2). The default of 0 determines the
  *    number of latches automatically.
+ *  - top_grip: Add optional grip to front of box top
+ *  - hinge_end_stops: Add optional hinge end stops to box bottom hinges
+ *  - handle: Add optional handle for sufficiently wide boxes
+ *  - label: Add optional label for sufficiently wide boxes
+ *  - label_text: Custom text for optional label
+ *  - label_text_size: Approximate label text size in millimeters
  *
  * Example:
  *
@@ -100,7 +116,11 @@ module rbox(
     latch_type="draw",
     latch_count=0,
     top_grip=false,
-    hinge_end_stops=false
+    hinge_end_stops=false,
+    handle=false,
+    label=false,
+    label_text="",
+    label_text_size=10
 ) {
     // Set base dimensions
     $b_inner_width = width;
@@ -115,6 +135,10 @@ module rbox(
     $b_latch_count = latch_count;
     $b_top_grip = top_grip;
     $b_hinge_end_stops = hinge_end_stops;
+    $b_handle = handle;
+    $b_label = label;
+    $b_label_text = label_text;
+    $b_label_text_size = label_text_size;
     // Set defaults
     $b_preview_assembled = false;
     $b_preview_box_open = false;
@@ -213,6 +237,12 @@ module rbox_stacking_latch(placement="print") { _stacking_latch(placement); }
 
 module rbox_handle(placement="print") { _handle(placement); }
 
+module rbox_label(placement="print") {
+    rbox_for_bottom() {
+        _box_label(placement);
+    }
+}
+
 module rbox_body() {
     _box_color()
     _box_body();
@@ -273,6 +303,8 @@ module rbox_part(part) {
                 _box_attachment_placement()
                 rbox_latch(placement="box-preview");
             }
+            if (_label_enabled())
+            _box_label();
         }
         translate([
             0,
@@ -326,6 +358,8 @@ module rbox_part(part) {
                 _box_attachment_placement()
                 rbox_latch(placement="box-preview");
             }
+            if (_label_enabled())
+            _box_label();
         }
         translate([0, 0, (
             $b_top_outer_height
@@ -366,6 +400,8 @@ module rbox_part(part) {
         rbox_stacking_latch(placement="print");
     } else if (part == "handle") {
         rbox_handle(placement="print");
+    } else if (part == "label") {
+        rbox_label();
     }
 }
 
@@ -561,10 +597,49 @@ function _handle_dimensions() = [
 function _handle_enabled() = (
     let (dimensions = _handle_dimensions())
     (
-        _compute_latch_count() == 2
+        $b_handle
+        && _compute_latch_count() == 2
         && dimensions[0] > ((handle_thickness + handle_radius) * 2 * 1.75)
         && dimensions[1] >= handle_min_height
     )
+);
+
+function _label_enabled() = (
+    let (label_holder_size = _label_size())
+    (
+        $b_label
+        && _compute_latch_count() == 2
+        && label_holder_size[0] >= 20
+        && label_holder_size[1] >= 10
+    )
+);
+
+function _label_rib_separation() = (
+    $b_inner_width
+    - $b_corner_radius * 2
+    - $b_latch_width * 2
+    - $b_rib_width * 4
+    - (_handle_enabled() ? (
+        $b_rib_width * 2 + handle_thickness * 2 + $b_size_tolerance * 2
+    ): 0)
+);
+
+function _label_space() = [
+    _label_rib_separation() - $b_size_tolerance * 4 - $b_rib_width,
+    min(
+        label_max_height + label_holder_inset * 2,
+        $b_inner_height - $b_outer_chamfer_vertical
+    )
+];
+
+function _label_holder_size() = (_vec_add(_label_space(), -label_holder_inset));
+
+function _label_size() = (
+    let (label_holder_size = _label_holder_size())
+    [
+        label_holder_size[0] - label_holder_inset * 2,
+        label_holder_size[1] - label_holder_inset
+    ]
 );
 
 function _edge_chamfer_enabled() = (!($preview && $b_preview_assembled));
@@ -698,6 +773,7 @@ module _box_body() {
         _box_hinge_ribs();
         _box_stacking_latch_ribs();
         _box_top_grip();
+        _box_label_holder();
     }
 }
 
@@ -709,6 +785,7 @@ module _box_body_modifier_volume() {
             _box_latch_ribs();
             _box_hinge_ribs();
             _box_stacking_latch_ribs();
+            _box_label_holder();
         }
         _box_extrude()
         intersection() {
@@ -1405,6 +1482,138 @@ module _box_top_grip() {
             _round_shape($b_edge_radius)
             _box_top_grip_shape();
         }
+    }
+}
+
+// Label
+
+module _box_label_holder_base() {
+    rib_separation = _label_rib_separation();
+    threshold = 50;
+    label_height = (
+        abs($b_outer_height - threshold) < $b_lip_height
+            ? $b_outer_height
+            : min($b_outer_height, threshold)
+    );
+    if (rib_separation > 0 && label_height > 0)
+    difference() {
+        translate([0, -$b_inner_length / 2 + $b_corner_radius])
+        translate([0, 0, $b_outer_height - label_height])
+        rotate([90, 0, -90])
+        linear_extrude(height=rib_separation + $b_rib_width, center=true)
+        union() {
+            $b_outer_height = label_height;
+            _box_wall_shape(reinforced=true);
+        }
+        rbox_interior();
+    }
+}
+
+module _box_label_placement(label=false) {
+    space = _label_space();
+    label_holder_size = _label_holder_size();
+    label_size = _label_size();
+    slop = 0.001;
+    rotate([90, 0, 0])
+    translate([
+        0, label ? ((label_holder_size[1] - label_size[1]) / 2) : 0, slop
+    ])
+    translate([
+        0,
+        $b_outer_height - space[1] / 2 - label_holder_inset * 0.5,
+        $b_inner_length / 2 + $b_wall_thickness + $b_lip_thickness
+    ])
+    children();
+}
+
+module _box_label_holder() {
+    label_holder_size = _label_holder_size();
+    label_size = _label_size();
+    if (_label_enabled() && $b_part == "bottom") {
+        _box_label_holder_base();
+        _box_label_placement(label=false)
+        intersection() {
+            render()
+            difference() {
+                linear_extrude(height=label_holder_thickness)
+                _round_shape(label_holder_lip)
+                difference() {
+                    square(label_holder_size, center=true);
+                    translate([0, (label_holder_size[1] - (label_size[1] - label_holder_lip)) / 2])
+                    translate([0, label_holder_lip])
+                    square([
+                        label_size[0] - label_holder_lip * 2,
+                        label_size[1] - label_holder_lip + label_holder_lip * 2
+                    ], center=true);
+                }
+                linear_extrude(height=label_thickness + label_fit_thickness)
+                translate([0, (label_holder_size[1] - label_size[1]) / 2])
+                _round_shape(label_holder_lip)
+                union() {
+                    square(_vec_add(label_size, 0.1), center=true);
+                    translate([0, label_size[1]])
+                    square([label_size[0] * 2, label_size[1]], center=true);
+                }
+            }
+            _hull_pair(label_holder_thickness) {
+                _round_shape(label_holder_lip)
+                square(label_holder_size, center=true);
+                translate([0, label_holder_thickness / 2])
+                _round_shape(label_holder_lip)
+                square(_vec_add(label_holder_size, -label_holder_thickness), center=true);
+            }
+        }
+    }
+}
+
+module _box_label_base() {
+    label_size = _label_size();
+    label_chamfer = label_thickness * 0.25;
+
+    module _base_shape() {
+        _round_shape(label_holder_lip)
+        square(
+            [label_size[0] - label_holder_lip / 2, label_size[1]], center=true
+        );
+    }
+
+    color("mintcream", 0.8)
+    render()
+    _hull_stack([label_chamfer, label_thickness - label_chamfer * 2, label_chamfer]) {
+        offset(delta=-label_chamfer)
+        _base_shape();
+        _base_shape();
+        _base_shape();
+        offset(delta=-label_chamfer)
+        _base_shape();
+    }
+}
+
+module _box_label_text() {
+    color(rb_color($b_part), 0.8)
+    translate([0, 0, label_thickness])
+    linear_extrude(height=label_text_thickness)
+    text(
+        $b_label_text, size=$b_label_text_size, halign="center", valign="center"
+    );
+}
+
+module _box_label_assembly() {
+        _box_label_base();
+        _box_label_text();
+}
+
+module _box_label(placement="default") {
+    module _box_label_assembly() {
+        _box_label_base();
+        _box_label_text();
+    }
+
+    if (placement == "print") {
+        _box_label_assembly();
+    } else {
+        _box_label_placement(label=true)
+        _box_label_assembly();
     }
 }
 

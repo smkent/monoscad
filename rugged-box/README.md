@@ -53,6 +53,7 @@ chose [OpenSCAD][openscad] so the software and model would be fully open source.
   corner radius, and top/bottom edge chamfer
 * Choice of latch style (clip or draw)
 * Optional handle
+* Optional label
 * Optional top opening grip and/or hinge end stops
 * Optional lip seal, integrated or for 1.75mm filament
 * Optional reinforced (thicker) corners
