@@ -82,6 +82,14 @@ b.Image(
     ],
 )
 
+b.InsetImage(
+    "photo-demo-inset.gif",
+    "photo1.jpg",
+    "demo.gif",
+    resize="33%",
+    gravity="southeast",
+)
+
 b.Source(model)
 
 b.add_default_targets()
