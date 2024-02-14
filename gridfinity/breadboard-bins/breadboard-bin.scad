@@ -293,19 +293,22 @@ module retaining_lip_cut() {
     circle(d=retaining_lip, $fn=50);
 }
 
-module breadboard_cut() {
-    breadboard(lip_cut=true, add_length=retaining_lip);
+module breadboard_eject_holes_cut() {
     rotate([90, 0, 0]) {
         blen = (bb_size[0] + bb_power_width * 2) / 6;
+        spacelen = blen * 3;
         bfill_len = min(
             l_grid * gridx - d_wall * 4,
             (bb_size[0] * bb_count + bb_power_width * bb_power_count)
         );
-        bnum = floor(bfill_len / blen / 2);
+        bnum = floor(bfill_len / (blen + spacelen));
         linear_extrude(height=l_grid * gridy, center=true)
-        translate([-(bnum - 1) * blen, bb_tabs[1] / 2])
+        translate([
+            -(bnum/2) * (blen + spacelen) + (blen + spacelen)/2,
+            bb_tabs[1] / 2
+        ])
         for (n = [0:1:bnum-0.01])
-        translate([blen * 2 * n, 0]) {
+        translate([(blen + spacelen) * n, 0]) {
             offset(r=2)
             offset(r=-2)
             square([blen, bb_tabs[1]], center=true);
@@ -313,6 +316,11 @@ module breadboard_cut() {
             square([blen, bb_tabs[1] / 2], center=true);
         }
     }
+}
+
+module breadboard_cut() {
+    breadboard(lip_cut=true, add_length=retaining_lip);
+    breadboard_eject_holes_cut();
 }
 
 // Main Module //

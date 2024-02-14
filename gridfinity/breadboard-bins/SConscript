@@ -55,7 +55,10 @@ for opts in GenerateOptions(
             **opts.params,
             **{"gridz": opts.gridz, "style_hole": opts.style_hole},
         },
-        zip_dir="models-for-printing",
+        zip_dir=(
+            f"{opts.params.get('Breadboard_Count') or 1}x"
+            f"-board{opts.style_hole_fn}"
+        ),
     )
 
 b.Image(
@@ -80,6 +83,14 @@ b.Image(
             (2, 6, 1, 2, 1),
         ]
     ],
+)
+
+b.InsetImage(
+    "photo-demo-inset.gif",
+    "photo1.jpg",
+    "demo.gif",
+    resize="33%",
+    gravity="southeast",
 )
 
 b.Source(model)
