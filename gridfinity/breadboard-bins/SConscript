@@ -55,7 +55,10 @@ for opts in GenerateOptions(
             **opts.params,
             **{"gridz": opts.gridz, "style_hole": opts.style_hole},
         },
-        zip_dir="models-for-printing",
+        zip_dir=(
+            f"{opts.params.get('Breadboard_Count') or 1}x"
+            f"-board{opts.style_hole_fn}"
+        ),
     )
 
 b.Image(
