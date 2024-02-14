@@ -1,6 +1,6 @@
 # Gridfinity Breadboard Bins
 
-![This model is a work in progress][work-in-progress-badge]
+[![Available on Printables][printables-badge]][printables-model]
 [![CC-BY-SA-4.0 license][license-badge]][license]
 
 Gridfinity bins for breadboards
@@ -50,5 +50,6 @@ use the [MIT License][gridfinity-license].
 [license-badge]: /_static/license-badge-cc-by-sa-4.0.svg
 [license]: http://creativecommons.org/licenses/by-sa/4.0/
 [openscad]: https://openscad.org
+[printables-badge]: /_static/printables-badge.png
+[printables-model]: https://www.printables.com/model/764343
 [rebuilt-bins-model]: ../rebuilt-bins/
-[work-in-progress-badge]: /_static/work-in-progress-badge.svg
