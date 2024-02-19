@@ -1,17 +1,85 @@
+from collections import namedtuple
+from datetime import datetime
+
 Import("env")
 b = ModelBuilder(env)
 
-model = "material-swatch.scad"
+Swatch = namedtuple(
+    "Swatch",
+    (
+        "manufacturer",
+        "material",
+        "color",
+        "string0_size",
+        "string1_size",
+        "string2_size",
+        "string3_size",
+    ),
+    defaults=("", "", "", 4, 4, 4, 4),
+)
 
-for material in {"", "PETG", "PLA", "ABS", "HIPS", "TPU", "PC"}:
-    for steps in {0, 1}:
-        fn_material = material.lower() or "blank"
-        fn_steps = "steps" if steps == 1 else "simple"
-        b.STL(
-            f"material-swatch-{fn_material}-{fn_steps}.stl",
-            model,
-            {"Text": material, "Steps": steps},
+model = "material-swatch.scad"
+multiline_model = "material-swatch-getburning-remix.scad"
+dt = datetime.now().strftime("%Y.%m")
+
+swatches = []
+
+for opts in GenerateOptions(
+    material=(("", "blank"), "PETG", "PLA", "ABS", "HIPS", "TPU", "PC"),
+    steps=((0, "simple"), (1, "steps")),
+):
+    b.STL(
+        (
+            f"material-swatch-{opts.material_fn or opts.material.upper()}"
+            f"-{opts.steps_fn}.stl"
+        ),
+        model,
+        {"Text": opts.material, "Steps": opts.steps},
+    )
+
+for opts in GenerateOptions(swatch=swatches):
+    swatch_dict = opts.swatch._asdict()
+    manufacturer = swatch_dict.pop("manufacturer")
+    material = swatch_dict.pop("material")
+    color = swatch_dict.pop("color")
+    color_words = color.split(maxsplit=1)
+    strings = {
+        f"string{i}": s
+        for i, s in enumerate(
+            [
+                manufacturer.upper(),
+                color_words[0].upper(),
+                (color_words[1].upper() if len(color_words) > 1 else ""),
+                material.upper(),
+            ]
+            if len(color_words) > 1
+            else [
+                manufacturer.upper(),
+                "",
+                color_words[0].upper(),
+                material.upper(),
+            ]
         )
+    }
+    b.STL(
+        (
+            f"my-swatch"
+            f"-{manufacturer.lower().replace(' ', '-')}"
+            f"-{material.lower().replace(' ', '-')}"
+            f"-{color.lower().replace(' ', '-')}"
+            ".stl"
+        ),
+        multiline_model,
+        {
+            **strings,
+            **{
+                "string3_origin": 1.0,
+                "string3_size": 4,
+                "Steps": 0,
+            },
+            **swatch_dict,
+        },
+    )
 
 b.Image(
     "demo.gif",
