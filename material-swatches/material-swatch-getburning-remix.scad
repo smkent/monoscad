@@ -7,6 +7,7 @@
 
 /* [Options] */
 Color = "lightcyan";
+string0 = "Inset";
 string1 = "PETG";
 string2 = "Maker";
 string3 = "";
@@ -14,19 +15,24 @@ Steps = true;
 /* [Text parameters] */
 text_lstart = 2.5; //[0:0.1:12]
 // See Font List dialog
+string0_font = "Orbitron:style=Bold";
+string0_origin = 17.4; //[1:0.1:12]
+string0_size = 4; //[1:.1:10]
+// 0 to use default height
+string0_height = 0; //[0:0.2:10]
 string1_font = "Orbitron:style=Bold";
 string1_origin = 11; //[1:0.1:12]
-string1_size = 4; //[1:1:10]
+string1_size = 4; //[1:.1:10]
 // 0 to use default height
 string1_height = 0; //[0:0.2:10]
 string2_font = "Orbitron:style=Bold";
 string2_origin = 6; //[1:0.1:12]
-string2_size = 4; //[1:1:10]
+string2_size = 4; //[1:.1:10]
 // 0 to use default height
 string2_height = 0; //[0:0.2:10]
 string3_font = "Orbitron:style=Bold";
 string3_origin = 1.5; //[1:0.1:12]
-string3_size = 3; //[1:1:10]
+string3_size = 3; //[1:.1:10]
 // 0 to use default height
 string3_height = 0; //[0:0.2:10]
 
@@ -85,6 +91,9 @@ module swatch() {
                 square([step_width + 0.01, step_height]);
             }
         }
+        translate([text_lstart, string0_origin, height_thin])
+          linear_extrude(height=string0_height > 0? string0_height: height_thin)
+          text(string0, font=string0_font, size=string0_size, spacing=1.05);
     }
     translate([text_lstart, string1_origin, height_thin])
       linear_extrude(height=string1_height > 0? string1_height: height_thin)
