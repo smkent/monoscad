@@ -37,7 +37,7 @@ h_cut_extra = 1.6; // [0: Default, 1.8: 2 bottom layers, 1.6: 3 bottom layers, 1
 // Additional interior depth for single-grid pockets -- best used with h_cut_extra set to 2 bottom layers
 h_cut_extra_single = 2.0; // [0: Default, 2.0: Most, 1.4: Some]
 
-Compartment_Style = "default"; // [default: Default -- use compartment settings below, "6p": half and half half/single pockets, "3p": double and single pockets]
+Compartment_Style = "default"; // [default: Default -- use compartment settings below, "6p": half and half half/single pockets, "3p": double and single pockets, "split1y": half full width, half divx pockets]
 
 /* [Linear Compartments] */
 // number of X Divisions (set to zero to have solid bin)
@@ -320,16 +320,22 @@ module block_cutter(x,y,w,h,t,s) {
 
 module compartments_custom_3p() {
     for (x = [0:1:gridx/2-0.1], y = [0:2:gridy-0.1])
-    cut(x, y, 1, 2);
+    cut(x, y, 1, 2, t=style_tab, s=scoop);
     for (x = [gridx/2:1:gridx-0.1], y = [0:1:gridy-0.1])
-    cut(x, y, 1, 1);
+    cut(x, y, 1, 1, t=style_tab, s=scoop);
 }
 
 module compartments_custom_6p() {
     for (x = [0:1:gridx-0.1], y = [0:1:gridy/2-0.1])
-    cut(x, y, 1, 1);
+    cut(x, y, 1, 1, t=style_tab, s=scoop);
     for (x = [0:0.5:gridx-0.1], y = [gridy/2:1:gridy-0.1])
-    cut(x, y, 0.5, 1);
+    cut(x, y, 0.5, 1, t=style_tab, s=scoop);
+}
+
+module compartments_custom_split1y() {
+    cut(0, gridy / 2, gridx, gridy / 2, t=5, s=scoop);
+    for (y = [0:1:gridy/2-0.1], x = [0:gridx/divx:gridx-0.1])
+    cut(x, y, gridx / divx, gridy / 2, t=style_tab, s=scoop);
 }
 
 module compartments_cut() {
@@ -355,6 +361,8 @@ module compartments_cut() {
         compartments_custom_3p();
     } else if (Compartment_Style == "6p") {
         compartments_custom_6p();
+    } else if (Compartment_Style == "split1y") {
+        compartments_custom_split1y();
     }
 }
 
