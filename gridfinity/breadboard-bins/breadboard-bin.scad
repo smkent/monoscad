@@ -240,9 +240,10 @@ module generate_tabs() {
 }
 
 module wall_cut(num_grid) {
-    dd = l_grid * 0.15;
+    esub = l_grid * 0.05;
+    dd = l_grid * 0.15 + esub;
     bh = min_z * 7;
-    ht = (gridz - min_z) * 7 - h_lip - r_f2;
+    ht = (gridz - min_z) * 7 - h_lip - r_f2 - esub * 2;
     radius = min(10, ht * 0.49);
     if (ht >= 3.5)
     translate([l_grid * (num_grid / 2 - 0.5), 0, 0])
@@ -251,7 +252,7 @@ module wall_cut(num_grid) {
     rotate([90, 0, 0])
     linear_extrude(height=l_grid * (max(gridx, gridy) + 1), center=true)
     translate([-l_grid / 2, 0])
-    translate([dd, r_f2])
+    translate([dd, r_f2 + esub])
     union() {
         offset(r=radius)
         offset(r=-radius)
