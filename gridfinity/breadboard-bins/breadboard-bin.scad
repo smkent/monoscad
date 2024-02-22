@@ -92,7 +92,7 @@ $fs = $preview ? $fs : 0.4;
 min_z = 2.00 + ((0.5 + 0.8) / 7);
 
 // Gridfinity constants
-d_wall = 1.6;
+d_wall = 2.6;
 style_tab = 5;
 
 // Breadboard
