@@ -27,7 +27,6 @@ bin_params = [
             "Breadboard_Count": 3,
             "Breadboard_Power_Rail_Count": 4,
             "Lip_Chamfer": 1,
-            "d_wall": 2.4,
         },
         "3x-board-4x-rails",
     ),

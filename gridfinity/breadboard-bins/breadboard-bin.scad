@@ -92,7 +92,7 @@ $fs = $preview ? $fs : 0.4;
 min_z = 2.00 + ((0.5 + 0.8) / 7);
 
 // Gridfinity constants
-d_wall = 1.6;
+d_wall = 2.6;
 style_tab = 5;
 
 // Breadboard
@@ -112,7 +112,7 @@ function vec_reverse(v) = [for (i = [len(v) - 1:-1:0]) v[i]];
 
 function gf_height(z=gridz) = height(z, gridz_define, style_lip, enable_zsnap);
 
-function bb_points(bb_count, extra_height=0, lip_cut=false, lip_chamfer=false) = (
+function bb_points(bb_count, lip_cut=false, lip_chamfer=false) = (
     let (bb_tab_ch_ht = bb_tabs[1] + (bb_tabs[0] - bb_size[0]))
     let (sz_x = (bb_size[0] * bb_count + bb_power_width * bb_power_count) / 2)
     let (basepts = [
@@ -120,16 +120,16 @@ function bb_points(bb_count, extra_height=0, lip_cut=false, lip_chamfer=false) =
         [sz_x + (bb_tabs[0] - bb_size[0]), 0],
         [sz_x + (bb_tabs[0] - bb_size[0]), bb_tabs[1]],
         [sz_x, bb_tab_ch_ht],
-        [sz_x, bb_size[2] + extra_height],
+        [sz_x, bb_size[2]],
     ])
     let (pts = concat(
         basepts,
         lip_cut
             ? [
-                [sz_x, bb_size[2] + extra_height + $bindepth],
+                [sz_x, bb_size[2] + $bindepth],
                 [
                     sz_x + (lip_chamfer ? h_lip : 0),
-                    bb_size[2] + extra_height + h_lip + $bindepth
+                    bb_size[2] + h_lip + $bindepth
                 ]
             ]
             : []
@@ -240,9 +240,10 @@ module generate_tabs() {
 }
 
 module wall_cut(num_grid) {
-    dd = l_grid * 0.15;
+    esub = l_grid * 0.05;
+    dd = l_grid * 0.15 + esub;
     bh = min_z * 7;
-    ht = (gridz - min_z) * 7 - h_lip - r_f2;
+    ht = (gridz - min_z) * 7 - h_lip - r_f2 - esub * 2;
     radius = min(10, ht * 0.49);
     if (ht >= 3.5)
     translate([l_grid * (num_grid / 2 - 0.5), 0, 0])
@@ -251,7 +252,7 @@ module wall_cut(num_grid) {
     rotate([90, 0, 0])
     linear_extrude(height=l_grid * (max(gridx, gridy) + 1), center=true)
     translate([-l_grid / 2, 0])
-    translate([dd, r_f2])
+    translate([dd, r_f2 + esub])
     union() {
         offset(r=radius)
         offset(r=-radius)
@@ -270,19 +271,21 @@ module walls_cut() {
 }
 
 module breadboard(lip_cut=false, add_length=0) {
-    rotate([90, 0, 180])
+    extrudelen = bb_size[1] + add_length;
+    yoffset = -(l_grid * gridy - 0.5 - extrudelen) / 2 - 0.001;
     color("mintcream", 0.4)
     render(convexity=4)
-    for (lip_cut_each = concat([false], lip_cut ? [true] : [])) {
-        extrudelen = (bb_size[1] + add_length) / (lip_cut_each ? 2 : 1);
-        translate([0, 0, -(l_grid * gridy - 0.5 - extrudelen) / 2 - 0.001])
+    difference() {
+        rotate([90, 0, 180])
+        translate([0, 0, yoffset])
         linear_extrude(height=extrudelen, center=true)
-        polygon(bb_points(
-            bb_count,
-            extra_height=((lip_cut && !lip_cut_each) ? r_f2: 0),
-            lip_cut=lip_cut_each,
-            lip_chamfer=Lip_Chamfer
-        ));
+        polygon(bb_points(bb_count, lip_cut=lip_cut, lip_chamfer=Lip_Chamfer));
+        if (lip_cut) {
+            translate([0, gridy * l_grid / 2 + yoffset - add_length, bb_size[2]])
+            rotate([315, 0, 0])
+            linear_extrude(height=$bindepth * 2)
+            square([gridx * l_grid, gridy * l_grid], center=true);
+        }
     }
 }
 
