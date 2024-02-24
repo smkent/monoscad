@@ -8,7 +8,7 @@
 /* [Size] */
 
 // Interior width in millimeters
-Width = 28;
+Width = 22;
 
 // Interior length in millimeters
 Length = 20;
@@ -18,6 +18,10 @@ Height = 10;
 
 // Wall thickness in millimeters
 Thickness = 4;
+
+// Screw head clearance width
+Cutout_Width = 7;
+Cutout_Depth = 2.5;
 
 module __end_customizer_options__() { }
 
@@ -69,16 +73,23 @@ module box_extrude(width, length, radius) {
 
 module tongs_clip() {
     edge_radius = Thickness / 2;
+    retaining_lip_radius = edge_radius / 2;
     render()
-    box_extrude(Width, Length, edge_radius)
-    translate([edge_radius, 0])
-    union() {
-        retaining_lip_radius = edge_radius / 2;
-        translate([0, Height / 2])
-        circle(retaining_lip_radius);
-        offset(edge_radius / 2)
-        offset(-edge_radius / 2)
-        square([Thickness, Height]);
+    difference() {
+        box_extrude(Width, Length, edge_radius)
+        translate([edge_radius, 0])
+        union() {
+            translate([0, Height / 2])
+            circle(retaining_lip_radius);
+            offset(edge_radius / 2)
+            offset(-edge_radius / 2)
+            square([Thickness, Height]);
+        }
+        hull()
+        for (my = [0, (Length - retaining_lip_radius) / 2])
+        translate([0, my, 0])
+        scale([1, retaining_lip_radius / Cutout_Width, 1])
+        cylinder(d=Cutout_Width, h=Height);
     }
 }
 
