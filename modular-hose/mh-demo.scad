@@ -67,14 +67,14 @@ module mh_demo_parts() {
 
     place_part(1, 0)
     stack_parts() {
-        mh_magnetic_part(id, model_type="grommet", plate_type="fan", grommet_diameter=101.6, magnet_holes=true, screw_holes=true, plate_knurled=Enable_Plate_Knurling);
-        mh_magnetic_part(id, model_type="connector", connector_type="male", plate_type="fan", grommet_diameter=101.6, magnet_holes=true, screw_holes=false, plate_knurled=Enable_Plate_Knurling);
+        mh_magnetic_part(id, model_type="grommet", plate_type="fan", grommet_diameter=101.6, magnet_holes=true, screw_holes=true, round_plate_knurled=Enable_Plate_Knurling);
+        mh_magnetic_part(id, model_type="connector", connector_type="male", plate_type="fan", grommet_diameter=101.6, magnet_holes=true, screw_holes=false, round_plate_knurled=Enable_Plate_Knurling);
     }
 
     place_part(1, 1)
     stack_parts() {
-        mh_magnetic_part(id, model_type="grommet", plate_type="round", grommet_diameter=101.6, magnet_holes=true, screw_holes=true, plate_knurled=Enable_Plate_Knurling);
-        mh_magnetic_part(id, model_type="connector", connector_type="female", plate_type="round", grommet_diameter=101.6, magnet_holes=true, screw_holes=false, plate_knurled=Enable_Plate_Knurling);
+        mh_magnetic_part(id, model_type="grommet", plate_type="round", grommet_diameter=101.6, magnet_holes=true, screw_holes=true, round_plate_knurled=Enable_Plate_Knurling);
+        mh_magnetic_part(id, model_type="connector", connector_type="female", plate_type="round", grommet_diameter=101.6, magnet_holes=true, screw_holes=false, round_plate_knurled=Enable_Plate_Knurling);
     }
 }
 
