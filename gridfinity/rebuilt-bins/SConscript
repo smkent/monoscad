@@ -52,6 +52,61 @@ bins = [
     [Params(divx=3, divy=2)],
     [Params(divx=4, divy=1)],
     [Params(divx=4, divy=2)],
+    [
+        Params(
+            gridx=2,
+            gridy=4,
+            divx=4,
+            divy=4,
+            d_wall=1.6,
+            d_div=1.6,
+            h_cut_extra_single=1.4,
+        )
+    ],
+    [
+        Params(
+            gridx=2,
+            gridy=6,
+            divx=4,
+            divy=6,
+            d_wall=1.6,
+            d_div=1.6,
+            h_cut_extra_single=1.4,
+        )
+    ],
+    [
+        Params(
+            gridx=4,
+            gridy=4,
+            divx=8,
+            divy=4,
+            d_wall=1.6,
+            d_div=1.6,
+            h_cut_extra_single=1.4,
+        )
+    ],
+    [
+        Params(
+            gridx=4,
+            gridy=6,
+            divx=8,
+            divy=6,
+            d_wall=1.6,
+            d_div=1.6,
+            h_cut_extra_single=1.4,
+        )
+    ],
+    [
+        Params(
+            gridx=6,
+            gridy=6,
+            divx=12,
+            divy=6,
+            d_wall=1.6,
+            d_div=1.6,
+            h_cut_extra_single=1.4,
+        )
+    ],
     [Params(divx=5, divy=1)],
     [Params(divx=6, divy=1)],
     [Params(divx=6, divy=1, gridz=1.5, h_cut_extra=1.8)],
@@ -91,6 +146,17 @@ bins = [
             a_tab=30,
             d_tabh=13.4725,
             h_cut_extra=1.4,
+        )
+    ],
+    [Params(divx=4, divy=2, gridz=6, scoop=0.5, d_wall=1.6, d_div=1.6)],
+    [
+        Params(
+            gridz=6,
+            Compartment_Style="6p",
+            a_tab=30,
+            d_tabh=13.4725,
+            d_wall=1.6,
+            d_div=1.6,
         )
     ],
     [Params(gridz=3, Compartment_Style="3p", a_tab=30, d_tabh=13.4725)],
