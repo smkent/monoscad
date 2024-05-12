@@ -1,0 +1,11 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "monitor-arm-tray-mount.scad"
+
+b.STL("monitor-arm-tray-mount.stl", model)
+b.Image("demo.png", model)
+
+b.add_default_targets()
+
+# vim: ft=python
