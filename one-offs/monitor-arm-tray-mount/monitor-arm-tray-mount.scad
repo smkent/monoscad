@@ -17,13 +17,18 @@ Print_Orientation = true;
 tray_grip_depth = 120;
 tray_grip_width = 200;
 tray_grip_height = 3;
-tray_support_width = 15;
-grip_thickness = 10;
+tray_support_width = 5;
+grip_thickness = 8;
 grip_height = 42;
-grip_depth = grip_thickness * 2;
+grip_depth = 20;
+grip_screw_catch_height = 10;
 chamfer = 3.0;
-screw_diameter = 5;
-screw_inset = 30;
+tray_screw_diameter = 5;
+tray_screw_inset = 30;
+grip_screw_diameter = 3;
+pole_base_height = 17;
+
+round_radius = 5;
 
 /* [Advanced Options] */
 Honeycomb = false;
@@ -44,6 +49,8 @@ pole_sep = 11;
 width = 100;
 depth = outer_diam + grip_depth;
 
+pole_base_diam = 41;
+
 
 // Modules //
 
@@ -52,8 +59,8 @@ module cut_shape_for_base() {
     circle(r=1, $fn=100);
 }
 
-module cut_shape_for_poles() {
-    for(x = [-1:1:1]) {
+module cut_shape_for_poles(single=false) {
+    for(x = (single ? [0] : [-1:1:1])) {
         translate([(pole_diam + pole_sep) * x, 0])
         union() {
             circle(d=pole_diam);
@@ -83,7 +90,7 @@ module screw_hole() {
 }
 
 module tray_top() {
-    inset = screw_inset;
+    inset = tray_screw_inset;
     difference() {
         chamferCube([tray_grip_width, chamfer + tray_grip_depth, tray_grip_height], ch=chamfer);
         for (x = [inset, tray_grip_width - inset])
@@ -93,36 +100,68 @@ module tray_top() {
     }
 }
 
-module tray_body() {
+module tray_supports() {
     cubeht = grip_thickness + grip_height;
-    slop = 3;
-    render()
-    difference() {
-        translate([-width / 2, -depth / 2, 0])
-        chamferCube([width, depth, cubeht], ch=chamfer);
-
-        if (Honeycomb) {
-            translate([-width/2 + tray_support_width + chamfer + slop, -depth / 2 + 10, grip_thickness])
-            rotate([90, 0, 0])
-            hc(width - 2 * (tray_support_width + chamfer + slop), grip_height - grip_thickness, 10);
-        }
-    }
-
-    translate([-tray_grip_width/2, 1.5 - tray_grip_depth - outer_diam/2, cubeht - tray_grip_height])
-    tray_top();
-
     ww = min(width, tray_grip_width) - tray_support_width;
     render()
     difference() {
         for(i = [-1:2:1]) {
-            translate([tray_support_width / 2 + i * (ww / 2 - chamfer), -outer_diam/2, cubeht - tray_grip_height + chamfer])
+            translate([(tray_support_width + i * ww) / 2, -outer_diam/2, cubeht - tray_grip_height + chamfer])
             rotate([90, 90, -90])
             tray_support();
         }
         // Remove any support overhang past the tray top
-        translate([-(ww + chamfer / 2), -outer_diam / 2 - tray_grip_depth, cubeht])
-        cube([ww * 2 + chamfer, tray_grip_depth, cubeht]);
+        translate([0, -outer_diam / 2 - tray_grip_depth / 2, cubeht])
+        linear_extrude(height=cubeht)
+        square([ww * 2, tray_grip_depth] * 2, center=true);
     }
+}
+
+module tray_grip_screw_holes() {
+    // grip_screw_diameter;
+    translate([0, 0, -grip_screw_catch_height / 2])
+    for (mx = [0, 1])
+    mirror([mx, 0, 0])
+    translate([(pole_diam + pole_sep) / 2, 0, 0])
+    rotate([90, 0, 0])
+    union() {
+        screw_len = 60; // pole_diam + grip_depth * 2;
+        mirror([0, 0, 1])
+        cylinder(d=grip_screw_diameter - 0.1, h=screw_len);
+        cylinder(d=grip_screw_diameter + 0.2, h=screw_len);
+        translate([0, 0, screw_len / 2])
+        cylinder(d=grip_screw_diameter * 2, h=screw_len);
+    }
+}
+
+module tray_grip() {
+    cubeht = grip_thickness + grip_height;
+    slop = 3;
+    render()
+    difference() {
+        translate([0, 0, -grip_screw_catch_height])
+        linear_extrude(height=cubeht + grip_screw_catch_height)
+        offset(r=round_radius)
+        offset(r=-round_radius)
+        difference() {
+            square([width, depth], center=true);
+            cut_shape_for_poles();
+        }
+        if (Honeycomb) {
+            translate([-width/2 + tray_support_width + chamfer + slop, -depth / 2 + 10, grip_thickness - grip_screw_catch_height / 2])
+            rotate([90, 0, 0])
+            translate([0, 0, -grip_depth])
+            hc(width - 2 * (tray_support_width + chamfer + slop), grip_height - grip_thickness + grip_screw_catch_height / 2, grip_depth * 2);
+        }
+        tray_grip_screw_holes();
+    }
+}
+
+module tray_body() {
+    tray_grip();
+    translate([-tray_grip_width/2, 1.5 - tray_grip_depth - outer_diam/2, grip_thickness + grip_height - tray_grip_height])
+    tray_top();
+    tray_supports();
 }
 
 module tray_mount() {
@@ -131,11 +170,9 @@ module tray_mount() {
         tray_body();
         linear_extrude(height=grip_height * 2, center=true)
         cut_shape_for_base();
-        linear_extrude(height=(grip_height + grip_thickness) * 4, center=true)
-        cut_shape_for_poles();
         translate([0, 0, grip_height])
         linear_extrude(height=2)
-        circle(pole_lip_diam / 2);
+        circle(d=pole_lip_diam);
     }
 }
 
