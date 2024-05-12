@@ -49,14 +49,14 @@ depth = outer_diam + grip_depth;
 
 module cut_shape_for_base() {
     scale([base_len, outer_diam / 2])
-    circle(1);
+    circle(r=1, $fn=100);
 }
 
 module cut_shape_for_poles() {
     for(x = [-1:1:1]) {
         translate([(pole_diam + pole_sep) * x, 0])
         union() {
-            circle(pole_diam / 2);
+            circle(d=pole_diam);
             translate([-pole_diam/2, 0])
             square([pole_diam, outer_diam]);
         }
@@ -78,25 +78,25 @@ module hc(x, y, z) {
 }
 
 module screw_hole() {
-    rad = screw_diameter / 2;
-    linear_extrude(height=tray_grip_height)
-    circle(rad);
+    linear_extrude(height=tray_grip_height * 4, center=true)
+    circle(d=tray_screw_diameter);
 }
 
 module tray_top() {
     inset = screw_inset;
     difference() {
         chamferCube([tray_grip_width, chamfer + tray_grip_depth, tray_grip_height], ch=chamfer);
-        translate([tray_grip_width - inset, inset, 0]) screw_hole();
-        translate([inset, inset, 0]) screw_hole();
-        translate([tray_grip_width - inset, tray_grip_depth - inset, 0]) screw_hole();
-        translate([inset, tray_grip_depth - inset, 0]) screw_hole();
+        for (x = [inset, tray_grip_width - inset])
+        for (y = [inset, tray_grip_depth - inset])
+        translate([x, y, 0])
+        screw_hole();
     }
 }
 
 module tray_body() {
     cubeht = grip_thickness + grip_height;
     slop = 3;
+    render()
     difference() {
         translate([-width / 2, -depth / 2, 0])
         chamferCube([width, depth, cubeht], ch=chamfer);
@@ -112,6 +112,7 @@ module tray_body() {
     tray_top();
 
     ww = min(width, tray_grip_width) - tray_support_width;
+    render()
     difference() {
         for(i = [-1:2:1]) {
             translate([tray_support_width / 2 + i * (ww / 2 - chamfer), -outer_diam/2, cubeht - tray_grip_height + chamfer])
@@ -125,11 +126,12 @@ module tray_body() {
 }
 
 module tray_mount() {
+    render()
     difference() {
         tray_body();
-        linear_extrude(height=grip_height)
+        linear_extrude(height=grip_height * 2, center=true)
         cut_shape_for_base();
-        linear_extrude(height=grip_height + grip_thickness)
+        linear_extrude(height=(grip_height + grip_thickness) * 4, center=true)
         cut_shape_for_poles();
         translate([0, 0, grip_height])
         linear_extrude(height=2)
