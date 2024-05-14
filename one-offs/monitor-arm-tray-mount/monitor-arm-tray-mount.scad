@@ -72,8 +72,9 @@ module cut_shape_for_poles(single=false) {
 
 module tray_support() {
     extra_ht = max(0, grip_thickness - tray_grip_height);
-    scale([1, (tray_grip_depth - chamfer * 2) / (grip_height + extra_ht), 1])
-    chamferCylinder(tray_support_width, grip_height + extra_ht, a=90);
+    denominator = grip_height + extra_ht + grip_screw_catch_height + chamfer * 0.75;
+    scale([1, (tray_grip_depth - chamfer * 2) / denominator, 1])
+    chamferCylinder(tray_support_width, denominator, a=90);
 }
 
 module hc(x, y, z) {
@@ -89,14 +90,46 @@ module screw_hole() {
     circle(d=tray_screw_diameter);
 }
 
-module tray_top() {
+module at_each_screw_hole() {
     inset = tray_screw_inset;
+    for (x = [inset, tray_grip_width - inset])
+    for (y = [inset, tray_grip_depth - inset])
+    translate([x, y, 0])
+    children();
+}
+
+module tray_top() {
+    center_offset = [-tray_grip_width/2, 1.5 - tray_grip_depth - outer_diam/2, 0];
+    translate(center_offset)
+    translate([0, 0, grip_thickness + grip_height - tray_grip_height])
     difference() {
         chamferCube([tray_grip_width, chamfer + tray_grip_depth, tray_grip_height], ch=chamfer);
-        for (x = [inset, tray_grip_width - inset])
-        for (y = [inset, tray_grip_depth - inset])
-        translate([x, y, 0])
+        at_each_screw_hole()
         screw_hole();
+
+        if (Honeycomb)
+        difference() {
+            slop = 20;
+            hcdims = [for (i = [tray_grip_width, chamfer + tray_grip_depth]) i - slop];
+            translate([slop / 2, slop / 2])
+            hc(hcdims[0], hcdims[1], tray_grip_height);
+            // Ensure screw holes are attached
+            at_each_screw_hole()
+            cylinder(d=tray_screw_diameter * 4.2, h=tray_grip_height * 2, center=true);
+            // Remove pattern around supports
+            translate(-center_offset)
+            at_each_tray_support()
+            translate([0, -tray_grip_depth / 2 + chamfer, 0])
+            cube([tray_support_width * 2.9, tray_grip_depth, tray_grip_height * 2], center=true);
+        }
+    }
+}
+
+module at_each_tray_support() {
+    ww = min(width, tray_grip_width) - tray_support_width;
+    for (i = [-1:2:1]) {
+        translate([(i * ww) / 2, -outer_diam/2, 0])
+        children();
     }
 }
 
@@ -105,11 +138,10 @@ module tray_supports() {
     ww = min(width, tray_grip_width) - tray_support_width;
     render()
     difference() {
-        for(i = [-1:2:1]) {
-            translate([(tray_support_width + i * ww) / 2, -outer_diam/2, cubeht - tray_grip_height + chamfer])
-            rotate([90, 90, -90])
-            tray_support();
-        }
+        at_each_tray_support()
+        translate([tray_support_width / 2, 0, cubeht - tray_grip_height + chamfer])
+        rotate([90, 90, -90])
+        tray_support();
         // Remove any support overhang past the tray top
         translate([0, -outer_diam / 2 - tray_grip_depth / 2, cubeht])
         linear_extrude(height=cubeht)
@@ -134,32 +166,48 @@ module tray_grip_screw_holes() {
     }
 }
 
+module tray_grip_body() {
+    rr = chamfer;
+    extrudeht = grip_thickness + grip_height + grip_screw_catch_height - rr;
+    minkowski() {
+        union() {
+            translate([0, 0, -grip_screw_catch_height + rr / 2])
+            linear_extrude(height=extrudeht)
+            offset(r=-rr / 2)
+            offset(r=round_radius)
+            offset(r=-round_radius)
+            difference() {
+                square([width, depth], center=true);
+                cut_shape_for_poles();
+            }
+        }
+        if (rr > 0)
+        union() {
+            for (mz = [0, 1])
+            mirror([0, 0, mz])
+            cylinder(d1=rr, d2=0, h=rr / 2);
+            // sphere(r=rr);
+        }
+    }
+}
+
 module tray_grip() {
-    cubeht = grip_thickness + grip_height;
     slop = 3;
     render()
     difference() {
-        translate([0, 0, -grip_screw_catch_height])
-        linear_extrude(height=cubeht + grip_screw_catch_height)
-        offset(r=round_radius)
-        offset(r=-round_radius)
-        difference() {
-            square([width, depth], center=true);
-            cut_shape_for_poles();
-        }
+        tray_grip_body();
+        tray_grip_screw_holes();
         if (Honeycomb) {
             translate([-width/2 + tray_support_width + chamfer + slop, -depth / 2 + 10, grip_thickness - grip_screw_catch_height / 2])
             rotate([90, 0, 0])
             translate([0, 0, -grip_depth])
             hc(width - 2 * (tray_support_width + chamfer + slop), grip_height - grip_thickness + grip_screw_catch_height / 2, grip_depth * 2);
         }
-        tray_grip_screw_holes();
     }
 }
 
 module tray_body() {
     tray_grip();
-    translate([-tray_grip_width/2, 1.5 - tray_grip_depth - outer_diam/2, grip_thickness + grip_height - tray_grip_height])
     tray_top();
     tray_supports();
 }
