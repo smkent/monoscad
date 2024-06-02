@@ -132,6 +132,7 @@ module screw_holes() {
 }
 
 module clip() {
+    rotate([0, 0, 180])
     render()
     difference() {
         clip_body();
@@ -152,7 +153,7 @@ module orient_model() {
 
 module main() {
     orient_model()
-    color("plum", 0.8)
+    color("mintcream", 0.8)
     clip();
 }
 
