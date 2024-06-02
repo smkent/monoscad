@@ -3,7 +3,8 @@ b = ModelBuilder(env)
 
 model = "file-cabinet-clips.scad"
 
-b.STL("file-cabinet-clips.stl", model)
+for b_thick in [10, 12]:
+    b.STL(f"file-cabinet-clip-{b_thick}mm.stl", model, {"b_thick": b_thick})
 b.Image("demo.png", model)
 
 b.add_default_targets()
