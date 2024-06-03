@@ -1,0 +1,12 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "file-cabinet-clips.scad"
+
+for b_thick in [10, 12]:
+    b.STL(f"file-cabinet-clip-{b_thick}mm.stl", model, {"b_thick": b_thick})
+b.Image("demo.png", model, {"Print_Orientation": 0, "$fn": 50})
+
+b.add_default_targets()
+
+# vim: ft=python
