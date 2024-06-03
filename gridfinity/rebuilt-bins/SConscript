@@ -170,9 +170,9 @@ bins = [
     ],
     [
         Params(
-            4,
-            2,
-            6,
+            gridx=4,
+            gridy=2,
+            gridz=6,
             Compartment_Style="split1y",
             divx=8,
             a_tab=30,
@@ -181,9 +181,6 @@ bins = [
     ],
     [
         Params(
-            gridx=4,
-            gridy=2,
-            gridz=6,
             gridz=3,
             Compartment_Style="3p",
             d_wall=1.2,
