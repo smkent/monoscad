@@ -22,6 +22,7 @@ Params = namedtuple(
         "h_cut_extra",
         "h_cut_extra_single",
         "args",
+        "render_name",
     ),
     defaults=(
         2,
@@ -39,6 +40,7 @@ Params = namedtuple(
         1.6,
         2.0,
         N(),
+        None,
     ),
 )
 
@@ -381,20 +383,74 @@ bins = [
             style_tab=5,
         )
     ],
+    [
+        Params(
+            6,
+            4,
+            6,
+            divx=1,
+            divy=1,
+            scoop=0,
+            d_wall=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+    [
+        Params(
+            6,
+            2,
+            9,
+            divx=1,
+            divy=2,
+            scoop=0,
+            d_wall=2.6,
+            d_div=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+            args=N(Wall_Cut="grip"),
+            render_name="envelope-tray",
+        )
+    ],
+    [
+        Params(
+            4,
+            4,
+            9,
+            divx=1,
+            divy=4,
+            scoop=0,
+            d_wall=2.6,
+            d_div=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+            args=N(Wall_Cut="grip"),
+            render_name="card-tray",
+        )
+    ],
 ]
 
 for opts in GenerateOptions(b=bins):
     p = opts.b
     ns = p.args
-    div_fn = (
-        (f"-{p.divx}x,{p.divy}y" if p.divx and p.divy else "")
-        if p.Compartment_Style == "default"
-        else f"-{p.Compartment_Style}"
-    )
-    label_fn = f"-nolabel" if p.style_tab == 5 else ""
-    fn = f"bin-{p.gridx}x{p.gridy}x{p.gridz}{div_fn}{label_fn}.stl"
     pdict = p._asdict()
     pdict.pop("args")
+    render_name = pdict.pop("render_name")
+    if render_name:
+        fn_text = f"-{render_name}"
+    else:
+        div_fn = (
+            f"-{render_name}"
+            if render_name
+            else (
+                (f"-{p.divx}x,{p.divy}y" if p.divx and p.divy else "")
+                if p.Compartment_Style == "default"
+                else f"-{p.Compartment_Style}"
+            )
+        )
+        label_fn = "-nolabel" if p.style_tab == 5 else ""
+        fn_text = f"{div_fn}{label_fn}"
+    fn = f"bin-{p.gridx}x{p.gridy}x{p.gridz}{fn_text}.stl"
     b.STL(
         fn,
         model,
