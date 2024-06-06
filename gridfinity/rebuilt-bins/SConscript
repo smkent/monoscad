@@ -46,12 +46,21 @@ model = "bin.scad"
 
 bins = [
     [Params(divx=1, divy=1, d_wall=1.6)],
-    [Params(divx=2, divy=1, a_tab=30, d_tabh=13.4725)],
-    [Params(divx=2, divy=2, a_tab=30, d_tabh=13.4725)],
+    [Params(divx=2, divy=1, d_wall=1.6, a_tab=30, d_tabh=13.4725)],
+    [
+        Params(
+            divx=2,
+            divy=2,
+            d_wall=1.2,
+            a_tab=30,
+            d_tabh=13.4725,
+            h_cut_extra_single=1.4,
+        )
+    ],
     [Params(divx=3, divy=1)],
     [Params(divx=3, divy=2)],
     [Params(divx=4, divy=1)],
-    [Params(divx=4, divy=2)],
+    [Params(divx=4, divy=2, h_cut_extra_single=1.4)],
     [
         Params(
             gridx=2,
@@ -159,14 +168,11 @@ bins = [
             d_div=1.6,
         )
     ],
-    [Params(gridz=3, Compartment_Style="3p", a_tab=30, d_tabh=13.4725)],
-    [Params(gridz=6, Compartment_Style="3p", a_tab=30, d_tabh=13.4725)],
-    [Params(Compartment_Style="6p", a_tab=30, d_tabh=13.4725)],
     [
         Params(
-            4,
-            2,
-            6,
+            gridx=4,
+            gridy=2,
+            gridz=6,
             Compartment_Style="split1y",
             divx=8,
             a_tab=30,
@@ -175,9 +181,171 @@ bins = [
     ],
     [
         Params(
+            gridz=3,
+            Compartment_Style="3p",
+            d_wall=1.2,
+            a_tab=30,
+            d_tabh=13.4725,
+        )
+    ],
+    [
+        Params(
+            gridz=6,
+            Compartment_Style="3p",
+            d_wall=1.2,
+            a_tab=30,
+            d_tabh=13.4725,
+            h_cut_extra=1.4,
+        )
+    ],
+    [
+        Params(
+            Compartment_Style="6p",
+            # d_wall=1.6,
+            a_tab=30,
+            d_tabh=13.4725,
+            h_cut_extra=1.4,
+        )
+    ],
+    [
+        Params(
+            gridx=2,
+            gridy=4,
+            gridz=6,
+            Compartment_Style="6p",
+            a_tab=30,
+            d_tabh=13.4725,
+            d_wall=1.6,
+            d_div=1.6,
+        )
+    ],
+    [
+        Params(
+            gridx=4,
+            gridy=2,
+            gridz=3,
+            divx=1,
+            divy=2,
+            d_div=1.6,
+            d_wall=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+    [
+        Params(
             4,
             2,
             3,
+            divx=1,
+            divy=4,
+            d_div=1.6,
+            d_wall=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+    [
+        Params(
+            4,
+            2,
+            3,
+            divx=12,
+            divy=1,
+            d_div=1.2,
+            d_wall=1.2,
+            a_tab=20,
+            d_tabh=14.265,
+            h_cut_extra=1.4,
+        )
+    ],
+    [
+        Params(
+            gridx=4,
+            gridy=2,
+            gridz=6,
+            divx=1,
+            divy=1,
+            scoop=0.5,
+            d_wall=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+    [
+        Params(
+            gridx=2,
+            gridy=4,
+            gridz=3,
+            divx=1,
+            divy=6,
+            scoop=1,
+            d_wall=2.6,
+            d_div=1.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+    [
+        Params(
+            gridx=2,
+            gridy=4,
+            gridz=6,
+            divx=1,
+            divy=4,
+            scoop=1,
+            d_wall=2.6,
+            d_div=2.1,
+            a_tab=30,
+            d_tabh=13.4725,
+            h_cut_extra=1.4,
+            style_tab=1,
+        )
+    ],
+    [
+        Params(
+            gridx=4,
+            gridy=2,
+            gridz=9,
+            divx=1,
+            divy=1,
+            scoop=0.5,
+            d_wall=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+    [
+        Params(
+            gridx=2,
+            gridy=2,
+            gridz=9,
+            divx=1,
+            divy=1,
+            scoop=0.5,
+            d_wall=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+    [
+        Params(
+            gridx=4,
+            gridy=2,
+            gridz=9,
+            divx=2,
+            divy=1,
+            scoop=0.5,
+            d_wall=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+    [
+        Params(
+            4,
+            2,
+            6,
             divx=1,
             divy=2,
             d_div=1.6,
@@ -191,6 +359,20 @@ bins = [
             4,
             2,
             6,
+            divx=1,
+            divy=4,
+            scoop=0.5,
+            d_div=1.6,
+            d_wall=2.6,
+            h_cut_extra=1.4,
+            style_tab=5,
+        )
+    ],
+    [
+        Params(
+            6,
+            2,
+            9,
             divx=1,
             divy=1,
             scoop=0.5,
