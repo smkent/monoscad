@@ -1,0 +1,11 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "drain-nuts.scad"
+
+b.STL("drain-nuts.stl", model)
+b.Image("demo.png", model)
+
+b.add_default_targets()
+
+# vim: ft=python
