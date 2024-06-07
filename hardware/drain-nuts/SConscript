@@ -3,7 +3,54 @@ b = ModelBuilder(env)
 
 model = "drain-nuts.scad"
 
-b.STL("drain-nuts.stl", model)
+for opts in GenerateOptions(nut=["G5/8", "G1-1/4", "G1-1/2"]):
+    b.STL(
+        f"drain-nut-{opts.nut.replace('/', '_')}.stl",
+        model,
+        {
+            "Nut_Type": opts.nut,
+            "Grip_Thickness": 4,
+            "Grip_Length": 10,
+            "Thickness": 3,
+            "Thread_Slop": 0.2,
+            "Height": 15,
+        },
+    )
+
+b.STL(
+    "stopper-nut-G5_8.stl",
+    model,
+    {
+        "Nut_Type": "Stopper-Nut",
+        "Grip_Thickness": 4,
+        "Grip_Length": 10,
+        "Thickness": 3,
+        "Thread_Slop": 0.2,
+        "Height": 15,
+        "Shape": "hexagonal",
+        "Wing_Grips": 1,
+        "Mini_Grips": 0,
+        "Ball_Cut": 1,
+        "Chamfer_Inner_Ring": 0,
+        "Thread_Setback_Height": 2,
+        "Thread_End_Offset": 0,
+    },
+)
+
+b.STL(
+    "wall-drain-nut-G1-1_4.stl",
+    model,
+    {
+        "Nut_Type": "G1-1/4",
+        "Grip_Thickness": 4,
+        "Grip_Length": 10,
+        "Thickness": 3,
+        "Thread_Slop": 0.5,
+        "Height": 10,
+    },
+)
+
+
 b.Image("demo.png", model)
 
 b.add_default_targets()
