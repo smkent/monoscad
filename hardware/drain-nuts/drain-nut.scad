@@ -9,7 +9,7 @@ include <BOSL/constants.scad>
 use <BOSL/threading.scad>
 
 /* [Nut Selection] */
-Nut_Type = "G1-1/4"; // [Stopper-Nut, G5/8, G1-1/4, G1-1/2]
+Nut_Type = "G1-1/4"; // [G5/8, G1-1/4, G1-1/2, Custom]
 
 Shape = "circular"; // [circular: Circular, hexagonal: Hexagonal]
 
@@ -31,6 +31,14 @@ Height = 15; // [5:1:50]
 Thickness = 5; // [2:1:20]
 
 Thread_Slop = 0.2; // [0:0.05:2]
+
+/* [Custom Nut Size] */
+
+Thread_Diameter = 23.6;
+Thread_Pitch = 1.3;
+Thread_Depth = 0.7;
+Custom_Narrow_Diameter = 14.2;
+Custom_Ball_Diameter = 20.4;
 
 /* [Advanced Options] */
 Grip_Thickness = 4; // [3:0.5:10]
@@ -58,14 +66,26 @@ slop = 0.01;
 // Functions //
 
 nut_table = [
-    ["Stopper-Nut", [23.6, 1.3, 23.6 - 22.9, 14.2, 18.4 + 2]],
+    ["Custom", [
+        Thread_Diameter,
+        Thread_Pitch,
+        Thread_Depth,
+        Custom_Narrow_Diameter,
+        Custom_Ball_Diameter
+    ]],
     // https://www.ring-plug-thread-gages.com/PDChart/G-series-Fine-thread-data.html
     ["G5/8", [22.911, 1.814, 1.162, 14.2, 18.3]],
     ["G1-1/4", [41.910, 2.309, 1.479, 32.6, -1]],
     ["G1-1/2", [47.803, 2.309, 1.479, 39, -1]]
 ];
 
+function vsearch(vec, term) = (
+    let (r = [for (i = vec) if (i[0] == term) i])
+    len(r) == 1 ? r[0][1] : undef
+);
+
 nut_spec = vsearch(nut_table, Nut_Type);
+
 major_d = nut_spec[0];
 pitch = nut_spec[1];
 thread_depth = nut_spec[2];
@@ -75,11 +95,6 @@ thread_h = Height - nut_lip_h - nut_start_h - nut_end_h;
 
 nut_d = major_d + Thickness * 2;
 lip_thick = (nut_d - nut_small_d) / 2;
-
-function vsearch(vec, term) = (
-    let (r = [for (i = vec) if (i[0] == term) i])
-    len(r) == 1 ? r[0][1] : undef
-);
 
 // Modules //
 
@@ -216,7 +231,7 @@ module grips() {
 
 module ball_cut() {
     if (Ball_Cut && ball_d > 0) {
-        #hull()
+        hull()
         for (oz = [0, Height])
         translate([0, 0, nut_lip_h + ball_d * 3/16 + oz])
         sphere(d=ball_d);
