@@ -19,7 +19,7 @@ a_tab = 20; // [36: Default, 30: Reduced, 20: Bridged]
 // Outer wall thickness
 d_wall = 0.95; // [0.95: Default, 1.2: 3 lines, 1.6: 4 lines, 2.6: Full thickness -- desk tray style]
 // Divider wall thickness
-d_div = 1.2; // [1.2: Default, 1.6: 4 lines, 2.1: 5 lines]
+d_div = 1.2; // [1.2: Default, 1.6: 4 lines, 2.1: 5 lines, 2.6: Full outer thickness]
 
 /* [General Settings] */
 // number of bases along x-axis
@@ -38,6 +38,8 @@ h_cut_extra = 1.6; // [0: Default, 1.8: 2 bottom layers, 1.6: 3 bottom layers, 1
 h_cut_extra_single = 2.0; // [0: Default, 2.0: Most, 1.4: Some]
 
 Compartment_Style = "default"; // [default: Default -- use compartment settings below, "6p": half and half half/single pockets, "3p": double and single pockets, "split1y": half full width, half divx pockets]
+
+Wall_Cut = "none"; // [none: None, grip: Grip]
 
 /* [Linear Compartments] */
 // number of X Divisions (set to zero to have solid bin)
@@ -366,12 +368,62 @@ module compartments_cut() {
     }
 }
 
+module wall_cut_grip_extrude(outer=true) {
+    if (outer) {
+        for (mz = [0, 1])
+        mirror([0, 0, mz])
+        translate([0, 0, gridy * l_grid / 2 - (d_wall * 2 / 2)])
+        linear_extrude(height=d_wall * 2, center=true)
+        children();
+    } else {
+        linear_extrude(height=gridy * l_grid - d_wall * 3, center=true)
+        children();
+    }
+}
+
+module wall_cut_grip(outer=true) {
+    bot_h = h_base * 2 + 7 * 2;
+    gx = gridx / 3 * l_grid;
+    gz = gridz * 7 - bot_h + (outer ? h_lip + 0.1 : 0);
+    gxbase = gx * 0.65;
+    radius = gx / 5;
+    translate([0, 0, bot_h])
+    rotate([90, 0, 0])
+    wall_cut_grip_extrude(outer=outer)
+    offset(r=-radius)
+    offset(r=radius * 2)
+    offset(r=-radius)
+    union() {
+        polygon([
+            [-gxbase / 2, 0],
+            [gxbase / 2, 0],
+            [gx / 2, gz],
+            [-gx / 2, gz],
+        ]);
+        translate([-gx, gz])
+        square([gx * 2, gz * 2]);
+    }
+}
+
+module extra_features() {
+    if (Wall_Cut == "grip") {
+        difference() {
+            children();
+            # wall_cut_grip(outer=true);
+            #wall_cut_grip(outer=false);
+        }
+    } else {
+        children();
+    }
+}
+
 // Main Module //
 
 module main() {
     gf_init() {
         color("cornflowerblue", 0.8)
         render(convexity=4)
+        extra_features()
         gf_bin()
         compartments_cut();
     }
