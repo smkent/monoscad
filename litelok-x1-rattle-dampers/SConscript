@@ -1,0 +1,11 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "litelok-x1-rattle-dampers.scad"
+
+b.STL("litelok-x1-rattle-dampers.stl", model)
+b.Image("demo.png", model)
+
+b.add_default_targets()
+
+# vim: ft=python
