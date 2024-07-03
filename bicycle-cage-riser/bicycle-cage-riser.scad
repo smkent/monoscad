@@ -158,10 +158,14 @@ module slots() {
         children();
         if (Velcro)
         tie_slot();
-        if (Zip_Ties)
-        if (Extension > zip_len * (zip_count + 1))
-        translate([screw_spacing / 2, 0, 0])
-        zip_slots();
+        if (Zip_Ties) {
+            if (Extension > zip_len * (zip_count + 1))
+            translate([screw_spacing / 2, 0, 0])
+            zip_slots();
+            for (tx = [-0.5, 0.5])
+            translate([tx * (zip_len * 4 + velcro_len), 0, 0])
+            zip_slot();
+        }
     }
 }
 
