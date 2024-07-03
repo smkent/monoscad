@@ -8,11 +8,11 @@
 /* [Model Options] */
 Zip_Ties = true;
 Velcro = true;
-Screw_Head_Inset = false;
+Screw_Head_Inset = true;
 
 /* [Size] */
 Extension = 30; // [0:1:100]
-Screw_Fit = 0.2; // [0:0.1:2]
+Screw_Fit = 0.8; // [0:0.1:2]
 Round_Radius = 1;
 
 /* [Advanced Options] */
@@ -31,13 +31,14 @@ zip_len = 4;
 velcro_len = 22;
 screw_spacing = 64;
 screw_d = 5;
-screw_head_d = screw_d * 1.75;
+screw_head_d = 9.5;
 screw_head_height = 2;
 riser_d = screw_d * 2.5;
-rise = 5;
-thick = 5;
+rise = 3;
+thick = 7;
 slot_depth = 2;
 zip_count = floor(Extension / (zip_len * 3));
+layer_height = 0.2;
 rr = Round_Radius;
 slop = 0.001;
 
@@ -62,18 +63,18 @@ module at_ends() {
     }
 }
 
-module screw_hole(diameter=screw_d, height=rise + thick, flip_y=false) {
+module screw_hole(diameter=screw_d + Screw_Fit, height=rise + thick, flip_y=false) {
     shr = rr / 2;
     translate([0, 0, -slop])
     linear_extrude(height=height + slop * 2)
-    circle(d=diameter + Screw_Fit);
+    circle(d=diameter);
 
     for (oy = [0, height])
     translate([0, 0, (oy > 0 ? height : 0) - slop])
     mirror([0, 0, (oy && !flip_y) ? 1 : 0])
     cylinder(
-        d1=diameter + Screw_Fit + shr,
-        d2=diameter + Screw_Fit,
+        d1=diameter+ shr,
+        d2=diameter,
         h=shr
     );
 }
@@ -86,7 +87,15 @@ module screw_holes() {
             if (Screw_Head_Inset) {
                 translate([0, 0, screw_head_height + rr / 2])
                 screw_hole(height=(rise + thick) - screw_head_height - rr / 2);
-                screw_hole(diameter=screw_head_d, height=screw_head_height, flip_y=true);
+                union() {
+                    screw_hole(diameter=screw_head_d, height=screw_head_height, flip_y=true);
+                    translate([0, 0, layer_height + rr / 2])
+                    intersection() {
+                        cylinder(d=screw_head_d, h=screw_head_height);
+                        linear_extrude(height=screw_head_height)
+                        square([screw_head_d, screw_d + Screw_Fit + rr / 2], center=true);
+                    }
+                }
             } else {
                 screw_hole();
             }
