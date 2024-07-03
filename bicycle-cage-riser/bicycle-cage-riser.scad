@@ -13,7 +13,10 @@ Screw_Head_Inset = true;
 /* [Size] */
 Extension = 30; // [0:1:100]
 Screw_Fit = 0.8; // [0:0.1:2]
-Round_Radius = 1;
+Screw_Play = 1; // [0:1:8]
+Thickness = 7; // [5:1:20]
+Riser_Height = 4; // [0:1:10]
+Round_Radius = 1; // [0:0.1:2]
 
 /* [Advanced Options] */
 
@@ -34,8 +37,9 @@ screw_d = 5;
 screw_head_d = 9.5;
 screw_head_height = 2;
 riser_d = screw_d * 2.5;
-rise = 3;
-thick = 7;
+riser_top_d = screw_d * 2;
+rise = Riser_Height;
+thick = Thickness;
 slot_depth = 2;
 zip_count = floor(Extension / (zip_len * 3));
 layer_height = 0.2;
@@ -63,15 +67,24 @@ module at_ends() {
     }
 }
 
+module screw_play() {
+    hull()
+    for (tx = [-0.5, 0.5])
+    translate([tx * Screw_Play, 0, 0])
+    children();
+}
+
 module screw_hole(diameter=screw_d + Screw_Fit, height=rise + thick, flip_y=false) {
     shr = rr / 2;
     translate([0, 0, -slop])
     linear_extrude(height=height + slop * 2)
+    screw_play()
     circle(d=diameter);
 
     for (oy = [0, height])
     translate([0, 0, (oy > 0 ? height : 0) - slop])
     mirror([0, 0, (oy && !flip_y) ? 1 : 0])
+    screw_play()
     cylinder(
         d1=diameter+ shr,
         d2=diameter,
@@ -90,6 +103,7 @@ module screw_holes() {
                 union() {
                     screw_hole(diameter=screw_head_d, height=screw_head_height, flip_y=true);
                     translate([0, 0, layer_height + rr / 2])
+                    screw_play()
                     intersection() {
                         cylinder(d=screw_head_d, h=screw_head_height);
                         linear_extrude(height=screw_head_height)
@@ -104,14 +118,16 @@ module screw_holes() {
 }
 
 module screw_risers() {
+    radius = rr / 4;
     at_screws()
-    translate([0, 0, rr])
-    linear_extrude(height=rise + thick - rr * 2)
-    circle(d=riser_d - rr * 2);
+    translate([0, 0, thick])
+    linear_extrude(height=rise - radius)
+    screw_play()
+    circle(d=riser_top_d - radius * 2);
 }
 
-module round_3d() {
-    if (Round_Radius == 0) {
+module round_3d(radius = rr) {
+    if (radius == 0) {
         children();
     } else {
         render()
@@ -119,7 +135,7 @@ module round_3d() {
             children();
             for (mz = [0, 1])
             mirror([0, 0, mz])
-            cylinder(r1=rr, r2=0, h=rr);
+            cylinder(r1=radius, r2=0, h=radius);
         }
     }
 }
@@ -174,16 +190,18 @@ module body() {
     linear_extrude(height=thick - rr * 2)
     hull() {
         at_ends()
+        screw_play()
         circle(d=riser_d - rr * 2);
     }
 }
 
 module riser() {
     screw_holes()
-    slots()
-    round_3d()
     render() {
+        slots()
+        round_3d()
         body();
+        round_3d(radius = rr / 4)
         screw_risers();
     }
 }
