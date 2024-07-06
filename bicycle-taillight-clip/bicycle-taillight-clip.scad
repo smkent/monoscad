@@ -6,6 +6,7 @@
  */
 
 /* [Rendering Options] */
+Style = "single"; // [single: Single, double: Double]
 
 /* [Size] */
 Round_Radius = 0.6; // [0:0.1:2]
@@ -29,8 +30,9 @@ clip_width = 4;
 clip_tab_h = 10;
 clip_tab_width = 7;
 clip_tab_d = 13;
+clip_tab_thickness = 2.25;
 grip_height = 22;
-grip_back_depth = 2.5;
+grip_back_depth = 2.5 + 2;
 grip_opening_width = 15.4;
 grip_opening_thickness = 3;
 grip_inner_width = 20.4;
@@ -40,8 +42,9 @@ grip_outer_depth = (
     grip_back_depth + grip_overhang_thickness + grip_opening_thickness
 );
 
-screw_spacing = 50;
+screw_spacing = Style == "double" ? 50 : 0;
 screw_d = 5;
+screw_head_height = 3;
 screw_hole_d = screw_d + Screw_Fit;
 
 clip_spacing = screw_spacing;
@@ -50,6 +53,18 @@ rr = Round_Radius;
 slop = 0.001;
 
 // Modules //
+
+module at_bracket_screws() {
+    for (tx = [-0.5, 0.5])
+    translate([tx * screw_spacing, 0, 0])
+    children();
+}
+
+module at_taillights() {
+    for (tx = [-0.5, 0.5])
+    translate([tx * clip_spacing, 0, 0])
+    children();
+}
 
 module round_3d(radius = rr) {
     if (radius == 0) {
@@ -75,37 +90,70 @@ module tail_light_clip_cut() {
     }
 }
 
-module tail_light_clip_grips_poly() {
-    for (tx = [-0.5, 0.5])
-    translate([tx * clip_spacing, 0, 0])
-    translate([0, grip_back_depth, clip_top_offset - clip_length])
+module tail_light_clip_grip_tab_lines() {
+    size = 0.8;
+
+    translate([0, 0, grip_height + clip_tab_h])
+    rotate([-90, 0, 0])
+    translate([0, 0, clip_tab_thickness])
+    intersection() {
+        linear_extrude(height=clip_tab_thickness)
+        circle(d=clip_tab_d - rr * 4);
+
+        mirror([0, 1, 0])
+        for (oy = [size * 2:size * 2:clip_tab_d / 2])
+        rotate([0, 90, 0])
+        translate([0, oy, 0])
+        linear_extrude(height=clip_tab_d, center=true)
+        circle(d=size);
+    }
+}
+
+module tail_light_clip_grip_tab() {
+    thick = clip_tab_thickness;
+
+    // Support
+    linear_extrude(height=grip_height + clip_tab_h - rr * 2)
+    offset(r=rr)
+    offset(r=-rr)
+    translate([-clip_tab_width / 2, 0])
+    square([clip_tab_width, thick]);
+
+    // Circle finger grip
+    round_3d()
+    translate([0, 0, grip_height + clip_tab_h])
+    rotate([-90, 0, 0])
+    translate([0, 0, rr])
+    linear_extrude(height=thick - rr * 2)
+    circle(d=clip_tab_d - rr * 2);
+
+    // Retaining tab
+    snip = 0.4;
+    translate([0, thick, clip_top_offset - clip_length])
     rotate([90, 0, 90])
     linear_extrude(height=clip_width, center=true)
-    polygon([[0, 0], [0, clip_length], [clip_height, clip_length]]);
+    intersection() {
+        polygon([
+            [0, 0],
+            [0, clip_length],
+            [clip_height, clip_length]
+        ]);
+        square([clip_height - snip, clip_length]);
+    }
 
+    tail_light_clip_grip_tab_lines();
+}
+
+module tail_light_clip_grips_poly() {
     round_3d()
     translate([0, 0, rr])
     {
-        for (tx = [-0.5, 0.5])
-        translate([tx * clip_spacing, 0, 0]) {
-            linear_extrude(height=grip_height - rr * 2)
-            offset(r=rr)
-            offset(r=-rr * 2)
-            translate([-grip_outer_width / 2, 0])
-            square([grip_outer_width, grip_outer_depth]);
-
-            linear_extrude(height=grip_height + clip_tab_h - rr * 2)
-            offset(r=rr)
-            offset(r=-rr * 2)
-            translate([-clip_tab_width / 2, 0])
-            square([clip_tab_width, grip_back_depth]);
-
-            translate([0, 0, grip_height + clip_tab_h])
-            rotate([-90, 0, 0])
-            translate([0, 0, rr])
-            linear_extrude(height=grip_back_depth - rr * 2)
-            circle(d=clip_tab_d);
-        }
+        at_taillights()
+        linear_extrude(height=grip_height - rr * 2)
+        offset(r=rr)
+        offset(r=-rr * 2)
+        translate([-grip_outer_width / 2, 0])
+        square([grip_outer_width, grip_outer_depth]);
 
         linear_extrude(height=grip_height - rr * 2)
         translate([-screw_spacing / 2, 0])
@@ -118,18 +166,17 @@ module tail_light_clip_grips_poly() {
 module tail_light_clips() {
     translate([0, -grip_back_depth, 0])
     difference() {
-        tail_light_clip_grips_poly();
+        union() {
+            tail_light_clip_grips_poly();
 
-        for (tx = [-0.5, 0.5])
-        translate([tx * clip_spacing, 0, 0])
+            translate([0, grip_back_depth - clip_tab_thickness, 0])
+            at_taillights()
+            tail_light_clip_grip_tab();
+        }
+
+        at_taillights()
         tail_light_clip_cut();
     }
-}
-
-module at_bracket_screws() {
-    for (tx = [-0.5, 0.5])
-    translate([tx * screw_spacing, 0, 0])
-    children();
 }
 
 module bracket_screw_holes() {
@@ -137,12 +184,11 @@ module bracket_screw_holes() {
     difference() {
         children();
         rotate([90, 0, 0])
+        at_bracket_screws()
         translate([0, screw_d * 2]) {
             linear_extrude(height=grip_back_depth)
-            at_bracket_screws()
             circle(d=screw_hole_d);
-            linear_extrude(height=grip_back_depth / 2)
-            at_bracket_screws()
+            linear_extrude(height=screw_head_height)
             circle(d=screw_hole_d * 2);
         }
     }
