@@ -44,6 +44,7 @@ grip_outer_depth = (
 
 screw_spacing = Style == "double" ? 50 : 0;
 screw_d = 5;
+screw_head_d_hex = 9;
 screw_head_height = 3;
 screw_hole_d = screw_d + Screw_Fit;
 
@@ -179,18 +180,23 @@ module tail_light_clips() {
     }
 }
 
+module bracket_screw_hole() {
+    linear_extrude(height=grip_back_depth)
+    circle(d=screw_hole_d);
+
+    linear_extrude(height=screw_head_height)
+    rotate(90)
+    circle(d=screw_head_d_hex + 0.4, $fn=6);
+}
+
 module bracket_screw_holes() {
     render()
     difference() {
         children();
         rotate([90, 0, 0])
         at_bracket_screws()
-        translate([0, screw_d * 2]) {
-            linear_extrude(height=grip_back_depth)
-            circle(d=screw_hole_d);
-            linear_extrude(height=screw_head_height)
-            circle(d=screw_hole_d * 2);
-        }
+        translate([0, screw_d * 2])
+        bracket_screw_hole();
     }
 }
 
