@@ -32,11 +32,11 @@ clip_width = 4;
 clip_tab_h = 10;
 clip_tab_width = 7;
 clip_tab_d = 13;
-clip_tab_thickness = 2.25;
+clip_tab_thickness = 2.6;
 grip_height = 22;
-grip_back_depth = 2.5 + 2;
+grip_back_depth = 2.5 + 3;
 grip_opening_width = 15.4;
-grip_opening_thickness = 3;
+grip_opening_thickness = 3.2;
 grip_inner_width = 20.4;
 grip_overhang_thickness = 2.3;
 grip_outer_width = 25.4;
@@ -44,14 +44,16 @@ grip_outer_depth = (
     grip_back_depth + grip_overhang_thickness + grip_opening_thickness
 );
 
+bracket_base_height = 15;
+
 screw_spacing = 50;
 screw_spacing_vertical = 20;
 screw_d = 5;
 screw_head_d_hex = 9;
-screw_head_height = 3;
+screw_head_height = 4;
 screw_hole_d = screw_d + Screw_Fit;
 
-clip_spacing = Style == "double" ? (screw_spacing + Extra_Clip_Spacing) : 0;
+clip_spacing = screw_spacing + Extra_Clip_Spacing;
 
 rr = Round_Radius;
 slop = 0.001;
@@ -62,9 +64,9 @@ function hole_positions_proportion() = (
     (Holes == "horizontal")
         ? [[-0.5, 0], [0.5, 0]]
         : (Holes == "vertical")
-            ? [[0, -0.125], [0, 0.875]]
+            ? [[0, 0], [0, 1]]
             : (Holes == "all")
-                ? [[-0.5, 0], [0, -0.125], [0, 0.875], [0.5, 0]]
+                ? [[-0.5, 0], [0, 0], [0, 1], [0.5, 0]]
                 : []
 );
 
@@ -82,9 +84,13 @@ module at_bracket_screws() {
 }
 
 module at_taillights() {
-    for (tx = [-0.5, 0.5])
-    translate([tx * clip_spacing, 0, 0])
-    children();
+    if (Style == "double") {
+        for (tx = [-0.5, 0.5])
+        translate([tx * clip_spacing, 0, 0])
+        children();
+    } else {
+        children();
+    }
 }
 
 module round_2d(radius = rr) {
@@ -109,7 +115,7 @@ module round_3d(radius = rr) {
 
 module tail_light_grip_cut() {
     translate([0, 0, -slop])
-    linear_extrude(height=grip_height + slop * 2) {
+    linear_extrude(height=grip_height * 4 + slop * 2, center=true) {
         translate([-grip_opening_width / 2, grip_back_depth])
         square([grip_opening_width, grip_outer_depth]);
         translate([-grip_inner_width / 2, grip_back_depth])
@@ -181,51 +187,58 @@ module tail_light_grip_tab() {
     tail_light_grip_tab_lines();
 }
 
-module tail_light_grip_poly() {
-    round_3d()
-    translate([0, 0, rr])
-    linear_extrude(height=grip_height - rr * 2)
-    round_2d()
-    offset(r=-rr)
+module tail_light_grip_back_poly(
+    radius=rr,
+    thickness=grip_outer_depth,
+    height=grip_height
+) {
+    translate([0, 0, radius])
+    linear_extrude(height=height - radius * 2)
+    offset(r=-radius)
     translate([-grip_outer_width / 2, 0])
-    square([grip_outer_width, grip_outer_depth]);
+    square([grip_outer_width, thickness]);
+}
+
+module tail_light_grip_poly() {
+    adj = 2;
+    round_3d() {
+        tail_light_grip_back_poly(radius=rr);
+        translate([0, 0, rr])
+        translate([0, -grip_back_depth, -adj])
+        linear_extrude(height=adj * 2)
+        offset(r=-rr)
+        translate([-grip_outer_width / 2, grip_back_depth])
+        square([grip_outer_width, grip_outer_depth - grip_back_depth]);
+    }
 }
 
 module bracket_body() {
-    ww = screw_spacing + screw_head_d_hex * 2;
+    translate([0, 0, bracket_base_height / 2])
+    round_3d()
+    hull()
+    for (mx = [0, 1])
+    mirror([mx, 0, 0])
+    rotate([-90, 0, 0])
+    translate([clip_spacing / 2, 0, 0])
     translate([0, 0, rr])
-    round_3d() {
-        difference() {
-            linear_extrude(height=grip_height - rr * 2)
-            translate([-ww / 2, 0])
-            round_2d()
-            offset(r=-rr)
-            square([ww, grip_back_depth]);
-
-            if (Style == "double")
-            rotate([90, 0, 180])
-            linear_extrude(height=grip_back_depth * 4, center=true)
-            round_2d(radius=grip_height / 5)
-            translate([-clip_spacing / 4, grip_height / 4 - rr])
-            square([clip_spacing / 2, grip_height / 2]);
+    linear_extrude(height=grip_back_depth - rr * 2)
+    offset(r=-rr)
+    translate([(grip_outer_width - bracket_base_height) / 2, 0, 0]) {
+        circle(d=bracket_base_height);
+        if (Style == "double") {
+            translate([-bracket_base_height / 2, -bracket_base_height / 2])
+            square([bracket_base_height, bracket_base_height / 2]);
         }
     }
 }
 
-module tail_light_grips() {
+module tail_light_grip() {
     difference() {
-        union() {
-            at_taillights()
-            tail_light_grip_poly();
-
-            translate([0, grip_back_depth - clip_tab_thickness, 0])
-            at_taillights()
-            tail_light_grip_tab();
-        }
-
-        at_taillights()
+        tail_light_grip_poly();
         tail_light_grip_cut();
     }
+    translate([0, grip_back_depth - clip_tab_thickness, 0])
+    tail_light_grip_tab();
 }
 
 module bracket_screw_hole() {
@@ -244,7 +257,7 @@ module bracket_screw_holes() {
         translate([0, grip_back_depth, 0])
         rotate([90, 0, 0])
         at_bracket_screws()
-        translate([0, screw_d * 2])
+        translate([0, bracket_base_height / 2])
         bracket_screw_hole();
     }
 }
@@ -253,7 +266,9 @@ module bracket() {
     rotate([90, 0, 0])
     bracket_screw_holes() {
         bracket_body();
-        tail_light_grips();
+        translate([0, 0, bracket_base_height])
+        at_taillights()
+        tail_light_grip();
     }
 }
 
