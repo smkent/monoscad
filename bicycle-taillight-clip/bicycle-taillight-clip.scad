@@ -12,7 +12,7 @@ Holes = "horizontal"; // [horizontal: Horizontal 50mm apart, vertical: Vertical 
 /* [Size] */
 Round_Radius = 0.6; // [0:0.1:2]
 Screw_Fit = 0.8; // [0:0.1:2]
-Screw_Hole_Type = "hex_head"; // [hex_head: Hex head, lock_nut: Hex lock nut]
+Extra_Clip_Spacing = 5; // [0:1:7]
 
 /* [Advanced Options] */
 
@@ -34,7 +34,7 @@ clip_tab_width = 7;
 clip_tab_d = 13;
 clip_tab_thickness = 2.25;
 grip_height = 22;
-grip_back_depth = 2.5 + (Screw_Hole_Type == "lock_nut" ? 4 : 2);
+grip_back_depth = 2.5 + 2;
 grip_opening_width = 15.4;
 grip_opening_thickness = 3;
 grip_inner_width = 20.4;
@@ -48,10 +48,10 @@ screw_spacing = 50;
 screw_spacing_vertical = 20;
 screw_d = 5;
 screw_head_d_hex = 9;
-screw_head_height = Screw_Hole_Type == "lock_nut" ? 5 : 3;
+screw_head_height = 3;
 screw_hole_d = screw_d + Screw_Fit;
 
-clip_spacing = Style == "double" ? screw_spacing + 5 : 0;
+clip_spacing = Style == "double" ? (screw_spacing + Extra_Clip_Spacing) : 0;
 
 rr = Round_Radius;
 slop = 0.001;
@@ -195,7 +195,7 @@ module bracket_body() {
             rotate([90, 0, 180])
             linear_extrude(height=grip_back_depth * 4, center=true)
             round_2d(radius=grip_height / 5)
-            translate([-clip_spacing / 4, grip_height / 4])
+            translate([-clip_spacing / 4, grip_height / 4 - rr])
             square([clip_spacing / 2, grip_height / 2]);
         }
     }
