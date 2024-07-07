@@ -117,6 +117,16 @@ module tail_light_grip_cut() {
     }
 }
 
+module tail_light_grip_tab_shape() {
+    ww = clip_tab_d - rr * 2;
+    translate([-ww / 2, 0]) {
+        round_2d(radius=rr * 2)
+        square([ww, clip_tab_d / 2 - rr]);
+        square([ww, clip_tab_d / 4 - rr]);
+    }
+    circle(d=clip_tab_d - rr * 2);
+}
+
 module tail_light_grip_tab_lines() {
     size = 0.8;
 
@@ -125,7 +135,8 @@ module tail_light_grip_tab_lines() {
     translate([0, 0, clip_tab_thickness])
     intersection() {
         linear_extrude(height=clip_tab_thickness)
-        circle(d=clip_tab_d - rr * 4);
+        offset(r=-rr)
+        tail_light_grip_tab_shape();
 
         mirror([0, 1, 0])
         for (oy = [size * 2:size * 2:clip_tab_d / 2])
@@ -151,7 +162,7 @@ module tail_light_grip_tab() {
     rotate([-90, 0, 0])
     translate([0, 0, rr])
     linear_extrude(height=thick - rr * 2)
-    circle(d=clip_tab_d - rr * 2);
+    tail_light_grip_tab_shape();
 
     // Retaining tab
     snip = 0.4;
