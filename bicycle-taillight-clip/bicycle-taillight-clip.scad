@@ -145,7 +145,7 @@ module tail_light_grip_body_cut() {
 
         translate([0, 0, -(5 - rr * 2)])
         linear_extrude(height=grip_height)
-        translate([-grip_opening_width / 2, grip_back_depth - rr])
+        translate([-grip_opening_width / 2, grip_back_depth - rr * 0.9])
         square([grip_opening_width, grip_outer_depth]);
     }
 }
@@ -183,20 +183,22 @@ module tail_light_grip_tab_lines() {
 module tail_light_grip_tab() {
     thick = clip_tab_thickness;
 
-    // Support
-    translate([0, 0, grip_height - rr * 2])
-    linear_extrude(height=clip_tab_h - rr * 2)
-    round_2d()
-    translate([-clip_tab_width / 2, 0])
-    square([clip_tab_width, thick]);
-
-    // Circle finger grip
-    round_3d()
-    translate([0, 0, grip_height + clip_tab_h])
     rotate([-90, 0, 0])
-    translate([0, 0, rr])
-    linear_extrude(height=thick - rr * 2)
-    tail_light_grip_tab_shape();
+    round_3d()
+    union() {
+        translate([0, -(grip_height - rr * 2), 0])
+        translate([0, 0, rr])
+        linear_extrude(height = thick - rr * 2)
+        offset(r=-rr)
+        translate([0, -clip_tab_h / 2])
+        square([clip_tab_width, clip_tab_h + rr * 2], center=true);
+
+        // Circle finger grip
+        translate([0, -(grip_height + clip_tab_h), 0])
+        translate([0, 0, rr])
+        linear_extrude(height=thick - rr * 2)
+        tail_light_grip_tab_shape();
+    }
 
     // Retaining tab
     snip = 0.4;
