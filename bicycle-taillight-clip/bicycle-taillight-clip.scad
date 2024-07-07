@@ -36,7 +36,7 @@ clip_tab_thickness = 2.6;
 grip_height = 22;
 grip_back_depth = 2.5 + 3;
 grip_opening_width = 15.4;
-grip_opening_thickness = 3.2;
+grip_opening_thickness = 3;
 grip_inner_width = 20.4;
 grip_overhang_thickness = 2.3;
 grip_outer_width = 25.4;
@@ -211,9 +211,9 @@ module tail_light_grip_tab() {
         polygon([
             [0, 0],
             [0, clip_length],
-            [clip_height, clip_length]
+            [clip_height + snip, clip_length]
         ]);
-        square([clip_height - snip, clip_length]);
+        square([clip_height, clip_length]);
     }
 
     tail_light_grip_tab_lines();
