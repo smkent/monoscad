@@ -117,7 +117,7 @@ module tail_light_grip_cut() {
     }
 }
 
-module tail_light_grip_grip_tab_lines() {
+module tail_light_grip_tab_lines() {
     size = 0.8;
 
     translate([0, 0, grip_height + clip_tab_h])
@@ -136,7 +136,7 @@ module tail_light_grip_grip_tab_lines() {
     }
 }
 
-module tail_light_grip_grip_tab() {
+module tail_light_grip_tab() {
     thick = clip_tab_thickness;
 
     // Support
@@ -167,7 +167,7 @@ module tail_light_grip_grip_tab() {
         square([clip_height - snip, clip_length]);
     }
 
-    tail_light_grip_grip_tab_lines();
+    tail_light_grip_tab_lines();
 }
 
 module tail_light_grip_poly() {
@@ -209,7 +209,7 @@ module tail_light_grips() {
 
             translate([0, grip_back_depth - clip_tab_thickness, 0])
             at_taillights()
-            tail_light_grip_grip_tab();
+            tail_light_grip_tab();
         }
 
         at_taillights()
