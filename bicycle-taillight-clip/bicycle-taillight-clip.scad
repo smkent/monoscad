@@ -152,12 +152,14 @@ module tail_light_grip_body_cut() {
 
 module tail_light_grip_tab_shape() {
     ww = clip_tab_d - rr * 2;
-    translate([-ww / 2, 0]) {
-        round_2d(radius=rr * 2)
-        square([ww, clip_tab_d / 2 - rr]);
-        square([ww, clip_tab_d / 4 - rr]);
+    hull() {
+        translate([-ww / 2, 0]) {
+            round_2d(radius=rr * 2)
+            square([ww, clip_tab_d / 2 - rr]);
+            square([ww, clip_tab_d / 4 - rr]);
+        }
+        circle(d=clip_tab_d - rr * 2);
     }
-    circle(d=clip_tab_d - rr * 2);
 }
 
 module tail_light_grip_tab_lines() {
