@@ -3,7 +3,12 @@ b = ModelBuilder(env)
 
 model = "bicycle-taillight-clip.scad"
 
-b.STL("bicycle-taillight-clip.stl", model)
+for opts in GenerateOptions(style=["single", "double"]):
+    b.STL(
+        f"bicycle-taillight-clip-{opts.style}.stl",
+        model,
+        {"Style": opts.style},
+    )
 b.Image("demo.png", model)
 
 b.add_default_targets()
