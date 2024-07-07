@@ -161,7 +161,7 @@ module tail_light_grip_tab_shape() {
 }
 
 module tail_light_grip_tab_lines() {
-    size = 0.8;
+    size = 1.0;
 
     translate([0, 0, grip_height + clip_tab_h])
     rotate([-90, 0, 0])
@@ -172,7 +172,7 @@ module tail_light_grip_tab_lines() {
         tail_light_grip_tab_shape();
 
         mirror([0, 1, 0])
-        for (oy = [size * 2:size * 2:clip_tab_d / 2])
+        for (oy = [size / 2:size * 2:clip_tab_d / 2])
         rotate([0, 90, 0])
         translate([0, oy, 0])
         linear_extrude(height=clip_tab_d, center=true)
