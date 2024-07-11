@@ -1,0 +1,11 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "bicycle-card-frame.scad"
+
+b.STL("bicycle-card-frame.stl", model)
+b.Image("demo.png", model)
+
+b.add_default_targets()
+
+# vim: ft=python
