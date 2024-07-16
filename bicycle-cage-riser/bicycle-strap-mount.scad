@@ -31,6 +31,7 @@ zip_len = 4;
 velcro_len = 22;
 screw_spacing = 64;
 riser_d = 12.5;
+tube_d = 35;
 thick = Thickness;
 slot_depth = 2;
 zip_count = floor(Extension / (zip_len * 3));
@@ -124,8 +125,22 @@ module slots() {
     }
 }
 
+module tube_curve() {
+    td = tube_d + rr * 2;
+    tt = ((td / 2) - sqrt((td / 2) ^ 2 - (riser_d / 2) ^ 2));
+    difference() {
+        children();
+        translate([0, 0, tt])
+        rotate([0, 90, 0])
+        linear_extrude(height=screw_spacing * 4, center=true)
+        translate([tube_d / 2, 0])
+        circle(d=td);
+    }
+}
+
 module body() {
     translate([0, 0, rr])
+    tube_curve()
     linear_extrude(height=thick - rr * 2)
     hull() {
         at_ends()
