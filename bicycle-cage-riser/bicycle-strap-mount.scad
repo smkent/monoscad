@@ -37,7 +37,8 @@ screw_spacing = 64;
 riser_d = 12.5;
 tube_d = 35;
 thick = Thickness;
-slot_depth = 2.4;
+slot_offset = 3;
+slot_depth = 2;
 zip_count = floor(Extension / (zip_len * 3));
 rr = Round_Radius;
 slop = 0.001;
@@ -144,13 +145,13 @@ module tube_curve() {
 }
 
 module tube_zip_slot() {
-    tie_d = tube_d + slot_depth * 3;
+    tie_d = tube_d + slot_depth * 2 + slot_offset * 2;
     rotate([0, 90, 0])
     linear_extrude(height=zip_len, center=true)
     translate([tube_d / 2, 0])
     difference() {
         circle(d=tie_d + rr * 2);
-        circle(d=tie_d + rr * 2 - slot_depth);
+        circle(d=tie_d + rr * 2 - slot_depth * 2);
     }
 }
 
