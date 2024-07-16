@@ -11,13 +11,14 @@ Print_Orientation = true;
 
 /* [Model Options] */
 Zip_Ties = true;
-Velcro = true;
+Velcro = false;
 
 /* [Size] */
+Width = 10; // [5:0.1:20]
 Extension = 30; // [0:1:100]
 Screw_Play = 1; // [0:1:8]
-Thickness = 7; // [5:1:20]
-Round_Radius = 1; // [0:0.1:2]
+Thickness = 13; // [5:1:20]
+Round_Radius = 0.2; // [0:0.1:2]
 
 /* [Advanced Options] */
 
@@ -34,7 +35,7 @@ function vec_add(vector, add) = [for (v = vector) v + add];
 zip_len = 4;
 velcro_len = 22;
 screw_spacing = 64;
-riser_d = 12.5;
+riser_d = Width;
 tube_d = 35;
 thick = Thickness;
 slot_offset = 3;
@@ -125,6 +126,9 @@ module slots() {
             for (tx = [-0.5, 0.5])
             translate([tx * (zip_len * 4 + velcro_len), 0, 0])
             zip_slot();
+            if (!Velcro) {
+                zip_slot();
+            }
         }
     }
 }
