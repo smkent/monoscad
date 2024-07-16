@@ -5,6 +5,10 @@
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
  */
 
+/* [Rendering Options] */
+// Render in print orientation (upside down)
+Print_Orientation = true;
+
 /* [Model Options] */
 Zip_Ties = true;
 Velcro = true;
@@ -157,7 +161,18 @@ module riser() {
     }
 }
 
+module orient_model() {
+    if (Print_Orientation) {
+        translate([0, 0, thick])
+        rotate([180, 0, 0])
+        children();
+    } else {
+        children();
+    }
+}
+
 module main() {
+    orient_model()
     color("lemonchiffon", 0.8)
     riser();
 }
