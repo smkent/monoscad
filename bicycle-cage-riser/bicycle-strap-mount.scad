@@ -86,14 +86,13 @@ module round_3d(radius = rr) {
 }
 
 module slot(length) {
-    translate([0, 0, thick - slot_depth])
-    hull() {
-        linear_extrude(height=slop)
-        square([length, riser_d + slop * 2], center=true);
-        translate([0, 0, slot_depth])
-        linear_extrude(height=slop)
-        square([length + slot_depth / 2, riser_d + slop * 2], center=true);
-    }
+    edge_r = slot_depth * 0.25;
+    translate([0, 0, thick - slot_depth - slot_offset / 2])
+    rotate([90, 0, 0])
+    linear_extrude(height=riser_d + slop * 2, center=true)
+    offset(r=edge_r)
+    offset(r=-edge_r)
+    square([length, slot_depth]);
 }
 
 module tie_slot() {
