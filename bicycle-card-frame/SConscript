@@ -4,6 +4,7 @@ b = ModelBuilder(env)
 model = "bicycle-card-frame.scad"
 
 b.STL("bicycle-card-frame.stl", model)
+b.STL("bag-tag.stl", model, {"Width": 98, "Height": 32, "Style": "bag-tag"})
 b.Image("demo.png", model)
 
 b.add_default_targets()
