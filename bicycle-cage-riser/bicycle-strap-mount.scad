@@ -37,7 +37,7 @@ screw_spacing = 64;
 riser_d = 12.5;
 tube_d = 35;
 thick = Thickness;
-slot_depth = 2;
+slot_depth = 2.4;
 zip_count = floor(Extension / (zip_len * 3));
 rr = Round_Radius;
 slop = 0.001;
@@ -129,6 +129,7 @@ module slots() {
     }
 }
 
+
 module tube_curve() {
     td = tube_d + rr * 2;
     tt = ((td / 2) - sqrt((td / 2) ^ 2 - (riser_d / 2) ^ 2));
@@ -139,6 +140,26 @@ module tube_curve() {
         linear_extrude(height=screw_spacing * 4, center=true)
         translate([tube_d / 2, 0])
         circle(d=td);
+    }
+}
+
+module tube_zip_slot() {
+    tie_d = tube_d + slot_depth * 3;
+    rotate([0, 90, 0])
+    linear_extrude(height=zip_len, center=true)
+    translate([tube_d / 2, 0])
+    difference() {
+        circle(d=tie_d + rr * 2);
+        circle(d=tie_d + rr * 2 - slot_depth);
+    }
+}
+
+module tube_zip_slots() {
+    difference() {
+        children();
+        tube_zip_slot();
+        at_ends()
+        tube_zip_slot();
     }
 }
 
@@ -156,6 +177,7 @@ module body() {
 module riser() {
     render() {
         slots()
+        tube_zip_slots()
         round_3d()
         body();
     }
