@@ -14,7 +14,7 @@ Zip_Ties = true;
 Velcro = false;
 
 /* [Size] */
-Width = 10; // [5:0.1:20]
+Width = 8; // [5:0.1:20]
 Extension = 30; // [0:1:100]
 Screw_Play = 1; // [0:1:8]
 Thickness = 13; // [5:1:20]
@@ -36,6 +36,7 @@ zip_len = 4;
 velcro_len = 22;
 screw_spacing = 64;
 riser_d = Width;
+top_width = riser_d * 1.75;
 tube_d = 35;
 thick = Thickness;
 slot_offset = 3;
@@ -90,7 +91,7 @@ module slot(length) {
     edge_r = slot_depth * 0.25;
     translate([0, 0, thick - slot_depth - slot_offset / 2])
     rotate([90, 0, 0])
-    linear_extrude(height=riser_d + slop * 2, center=true)
+    linear_extrude(height=riser_d * 10 + slop * 2, center=true)
     offset(r=edge_r)
     offset(r=-edge_r)
     square([length, slot_depth]);
@@ -136,7 +137,7 @@ module slots() {
 
 module tube_curve() {
     td = tube_d + rr * 2;
-    tt = ((td / 2) - sqrt((td / 2) ^ 2 - (riser_d / 2) ^ 2));
+    tt = ((td / 2) - sqrt((td / 2) ^ 2 - (top_width / 2) ^ 2));
     difference() {
         children();
         translate([0, 0, tt])
@@ -167,15 +168,35 @@ module tube_zip_slots() {
     }
 }
 
-module body() {
-    translate([0, 0, rr])
-    tube_curve()
-    linear_extrude(height=thick - rr * 2)
+module body_base_shape(width=riser_d) {
     hull() {
         at_ends()
         screw_play()
-        circle(d=riser_d - rr * 2);
+        scale([riser_d/width, 1])
+        circle(d=width - rr * 2);
     }
+}
+
+module body_base() {
+    linear_extrude(height=thick - rr * 2)
+    body_base_shape();
+
+    for (cz = [0, 1])
+    translate([0, 0, cz ? (thick - rr * 2) : 0])
+    mirror([0, 0, cz])
+    hull() {
+        translate([0, 0, slot_offset - slop])
+        linear_extrude(height=slop)
+        body_base_shape();
+        linear_extrude(height=slop)
+        body_base_shape(top_width);
+    }
+}
+
+module body() {
+    translate([0, 0, rr])
+    tube_curve()
+    body_base();
 }
 
 module riser() {
