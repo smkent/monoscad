@@ -14,7 +14,7 @@ Zip_Ties = true;
 Velcro = false;
 
 /* [Size] */
-Width = 8; // [5:0.1:20]
+Width = 6; // [5:0.1:20]
 Extension = 30; // [0:1:100]
 Screw_Play = 1; // [0:1:8]
 Thickness = 13; // [5:1:20]
@@ -36,7 +36,7 @@ zip_len = 4;
 velcro_len = 22;
 screw_spacing = 64;
 riser_d = Width;
-top_width = riser_d * 1.75;
+top_width = riser_d * 2.5;
 tube_d = 35;
 thick = Thickness;
 slot_offset = 3;
@@ -137,10 +137,12 @@ module slots() {
 
 module tube_curve() {
     td = tube_d + rr * 2;
-    tt = ((td / 2) - sqrt((td / 2) ^ 2 - (top_width / 2) ^ 2));
+    tw = top_width;
+    tt = ((td / 2) - max(0, sqrt((td / 2) ^ 2 - (tw / 2) ^ 2)));
+    tx = min(tt, slot_offset / 2);
     difference() {
         children();
-        translate([0, 0, tt])
+        translate([0, 0, tx])
         rotate([0, 90, 0])
         linear_extrude(height=screw_spacing * 4, center=true)
         translate([tube_d / 2, 0])
@@ -169,10 +171,11 @@ module tube_zip_slots() {
 }
 
 module body_base_shape(width=riser_d) {
+    rad = 12.5;
     hull() {
         at_ends()
         screw_play()
-        scale([riser_d/width, 1])
+        scale([rad/width, 1])
         circle(d=width - rr * 2);
     }
 }
