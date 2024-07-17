@@ -1,10 +1,12 @@
 Import("env")
 b = ModelBuilder(env)
 
-model = "bicycle-cage-riser.scad"
+riser_model = "bicycle-cage-riser.scad"
+strap_model = "bicycle-strap-mount.scad"
 
-b.STL("bicycle-cage-riser.stl", model)
-b.Image("demo.png", model)
+b.STL("bicycle-cage-riser.stl", riser_model)
+b.STL("bicycle-strap-mount.stl", strap_model)
+b.Image("demo.png", riser_model)
 
 b.add_default_targets()
 
