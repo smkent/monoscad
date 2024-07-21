@@ -1,10 +1,14 @@
 Import("env")
 b = ModelBuilder(env)
 
-model = "pcb-case.scad"
+case_model = "pcb-case.scad"
+base_model = "pcb-base.scad"
 
-b.STL("pcb-case.stl", model)
-b.Image("demo.png", model)
+b.Image("demo.png", case_model)
+
+for opts in GenerateOptions(board=["3x7"]):
+    b.STL(f"pcb-case-{opts.board}.stl", case_model, {"PCB_Type": opts.board})
+    b.STL(f"pcb-base-{opts.board}.stl", base_model, {"PCB_Type": opts.board})
 
 b.add_default_targets()
 

@@ -17,7 +17,14 @@ PCB_Top_Height = 25; // [10:1:50]
 
 PCB_Bottom_Height = 5; // [0:0.1:50]
 
-Thickness = 4;
+// If 0, use the board's screw diameter
+PCB_Screw_Hole_Diameter = 3.2; // [0:0.1:10]
+
+Mount_Screw_Hole_Diameter = 4; // [1:0.1:10]
+
+Thickness = 3; // [1:0.1:10]
+
+Border = 1.6; // [0:0.1:10]
 
 /* [Advanced Options] */
 
@@ -45,7 +52,12 @@ assert(pcb_spec, str("Unknown pcb type '", PCB_Type, "'"));
 
 pcb_size = pcb_spec[0];
 pcb_screw_d = pcb_spec[1];
+pcb_screw_hole_d = (
+    PCB_Screw_Hole_Diameter > 0 ? PCB_Screw_Hole_Diameter : pcb_screw_d
+);
 pcb_screw_inset = pcb_spec[2];
+
+base_screw_hole_d = Mount_Screw_Hole_Diameter;
 
 // Functions //
 
@@ -67,6 +79,13 @@ module at_pcb_screws() {
     children();
 }
 
+module at_mount_screws() {
+    for (mx = [0, 1])
+    mirror([mx, 0])
+    translate([pcb_size.x / 2 + Border * 2 + base_screw_hole_d / 2, 0])
+    children();
+}
+
 module pcb() {
     linear_extrude(height=1.6)
     difference() {
@@ -76,38 +95,42 @@ module pcb() {
     }
 }
 
-module box_base() {
+module base_plate() {
+    linear_extrude(height=Thickness)
     difference() {
-        linear_extrude(height=Thickness + PCB_Bottom_Height)
-        square(vec_add(pcb_size, pcb_screw_d * 2 + Thickness), center=true);
-        translate([0, 0, Thickness])
-        linear_extrude(height=PCB_Bottom_Height + slop) {
-            offset(r=pcb_screw_d * 3)
-            offset(r=-pcb_screw_d * 3)
-            difference() {
-                square(vec_add(pcb_size, pcb_screw_d * 2), center=true);
-                at_pcb_screws()
-                circle(d=pcb_screw_d * 3);
-            }
-            at_pcb_screws()
-            circle(d=pcb_screw_d);
+        hull() {
+            offset(r=pcb_screw_d * 2)
+            offset(r=-pcb_screw_d * 2)
+            square(vec_add(pcb_size, pcb_screw_d * 2 + Border * 2), center=true);
+            at_mount_screws()
+            circle(d=base_screw_hole_d * 3);
         }
-        translate([0, 0, Thickness + PCB_Bottom_Height])
-        linear_extrude(height=inner_height)
-        square(vec_add(pcb_size, pcb_screw_d * 2), center=true);
+        at_mount_screws()
+        circle(d=base_screw_hole_d);
     }
 }
 
-module box() {
-    box_base();
-    if(0)
-    linear_extrude(height=outer_height)
-    square(vec_add(pcb_size, pcb_screw_d * 2 + Thickness), center=true);
+module pcb_screw_risers() {
+    translate([0, 0, Thickness])
+    at_pcb_screws()
+    difference() {
+        cylinder(
+            h=PCB_Bottom_Height,
+            d1=pcb_screw_d * 4 + min(PCB_Bottom_Height, Border * 2),
+            d2=pcb_screw_d * 4,
+        );
+        cylinder(h=PCB_Bottom_Height + slop, d=pcb_screw_hole_d);
+    }
+}
+
+module base() {
+    base_plate();
+    pcb_screw_risers();
 }
 
 module main() {
     color("mintcream", 0.9)
-    box();
+    base();
     if (Show_PCB && $preview)
     translate([0, 0, PCB_Bottom_Height + Thickness])
     color("darkseagreen", 0.3)
