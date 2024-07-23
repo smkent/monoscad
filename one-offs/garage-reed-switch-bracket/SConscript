@@ -1,0 +1,11 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "garage-reed-switch-bracket.scad"
+
+b.STL("garage-reed-switch-bracket.stl", model)
+b.Image("demo.png", model)
+
+b.add_default_targets()
+
+# vim: ft=python
