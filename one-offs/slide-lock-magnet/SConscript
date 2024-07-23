@@ -1,0 +1,11 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "slide-lock-magnet.scad"
+
+b.STL("slide-lock-magnet.stl", model)
+b.Image("demo.png", model)
+
+b.add_default_targets()
+
+# vim: ft=python
