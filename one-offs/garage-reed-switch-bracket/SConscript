@@ -3,8 +3,13 @@ b = ModelBuilder(env)
 
 model = "garage-reed-switch-bracket.scad"
 
-b.STL("garage-reed-switch-bracket.stl", model)
-b.Image("demo.png", model)
+for opts in GenerateOptions(part=["front", "back"]):
+    b.STL(
+        f"garage-reed-switch-bracket-{opts.part}.stl",
+        model,
+        {"Part": opts.part},
+    )
+b.Image("demo.png", model, {"Part": "both"})
 
 b.add_default_targets()
 
