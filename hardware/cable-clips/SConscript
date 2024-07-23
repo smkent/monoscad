@@ -4,7 +4,7 @@ b = ModelBuilder(env)
 model = "cable-clips.scad"
 
 b.STL("cable-clips.stl", model)
-b.Image("demo.png", model)
+b.Image("demo.png", model, {"Print_Orientation": 0, "$fn": 100})
 
 b.add_default_targets()
 
