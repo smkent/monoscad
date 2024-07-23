@@ -28,10 +28,10 @@ module __end_customizer_options__() { }
 $fa = $preview ? $fa : 2;
 $fs = $preview ? $fs : 0.4;
 
-slide_size = [12.5, 24, 4];
+slide_size = [12, 24, 4];
 
 slide_hole_d = 9.5;
-slide_hole_inset = 11;
+slide_hole_inset = 10.5;
 
 holder_base_thick = Base_Thickness;
 holder_lid_thick = Lid_Thickness;
