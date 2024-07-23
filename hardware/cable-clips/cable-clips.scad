@@ -15,7 +15,8 @@ Thickness = 2.4;
 Clip_Diameter = 5;
 Screw_Diameter = 4.5; // [1:0.1:10]
 
-/* [Advanced Options] */
+/* [Clip Options] */
+Countersink_Screw = true;
 
 /* [Development Toggles] */
 
@@ -74,14 +75,16 @@ module screw_hole() {
     rotate([270, 0, 0])
     translate([0, 0, -Screw_Diameter / 2 + foot_height])
     union() {
-        translate([0, 0, -slop])
-        cylinder(d1=Screw_Diameter, d2=Screw_Diameter * 2, h=Screw_Diameter / 2 + slop * 2);
-        translate([0, 0, Screw_Diameter / 2])
-        cylinder(h=(Thickness + Clip_Diameter) * 2, d=Screw_Diameter * 2);
-        translate([0, 0, Thickness * 2])
+        if (Countersink_Screw) {
+            translate([0, 0, -slop])
+            cylinder(d1=Screw_Diameter, d2=Screw_Diameter * 2, h=Screw_Diameter / 2 + slop * 2);
+            translate([0, 0, Screw_Diameter / 2])
+            cylinder(h=(Thickness + Clip_Diameter) * 2, d=Screw_Diameter * 2);
+        }
+        translate([0, 0, foot_height * 2])
         scale([1, 1.05])
         mirror([0, 0, 1])
-        cylinder(h=(Thickness + Clip_Diameter) * 2, d=Screw_Diameter);
+        cylinder(h=(foot_height + Clip_Diameter) * 2, d=Screw_Diameter);
     }
 }
 
