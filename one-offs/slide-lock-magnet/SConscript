@@ -3,8 +3,9 @@ b = ModelBuilder(env)
 
 model = "slide-lock-magnet.scad"
 
-b.STL("slide-lock-magnet.stl", model)
-b.Image("demo.png", model)
+for opts in GenerateOptions(part=["base", "lid"]):
+    b.STL(f"slide-lock-magnet-{opts.part}.stl", model, {"Part": opts.part})
+b.Image("demo.png", model, {"Part": "both"})
 
 b.add_default_targets()
 
