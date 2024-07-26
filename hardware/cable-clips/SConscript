@@ -3,7 +3,17 @@ b = ModelBuilder(env)
 
 model = "cable-clips.scad"
 
-b.STL("cable-clips.stl", model)
+for opts in GenerateOptions(
+    clip_diameter=[2, 5, 6.5], countersink=[(0, ""), (1, "-countersink")]
+):
+    b.STL(
+        f"cable-clip-{opts.clip_diameter}mm{opts.countersink_fn}.stl",
+        model,
+        {
+            "Clip_Diameter": opts.clip_diameter,
+            "Countersink_Screw": opts.countersink,
+        },
+    )
 b.Image("demo.png", model, {"Print_Orientation": 0, "$fn": 100})
 
 b.add_default_targets()
