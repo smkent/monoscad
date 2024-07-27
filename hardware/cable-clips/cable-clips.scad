@@ -30,7 +30,7 @@ $fs = $preview ? $fs : 0.4;
 width = Screw_Diameter * 2.5;
 clip_od = Clip_Diameter + Thickness * 2;
 slop = 0.001;
-foot_height = Clip_Diameter;
+foot_height = max(Clip_Diameter, Thickness);
 
 // Modules //
 
