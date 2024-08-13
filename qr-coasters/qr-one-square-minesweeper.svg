@@ -1490,4 +1490,23 @@ width="1147px" height="1147px" viewBox="0 0 1147 1147" enable-background="new 0 
 <rect width="100" height="100"/>
 </g></g><g transform="translate(62,868) scale(0.93, 0.93)"><g transform="" style="fill: rgb(0, 0, 0);">
 <rect width="100" height="100"/>
-</g></g></g></svg>
+</g></g></g>
+<ellipse
+   style="fill:#000000;stroke-width:3.397"
+   cx="578.32544"
+   cy="575.61591"
+   rx="78.421837"
+   ry="78.421921" /><path
+   style="fill:#000000;stroke:#000000;stroke-width:20;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+   d="M 578.4035,696.80728 V 459.99999"
+   /><path
+   style="fill:#000000;stroke:#000000;stroke-width:20;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+   d="M 459.99999,578.40364 H 696.80701"
+   /><path
+   style="fill:#000000;stroke:#000000;stroke-width:20;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+   d="M 494.67958,662.12765 662.12741,494.67962"
+   /><path
+   style="fill:#000000;stroke:#000000;stroke-width:20;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+   d="M 494.67957,494.67962 662.12741,662.12764"
+   />
+</svg>
