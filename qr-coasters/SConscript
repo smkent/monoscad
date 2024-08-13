@@ -3,8 +3,41 @@ b = ModelBuilder(env)
 
 model = "qr-coasters.scad"
 
-b.STL("qr-coasters.stl", model)
-b.Image("demo.png", model)
+qr_codes = [
+    "doge",
+    "bouncing-dvd-logo",
+    "nyan-cat",
+    "one-square-minesweeper",
+    "potato-tomato",
+    "rick-roll",
+    "rotating-sandwiches",
+    "zombo",
+]
+
+for opts in GenerateOptions(qr_code=qr_codes, style=["raised", "inset"]):
+    b.STL(
+        f"qr-coaster-{opts.style}-{opts.qr_code}.stl",
+        model,
+        {
+            "Part": "coaster",
+            "QR_Code": opts.qr_code,
+            "Style": opts.style,
+            "Size": 101.6,
+            "Base_Height": 4,
+            "QR_Height": 1,
+            "Raised_Border_Size": 4,
+            "Edge_Radius": 1,
+        },
+    )
+
+for opts in GenerateOptions(style=["raised", "inset"]):
+    b.STL(
+        f"qr-coaster-holder-for-{opts.style}.stl",
+        model,
+        {"Part": "holder", "Style": opts.style},
+    )
+
+b.Image("demo.png", model, {"QR_Code": "rickroll"})
 
 b.add_default_targets()
 
