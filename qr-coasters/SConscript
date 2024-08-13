@@ -1,0 +1,11 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "qr-coasters.scad"
+
+b.STL("qr-coasters.stl", model)
+b.Image("demo.png", model)
+
+b.add_default_targets()
+
+# vim: ft=python
