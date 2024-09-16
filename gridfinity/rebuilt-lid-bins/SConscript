@@ -1,0 +1,183 @@
+from collections import namedtuple
+from types import SimpleNamespace as N
+
+Import("env")
+b = ModelBuilder(env)
+
+Params = namedtuple(
+    "Params",
+    (
+        "gridx",
+        "gridy",
+        "gridz",
+        "divx",
+        "divy",
+        "Compartment_Style",
+        "style_tab",
+        "scoop",
+        "d_wall",
+        "d_div",
+        "a_tab",
+        "d_tabh",
+        "h_cut_extra",
+        "h_cut_extra_single",
+        "args",
+        "render_name",
+    ),
+    defaults=(
+        2,
+        2,
+        3,
+        1,
+        1,
+        "default",
+        1,
+        1,
+        2.6,
+        1.2,
+        20,
+        14.265,
+        1.6,
+        2.0,
+        N(),
+        None,
+    ),
+)
+
+model = "rebuilt-lid-bins.scad"
+
+bins = [
+    [Params(gridx=2, gridy=2, divx=1, divy=1)],
+    [Params(gridx=2, gridy=2, divx=2, divy=1)],
+    [Params(gridx=2, gridy=2, divx=2, divy=2)],
+    [Params(gridx=2, gridy=2, divx=4, divy=2)],
+    [Params(gridx=2, gridy=2, divx=4, divy=4, style_tab=5)],
+    [Params(gridx=2, gridy=2, divx=6, divy=4, style_tab=5)],
+    [Params(gridx=2, gridy=2, divx=6, divy=6, style_tab=5)],
+    [
+        Params(
+            gridx=4,
+            gridy=2,
+            divx=8,
+            divy=4,
+            scoop=0,
+            style_tab=5,
+            h_cut_extra=1,
+        )
+    ],
+    [
+        Params(
+            gridx=4,
+            gridy=2,
+            divx=12,
+            divy=4,
+            scoop=0,
+            style_tab=5,
+            h_cut_extra=1,
+        )
+    ],
+    [
+        Params(
+            gridx=4,
+            gridy=2,
+            divx=12,
+            divy=6,
+            scoop=0,
+            style_tab=5,
+            h_cut_extra=1,
+        )
+    ],
+]
+
+for opts in GenerateOptions(b=bins):
+    p = opts.b
+    ns = p.args
+    pdict = p._asdict()
+    pdict.pop("args")
+    render_name = pdict.pop("render_name")
+    if render_name:
+        fn_text = f"-{render_name}"
+    else:
+        div_fn = (
+            f"-{render_name}"
+            if render_name
+            else (
+                (f"-{p.divx}x,{p.divy}y" if p.divx and p.divy else "")
+                if p.Compartment_Style == "default"
+                else f"-{p.Compartment_Style}"
+            )
+        )
+        label_fn = "-nolabel" if p.style_tab == 5 else ""
+        fn_text = f"{div_fn}{label_fn}"
+    fn = f"bin-{p.gridx}x{p.gridy}x{p.gridz}{fn_text}.stl"
+    b.STL(
+        fn,
+        model,
+        {
+            **{
+                "Stacking_Tabs": 1,
+                "Lid_Orientation": "up",
+                "Lip_Grips": "xy",
+                "Part": "bin",
+            },
+            **pdict,
+            **ns.__dict__,
+        },
+        zip_dir="bins",
+    )
+
+for opts in GenerateOptions(
+    s=[
+        [(1, 1)],
+        [(1, 2)],
+        [(2, 2)],
+        [(1, 3)],
+        [(2, 3)],
+        [(3, 3)],
+        [(1, 4)],
+        [(2, 4)],
+        [(3, 4)],
+        [(4, 4)],
+    ]
+):
+    x, y = opts.s
+    b.STL(
+        f"lid-{x}x{y}.stl",
+        model,
+        {"Part": "lid", "gridx": x, "gridy": y},
+        zip_dir="lids",
+    )
+
+
+b.Image(
+    "demo.gif",
+    model,
+    [
+        {
+            "gridx": b[0],
+            "gridy": b[1],
+            "gridz": b[2],
+            "divx": b[3],
+            "divy": b[4],
+            "Lid_Orientation": "up",
+            "Lip_Grips": "xy",
+            "Part": "both_open",
+        }
+        for b in [
+            [2, 2, 3, 1, 1],
+            [2, 2, 3, 2, 1],
+            [2, 2, 3, 2, 2],
+            [2, 2, 3, 4, 2],
+            [2, 2, 6, 4, 2],
+            [2, 2, 6, 2, 2],
+            [2, 2, 6, 2, 1],
+            [2, 2, 6, 1, 1],
+        ]
+    ],
+)
+
+b.Source(model)
+
+b.add_default_targets()
+
+# vim: ft=python
