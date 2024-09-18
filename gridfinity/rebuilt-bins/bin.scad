@@ -37,7 +37,12 @@ h_cut_extra = 1.6; // [0: Default, 1.8: 2 bottom layers, 1.6: 3 bottom layers, 1
 // Additional interior depth for single-grid pockets -- best used with h_cut_extra set to 2 bottom layers
 h_cut_extra_single = 2.0; // [0: Default, 2.0: Most, 1.4: Some]
 
-Compartment_Style = "default"; // [default: Default -- use compartment settings below, "6p": half and half half/single pockets, "3p": double and single pockets, "split1y": half full width, half divx pockets]
+Compartment_Style = "default"; // [default: Default -- use compartment settings below, "default_multiple": Multiples of the compartment settings below, "6p": half and half half/single pockets, "3p": double and single pockets, "split1y": half full width, half divx pockets]
+
+// For the above "Multiples of the compartment settings" option, what size multiple to use for the X axis
+Div_Mult_X = 2; // [1:0.5:4]
+// For the above "Multiples of the compartment settings" option, what size multiple to use for the Y axis
+Div_Mult_Y = 2; // [1:0.5:4]
 
 Wall_Cut = "none"; // [none: None, grip: Grip]
 
@@ -98,6 +103,11 @@ min_z = gridz;
 // Functions //
 
 function gf_height(z=gridz) = height(z, gridz_define, style_lip, enable_zsnap);
+
+function div_multiple_step(remaining_steps, multiple) = (
+    let (remainder = remaining_steps % multiple)
+    multiple + remainder / (max(1, floor(remaining_steps / multiple)))
+);
 
 // Modules //
 
@@ -349,6 +359,36 @@ module compartments_cut() {
                 style_tab=style_tab,
                 scoop_weight=scoop
             );
+        } else if (cdivx > 0 && cdivy > 0) {
+            cutCylinders(
+                n_divx=cdivx,
+                n_divy=cdivy,
+                cylinder_diameter=cd,
+                cylinder_height=ch,
+                coutout_depth=c_depth,
+                orientation=c_orientation
+            );
+        }
+    } else if (Compartment_Style == "default_multiple") {
+        if (divx > 0 && divy > 0) {
+            for (x = [1:divx])
+            for (y = [1:ceil(divy / 2)])
+            cut(
+                (x - 1) * gridx/divx, (y - 1) * gridy/divy,
+                gridx/divx, gridy/divy,
+                style_tab, scoop
+            );
+
+            m_step_x = div_multiple_step(divx, Div_Mult_X);
+            m_step_y = div_multiple_step(divy - ceil(divy / 2), Div_Mult_Y);
+            for (x = [1:m_step_x:divx])
+            for (y = [ceil(divy / 2)+1:m_step_y:divy]) {
+                cut(
+                    (x - 1) * gridx/divx, (y - 1) * gridy/divy,
+                    gridx/divx*m_step_x, gridy/divy*m_step_y,
+                    style_tab, scoop
+                );
+            }
         } else if (cdivx > 0 && cdivy > 0) {
             cutCylinders(
                 n_divx=cdivx,
