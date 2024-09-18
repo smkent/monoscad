@@ -32,6 +32,7 @@ gridz = 3; // [1:0.5:20]
 /* [Remix Features] */
 // generate tabs on the lid to help align stacked bins
 Stacking_Tabs = true;
+Lip_Grips = "none"; // [none: None, x: Along X axis, y: Along Y axis, xy: Along X and Y axes]
 // Interior depth
 h_cut_extra = 1.6; // [0: Default, 1.8: 2 bottom layers, 1.6: 3 bottom layers, 1.4: 4 bottom layers]
 // Additional interior depth for single-grid pockets -- best used with h_cut_extra set to 2 bottom layers
@@ -39,10 +40,12 @@ h_cut_extra_single = 2.0; // [0: Default, 2.0: Most, 1.4: Some]
 
 Compartment_Style = "default"; // [default: Default -- use compartment settings below, "default_multiple": Multiples of the compartment settings below, "6p": half and half half/single pockets, "3p": double and single pockets, "split1y": half full width, half divx pockets]
 
+Div_Axis = "y"; // [x: X axis, y: Y axis]
 // For the above "Multiples of the compartment settings" option, what size multiple to use for the X axis
-Div_Mult_X = 2; // [1:0.5:4]
+Div_Mult_X = 2; // [0.5:0.25:8]
 // For the above "Multiples of the compartment settings" option, what size multiple to use for the Y axis
-Div_Mult_Y = 2; // [1:0.5:4]
+Div_Mult_Y = 2; // [0.5:0.25:8]
+Div_Mult_Point = 0.5; // [0.1:0.1:0.9]
 
 Wall_Cut = "none"; // [none: None, grip: Grip]
 
@@ -109,6 +112,17 @@ function div_multiple_step(remaining_steps, multiple) = (
     multiple + remainder / (max(1, floor(remaining_steps / multiple)))
 );
 
+function mk_div_axis(is_div_axis, base_div, mult) = (
+    let (div_point = ceil(base_div * Div_Mult_Point))
+    let (m_start = base_div - div_point)
+    // div_axis, m_start, later start, m_step
+    (
+        is_div_axis
+        ? [div_point, m_start, div_point + 1, div_multiple_step(m_start, mult)]
+        : [base_div, base_div, 1, div_multiple_step(base_div, mult)]
+    )
+);
+
 // Modules //
 
 module gf_init_stub(gx=gridx, gy=gridy, h=-1, h0=0, l=l_grid, sl=style_lip) {
@@ -128,27 +142,29 @@ module gf_init(bin=false) {
         $cuttop = (gridz > min_z) ? min_z * 7 + 0.25 : h_base + $dh;
         $bindepth = (gridz > min_z) ? (gridz - min_z) * 7 : 0;
         if (bin) {
-            difference() {
-                union() {
-                    block_bottom($dh0 == 0 ? $dh - 0.1 : $dh0, $gxx, $gyy, $ll);
-                    gridfinityBase(
-                        $gxx, $gyy, $ll,
-                        div_base_x, div_base_y,
-                        style_hole, only_corners=only_corners
-                    );
+            gf_bin_add_lid_grips() {
+                difference() {
+                    union() {
+                        block_bottom($dh0 == 0 ? $dh - 0.1 : $dh0, $gxx, $gyy, $ll);
+                        gridfinityBase(
+                            $gxx, $gyy, $ll,
+                            div_base_x, div_base_y,
+                            style_hole, only_corners=only_corners
+                        );
+                    }
+                    if (gridz > min_z) {
+                        translate([0, 0, -(h_base + h_bot) + cut_height])
+                        cut(0, 0, gridx, gridy, 5, s=0);
+                    }
+                    children();
                 }
-                if (gridz > min_z) {
-                    translate([0, 0, -(h_base + h_bot) + cut_height])
-                    cut(0, 0, gridx, gridy, 5, s=0);
+                block_wall($gxx, $gyy, $ll) {
+                    if ($style_lip == 0) profile_wall();
+                    else profile_wall2();
                 }
-                children();
+                if (Stacking_Tabs && $style_lip == 0)
+                generate_tabs();
             }
-            block_wall($gxx, $gyy, $ll) {
-                if ($style_lip == 0) profile_wall();
-                else profile_wall2();
-            }
-            if (Stacking_Tabs && $style_lip == 0)
-            generate_tabs();
         } else {
             children();
         }
@@ -371,24 +387,24 @@ module compartments_cut() {
         }
     } else if (Compartment_Style == "default_multiple") {
         if (divx > 0 && divy > 0) {
-            for (x = [1:divx])
-            for (y = [1:ceil(divy / 2)])
+            axis_x_params = mk_div_axis(Div_Axis == "x", divx, Div_Mult_X);
+            axis_y_params = mk_div_axis(Div_Axis == "y", divy, Div_Mult_Y);
+            for (x = [1:axis_x_params[0]], y = [1:axis_y_params[0]])
             cut(
                 (x - 1) * gridx/divx, (y - 1) * gridy/divy,
-                gridx/divx, gridy/divy,
-                style_tab, scoop
+                gridx/divx, gridy/divy, style_tab, scoop
             );
 
-            m_step_x = div_multiple_step(divx, Div_Mult_X);
-            m_step_y = div_multiple_step(divy - ceil(divy / 2), Div_Mult_Y);
-            for (x = [1:m_step_x:divx])
-            for (y = [ceil(divy / 2)+1:m_step_y:divy]) {
-                cut(
-                    (x - 1) * gridx/divx, (y - 1) * gridy/divy,
-                    gridx/divx*m_step_x, gridy/divy*m_step_y,
-                    style_tab, scoop
-                );
-            }
+            m_step_x = axis_x_params[3];
+            m_step_y = axis_y_params[3];
+            for (
+                x = [axis_x_params[2]:m_step_x:divx + 0.99],
+                y = [axis_y_params[2]:m_step_y:divy + 0.99]
+            )
+            cut(
+                (x - 1) * gridx/divx, (y - 1) * gridy/divy,
+                gridx/divx * m_step_x, gridy/divy * m_step_y, style_tab, scoop
+            );
         } else if (cdivx > 0 && cdivy > 0) {
             cutCylinders(
                 n_divx=cdivx,
@@ -454,6 +470,66 @@ module extra_features() {
         }
     } else {
         children();
+    }
+}
+
+module gf_bin_lid_lip_mask() {
+    translate(concat(
+        lid_pos(-(r_base + 0.5)),
+        [$dh + h_base - lid_thickness - lid_vpos_tolerance]
+    ))
+    linear_extrude(height=h_lip * 10)
+    square([l_grid * gridx, l_grid * gridy], center=true);
+}
+
+module gf_bin_lid_grip_mask_shape() {
+    grip_w = l_grid / 2 - h_lip * 2 - 2;
+    radius = 3;
+    translate([-(grip_w - l_grid / 2) / 2, 0])
+    intersection() {
+        offset(r=-radius)
+        offset(r=2 * radius)
+        offset(r=-radius)
+        union() {
+            square([grip_w, h_lip * 10]);
+            translate([-grip_w * 2, h_lip * 0.75])
+            square([grip_w * 5, h_lip * 9]);
+        }
+        translate([-radius, 0])
+        square([grip_w + radius * 2, h_lip]);
+    }
+}
+
+module gf_bin_lid_grip_mask_set(num_grid) {
+    rotate([90, 0, 90])
+    translate([0, 0, l_grid * num_grid / 2])
+    linear_extrude(height=l_grid / 2, center=true)
+    gf_bin_lid_grip_mask_shape();
+}
+
+module gf_bin_lid_grip_mask() {
+    translate([0, 0, $dh + h_base + h_lip * 0.25]) {
+        if (Lip_Grips == "x" || Lip_Grips == "xy")
+        pattern_linear(1, gridy, l_grid * gridx, l_grid)
+        gf_bin_lid_grip_mask_set(gridx);
+        if (Lip_Grips == "y" || Lip_Grips == "xy")
+        pattern_linear(gridx, 1, l_grid, l_grid * gridy)
+        rotate(90)
+        gf_bin_lid_grip_mask_set(gridy);
+    }
+}
+
+module gf_bin_lid_grip_masks() {
+    if (Lip_Grips != "none")
+    for (rot = [0, 180])
+    rotate(rot)
+    gf_bin_lid_grip_mask();
+}
+
+module gf_bin_add_lid_grips() {
+    difference() {
+        children();
+        gf_bin_lid_grip_masks();
     }
 }
 
