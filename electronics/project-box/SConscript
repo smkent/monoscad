@@ -1,0 +1,27 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "project-box.scad"
+
+dimensions = [
+    [
+        (45, 32, 25),
+    ],
+]
+
+for opts in GenerateOptions(part=["lid", "box"], dims=dimensions):
+    b.STL(
+        f"{opts.part}-{opts.dims[0]}x{opts.dims[1]}x{opts.dims[2]}.stl",
+        model,
+        {
+            "Part": opts.part,
+            "Width": opts.dims[0],
+            "Length": opts.dims[1],
+            "Height": opts.dims[2],
+        },
+    )
+b.Image("demo.png", model, {"Part": "all"})
+
+b.add_default_targets()
+
+# vim: ft=python
