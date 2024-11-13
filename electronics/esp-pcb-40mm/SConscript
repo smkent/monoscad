@@ -1,0 +1,24 @@
+Import("env")
+b = ModelBuilder(env)
+
+model = "esp-pcb-40mm.scad"
+
+for opts in GenerateOptions(
+    x=[1, 2, 3], y=[1, 2, 3], screw_x=[(0, ""), (1, "-xscrew")], height=[6, 10]
+):
+    b.STL(
+        f"esp-pcb-40mm-{opts.x}x{opts.y}-{opts.height}mm{opts.screw_x_fn}.stl",
+        model,
+        {
+            "PCB_X": opts.x,
+            "PCB_Y": opts.y,
+            "Height": opts.height,
+            "Mounting_Screw_Holes_X": opts.screw_x,
+        },
+    )
+
+b.Image("demo.png", model, {"Mounting_Screw_Holes_X": 1})
+
+b.add_default_targets()
+
+# vim: ft=python
