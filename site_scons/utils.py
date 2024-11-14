@@ -9,6 +9,8 @@ def openscad_var_args(
     def _val_args(k, v):
         if isinstance(v, str):
             v = f'"{v}"' if for_subprocess else f"'\"{v}\"'"
+        if isinstance(v, (tuple, list)):
+            v = f"[{','.join(str(i) for i in v)}]"
         return ["-D", f"{k}={v}"]
 
     return [arg for k, v in (vals or {}).items() for arg in _val_args(k, v)]
