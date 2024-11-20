@@ -334,7 +334,7 @@ module _box_patterns() {
             rotate((fw % 2) != 0 ? 90 : 0)
             translate([0, pos_y / 2 + $e_thickness, ($e_height - $e_lid_height) / 2 + $e_thickness])
             rotate([90, 0, 0])
-            _hc_pattern(pattern_x - $e_screw_inset * 2, ($e_height - $e_lid_height) - $e_screw_inset * 2);
+            _hc_pattern(pattern_x - $e_screw_inset * 2, ($e_height - $e_lid_height) - $e_thickness * 2);
         }
     }
 }
