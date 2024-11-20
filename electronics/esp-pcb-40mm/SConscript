@@ -1,23 +1,47 @@
 Import("env")
 b = ModelBuilder(env)
 
-model = "esp-pcb-40mm.scad"
+box_model = "esp-pcb-40mm-box.scad"
+base_model = "esp-pcb-40mm.scad"
+
+for opts in GenerateOptions(
+    part=["box", "lid"],
+    x=[1, 2, 3],
+    y=[1, 2, 3],
+    height=[30],
+    pattern=[(True, "-pattern"), (False, "")],
+):
+    kwargs = {
+        "Part": opts.part,
+        "PCB_Units": [opts.x, opts.y],
+        "Height": opts.height,
+    }
+    if opts.pattern:
+        kwargs |= {
+            "Pattern_Bottom": 1,
+            "Pattern_Lid": 1,
+            "Pattern_Walls": [1, 1, 1, 1],
+        }
+    b.STL(
+        f"{opts.part}-{opts.x}x{opts.y}-{opts.height}mm{opts.pattern_fn}.stl",
+        box_model,
+        kwargs,
+    )
 
 for opts in GenerateOptions(
     x=[1, 2, 3], y=[1, 2, 3], screw_x=[(0, ""), (1, "-xscrew")], height=[6, 10]
 ):
     b.STL(
-        f"esp-pcb-40mm-{opts.x}x{opts.y}-{opts.height}mm{opts.screw_x_fn}.stl",
-        model,
+        f"base-{opts.x}x{opts.y}-{opts.height}mm{opts.screw_x_fn}.stl",
+        base_model,
         {
-            "PCB_X": opts.x,
-            "PCB_Y": opts.y,
+            "PCB_Units": [opts.x, opts.y],
             "Height": opts.height,
             "Mounting_Screw_Holes_X": opts.screw_x,
         },
     )
 
-b.Image("demo.png", model, {"Mounting_Screw_Holes_X": 1})
+b.Image("demo.png", base_model, {"Mounting_Screw_Holes_X": 1})
 
 b.add_default_targets()
 
