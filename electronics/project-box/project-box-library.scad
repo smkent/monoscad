@@ -41,9 +41,9 @@ module ebox(
     mounting_screws=true,
     mounting_screw_diameter=4,
     mounting_screw_style="flat",
-    fill_lid=0,
-    fill_bottom=0,
-    fill_walls=[0, 0, 0, 0]
+    pattern_lid=0,
+    pattern_bottom=0,
+    pattern_walls=[0, 0, 0, 0]
 ) {
     $e_dimensions = dimensions;
     $e_width = dimensions[0];
@@ -58,9 +58,9 @@ module ebox(
     $e_mounting_screws = mounting_screws;
     $e_mounting_screw_diameter = mounting_screw_diameter;
     $e_mounting_screw_style = mounting_screw_style;
-    $e_fill_lid = fill_lid;
-    $e_fill_bottom = fill_bottom;
-    $e_fill_walls = fill_walls;
+    $e_pattern_lid = pattern_lid;
+    $e_pattern_bottom = pattern_bottom;
+    $e_pattern_walls = pattern_walls;
     ebox_adjustments()
     children();
 }
@@ -125,7 +125,7 @@ module ebox_extras() {
 
 // Internal Modules //
 
-module _hc_fill(x, y, hex_size=8, separation=2.2, height=$e_thickness) {
+module _hc_pattern(x, y, hex_size=8, separation=2.2, height=$e_thickness) {
     translate([0, 0, -slop * 5])
     linear_extrude(height=height + slop * 10)
     difference() {
@@ -302,17 +302,17 @@ module _box_screws() {
 }
 
 module _box_patterns() {
-    if ($e_fill_bottom)
-    _hc_fill($e_width - $e_screw_inset * 2, $e_length - $e_screw_inset * 2);
+    if ($e_pattern_bottom)
+    _hc_pattern($e_width - $e_screw_inset * 2, $e_length - $e_screw_inset * 2);
     for (fw = [0:1:3]) {
-        if ($e_fill_walls[fw] > 0) {
-            fill_x = (((fw % 2) == 0) ? $e_width : $e_length) - $e_insert_diameter * 2 * 2;
+        if ($e_pattern_walls[fw] > 0) {
+            pattern_x = (((fw % 2) == 0) ? $e_width : $e_length) - $e_insert_diameter * 2 * 2;
             pos_y = ((fw % 2) == 0) ? $e_length : $e_width;
             mirror([fw == 3 ? 1 : 0, fw == 2 ? 1 : 0])
             rotate((fw % 2) != 0 ? 90 : 0)
             translate([0, pos_y / 2 + $e_thickness, ($e_height - $e_lid_height) / 2 + $e_thickness])
             rotate([90, 0, 0])
-            _hc_fill(fill_x - $e_screw_inset * 2, ($e_height - $e_lid_height) - $e_screw_inset * 2);
+            _hc_pattern(pattern_x - $e_screw_inset * 2, ($e_height - $e_lid_height) - $e_screw_inset * 2);
         }
     }
 }
@@ -372,9 +372,9 @@ module _lid() {
             style=$e_screw_style,
             print_upside_down=true
         );
-        if ($e_fill_lid)
+        if ($e_pattern_lid)
         translate([0, 0, $e_height + $e_thickness])
-        _hc_fill($e_width - $e_screw_inset * 2, $e_length - $e_screw_inset * 2);
+        _hc_pattern($e_width - $e_screw_inset * 2, $e_length - $e_screw_inset * 2);
         ebox_cutouts();
     }
 }

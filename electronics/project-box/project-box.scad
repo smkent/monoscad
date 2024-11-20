@@ -30,11 +30,11 @@ Mounting_Screws = true;
 Mounting_Screw_Diameter = 4.0;
 Mounting_Screw_Style = "flat"; // [flat: Flat, countersink: Countersink, inset: Inset]
 
-/* [Hexagon Fill Pattern] */
-Fill_Bottom = false;
-Fill_Lid = false;
-// 1 = fill, 0 = no fill
-Fill_Walls = [0, 0, 0, 0]; // [0:1:1]
+/* [Hexagon Pattern] */
+Pattern_Bottom = false;
+Pattern_Lid = false;
+// 1 = pattern, 0 = no pattern
+Pattern_Walls = [0, 0, 0, 0]; // [0:1:1]
 
 /* [PCB] */
 PCB_Mount = true;
@@ -118,9 +118,9 @@ ebox(
     mounting_screws=Mounting_Screws,
     mounting_screw_diameter=Mounting_Screw_Diameter,
     mounting_screw_style=Mounting_Screw_Style,
-    fill_lid=Fill_Lid,
-    fill_bottom=Fill_Bottom,
-    fill_walls=Fill_Walls
+    pattern_lid=Pattern_Lid,
+    pattern_bottom=Pattern_Bottom,
+    pattern_walls=Pattern_Walls
 )
 ebox_adjustments(
     print_orientation=Print_Orientation,
