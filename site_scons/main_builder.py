@@ -53,7 +53,7 @@ class MainBuilder:
             "openscad", os.environ.get("OPENSCAD", "openscad")
         )
 
-        def _openscad_has_features() -> bool:
+        def _openscad_has_backend_option() -> bool:
             help_text = subprocess.run(
                 [executable, "--help"],
                 check=True,
@@ -61,11 +61,11 @@ class MainBuilder:
                 text=True,
                 env=env["ENV"],
             ).stderr
-            return "--enable" in help_text
+            return "--backend" in help_text
 
         cmd = [executable]
-        if _openscad_has_features():
-            cmd += ["--enable", "fast-csg", "--enable", "manifold"]
+        if _openscad_has_backend_option():
+            cmd += ["--backend", "Manifold"]
         return cmd
 
     def _add_openscad_builder(self, env: SConsEnvironment) -> None:
