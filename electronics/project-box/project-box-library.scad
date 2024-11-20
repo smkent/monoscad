@@ -7,8 +7,6 @@
 
 include <honeycomb-openscad/honeycomb.scad>;
 
-/* [Development Toggles] */
-
 module __end_customizer_options__() { }
 
 // Constants //
@@ -20,13 +18,13 @@ slop = 0.001;
 
 // Functions //
 
-function vec_add(v, add) = [for (i = v) i + add];
-
 function _eyelet_thickness() = $e_thickness * 2;
 
 function _mounting_screw_xpos() = $e_thickness + $e_mounting_screw_diameter * 1.125;
 
 function _mounting_screw_eyelet_d() = $e_mounting_screw_diameter * 1.125;
+
+function _mounting_screw_count(distance) = max(1, floor(distance / $e_mounting_screw_sep));
 
 // Public Modules //
 
@@ -38,7 +36,8 @@ module ebox(
     insert_diameter=4.5,
     insert_depth=10,
     screw_style="flag",
-    mounting_screws=true,
+    mounting_screws_x=true,
+    mounting_screws_y=true,
     mounting_screw_diameter=4,
     mounting_screw_style="flat",
     pattern_lid=0,
@@ -55,7 +54,8 @@ module ebox(
     $e_insert_diameter = insert_diameter;
     $e_insert_depth = insert_depth;
     $e_screw_style = screw_style;
-    $e_mounting_screws = mounting_screws;
+    $e_mounting_screws_x = mounting_screws_x;
+    $e_mounting_screws_y = mounting_screws_y;
     $e_mounting_screw_diameter = mounting_screw_diameter;
     $e_mounting_screw_style = mounting_screw_style;
     $e_pattern_lid = pattern_lid;
@@ -71,7 +71,8 @@ module ebox_adjustments(
     corner_radius=3,
     edge_radius=1.5,
     screw_count=4,
-    screw_fit=0.4
+    screw_fit=0.4,
+    mounting_screw_sep=40
 ) {
     $e_print_orientation = print_orientation;
     $e_screw_inset = screw_inset;
@@ -79,6 +80,7 @@ module ebox_adjustments(
     $e_edge_radius = edge_radius;
     $e_screw_count = screw_count;
     $e_screw_fit = screw_fit;
+    $e_mounting_screw_sep = mounting_screw_sep;
     children();
 }
 
@@ -88,10 +90,10 @@ module ebox_part(part) {
         translate([0, 0, slop])
         _lid();
     } else if (Part == "all") {
-        sep = $e_length / 2 + $e_thickness * 2;
-        translate([0, sep, 0])
+        sep = $e_width / 2 + $e_thickness * 2 + $e_mounting_screw_diameter * 2;
+        translate([sep, 0, 0])
         _box();
-        translate([0, -sep, 0])
+        translate([-sep, 0, 0])
         if ($e_print_orientation) {
             rotate([180, 0, 0])
             translate([0, 0, -($e_height + $e_thickness * 2)])
@@ -200,11 +202,25 @@ module _at_screws() {
     }
 }
 
-module _at_box_screws() {
-    for (mx = [0, 1])
-    mirror([mx, 0])
-    translate([$e_width / 2 + _mounting_screw_xpos(), 0])
-    children();
+module _at_box_screws(enable_x=true, enable_y=true) {
+    if (enable_x && $e_mounting_screws_x) {
+        screw_count = _mounting_screw_count($e_width);
+        for (my = [0, 1])
+        mirror([0, my])
+        translate([-((screw_count - 1) * $e_mounting_screw_sep) / 2, 0])
+        for (sn = [0:1:screw_count - 1])
+        translate([sn * $e_mounting_screw_sep, $e_length / 2 + _mounting_screw_xpos()])
+        children();
+    }
+    if (enable_y && $e_mounting_screws_y) {
+        screw_count = _mounting_screw_count($e_length);
+        for (mx = [0, 1])
+        mirror([mx, 0])
+        translate([0, -((screw_count - 1) * $e_mounting_screw_sep) / 2])
+        for (sn = [0:1:screw_count - 1])
+        translate([$e_width / 2 + _mounting_screw_xpos(), sn * $e_mounting_screw_sep])
+        children();
+    }
 }
 
 module _box_shape(radius=$e_corner_radius, add=0) {
@@ -228,7 +244,10 @@ module _box_interior_base() {
             linear_extrude(height=(start_ht - $e_insert_depth - screw_corner) - $e_edge_radius * 2)
             _box_shape(add=-$e_edge_radius);
 
-            linear_extrude(height=$e_height - $e_edge_radius * 2)
+            linear_extrude(height=(
+                $e_height - $e_edge_radius * 2
+                + ($e_part == "box" ? Thickness * 2 : 0)
+            ))
             offset(r=interior_corner_radius)
             offset(r=-interior_corner_radius)
             difference() {
@@ -272,6 +291,7 @@ module _box_body() {
 
 module _box_screw_eyelets() {
     eyelet_round = _mounting_screw_xpos() * 2;
+    if ($e_mounting_screws_x || $e_mounting_screws_y)
     _round_3d()
     translate([0, 0, $e_edge_radius])
     linear_extrude(height=_eyelet_thickness() - $e_edge_radius * 2)
@@ -281,12 +301,14 @@ module _box_screw_eyelets() {
     offset(r=eyelet_round)
     union() {
         _box_shape();
-        _at_box_screws()
+        for (enable_x = [0, 1])
+        hull()
         union() {
             d = _mounting_screw_eyelet_d();
+            offset(r=-d * 2)
+            _box_shape();
+            _at_box_screws(enable_x=enable_x, enable_y=!enable_x)
             circle(d=d * 2);
-            translate([-d, 0])
-            square(d * 2, center=true);
         }
     }
 }
@@ -325,25 +347,23 @@ module _box_interior() {
 }
 
 module _box() {
+    $e_part = "box";
     color("mintcream", 0.8)
     render()
     union() {
         difference() {
             intersection() {
                 union() {
-                    if ($e_mounting_screws)
-                    _box_screw_eyelets();
                     _box_body();
+                    _box_screw_eyelets();
                 }
                 linear_extrude(height=$e_height + $e_thickness * 2 - $e_lid_height)
-                scale([2, 1])
-                _box_shape(add=$e_thickness + $e_edge_radius, radius=0);
+                _box_shape(add=$e_thickness + $e_edge_radius + $e_mounting_screw_diameter * 4, radius=0);
             }
             _box_interior();
             _at_screws()
             translate([0, 0, ($e_height + $e_thickness) - $e_lid_height - $e_insert_depth])
             _screw_hole(d=$e_insert_diameter, fit=$e_screw_fit, h=$e_insert_depth + $e_thickness);
-            if ($e_mounting_screws)
             _box_screws();
             _box_patterns();
             ebox_cutouts();
@@ -353,6 +373,7 @@ module _box() {
 }
 
 module _lid() {
+    $e_part = "lid";
     color("lightsteelblue", (Part == "preview" ? 0.4 : 0.8))
     render()
     difference() {
