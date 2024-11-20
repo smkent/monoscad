@@ -24,9 +24,9 @@ function vec_add(v, add) = [for (i = v) i + add];
 
 function eyelet_thickness() = $e_thickness * 2;
 
-function attachment_screw_xpos() = $e_thickness + $e_attachment_screw_diameter * 1.125;
+function mounting_screw_xpos() = $e_thickness + $e_mounting_screw_diameter * 1.125;
 
-function attachment_screw_eyelet_d() = $e_attachment_screw_diameter * 1.125;
+function mounting_screw_eyelet_d() = $e_mounting_screw_diameter * 1.125;
 
 // Public Modules //
 
@@ -38,9 +38,9 @@ module ebox(
     insert_diameter=4.5,
     insert_depth=10,
     screw_style="flag",
-    attachment_screw_diameter=4,
-    attachment_screw_style="flat",
-    screw_eyelets=true,
+    mounting_screws=true,
+    mounting_screw_diameter=4,
+    mounting_screw_style="flat",
     fill_lid=0,
     fill_bottom=0,
     fill_walls=[0, 0, 0, 0]
@@ -55,9 +55,9 @@ module ebox(
     $e_insert_diameter = insert_diameter;
     $e_insert_depth = insert_depth;
     $e_screw_style = screw_style;
-    $e_attachment_screw_diameter = attachment_screw_diameter;
-    $e_attachment_screw_style = attachment_screw_style;
-    $e_screw_eyelets = screw_eyelets;
+    $e_mounting_screws = mounting_screws;
+    $e_mounting_screw_diameter = mounting_screw_diameter;
+    $e_mounting_screw_style = mounting_screw_style;
     $e_fill_lid = fill_lid;
     $e_fill_bottom = fill_bottom;
     $e_fill_walls = fill_walls;
@@ -203,7 +203,7 @@ module _at_screws() {
 module _at_box_screws() {
     for (mx = [0, 1])
     mirror([mx, 0])
-    translate([$e_width / 2 + attachment_screw_xpos(), 0])
+    translate([$e_width / 2 + mounting_screw_xpos(), 0])
     children();
 }
 
@@ -271,7 +271,7 @@ module _box_body() {
 }
 
 module _box_screw_eyelets() {
-    eyelet_round = attachment_screw_xpos() * 2;
+    eyelet_round = mounting_screw_xpos() * 2;
     _round_3d()
     translate([0, 0, $e_edge_radius])
     linear_extrude(height=eyelet_thickness() - $e_edge_radius * 2)
@@ -283,7 +283,7 @@ module _box_screw_eyelets() {
         _box_shape();
         _at_box_screws()
         union() {
-            d = attachment_screw_eyelet_d();
+            d = mounting_screw_eyelet_d();
             circle(d=d * 2);
             translate([-d, 0])
             square(d * 2, center=true);
@@ -294,10 +294,10 @@ module _box_screw_eyelets() {
 module _box_screws() {
     _at_box_screws()
     _screw_hole(
-        d=$e_attachment_screw_diameter,
+        d=$e_mounting_screw_diameter,
         fit=$e_screw_fit,
         h=eyelet_thickness() + slop * 2,
-        style=$e_attachment_screw_style
+        style=$e_mounting_screw_style
     );
 }
 
@@ -331,7 +331,7 @@ module _box() {
         difference() {
             intersection() {
                 union() {
-                    if ($e_screw_eyelets)
+                    if ($e_mounting_screws)
                     _box_screw_eyelets();
                     _box_body();
                 }
@@ -343,7 +343,7 @@ module _box() {
             _at_screws()
             translate([0, 0, ($e_height + $e_thickness) - $e_lid_height - $e_insert_depth])
             _screw_hole(d=$e_insert_diameter, fit=$e_screw_fit, h=$e_insert_depth + $e_thickness);
-            if ($e_screw_eyelets)
+            if ($e_mounting_screws)
             _box_screws();
             _box_patterns();
             ebox_cutouts();

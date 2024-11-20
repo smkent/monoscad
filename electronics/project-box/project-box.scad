@@ -21,9 +21,20 @@ Thickness = 2.4;
 Lid_Height = 3.9;
 
 Screw_Diameter = 3.0;
+Screw_Style = "flat"; // [flat: Flat, countersink: Countersink, inset: Inset]
 Insert_Diameter = 4.5;
-Attachment_Screw_Diameter = 4.0;
 Insert_Depth = 10;
+
+/* [Mounting Screws] */
+Mounting_Screws = true;
+Mounting_Screw_Diameter = 4.0;
+Mounting_Screw_Style = "flat"; // [flat: Flat, countersink: Countersink, inset: Inset]
+
+/* [Hexagon Fill Pattern] */
+Fill_Bottom = false;
+Fill_Lid = false;
+// 1 = fill, 0 = no fill
+Fill_Walls = [0, 0, 0, 0]; // [0:1:1]
 
 /* [PCB] */
 PCB_Mount = true;
@@ -32,17 +43,6 @@ PCB_Screw_Inset = 3;
 PCB_Screw_Diameter = 3.0;
 PCB_Insert_Diameter = 4.5;
 PCB_Mount_Height = 5;
-
-/* [Features] */
-Screw_Eyelets = true;
-Screw_Style = "flat"; // [flat: Flat, countersink: Countersink, inset: Inset]
-Attachment_Screw_Style = "flat"; // [flat: Flat, countersink: Countersink, inset: Inset]
-
-/* [Hexagon Fill Pattern] */
-Fill_Bottom = false;
-Fill_Lid = false;
-// 1 = fill, 0 = no fill
-Fill_Walls = [0, 0, 0, 0]; // [0:1:1]
 
 /* [Advanced Options] */
 Screw_Inset = 4;
@@ -115,9 +115,9 @@ ebox(
     insert_diameter=Insert_Diameter,
     insert_depth=Insert_Depth,
     screw_style=Screw_Style,
-    attachment_screw_diameter=Attachment_Screw_Diameter,
-    attachment_screw_style=Attachment_Screw_Style,
-    screw_eyelets=Screw_Eyelets,
+    mounting_screws=Mounting_Screws,
+    mounting_screw_diameter=Mounting_Screw_Diameter,
+    mounting_screw_style=Mounting_Screw_Style,
     fill_lid=Fill_Lid,
     fill_bottom=Fill_Bottom,
     fill_walls=Fill_Walls
