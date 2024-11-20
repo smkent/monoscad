@@ -41,7 +41,64 @@ for opts in GenerateOptions(
         },
     )
 
-b.Image("demo.png", base_model, {"Mounting_Screw_Holes_X": 1})
+
+base_demo_options = {"Mounting_Screw_Holes_X": 1, "Height": 6}
+b.Image(
+    "demo-base.gif",
+    base_model,
+    [
+        (base_demo_options | frame_options)
+        for frame_options in [
+            {"PCB_Units": [1, 1]},
+            {"PCB_Units": [2, 1]},
+            {"PCB_Units": [2, 2]},
+            {"PCB_Units": [2, 2], "Height": 12},
+            {"PCB_Units": [3, 2], "Height": 12},
+            {"PCB_Units": [3, 1], "Height": 12},
+            {"PCB_Units": [2, 1], "Height": 12},
+            {"PCB_Units": [2, 1]},
+        ]
+    ],
+)
+
+box_demo_options = {"Part": "all", "Height": 30}
+b.Image(
+    "demo-box.gif",
+    box_model,
+    [
+        (box_demo_options | frame_options)
+        for frame_options in [
+            {"PCB_Units": [1, 1]},
+            {"PCB_Units": [2, 1]},
+            {"PCB_Units": [2, 2]},
+            {
+                "PCB_Units": [2, 2],
+                "Pattern_Lid": 1,
+            },
+            {
+                "PCB_Units": [2, 2],
+                "Pattern_Lid": 1,
+                "Pattern_Bottom": 1,
+                "Pattern_Walls": [1, 1, 1, 1],
+            },
+            {
+                "PCB_Units": [2, 2],
+                "Pattern_Lid": 1,
+                "Pattern_Walls": [1, 1, 1, 1],
+            },
+            {
+                "PCB_Units": [2, 2],
+                "Pattern_Walls": [1, 1, 1, 1],
+            },
+            {"PCB_Units": [2, 2]},
+            {"PCB_Units": [2, 2], "Height": 50},
+            {"PCB_Units": [3, 2], "Height": 50},
+            {"PCB_Units": [3, 1], "Height": 50},
+            {"PCB_Units": [2, 1], "Height": 50},
+            {"PCB_Units": [1, 2]},
+        ]
+    ],
+)
 
 b.add_default_targets()
 
