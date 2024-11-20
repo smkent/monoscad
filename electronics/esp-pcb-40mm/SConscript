@@ -26,6 +26,7 @@ for opts in GenerateOptions(
         f"{opts.part}-{opts.x}x{opts.y}-{opts.height}mm{opts.pattern_fn}.stl",
         box_model,
         kwargs,
+        zip_dir=f"box-{opts.x}x{opts.y}",
     )
 
 for opts in GenerateOptions(
@@ -39,6 +40,7 @@ for opts in GenerateOptions(
             "Height": opts.height,
             "Mounting_Screw_Holes_X": opts.screw_x,
         },
+        zip_dir=f"base-{opts.x}x{opts.y}",
     )
 
 
