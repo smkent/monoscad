@@ -81,7 +81,7 @@ module pcb_mount() {
     at_pcb_screws()
     difference() {
         cylinder(d=PCB_Insert_Diameter * 2, h=PCB_Mount_Height);
-        screw_hole(d=PCB_Insert_Diameter, h=PCB_Mount_Height);
+        _screw_hole(d=PCB_Insert_Diameter, h=PCB_Mount_Height);
     }
 }
 
