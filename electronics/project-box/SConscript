@@ -15,9 +15,7 @@ for opts in GenerateOptions(part=["lid", "box"], dims=dimensions):
         model,
         {
             "Part": opts.part,
-            "Width": opts.dims[0],
-            "Length": opts.dims[1],
-            "Height": opts.dims[2],
+            "Dimensions": opts.dims,
         },
     )
 b.Image("demo.png", model, {"Part": "all"})
