@@ -97,7 +97,7 @@ module pcb() {
     }
 }
 
-module ebox_contents() {
+module ebox_interior() {
     if (PCB_Mount)
     pcb_mount();
 }
