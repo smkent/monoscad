@@ -18,7 +18,7 @@ for opts in GenerateOptions(part=["lid", "box"], dims=dimensions):
             "Dimensions": opts.dims,
         },
     )
-b.Image("demo.png", model, {"Part": "all"})
+b.Image("demo.png", model, {"Part": "all", "preview_render": 1})
 
 b.add_default_targets()
 
