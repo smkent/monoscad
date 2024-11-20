@@ -297,7 +297,7 @@ module _box_screws() {
         d=$e_attachment_screw_diameter,
         fit=$e_screw_fit,
         h=eyelet_thickness() + slop * 2,
-        style=$e_attachment_screw_style,
+        style=$e_attachment_screw_style
     );
 }
 
