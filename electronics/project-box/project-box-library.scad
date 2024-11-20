@@ -100,9 +100,9 @@ module ebox_part(part) {
             translate([0, 0, -($e_height - $e_lid_height) - $e_thickness * 2])
             _lid();
         }
-    } else if (Part == "_box") {
+    } else if (Part == "box") {
         _box();
-    } else if (Part == "_lid") {
+    } else if (Part == "lid") {
         if ($e_print_orientation) {
             rotate([180, 0, 0])
             translate([0, 0, -($e_height + $e_thickness * 2)])
