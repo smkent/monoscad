@@ -32,17 +32,17 @@ function attachment_screw_eyelet_d() = $e_attachment_screw_diameter * 1.125;
 
 module ebox(
     dimensions,
-    thickness,
-    lid_height,
-    screw_diameter,
-    insert_diameter,
-    insert_depth,
-    screw_style,
-    attachment_screw_diameter,
-    attachment_screw_style,
-    screw_eyelets,
-    fill_lid,
-    fill_bottom,
+    thickness=2.4,
+    lid_height=3.9,
+    screw_diameter=3,
+    insert_diameter=4.5,
+    insert_depth=10,
+    screw_style="flag",
+    attachment_screw_diameter=4,
+    attachment_screw_style="flat",
+    screw_eyelets=true,
+    fill_lid=0,
+    fill_bottom=0,
     fill_walls=[0, 0, 0, 0]
 ) {
     $e_dimensions = dimensions;
