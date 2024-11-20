@@ -22,11 +22,11 @@ slop = 0.001;
 
 function vec_add(v, add) = [for (i = v) i + add];
 
-function eyelet_thickness() = $e_thickness * 2;
+function _eyelet_thickness() = $e_thickness * 2;
 
-function mounting_screw_xpos() = $e_thickness + $e_mounting_screw_diameter * 1.125;
+function _mounting_screw_xpos() = $e_thickness + $e_mounting_screw_diameter * 1.125;
 
-function mounting_screw_eyelet_d() = $e_mounting_screw_diameter * 1.125;
+function _mounting_screw_eyelet_d() = $e_mounting_screw_diameter * 1.125;
 
 // Public Modules //
 
@@ -203,7 +203,7 @@ module _at_screws() {
 module _at_box_screws() {
     for (mx = [0, 1])
     mirror([mx, 0])
-    translate([$e_width / 2 + mounting_screw_xpos(), 0])
+    translate([$e_width / 2 + _mounting_screw_xpos(), 0])
     children();
 }
 
@@ -271,10 +271,10 @@ module _box_body() {
 }
 
 module _box_screw_eyelets() {
-    eyelet_round = mounting_screw_xpos() * 2;
+    eyelet_round = _mounting_screw_xpos() * 2;
     _round_3d()
     translate([0, 0, $e_edge_radius])
-    linear_extrude(height=eyelet_thickness() - $e_edge_radius * 2)
+    linear_extrude(height=_eyelet_thickness() - $e_edge_radius * 2)
     offset(r=-$e_edge_radius)
     offset(r=$e_thickness)
     offset(r=-eyelet_round)
@@ -283,7 +283,7 @@ module _box_screw_eyelets() {
         _box_shape();
         _at_box_screws()
         union() {
-            d = mounting_screw_eyelet_d();
+            d = _mounting_screw_eyelet_d();
             circle(d=d * 2);
             translate([-d, 0])
             square(d * 2, center=true);
@@ -296,7 +296,7 @@ module _box_screws() {
     _screw_hole(
         d=$e_mounting_screw_diameter,
         fit=$e_screw_fit,
-        h=eyelet_thickness() + slop * 2,
+        h=_eyelet_thickness() + slop * 2,
         style=$e_mounting_screw_style
     );
 }
