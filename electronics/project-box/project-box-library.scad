@@ -15,6 +15,7 @@ $fa = $preview ? $fa : 2;
 $fs = $preview ? $fs / 4 : 0.4;
 
 slop = 0.001;
+preview_render = false;
 
 // Functions //
 
@@ -127,7 +128,16 @@ module ebox_extras() {
 
 // Internal Modules //
 
-module _hc_pattern(x, y, hex_size=8, separation=2.2, height=$e_thickness) {
+module _render() {
+    if (preview_render) {
+        render()
+        children();
+    } else {
+        children();
+    }
+}
+
+module _hc_pattern(x, y, hex_size=10, separation=2.2, height=$e_thickness * 1.1) {
     translate([0, 0, -slop * 5])
     linear_extrude(height=height + slop * 10)
     difference() {
@@ -156,7 +166,7 @@ module _round_3d(radius = $e_edge_radius) {
     if (radius == 0) {
         children();
     } else {
-        render()
+        _render()
         minkowski() {
             children();
             for (mz = [0, 1])
@@ -230,6 +240,7 @@ module _box_shape(radius=$e_corner_radius, add=0) {
 }
 
 module _box_interior_base() {
+    render()
     union() {
         screw_corner = $e_insert_diameter + $e_screw_inset;
         start_ht = $e_height - $e_lid_height + $e_insert_diameter * 0.40;
@@ -334,7 +345,7 @@ module _box_patterns() {
             rotate((fw % 2) != 0 ? 90 : 0)
             translate([0, pos_y / 2 + $e_thickness, ($e_height - $e_lid_height) / 2 + $e_thickness])
             rotate([90, 0, 0])
-            _hc_pattern(pattern_x - $e_screw_inset * 2, ($e_height - $e_lid_height) - $e_screw_inset * 2);
+            _hc_pattern(pattern_x - $e_screw_inset * 2, ($e_height - $e_lid_height) - $e_thickness * 2);
         }
     }
 }
@@ -349,7 +360,7 @@ module _box_interior() {
 module _box() {
     $e_part = "box";
     color("mintcream", 0.8)
-    render()
+    _render()
     union() {
         difference() {
             intersection() {
@@ -375,7 +386,7 @@ module _box() {
 module _lid() {
     $e_part = "lid";
     color("lightsteelblue", (Part == "preview" ? 0.4 : 0.8))
-    render()
+    _render()
     difference() {
         intersection() {
             _box_body();

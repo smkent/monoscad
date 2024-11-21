@@ -5,7 +5,8 @@
 
 PCB mount for custom 40x40mm ESPHome PCB designs
 
-![Model render](images/readme/demo.png)
+![Base model demo](images/readme/demo-base.gif)
+![Box model demo](images/readme/demo-box.gif)
 
 ## License
 

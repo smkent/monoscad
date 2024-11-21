@@ -64,18 +64,23 @@ pcb_thickness = 1.6;
 // Internal Modules //
 
 module ebox_interior() {
-    pcb40_round_3d()
-    pcb40_supports(cut=!Extend_PCB_Mount);
     pcb40_box_interior();
 }
 
 module ebox_cutouts() {
-    $p_height = $p_height - Thickness;
-    translate([0, 0, Thickness])
-    pcb40_screw_holes(chamfer_bottom=false);
 }
 
 module ebox_extras() {
+    color("mintcream", 0.8)
+    difference() {
+        pcb40_round_3d()
+        pcb40_supports(cut=!Extend_PCB_Mount);
+        union() {
+            $p_height = $p_height - Thickness;
+            translate([0, 0, Thickness])
+            pcb40_screw_holes(chamfer_bottom=false);
+        }
+    }
     if ($preview && PCB_Preview)
     translate([0, 0, Thickness + PCB_Mount_Height + slop])
     pcb40_pcb();

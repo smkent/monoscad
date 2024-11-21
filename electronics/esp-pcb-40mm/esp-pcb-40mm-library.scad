@@ -58,7 +58,6 @@ module pcb40_round_3d(radius=$p_edge_radius) {
     if (radius == 0) {
         children();
     } else {
-        render()
         minkowski() {
             children();
             for (mz = [0, 1])
