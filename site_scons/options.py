@@ -14,14 +14,14 @@ class GenerateOptions:
     def _value(
         self, value: Union[Union[str, int], Sequence[Union[str, int]]]
     ) -> Union[str, int]:
-        if isinstance(value, (list, tuple)):
+        if isinstance(value, (list, tuple)) and len(value) == 2:
             return value[0]
         return value
 
     def _file_name_value(
         self, value: Union[Union[str, int], Sequence[Union[str, int]]]
     ) -> Union[str, int]:
-        if isinstance(value, (list, tuple)):
+        if isinstance(value, (list, tuple)) and len(value) == 2:
             with suppress(IndexError):
                 return value[1]
         return ""

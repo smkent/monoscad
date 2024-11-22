@@ -4,9 +4,7 @@ b = ModelBuilder(env)
 model = "project-box.scad"
 
 dimensions = [
-    [
-        (45, 32, 25),
-    ],
+    (45, 32, 25),
 ]
 
 for opts in GenerateOptions(part=["lid", "box"], dims=dimensions):
