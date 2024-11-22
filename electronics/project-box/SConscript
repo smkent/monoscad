@@ -10,11 +10,10 @@ dimensions = [
 ]
 
 for opts in GenerateOptions(part=["lid", "box"], dims=dimensions):
-    dims = opts.dims[0]
     b.STL(
-        f"{opts.part}-{dims[0]}x{dims[1]}x{dims[2]}.stl",
+        f"{opts.part}-{opts.dims[0]}x{opts.dims[1]}x{opts.dims[2]}.stl",
         model,
-        {"Part": opts.part, "Dimensions": dims, "PCB_Mount": 0},
+        {"Part": opts.part, "Dimensions": opts.dims, "PCB_Mount": 0},
     )
 b.Image("demo.png", model, {"Part": "all", "preview_render": 1})
 
