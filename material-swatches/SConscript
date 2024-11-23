@@ -84,7 +84,7 @@ for opts in GenerateOptions(
         {"Text": opts.material, "Steps": opts.steps},
     )
 
-for opts in GenerateOptions(swatch=swatches):
+for opts in GenerateOptions(swatch=[(s,) for s in swatches]):
     swatch_dict = opts.swatch._asdict()
     manufacturer = swatch_dict.pop("manufacturer")
     material = swatch_dict.pop("material")
