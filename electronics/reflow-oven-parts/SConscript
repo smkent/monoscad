@@ -1,0 +1,13 @@
+Import("env")
+b = ModelBuilder(env)
+
+panel_model = "panel-grommet.scad"
+enclosure_mount_model = "enclosure-mount.scad"
+
+b.STL("panel-grommet.stl", panel_model)
+b.STL("enclosure-mount.stl", enclosure_mount_model)
+b.Image("demo.png", panel_model)
+
+b.add_default_targets()
+
+# vim: ft=python
