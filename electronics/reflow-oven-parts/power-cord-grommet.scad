@@ -1,23 +1,29 @@
 /*
  * Controleo3 reflow oven add-ons
- * Front panel wiring grommet
+ * Power cord grommet
  * By smkent (GitHub) / bulbasaur0 (Printables)
  *
  * Licensed under Creative Commons (4.0 International License) Attribution-ShareAlike
  */
 
+/* [Rendering Options] */
+Print_Orientation = true;
+
 /* [Size] */
 // All units in millimeters
 
-Diameter = 35;
-Hole_Diameter = 16; // [10:0.1:30]
+Dimensions = [15, 10.2]; // [5:0.1:20]
+Radius = 3.5; // [0:0.1:5]
 Thickness = 3; // [1.5:0.1:10]
+Cord_Diameter = 9.5; // [5:0.05:20]
+
 Screw_Hole_Diameter = 3; // [2:0.1:5]
-Screw_Hole_Offset = 14;
+Screw_Hole_Offset = 5;
 Grommet_Thickness = 3; // [0.8:0.1:5]
-Grommet_Depth = 2; // [0.4:0.1:5]
+Grommet_Depth = 6; // [0.4:0.1:5]
 
 /* [Advanced Options] */
+Vertical_Overlap = 8; // [0:0.1:10]
 Screw_Hole_Fit = 0.2; // [0:0.05:1]
 Screw_Hole_Style = "inset"; // [flat: Flat, countersink: Countersink, inset: Inset]
 Edge_Radius = 0.4; // [0:0.1:3]
@@ -29,9 +35,16 @@ module __end_customizer_options__() { }
 // Constants //
 
 $fa = $preview ? $fa : 2;
-$fs = $preview ? $fs / 2 : 0.4;
+$fs = $preview ? $fs / 4 : 0.4;
+
+shd = Screw_Hole_Diameter + Screw_Hole_Fit;
+soff = shd * 2 + Grommet_Thickness;
 
 slop = 0.001;
+
+// Functions //
+
+function vec_add(vector, add) = [for (v = vector) v + add];
 
 // Modules //
 
@@ -70,15 +83,22 @@ module _screw_hole(d, h, fit=0, style="flat", print_upside_down=false) {
     }
 }
 
-module at_panel_grommet_screw_holes() {
-    for (angle = [0:90:270])
-    rotate(angle)
-    translate([Screw_Hole_Offset, 0])
+module _round_hole(r=Radius) {
+    offset(r=r)
+    offset(r=-r)
     children();
 }
 
-module panel_grommet_hole() {
-    dd = Hole_Diameter - Grommet_Thickness * 2;
+
+module at_power_cord_grommet_screw_holes() {
+    for (mx = [0, 1])
+    mirror([mx, 0])
+    translate([Dimensions[0] / 2 + Screw_Hole_Offset / 2, 0])
+    children();
+}
+
+module power_cord_grommet_hole() {
+    dd = Cord_Diameter;
     translate([0, 0, slop])
     linear_extrude(height=Thickness + Grommet_Depth + slop * 2)
     circle(d=dd);
@@ -88,25 +108,10 @@ module panel_grommet_hole() {
     cylinder(d1=dd, d2=dd + Edge_Radius * 2, h=Edge_Radius);
 }
 
-module panel_grommet_body() {
-    difference() {
-        translate([0, 0, Edge_Radius])
-        union() {
-            _round_3d()
-            linear_extrude(height=Thickness - Edge_Radius * 2)
-            circle(d=Diameter);
-            _round_3d()
-            linear_extrude(height=Thickness + Grommet_Depth - Edge_Radius * 2)
-            circle(d=Hole_Diameter - Edge_Radius * 2);
-        }
-        panel_grommet_hole();
-    }
-}
-
-module panel_grommet_screw_holes() {
+module power_cord_grommet_screw_holes() {
     translate([0, 0, Thickness])
     mirror([0, 0, 1])
-    at_panel_grommet_screw_holes()
+    at_power_cord_grommet_screw_holes()
     _screw_hole(
         d=Screw_Hole_Diameter,
         h=Thickness,
@@ -116,16 +121,47 @@ module panel_grommet_screw_holes() {
     );
 }
 
-module panel_grommet() {
+module power_cord_grommet_body() {
     difference() {
-        panel_grommet_body();
-        panel_grommet_screw_holes();
+        translate([0, 0, Edge_Radius])
+        union() {
+            _round_3d()
+            linear_extrude(height=Thickness + Grommet_Depth - Edge_Radius * 2)
+            _round_hole(Radius - Edge_Radius)
+            square(vec_add(Dimensions, -Edge_Radius * 2), center=true);
+
+            _round_3d()
+            linear_extrude(height=Thickness - Edge_Radius * 2) {
+                cd = max(3, shd / 2);
+                hull() {
+                    _round_hole(Radius - Edge_Radius)
+                    square(
+                        vec_add(Dimensions, -Edge_Radius * 2)
+                        + [
+                            Screw_Hole_Offset + Screw_Hole_Diameter * 2,
+                            Vertical_Overlap
+                        ],
+                        center=true
+                    );
+                    at_power_cord_grommet_screw_holes()
+                    translate([Screw_Hole_Diameter, 0])
+                    circle(d=cd);
+                }
+            }
+        }
+        power_cord_grommet_hole();
+        power_cord_grommet_screw_holes();
     }
+}
+
+module power_cord_grommet() {
+    render()
+    power_cord_grommet_body();
 }
 
 module main() {
     color("lightsteelblue", 0.8)
-    panel_grommet();
+    power_cord_grommet();
 }
 
 main();
