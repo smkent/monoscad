@@ -12,18 +12,18 @@ Print_Orientation = true;
 /* [Size] */
 // All units in millimeters
 
-Dimensions = [15, 10.8]; // [5:0.1:20]
+Dimensions = [15, 10.2]; // [5:0.1:20]
 Radius = 3.5; // [0:0.1:5]
 Thickness = 3; // [1.5:0.1:10]
-Cord_Diameter = 9.25; // [5:0.05:20]
+Cord_Diameter = 9.5; // [5:0.05:20]
 
 Screw_Hole_Diameter = 3; // [2:0.1:5]
-Screw_Hole_Offset = 8;
+Screw_Hole_Offset = 5;
 Grommet_Thickness = 3; // [0.8:0.1:5]
-Grommet_Depth = 3.0; // [0.4:0.1:5]
+Grommet_Depth = 6; // [0.4:0.1:5]
 
 /* [Advanced Options] */
-Vertical_Overlap = 2; // [0:0.1:10]
+Vertical_Overlap = 8; // [0:0.1:10]
 Screw_Hole_Fit = 0.2; // [0:0.05:1]
 Screw_Hole_Style = "inset"; // [flat: Flat, countersink: Countersink, inset: Inset]
 Edge_Radius = 0.4; // [0:0.1:3]
