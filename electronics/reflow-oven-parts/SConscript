@@ -4,10 +4,12 @@ b = ModelBuilder(env)
 panel_grommet_model = "panel-grommet.scad"
 enclosure_mount_model = "enclosure-mount.scad"
 power_cord_grommet_model = "power-cord-grommet.scad"
+servo_catch_model = "servo-catch.scad"
 
 b.STL("panel-grommet.stl", panel_grommet_model)
 b.STL("power-cord-grommet.stl", power_cord_grommet_model)
 b.STL("enclosure-mount.stl", enclosure_mount_model)
+b.STL("servo-catch.stl", servo_catch_model)
 b.Image("demo.png", panel_grommet_model)
 
 b.add_default_targets()
