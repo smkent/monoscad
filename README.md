@@ -5,6 +5,11 @@
 A monorepository for my [OpenSCAD][openscad] models and remixes. Print-ready
 models are also [published on Printables][printables-profile].
 
+## Prerequisites
+
+- [**mise**][mise] tool manager: `curl https://mise.run | sh` or
+  [alternate installation method][mise-installation]
+
 ## Setup
 
 Models in this repository depend on various
@@ -12,11 +17,11 @@ Models in this repository depend on various
 [git submodules][git-submodules] using
 [smkent/openscad-libraries][smkent-openscad-libraries].
 
-After cloning this repository, install all third-party libraries by running in
-the repository directory:
+After cloning this repository, run `mise install` to install submodules, tools,
+and git hooks:
 
-```console
-git submodule update --init --recursive
+```sh
+mise install
 ```
 
 ## Rendering models via CLI
@@ -24,12 +29,6 @@ git submodule update --init --recursive
 Each model has preconfigured renders to be created via the
 [OpenSCAD CLI][openscad-cli] using [SCons][scons].
 Model STL files published to Printables are rendered this way.
-
-SCons is a Python package and can be installed using `pip`:
-
-```console
-pip install --user scons
-```
 
 To build the configured model renders for a particular model, change to the
 desired model directory and run:
@@ -76,6 +75,8 @@ Attribution][license-cc-by-4.0].
 
 [git-submodules]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 [license-cc-by-4.0]: http://creativecommons.org/licenses/by/4.0/
+[mise-installation]: https://mise.jdx.dev/installing-mise.html
+[mise]: https://mise.jdx.dev
 [openscad-cli]: https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Using_OpenSCAD_in_a_command_line_environment
 [openscad-libraries]: https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries
 [openscad]: https://openscad.org

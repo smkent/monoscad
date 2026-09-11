@@ -1,0 +1,14 @@
+[hooks]
+postinstall = [
+    "git submodule update --init --recursive",
+    "prek install",
+]
+
+[tools]
+"pipx:scons" = "latest"
+prek = "latest"
+
+[tasks.lint]
+description = "Run all formatters and static checks"
+raw_args = true
+run = "prek run --all-files"
