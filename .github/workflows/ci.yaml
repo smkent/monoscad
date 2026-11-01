@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  ci:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: 💾 Check out repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          submodules: recursive
+          persist-credentials: false
+
+      - name: 🌿 Fetch base branch
+        run: |
+          git fetch origin "${GITHUB_BASE_REF}"
+
+      - name: 🪝 Cache prek hooks
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/prek
+          key: prek-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: 🛠️ Install tools
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt install -y openscad xvfb pandoc texlive-xetex
+
+      - name: 🍳 Set up mise
+        uses: jdx/mise-action@v5
+        with:
+          cache: true
+          install: true
+
+      - name: 📐 Lint
+        run: mise run lint
+
+      - name: 🏗️ Render models
+        run: xvfb-run scons ref="origin/${GITHUB_BASE_REF}"
+        # Only render models for pull requests
+        if: ${{ github.event_name == 'pull_request' }}
+
+      - name: 📦 Save artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: Rendered Models
+          path: |
+            **/build/*
+            !**/build/**/*.deps
+
+  betterleaks:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 💾 Check out repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: 🍳 Set up mise
+        uses: jdx/mise-action@v5
+        with:
+          cache: true
+          install: true
+
+      - name: 🔍 Check for secrets
+        run: mise run secretscan
+
+  commit-messages:
+    name: Commit messages
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 💾 Check out repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: ✉️ Check commit messages
+        uses: commit-check/commit-check-action@v2
+        with:
+          branch: false

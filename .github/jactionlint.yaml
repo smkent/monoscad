@@ -1,0 +1,3 @@
+profile: default
+rules:
+  unpinned-uses: off

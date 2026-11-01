@@ -1,6 +1,10 @@
 # My OpenSCAD models for 3D printing
 
 [![bulbasaur0 on Printables][printables-profile-badge]][printables-profile]
+[![License](https://img.shields.io/github/license/smkent/monoscad)](https://github.com/smkent/monoscad/blob/main/LICENSE)
+[![CI](https://github.com/smkent/monoscad/actions/workflows/ci.yaml/badge.svg)](https://github.com/smkent/monoscad/actions/workflows/ci.yaml)
+[![Renovate](https://img.shields.io/badge/renovate-enabled-brightgreen?logo=renovatebot)](https://renovatebot.com)
+[![GitHub stars](https://img.shields.io/github/stars/smkent/monoscad?style=social)](https://github.com/smkent/monoscad)
 
 A monorepository for my [OpenSCAD][openscad] models and remixes. Print-ready
 models are also [published on Printables][printables-profile].
@@ -69,10 +73,15 @@ Third party libraries have their own licenses.
 ### Monorepository
 
 All remaining contents of this repository (i.e. not models or third party
-libraries) are licensed under [Creative Commons (4.0 International License)
-Attribution][license-cc-by-4.0].
+libraries) are licensed under the the Creative Commons Attribution 4.0
+International
+([`CC-BY-4.0`](https://github.com/smkent/monoscad/blob/main/LICENSE)).
 
+## Project template
 
+This project is based on and maintained with [copier-project][copier-project].
+
+[copier-project]: https://smkent.github.io/copier-project
 [git-submodules]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 [license-cc-by-4.0]: http://creativecommons.org/licenses/by/4.0/
 [mise-installation]: https://mise.jdx.dev/installing-mise.html

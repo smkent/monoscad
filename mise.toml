@@ -1,14 +1,36 @@
+min_version = "2026.2.5"
+
 [hooks]
 postinstall = [
-    "git submodule update --init --recursive",
-    "prek install",
+  "[ -e .git ] && prek --quiet install || { echo \"No git repository found.\"; }",
+  "git submodule update --init --recursive",
 ]
 
 [tools]
+betterleaks = "latest"
+jactionlint = "latest"
+"pipx:commit-check" = "latest"
+"pipx:copier" = "latest"
 "pipx:scons" = "latest"
 prek = "latest"
+taplo = "latest"
+uv = "latest"
 
 [tasks.lint]
 description = "Run all formatters and static checks"
 raw_args = true
 run = "prek run --all-files"
+
+[tasks.lt]
+description = "Run all formatters, static checks, and tests"
+run = [{ task = "lint" }, { task = "test" }]
+
+[tasks.secretscan]
+description = "Scan git history for secrets"
+raw_args = true
+run = "betterleaks git . --redact"
+
+[tasks.test]
+description = "Run tests"
+raw_args = true
+run = "echo \"No test command defined. Set the \\`test\\` command in mise.toml -> [tasks.test] -> \\`run\\`.\""
