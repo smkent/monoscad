@@ -1,13 +1,48 @@
+default_install_hook_types: [pre-commit, commit-msg]
+default_stages: [pre-commit]
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.4.0
-  hooks:
-  - id: check-merge-conflict
-  - id: end-of-file-fixer
-  - id: trailing-whitespace
-  - id: mixed-line-ending
-    args: ['--fix=lf']
-- repo: https://github.com/Lucas-C/pre-commit-hooks
-  rev: v1.5.4
-  hooks:
-  - id: remove-tabs
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-added-large-files
+      - id: detect-private-key
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.4
+    hooks:
+      - id: remove-tabs
+  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v2.16.0
+    hooks:
+      - id: pretty-format-yaml
+        args: [--autofix, --offset, '2']
+        exclude: ^\.copier-answers\.yml$
+  - repo: local
+    hooks:
+      - id: betterleaks
+        name: betterleaks
+        entry: betterleaks git . --pre-commit --staged --redact
+        language: system
+        pass_filenames: false
+      - id: jactionlint
+        name: jactionlint
+        entry: jactionlint --fix
+        language: system
+        types:
+          - yaml
+        files: ^\.github/workflows/
+      - id: taplo
+        name: taplo
+        entry: taplo format
+        language: system
+        types: [toml]
+      - id: commit-check
+        name: commit-check
+        entry: commit-check --no-banner --message
+        language: system
+        stages: [commit-msg]

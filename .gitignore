@@ -7,3 +7,7 @@ __pycache__
 build/
 !*/config.json
 !_template/*.json
+
+# mise
+mise.local.toml
+.mise.local.toml
