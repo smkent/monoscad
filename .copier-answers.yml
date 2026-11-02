@@ -1,9 +1,10 @@
 # Changes here will be overwritten by Copier
-_commit: v0.34.0
+_commit: v0.35.0
 _src_path: gh:smkent/copier-project
 copyright_holder: Stephen Kent
 copyright_license: GPL-3.0-only
 copyright_year: '2023'
+enable_docs: false
 github_user: smkent
 llm_contribution_policy: accepted-with-disclosure
 project_description: My OpenSCAD models for 3D printing
