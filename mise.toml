@@ -1,4 +1,4 @@
-min_version = "2026.2.5"
+min_version = "2026.10.3"
 
 [hooks]
 postinstall = [
